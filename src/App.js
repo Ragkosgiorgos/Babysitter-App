@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import MainPGU from './Pages/mainPGU';
+import MainPGU from "./Pages/MainPGU";
 
 function App() {
   return (

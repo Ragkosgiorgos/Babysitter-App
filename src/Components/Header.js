@@ -6,11 +6,11 @@ function Header(props) {
 if(props.log === 'connected')
     {
     return (
-        <nav class="navbar navbar-expand-lg bg-body-tertiary" style={{ backgroundColor: '#343a40' }}>
+        <nav class="navbar navbar-expand-lg" style={{ backgroundColor: '#6C6A6A' }}>
             <div class="container-fluid" style={{display:"flex",justifyContent:"space-between"}}>
                 <div>
-                    <img src="/logo192.png" width="30" height="30" class="d-inline-block align-top" alt="" />
-                    <a class="navbar-brand" href="#">Νταντάδες της Γειτονιάς</a>
+                    <img style={{marginRight:"8px"}} src="/logo192.png" width="30" height="30" class="d-inline-block align-top" alt="" />
+                    <a class="navbar-brand" href="#" style={{color: "white"}}>Νταντάδες της Γειτονιάς</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
@@ -18,10 +18,10 @@ if(props.log === 'connected')
                     <div class="collapse navbar-collapse ms-auto" id="navbarNavDropdown" style={{ display: "flex", justifyContent: "flex-end", alignItems: "center",marginRight:"5%" }}>
                         <ul class="navbar-nav" style={{ display: "flex", flexDirection: "row", listStyleType: "none" }}>
                             <li class="nav-item">
-                                <a class={props.act !== 'babysitter' ? "nav-link" : "nav-link active"} aria-current="page" href="/user">Βρείτε babysitter</a>
+                                <a class={props.act !== 'babysitter' ? "nav-link" : "nav-link active"} aria-current="page" href="/user" style={{color: "white"}}>Βρείτε babysitter</a>
                             </li>
                             <li class="nav-item">
-                                <a class={props.act !== 'job' ? "nav-link" : "nav-link active"} href="/user/profile">Βρείτε εργασία</a>
+                                <a class={props.act !== 'job' ? "nav-link" : "nav-link active"} href="/user/profile" style={{color: "white"}}>Βρείτε εργασία</a>
                             </li>
                             
                             </ul>
@@ -54,11 +54,11 @@ if(props.log === 'connected')
 else if(props.log === 'not_connected')
 {
     return (
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <nav class="navbar navbar-expand-lg" style={{ backgroundColor: '#6C6A6A' }}>
             <div class="container-fluid" style={{display:"flex",justifyContent:"space-between"}}>
                 <div>
-                    <img src="/logo192.png" width="30" height="30" class="d-inline-block align-top" alt="" />
-                    <a class="navbar-brand" href="#">Νταντάδες της Γειτονιάς</a>
+                    <img style={{marginRight:"8px"}} src="/logo192.png" width="30" height="30" class="d-inline-block align-top" alt="" />
+                    <a class="navbar-brand" href="#" style={{color: "white"}}>Νταντάδες της Γειτονιάς</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
@@ -66,10 +66,10 @@ else if(props.log === 'not_connected')
                     <div class="collapse navbar-collapse ms-auto" id="navbarNavDropdown" style={{ display: "flex", justifyContent: "flex-end", alignItems: "center",marginRight:"5%" }}>
                         <ul class="navbar-nav" style={{ display: "flex", flexDirection: "row", listStyleType: "none" }}>
                             <li class="nav-item">
-                                <a class={props.act !== 'babysitter' ? "nav-link" : "nav-link active"} aria-current="page" href="/user">Βρείτε babysitter</a>
+                                <a class={props.act !== 'babysitter' ? "nav-link" : "nav-link active"} aria-current="page" href="/user" style={{color: "white"}}>Βρείτε babysitter</a>
                             </li>
                             <li class="nav-item">
-                                <a class={props.act !== 'job' ? "nav-link" : "nav-link active"} href="/user/profile">Βρείτε εργασία</a>
+                                <a class={props.act !== 'job' ? "nav-link" : "nav-link active"} href="/user/profile" style={{color: "white"}}>Βρείτε εργασία</a>
                             </li>
                             
                             </ul>
