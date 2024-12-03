@@ -54,7 +54,7 @@ if(props.log === 'connected')
 else if(props.log === 'not_connected')
 {
     return (
-        <nav class="navbar navbar-expand-lg" style={{ backgroundColor: '#6C6A6A' }}>
+        <nav class="navbar navbar-expand-lg" style={{ backgroundColor: '#2E86AB' }}>
             <div class="container-fluid" style={{display:"flex",justifyContent:"space-between"}}>
                 <div>
                     <img style={{marginRight:"8px"}} src="/logo192.png" width="30" height="30" class="d-inline-block align-top" alt="" />
