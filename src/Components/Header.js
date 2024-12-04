@@ -1,10 +1,24 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import { Link } from 'react-router-dom';
-
+import { Link, useNavigate, useLocation } from 'react-router-dom';  // Import useNavigate and useLocation
 
 function Header(props) {
+    const navigate = useNavigate();  
+    const location = useLocation();  
+
+    const handleGoneisRedirect = () => {
+        if (location.pathname !== '/goneis') {
+            navigate('/goneis');  
+        }
+    };
+
+    const handleEpaggelmatiesRedirect = () => {
+        if (location.pathname !== '/epaggelmaties') {
+            navigate('/epaggelmaties');  
+        }
+    };
+
     if (props.log === 'connected') {
         return (
             <nav className="navbar navbar-expand-lg" style={{ backgroundColor: '#6C6A6A' }}>
@@ -151,23 +165,24 @@ function Header(props) {
                     >
                         <ul className="navbar-nav" style={{ display: 'flex', flexDirection: 'row', listStyleType: 'none' }}>
                             <li className="nav-item">
-                            <Link
-                            className={props.act !== 'babysitter' ? 'nav-link' : 'nav-link active'}
-                            to="goneis"
-                            style={{ color: 'white' }}
-                          >
-                            Βρείτε babysitter
-                          </Link>
-                        
+                                <Link
+                                    className={props.act !== 'goneis' ? 'nav-link' : 'nav-link active'}
+                                    to="/goneis"
+                                    style={{ color: 'white' }}
+                                    onClick={handleGoneisRedirect}  
+                                >
+                                    Βρείτε babysitter
+                                </Link>
                             </li>
                             <li className="nav-item">
-                            <Link
+                                <Link
                                     className={props.act !== 'job' ? 'nav-link' : 'nav-link active'}
-                                    to="epaggelmaties"
+                                    to="/epaggelmaties"
                                     style={{ color: 'white' }}
+                                    onClick={handleEpaggelmatiesRedirect}  
                                 >
                                     Βρείτε εργασία
-                            </Link>
+                                </Link>
                             </li>
                         </ul>
                     </div>
@@ -182,3 +197,4 @@ function Header(props) {
 }
 
 export default Header;
+
