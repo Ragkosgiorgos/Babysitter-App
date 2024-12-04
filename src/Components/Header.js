@@ -161,13 +161,13 @@ function Header(props) {
                         
                             </li>
                             <li className="nav-item">
-                                <a
+                            <Link
                                     className={props.act !== 'job' ? 'nav-link' : 'nav-link active'}
-                                    href="/user/profile"
+                                    to="epaggelmaties"
                                     style={{ color: 'white' }}
                                 >
                                     Βρείτε εργασία
-                                </a>
+                            </Link>
                             </li>
                         </ul>
                     </div>
