@@ -3,6 +3,7 @@ import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import Accordion from 'react-bootstrap/Accordion';
 
 function MainPGU(props) {
 
@@ -78,56 +79,46 @@ function MainPGU(props) {
             </div>
           </div>
         </div>
-        <div className="dropdown" style={{ margin: "20px auto", textAlign: "center", marginBottom: dropdownOpen1 ? "30vh" : "2vh",position: "relative" }}>
-          <button style={{width:"80%" }}
-            className="btn btn-secondary dropdown-toggle"
-            type="button"
-            data-bs-toggle="dropdown"
-            data-bs-display="static"
-            data-bs-placement="bottom"
-            aria-expanded={dropdownOpen1}
-            onClick={handleDropdownToggle1}
-          >
-          Ποιοι εχουν δικαιωμα εγγραφης στο προγραμμα ως κηδεμονες;
-          </button>
-          <ul className="dropdown-menu" style={{width:"80%",marginLeft:"10%"}} >
-            <span style={{width:"80%"}} >
-              Για να έχετε τη δυνατότητα να συμμετάσχετε στο πρόγραμμα ‘Νταντάδες της Γειτονιάς’, θα πρέπει να πληρείτε τα ακόλουθα κριτήρια:
-              <br />
-              <ul style={{listStyleType:"disc"}}>
-              <li>Το ετήσιο ατομικό εισόδημά σας να μην υπερβαίνει το ποσό των 24.000 € για το φορολογικό έτος 2024 (για εισοδήματα που αποκτήθηκαν από 01/01/2024 έως 31/12/2024).</li>
-              <li>Να είστε εργαζόμενη/ος ή άνεργη εγγεγραμμένη στα μητρώα της ΔΥΠΑ (Προσοχή! H ανεργία αφορά μόνο στη μητέρα που υποβάλλει αίτηση).</li>
-              <li>Να μην τελείτε υπό καθεστώς άδειας μητρότητας ή άδειας πατρότητας ή άδειας ανατροφής τέκνου ή γονικής άδειας ή ειδικής παροχής προστασίας μητρότητας ή να μην έχετε διακόψει ή αναστείλει την επαγγελματική σας δραστηριότητα.</li>
-              Να έχετε ανήλικο τέκνο δύο (2) μηνών έως δύο (2) ετών και έξι (6) μηνών.
-              <li>Η διεύθυνση διαμονής σας να είναι εντός των Δήμων που συμμετέχουν στην Πιλοτική εφαρμογή της Δράσης.</li>
-              </ul>
-            </span>
-          </ul>
-        </div>
-        <div className="dropdown" style={{ margin: "20px auto", textAlign: "center",marginBottom:dropdownOpen2 ? "20vh" : "2vh",position: "relative"  }}>
-          <button style={{width:"80%"}}
-            className="btn btn-secondary dropdown-toggle"
-            type="button"
-            data-bs-toggle="dropdown"
-            data-bs-display="static"
-            data-bs-placement="bottom"
-            aria-expanded={dropdownOpen2}
-            onClick={handleDropdownToggle2}
-          >
-          Ποιοι εχουν δικαιωμα εγγραφησ στο προγραμμα ως επαγγελματιες;
-          </button>
-          <ul className="dropdown-menu" style={{width:"80%",marginLeft:"10%"}} >
-            <span>
-            Για να έχετε τη δυνατότητα να συμμετάσχετε στο πρόγραμμα ‘Νταντάδες της Γειτονιάς’, θα πρέπει να:
-              <br />
-              <ul style={{listStyleType:"disc"}}>
-              <li>Να έχετε συμπληρώσει το 18ο έτος της ηλικίας σας.</li>
-              <li>Να είστε Έλληνας ή αλλοδαπός πολίτης που διαμένει νόμιμα στην Ελλάδα και έχει πρόσβαση στην αγορά εργασίας.</li>
-              <li>Να πληρείτε τις τις προϋποθέσεις που βρίσκονται στον παρακάτω σύνδεσμο[link].</li>
-              </ul>
-            </span>
-          </ul>
-        </div>
+
+      <div>
+        <Accordion defaultActiveKey="0" style={{width:"90%", margin:"auto", marginTop:"2.5vh"}}>
+          <Accordion.Item eventKey="0">
+            <Accordion.Header>Ποιοι έχουν δικαίωμα εγγραφής στο πρόγραμμα ως κηδεμόνες;</Accordion.Header>
+            <Accordion.Body>
+              <span style={{width:"80%"}} >
+                Για να έχετε τη δυνατότητα να συμμετάσχετε στο πρόγραμμα ‘Νταντάδες της Γειτονιάς’, θα πρέπει να πληρείτε τα ακόλουθα κριτήρια:
+                <br />
+                <ul style={{listStyleType:"disc"}}>
+                <li>Το ετήσιο ατομικό εισόδημά σας να μην υπερβαίνει το ποσό των 24.000 € για το φορολογικό έτος 2024 (για εισοδήματα που αποκτήθηκαν από 01/01/2024 έως 31/12/2024).</li>
+                <li>Να είστε εργαζόμενη/ος ή άνεργη εγγεγραμμένη στα μητρώα της ΔΥΠΑ (Προσοχή! H ανεργία αφορά μόνο στη μητέρα που υποβάλλει αίτηση).</li>
+                <li>Να μην τελείτε υπό καθεστώς άδειας μητρότητας ή άδειας πατρότητας ή άδειας ανατροφής τέκνου ή γονικής άδειας ή ειδικής παροχής προστασίας μητρότητας ή να μην έχετε διακόψει ή αναστείλει την επαγγελματική σας δραστηριότητα.</li>
+                Να έχετε ανήλικο τέκνο δύο (2) μηνών έως δύο (2) ετών και έξι (6) μηνών.
+                <li>Η διεύθυνση διαμονής σας να είναι εντός των Δήμων που συμμετέχουν στην Πιλοτική εφαρμογή της Δράσης.</li>
+                </ul>
+              </span>
+            </Accordion.Body>
+          </Accordion.Item>
+        </Accordion>
+      </div>
+      <div>
+        <Accordion defaultActiveKey="0" style={{width:"90%", margin:"auto", marginTop:"1.5vh"}}>
+          <Accordion.Item eventKey="0">
+            <Accordion.Header>Ποιοι έχουν δικαίωμα εγγραφής στο πρόγραμμα ως επαγγελματίες;</Accordion.Header>
+            <Accordion.Body>
+              <span>
+                Για να έχετε τη δυνατότητα να συμμετάσχετε στο πρόγραμμα ‘Νταντάδες της Γειτονιάς’, θα πρέπει να:
+                <br />
+                <ul style={{listStyleType:"disc"}}>
+                <li>Να έχετε συμπληρώσει το 18ο έτος της ηλικίας σας.</li>
+                <li>Να είστε Έλληνας ή αλλοδαπός πολίτης που διαμένει νόμιμα στην Ελλάδα και έχει πρόσβαση στην αγορά εργασίας.</li>
+                <li>Να πληρείτε τις τις προϋποθέσεις που βρίσκονται στον παρακάτω σύνδεσμο[link].</li>
+                </ul>
+              </span>
+            </Accordion.Body>
+          </Accordion.Item>
+        </Accordion>
+      </div>
+
         <Footer />
       </div>
     </div>
