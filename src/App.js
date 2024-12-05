@@ -1,8 +1,8 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import MainPGU from "./Pages/mainPGU";
-import MainGoneisPGU from "./Pages/Goneis/mainGoneisPGU";
-import MainEpaggelmatiesPGU from "./Pages/Epaggelmaties/mainEpaggelmatiesPGU";
+import MainPGU from "./Pages/MainPGU";
+import MainGoneisPGU from "./Pages/Goneis/MainGoneisPGU";
+import MainEpaggelmatiesPGU from "./Pages/Epaggelmaties/MainEpaggelmatiesPGU";
 import ReactDOM from "react-dom/client";
 
 function App() {
