@@ -2,12 +2,16 @@ import React from "react";
 import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
 import Accordion from 'react-bootstrap/Accordion';
+import Breadcrumbs from "../../Components/Breadcrump";
 
 function MainGoneisPGU(props){
     return(
         <div style={{ display: 'flex', flexDirection: 'column', height: "100vh" }}>
-            <div style={{marginBottom:"50px"}}>
+            <div style={{marginBottom:"30px"}}>
                 <Header log='not_connected' act="Goneis" />
+            </div>
+            <div style={{marginLeft:"20px"}}>
+            <Breadcrumbs />
             </div>
             <div style={{ flex: 1, overflowY: "auto" }}>
                 <div style={{ backgroundColor: "white", position: "relative", zIndex: 2, marginTop: "50px", display: "flex", width: "50%", justifyContent: "center", margin: "0 auto", flexDirection: "column", border: "1px solid black", borderRadius: "15px", height: "20vh" }}>
