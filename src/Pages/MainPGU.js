@@ -4,19 +4,19 @@ import Footer from "../Components/Footer";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import Accordion from 'react-bootstrap/Accordion';
+import JobofferReview from "../Components/EpaggelmatiesComponent/JobofferReview";
+import { Link, useNavigate, useLocation } from 'react-router-dom';  
 
 function MainPGU(props) {
 
-  const [dropdownOpen1, setDropdownOpen1] = useState(false);  
-  const [dropdownOpen2, setDropdownOpen2] = useState(false); 
+  const navigate = useNavigate();  
+    const location = useLocation();  
 
-  const handleDropdownToggle1 = () => {
-    setDropdownOpen1(!dropdownOpen1); 
-  };
-
-  const handleDropdownToggle2 = () => {
-    setDropdownOpen2(!dropdownOpen2);  
-  };
+    const handleSearchRedirect = () => {
+        if (location.pathname !== '/anazitisi') {
+            navigate('/anazitisi');  
+        }
+    };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: "100vh" }}>
@@ -29,10 +29,20 @@ function MainPGU(props) {
           <h6 style={{ textAlign: "center" }}>Βρείτε τον/την επαγγελματία που σας ταιριάζει!</h6>
           <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginTop: "3%" }}>
             <div style={{ display: "flex", width: "30%", outline: "1px solid black", marginLeft: "10%", borderRadius: "15px", height: "5vh" }}>
-              <button style={{ background: "none", border: "none", padding: 0, cursor: "pointer", width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <span style={{ fontWeight: 100, marginLeft: "3%" }}>Βρείτε αυτό που ψάχνετε</span>
-                <img src="/search (1).svg" alt="Search" style={{ width: "24px", height: "24px" }} />
-              </button>
+            <Link to="/goneis/anazitisi" className="nav-link" style={{background: "none",border: "none",padding: 0,cursor: "pointer",width: "100%",display: "flex",alignItems: "center",justifyContent: "space-between",
+              textDecoration: "none", 
+            }}
+            onClick={handleSearchRedirect} 
+            >
+            <span style={{ fontWeight: 100, marginLeft: "3%" }}>
+              Βρείτε αυτό που ψάχνετε
+            </span>
+            <img
+              src="/search (1).svg"
+              alt="Search"
+              style={{ width: "24px", height: "24px" }}
+            />
+          </Link>
             </div>
             <span style={{ marginRight: "10%", textDecoration: "underline" }}>Βρείτε εργασία</span>
           </div>
@@ -42,42 +52,9 @@ function MainPGU(props) {
         </div>
         <div style={{ marginLeft: "2vh" }}><h6>Δείτε ενδεικτικές αγγελίες για εργασία:</h6></div>
         <div style={{ marginTop: "20px", marginLeft: "20px", display: "flex", gap: "5vh", justifyContent: "center" }}>
-          <div style={{ borderRadius: "10px", backgroundColor: "#d3d3d3", height: "35vh", width: "20%", paddingTop: "10px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-            <div>
-              <span style={{ marginLeft: "4%" }}>Τίτλος</span>
-              <div style={{ borderBottom: "1px solid #000", marginTop: "10px" }}></div>
-              <span style={{ marginLeft: "4%" }}>Περιγραφή</span>
-            </div>
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <button style={{ borderRadius: "10px", width: "70%" }}>
-                <span>Δείτε την αγγελία</span>
-              </button>
-            </div>
-          </div>
-          <div style={{ borderRadius: "10px", backgroundColor: "#d3d3d3", height: "35vh", width: "20%", paddingTop: "10px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-            <div>
-              <span style={{ marginLeft: "4%" }}>Τίτλος</span>
-              <div style={{ borderBottom: "1px solid #000", marginTop: "10px" }}></div>
-              <span style={{ marginLeft: "4%" }}>Περιγραφή</span>
-            </div>
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <button style={{ borderRadius: "10px", width: "70%" }}>
-                <span>Δείτε την αγγελία</span>
-              </button>
-            </div>
-          </div>
-          <div style={{ borderRadius: "10px", backgroundColor: "#d3d3d3", height: "35vh", width: "20%", paddingTop: "10px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-            <div>
-              <span style={{ marginLeft: "4%" }}>Τίτλος</span>
-              <div style={{ borderBottom: "1px solid #000", marginTop: "10px" }}></div>
-              <span style={{ marginLeft: "4%" }}>Περιγραφή</span>
-            </div>
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <button style={{ borderRadius: "10px", width: "70%" }}>
-                <span>Δείτε την αγγελία</span>
-              </button>
-            </div>
-          </div>
+          <JobofferReview/>
+          <JobofferReview/>
+          <JobofferReview/>
         </div>
 
       <div>
