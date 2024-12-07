@@ -4,10 +4,12 @@ import { MenuItem, Select, InputLabel, FormControl } from "@mui/material";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { se } from "date-fns/locale";
 
 function BabysitterFilters(props) {
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedAge, setSelectedAge] = useState("");
+  const [selectedEducation, setSelectedEducation] = useState(""); 
 
   const [fullTimeChecked, setFullTimeChecked] = useState(false);
   const [partTimeChecked, setPartTimeChecked] = useState(false);
@@ -64,9 +66,16 @@ function BabysitterFilters(props) {
     "2.5",
   ];
 
+  const education = [
+    "Πρωτοβάθμια",
+    "Δευτεροβάθμια",
+    "Τριτοβάθμια"
+  ]
+
   // Handle changes for city and age dropdowns
   const handleCityChange = (event) => setSelectedCity(event.target.value);
   const handleAgeChange = (event) => setSelectedAge(event.target.value);
+  const handleEducationChange = (event) => setSelectedEducation(event.target.value);
 
   const handleFullTimeChange = (event) => setFullTimeChecked(event.target.checked);
   const handlePartTimeChange = (event) => setPartTimeChecked(event.target.checked);
@@ -76,6 +85,7 @@ function BabysitterFilters(props) {
     setSelectedAge("");
     setFullTimeChecked(false);
     setPartTimeChecked(false);
+    setSelectedEducation("");
 
     setTimeMondayFrom(null);
     setTimeMondayTo(null);
@@ -94,7 +104,7 @@ function BabysitterFilters(props) {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "70vh", width: "30%" }}>
+    <div style={{ display: "flex", flexDirection: "column", width: "30%",height:"100vh" }}>
       <div style={{ display: "flex", flexDirection: "column", marginTop: "10%", marginLeft: "40px" }}>
         <div style={{ display: "flex", flexDirection: "row" }}>
           <h4>Φίλτρα αναζήτησης</h4>
@@ -190,6 +200,26 @@ function BabysitterFilters(props) {
             </div>
           </div>
         </LocalizationProvider>
+        <div style={{ marginTop: "2vh" }}>
+          <h4>Εκπαίδευση</h4>
+          <FormControl fullWidth style={{ marginTop: "1vh" }}>
+            <InputLabel id="education-select-label"></InputLabel>
+            <Select
+              labelId="education-select-label"
+              value={selectedEducation}
+              onChange={handleEducationChange}
+              style={{ width: "80%" }}
+              displayEmpty
+            >
+              {selectedEducation === "" && <MenuItem value="" disabled>Επιλέξτε Εκπαίδευση</MenuItem>}
+              {education.map((edu) => (
+                <MenuItem key={edu} value={edu.toLowerCase()}>
+                  {edu}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
       </div>
     </div>
   );

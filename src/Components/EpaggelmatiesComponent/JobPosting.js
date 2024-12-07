@@ -4,7 +4,7 @@ function JobPosting(props){
 
     return(
 
-        <div style={{marginTop:"10vh",marginLeft:"20%",backgroundColor:"#D3D3D3",width:"40%",height:"35vh"}}>
+        <div style={{marginTop:"5vh",marginLeft:"12%",backgroundColor:"#D3D3D3",width:"50%",height:"35vh"}}>
             <div  style={{display:"flex",flexDirection:"column"}}>    
                 <div style={{display:"flex",flexDirection:"row"}}>
                 <img style={{ marginRight: '8px' }}src="/logo192.png"width="100"height="100"className="d-inline-block align-top"alt=""/>
