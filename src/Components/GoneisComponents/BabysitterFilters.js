@@ -4,7 +4,6 @@ import { MenuItem, Select, InputLabel, FormControl } from "@mui/material";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { se } from "date-fns/locale";
 
 function BabysitterFilters(props) {
   const [selectedCity, setSelectedCity] = useState("");
