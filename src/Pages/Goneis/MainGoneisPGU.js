@@ -20,32 +20,31 @@ function MainGoneisPGU(props){
             <div style={{marginBottom:"30px"}}>
                 <Header log='not_connected' act="Goneis" />
             </div>
+
             <div style={{marginLeft:"20px"}}>
-            <Breadcrumbs />
+                <Breadcrumbs />
             </div>
+
             <div style={{ flex: 1, overflowY: "auto" }}>
-            <div style={{ backgroundColor: "white", position: "relative", zIndex: 2, marginTop: "-10vh", display: "flex", width: "50%", justifyContent: "center", margin: "0 auto", flexDirection: "column", border: "1px solid black", borderRadius: "15px", height: "20vh" }}>
-            <h6 style={{ textAlign: "center" }}>Βρείτε τον/την επαγγελματία που σας ταιριάζει!</h6>
-            <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginTop: "3%" }}>
-              <div style={{ display: "flex", width: "30%", outline: "1px solid black", marginLeft: "10%", borderRadius: "15px", height: "5vh" }}>
-              <Link to="/goneis/anazitisi" className="nav-link" style={{background: "none",border: "none",padding: 0,cursor: "pointer",width: "100%",display: "flex",alignItems: "center",justifyContent: "space-between",
-                textDecoration: "none", 
-              }}
-              onClick={handleSearchRedirect} 
-              >
-              <span style={{ fontWeight: 100, marginLeft: "3%" }}>
-                Βρείτε αυτό που ψάχνετε
-              </span>
-              <img
-                src="/search (1).svg"
-                alt="Search"
-                style={{ width: "24px", height: "24px" }}
-              />
-            </Link>
-              </div>
-              <span style={{ marginRight: "10%", textDecoration: "underline" }}>Βρείτε εργασία</span>
-            </div>
-          </div>
+                <div style={{ backgroundColor: "white", position: "relative", zIndex: 2, marginTop: "-10vh", display: "flex", width: "50%", justifyContent: "center", margin: "0 auto", flexDirection: "column", border: "1px solid black", borderRadius: "15px", height: "20vh" }}>
+                    <h6 style={{ textAlign: "center" }}>Βρείτε τον/την επαγγελματία που σας ταιριάζει!</h6>
+                    <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginTop: "3%" }}>
+                        <div style={{ display: "flex", width: "30%", outline: "1px solid black", marginLeft: "10%", borderRadius: "15px", height: "5vh" }}>
+                            <Link to="/goneis/anazitisi" className="nav-link" style={{background: "none",border: "none",padding: 0,cursor: "pointer",width: "100%",display: "flex",alignItems: "center",justifyContent: "space-between",
+                                    textDecoration: "none", }} onClick={handleSearchRedirect} >
+                                <span style={{ fontWeight: 100, marginLeft: "3%" }}>
+                                    Βρείτε αυτό που ψάχνετε
+                                </span>
+                                <img
+                                    src="/search (1).svg"
+                                    alt="Search"
+                                    style={{ width: "24px", height: "24px" }}
+                                />
+                            </Link>
+                        </div>
+                        <span style={{ marginRight: "10%", textDecoration: "underline" }}>Βρείτε εργασία</span>
+                    </div>
+                </div>
                 <div style={{ display: "flex", justifyContent: "center", marginTop: "25px" }}>
                     <img style={{ height: "25vh" }} src="/progress.png" alt="" />
                 </div>

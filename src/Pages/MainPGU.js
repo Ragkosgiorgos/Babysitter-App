@@ -34,13 +34,13 @@ function MainPGU(props) {
             }}
             onClick={handleSearchRedirect} 
             >
-            <span style={{ fontWeight: 100, marginLeft: "3%" }}>
+            <span style={{ fontWeight: 100, marginLeft: "3%"}}>
               Βρείτε αυτό που ψάχνετε
             </span>
             <img
               src="/search (1).svg"
               alt="Search"
-              style={{ width: "24px", height: "24px" }}
+              style={{ width: "24px", height: "24px", marginRight: "3%" }}
             />
           </Link>
             </div>
@@ -88,7 +88,6 @@ function MainPGU(props) {
                 <ul style={{listStyleType:"disc"}}>
                 <li>Να έχετε συμπληρώσει το 18ο έτος της ηλικίας σας.</li>
                 <li>Να είστε Έλληνας ή αλλοδαπός πολίτης που διαμένει νόμιμα στην Ελλάδα και έχει πρόσβαση στην αγορά εργασίας.</li>
-                <li>Να πληρείτε τις τις προϋποθέσεις που βρίσκονται στον παρακάτω σύνδεσμο[link].</li>
                 </ul>
               </span>
             </Accordion.Body>

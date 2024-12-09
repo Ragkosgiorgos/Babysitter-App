@@ -1,29 +1,48 @@
 import React from "react";
+import { useNavigate } from 'react-router-dom';  // Import useNavigate and useLocation
 
 function JobPosting(props){
+  const {Onoma,Epitheto,Polh,Ilikia,Ekpaideush,Apasxolisi,Filoksenia,imgn, id} = props.profile;
+  
+  const navigate = useNavigate();
 
-    return(
+  const handleRedirect = (id) => {
+    console.log("Redirecting to job posting with id:",id);
+    navigate(`/aggelies/${id}`);
+  }
 
-        <div style={{marginTop:"5vh",marginLeft:"12%",backgroundColor:"#D3D3D3",width:"50%",height:"35vh"}}>
-            <div  style={{display:"flex",flexDirection:"column"}}>    
-                <div style={{display:"flex",flexDirection:"row"}}>
-                <img style={{ marginRight: '8px' }}src="/logo192.png"width="100"height="100"className="d-inline-block align-top"alt=""/>
-                    <div style={{display:"flex",flexDirection:"column"}}>
-                        <h3>Hliana Tsourea</h3>
-                        <div style={{display:"flex",flexDirection:"column",marginLeft:"6%"}}>
-                            <h6>Poli: Athina</h6>
-                            <h6>Ilikia: 21</h6>
-                            <h6>Filoxenia ston xwro mou: oxi</h6>
-                            <h6>Xronos apasxolisis: Meriki</h6>
-                            <h6>Ekpaideysi: Deuterobathmia</h6>
-                        </div>
-                    </div>
-                </div>
-                <button style={{ alignSelf: "center", marginTop: "auto", width: "40%",marginTop:"5px" }}> Δείτε περισσότερα!</button>
+  return(
+    <div style={{marginTop:"5vh",marginLeft:"15%",backgroundColor:"#DBE2EF",width:"60%", borderRadius:"2vh"}}>
+
+      <div  style={{display:"flex",flexDirection:"column"}}>  
+
+        <div style={{display:"flex",flexDirection:"row"}}>
+
+          <img style={{ marginRight: "2vh", marginLeft:"2vh", marginTop:"2vh" }} src={imgn} width="100vw" height="100vh" className="d-inline-block align-top" alt=""/>
+
+          <div style={{display:"flex",flexDirection:"column",marginTop:"2vh"}}>
+
+            <h3> {Onoma} {Epitheto} </h3>
+            <div style={{display:"flex", flexDirection:"column", marginLeft:"0%", marginRight:"0%"}}>
+              <h6> <b>Πόλη:</b> {Polh} </h6>
+              <h6> <b>Ηλικία:</b> {Ilikia} </h6>
+              <h6> <b>Εκπαίδευση:</b> {Ekpaideush} </h6>
+              <h6> <b>Χρόνος Απασχόλησης:</b> {Apasxolisi} </h6>
+              <h6> <b>Φιλοξενία στον χώρο του/της:</b> {Filoksenia} </h6>
             </div>
-        </div>
-    );
 
+          </div>
+            
+        </div>
+
+        <button style={{ alignSelf: "center", width: "40%",marginTop:"2vh", borderRadius:"1.2vh", border:"0.1vh solid black", marginBottom:"1vh", }} onClick={() => handleRedirect(id)}  > 
+          <span >Δείτε περισσότερα!</span>
+        </button>
+
+      </div>
+
+    </div>
+  );
 }
 
 export default JobPosting;

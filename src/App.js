@@ -5,7 +5,7 @@ import MainGoneisPGU from "./Pages/Goneis/MainGoneisPGU";
 import MainEpaggelmatiesPGU from "./Pages/Epaggelmaties/MainEpaggelmatiesPGU";
 import ReactDOM from "react-dom/client";
 import BabysitterSearch from "./Pages/Goneis/BabysitterSearch";
-
+import MainAggeliesPGU from "./Pages/Epaggelmaties/MainAggeliesPGU";
 
 function App() {
   return (
@@ -16,6 +16,7 @@ function App() {
       <Route path="goneis" element={<MainGoneisPGU />} />
       <Route path="goneis/anazitisi" element={<BabysitterSearch />} />
       <Route path="epaggelmaties" element={<MainEpaggelmatiesPGU />} />
+      <Route path="aggelies" element={<MainAggeliesPGU />} />
     </Routes>    
       </BrowserRouter>
     </div>
