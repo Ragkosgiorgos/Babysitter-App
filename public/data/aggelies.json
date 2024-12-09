@@ -1,0 +1,62 @@
+[
+    {
+        "id_aggelias": 1,
+        "id_xristi": 1,
+        "description": "Με λένε Ηλιάνα.",
+        "area": "Αθήνα",
+        "date": "2021-01-01",
+        "filoksenia": "Ναι",
+        "hlikia-apo": "1",
+        "hlikia-ews": "2.5",
+        "apasxolisi": "Μερική",
+        "status": "Ανενεργή"
+    },
+    {
+        "id_aggelias": 2,
+        "id_xristi": 2,
+        "description": "Με λένε Ηλιάνα.",
+        "area": "Θεσσαλονίκη",
+        "date": "2021-01-02",
+        "filoksenia": "Όχι",
+        "hlikia-apo": "2.5",
+        "hlikia-ews": "4",
+        "apasxolisi": "Πλήρης",
+        "status": "Ενεργή"
+    },
+    {
+        "id_aggelias": 3,
+        "id_xristi": 3,
+        "description": "Με λένε Ηλιάνα.",
+        "area": "Πάτρα",
+        "date": "2021-01-03",
+        "filoksenia": "Ναι",
+        "hlikia-apo": "4",
+        "hlikia-ews": "6",
+        "apasxolisi": "Πλήρης",
+        "status": "Ανενεργή"
+    },
+    {
+        "id_aggelias": 4,
+        "id_xristi": 4,
+        "description": "Με λένε Ηλιάνα.",
+        "area": "Ηράκλειο",
+        "date": "2021-01-04",
+        "filoksenia": "Όχι",
+        "hlikia-apo": "6",
+        "hlikia-ews": "8",
+        "apasxolisi": "Πλήρης",
+        "status": "Σε Προσωρινή αποθήκευση"
+    },
+    {
+        "id_aggelias": 5,
+        "id_xristi": 5,
+        "description": "Με λένε Ηλιάνα.",
+        "area": "Λάρισα",
+        "date": "2021-01-05",
+        "filoksenia": "Ναι",
+        "hlikia-apo": "8",
+        "hlikia-ews": "10",
+        "apasxolisi": "Πλήρης",
+        "status": "Ανενεργή"
+    }
+]
