@@ -1,7 +1,7 @@
 [
     {
         "id_aggelias": 1,
-        "id_xristi": 1,
+        "uid": 1,
         "description": "Με λένε Ηλιάνα.",
         "area": "Αθήνα",
         "date": "2021-01-01",
@@ -13,7 +13,7 @@
     },
     {
         "id_aggelias": 2,
-        "id_xristi": 2,
+        "uid": 2,
         "description": "Με λένε Ηλιάνα.",
         "area": "Θεσσαλονίκη",
         "date": "2021-01-02",
@@ -25,7 +25,7 @@
     },
     {
         "id_aggelias": 3,
-        "id_xristi": 3,
+        "uid": 3,
         "description": "Με λένε Ηλιάνα.",
         "area": "Πάτρα",
         "date": "2021-01-03",
@@ -37,7 +37,7 @@
     },
     {
         "id_aggelias": 4,
-        "id_xristi": 4,
+        "uid": 4,
         "description": "Με λένε Ηλιάνα.",
         "area": "Ηράκλειο",
         "date": "2021-01-04",
@@ -49,7 +49,7 @@
     },
     {
         "id_aggelias": 5,
-        "id_xristi": 5,
+        "uid": 1,
         "description": "Με λένε Ηλιάνα.",
         "area": "Λάρισα",
         "date": "2021-01-05",

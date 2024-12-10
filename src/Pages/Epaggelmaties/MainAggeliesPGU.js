@@ -5,14 +5,26 @@ import Breadcrumbs from "../../Components/Breadcrump";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
+import { useNavigate } from "react-router-dom";
 
 function MainAggeliesPGU() {
   const [profiles, setProfiles] = useState([]); // Initialize as an empty array
+  const uid = 1; // Get the user id from the session
+
+  const handleDelete = (id) => {
+    console.log("Delete:", id);
+    const updatedProfiles = profiles.filter(profile => profile.id_aggelias !== id);
+    setProfiles(updatedProfiles);
+  };
+
+  const navigate = useNavigate();
+
+  const handleNewAggelia = () => {
+    navigate("/nea-aggelia", { state: { id: uid } }); // Pass id as state
+  };
 
   useEffect(() => {
     fetch("/data/aggelies.json")
@@ -37,9 +49,9 @@ function MainAggeliesPGU() {
       <div>
         <Header log="not_connected" />
 
-        <div style={{ display: "flex", flexDirection: "column", overflow: "auto" }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
 
-          <div style={{ flex: 1, overflowY: "auto" }}>
+          <div style={{ flex: 1}}>
 
             <Breadcrumbs />
 
@@ -56,8 +68,9 @@ function MainAggeliesPGU() {
             </div>
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%", marginLeft: "70%" }}>
               
-              <button style={{  height: "3%", backgroundColor: "#2b8cbe", color: "white", border: "none", 
-                                borderRadius: "5px", cursor: "pointer", border: "3px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)" }}>
+              <button style={{  height: "3%", backgroundColor: "#2b8cbe", color: "white",
+                                borderRadius: "5px", cursor: "pointer", border: "3px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)" }}
+                                onClick={handleNewAggelia}>
                 Προσθήκη νέας αγγελίας
               </button>
               
@@ -66,7 +79,7 @@ function MainAggeliesPGU() {
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
 
               <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
-                <thead>
+                <thead style={{ lineHeight: "2em"}}>
                   <tr style={{ borderBottom: "2px solid #333" }}>
                     <th>Κωδικός Αγγελίας</th>
                     <th>Αιτήσεις ενδιαφέροντος</th>
@@ -75,15 +88,16 @@ function MainAggeliesPGU() {
                   </tr>
                 </thead>
                 <tbody>
-                  {profiles.map((profile) => (
-                    <tr key={profile.id_aggelias} style={{ borderTop: "0.2px solid #333" }}>
+                  {profiles.filter(profile => profile.uid === uid)
+                  .map((profile) => (
+                    <tr key={profile.id_aggelias} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
                       <td>{profile.id_aggelias}</td>
                       <td>{profile.apasxolisi}</td>
                       <td>{profile.status}</td>
-                      <td style={{ display: "flex", justifyContent: "center", gap: "10%" }}>
+                      <td style={{ display: "flex", justifyContent: "center", alignItems:"center", marginTop:"0.5em", gap:"10px" }}>
                         <VisibilityIcon style={{ cursor: "pointer" }} />
                         <ArrowForwardIcon style={{ cursor: "pointer" }} />
-                        <DeleteForeverIcon style={{ cursor: "pointer" }} />
+                        <DeleteForeverIcon style={{ cursor: "pointer" }} onClick={() => handleDelete(uid)} />
                       </td>
                     </tr>
                   ))}

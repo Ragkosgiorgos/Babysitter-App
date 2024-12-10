@@ -6,6 +6,7 @@ import MainEpaggelmatiesPGU from "./Pages/Epaggelmaties/MainEpaggelmatiesPGU";
 import ReactDOM from "react-dom/client";
 import BabysitterSearch from "./Pages/Goneis/BabysitterSearch";
 import MainAggeliesPGU from "./Pages/Epaggelmaties/MainAggeliesPGU";
+import DimiourgiaAggelias from "./Pages/Epaggelmaties/DimiourgiaAggelias";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Route path="goneis/anazitisi" element={<BabysitterSearch />} />
       <Route path="epaggelmaties" element={<MainEpaggelmatiesPGU />} />
       <Route path="aggelies" element={<MainAggeliesPGU />} />
+      <Route path="nea-aggelia" element={<DimiourgiaAggelias />} />
     </Routes>    
       </BrowserRouter>
     </div>

@@ -21,7 +21,7 @@ function Header(props) {
 
     if (props.log === 'connected') {
         return (
-            <nav className="navbar navbar-expand-lg" style={{ backgroundColor: '#6C6A6A' }}>
+            <nav className="navbar navbar-expand-lg" style={{ backgroundColor: '#2E86AB' }}>
                 <div className="container-fluid" style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <div>
                         <img
@@ -69,7 +69,7 @@ function Header(props) {
                             </li>
                         </ul>
                     </div>
-                    <div className="dropdown ms-3">
+                    <div className="dropdown ms-3" style={{marginRight:"1%"}}>
                         <button
                             className="btn btn-secondary dropdown-toggle"
                             type="button"
@@ -79,7 +79,7 @@ function Header(props) {
                         >
                             Ηλιάνα Τσουρέα
                         </button>
-                        <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton" >
                             <li>
                                 <a className="dropdown-item" href="#">
                                     Το προφίλ μου
