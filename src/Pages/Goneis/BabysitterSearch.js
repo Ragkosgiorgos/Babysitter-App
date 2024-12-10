@@ -107,34 +107,34 @@ function BabysitterSearch() {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "auto" }}>
-      <Header log="not_connected" />
-      <div style={{ flex: 1, overflowY: "auto" }}>
-        <Breadcrumbs />
-        <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-          <div style={{ display: "flex", flex: 1 }}>
-            <BabysitterFilters
-              applyFilters={applyFilters}  // Pass the applyFilters function here
-              resetFilters={resetFilters}  // Pass the resetFilters function here
+    <div style={{ display: "flex", flexDirection: "column",minHeight:"185vh" }}>
+    <Header log="not_connected" />
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", overflowY: "auto" }}>
+      <Breadcrumbs />
+      <div style={{ display: "flex", flex: 1 }}>
+        {/* Filters Section */}
+        <BabysitterFilters
+          applyFilters={applyFilters} // Pass the applyFilters function here
+          resetFilters={resetFilters} // Pass the resetFilters function here
+        />
+        {/* Job Postings Section */}
+        <div style={{ flex: 1, padding: "1em" }}>
+          {filteredProfiles.map((profile) => (
+            <JobPosting
+              key={profile.id}
+              profile={{
+                ...profile,
+                apasxolisi: capitalizeWords(profile.apasxolisi),
+                area: capitalizeWords(profile.area),
+              }}
             />
-            <div style={{ flex: 1, overflowY: "auto", padding: "1em" }}>
-              {filteredProfiles.map((profile) => (
-                <JobPosting
-                  key={profile.id}
-                  profile={{
-                    ...profile,
-                    apasxolisi: capitalizeWords(profile.apasxolisi),
-                    area: capitalizeWords(profile.area),
-                    // Apply capitalizeWords to other fields as necessary
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-          <Footer />
+          ))}
         </div>
       </div>
+      <Footer />
     </div>
+</div>
+
   );
 }
 
