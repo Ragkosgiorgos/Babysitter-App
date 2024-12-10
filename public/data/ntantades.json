@@ -1,81 +1,15 @@
 [
     {
-        "id": 1,
-        "Onoma": "Ηλιάνα",
-        "Epitheto": "Τσουρέα",
-        "Polh": "Αθήνα",
-        "HmGennhshs": "1996-01-01",
-        "Ilikia": 25,
-        "Filoksenia": "Όχι",
-        "Apasxolisi": "Μερική",
-        "Ekpaideush": "Δευτεροβάθμια",
+        "uid": 1,
+        "name": "Ηλιάνα",
+        "surname": "Τσουρέα",
+        "area": "Αθήνα",
+        "birthDate": "1996-01-01",
+        "education": "Δευτεροβάθμια",
+        "phone": "6987654321",
+        "email": "rand@iliana.com",
+        "afm": "123456789",
         "img": "/data/iliana.jpeg"
-    },
-    {   
-        "id": 2,
-        "Onoma": "Νίκος",
-        "Epitheto": "Γεωργίου",
-        "Polh": "Τρίπολη",
-        "Filoksenia": "Ναι",
-        "Ilikia": 30,
-        "Apasxolisi": "Πλήρης",
-        "Ekpaideush": "Τριτοβάθμια",
-        "img": "https://www.w3schools.com/w3images/avatar2.png"
-    },
-    {
-        "id": 3,
-        "Onoma": "Μαρία",
-        "Epitheto": "Παπαδοπούλου",
-        "Polh": "Αθήνα",
-        "Filoksenia": "Όχι",
-        "Ilikia": 28,
-        "Apasxolisi": "Πλήρης",
-        "Ekpaideush": "Τριτοβάθμια",
-        "img": "/data/nikoleta.jpeg"
-    },
-    {
-        "id": 4,
-        "Onoma": "Ηλιάνα",
-        "Epitheto": "Συμεωνίδη",
-        "Polh": "Χανιά",
-        "Filoksenia": "Όχι",
-        "Ilikia": 26,
-        "Apasxolisi": "Μερική",
-        "Ekpaideush": "Δευτεροβάθμια",
-        "img": "https://www.w3schools.com/w3images/avatar2.png"
-    },
-    {
-        "id": 5,
-        "Onoma": "Νίκος",
-        "Epitheto": "Παπαδόπουλος",
-        "Polh": "Θεσσαλονίκη",
-        "Filoksenia": "Ναι",
-        "Ilikia": 30,
-        "Apasxolisi": "Πλήρης",
-        "Ekpaideush": "Τριτοβάθμια",
-        "img": "https://www.w3schools.com/w3images/avatar2.png"
-    },
-    {
-        "id": 6,
-        "Onoma": "Γεωργία",
-        "Epitheto": "Καινούργιου",
-        "Polh": "Αθήνα",
-        "Filoksenia": "Όχι",
-        "Ilikia": 28,
-        "Apasxolisi": "Πλήρης",
-        "Ekpaideush": "Πανεπιστημιακή",
-        "img": "/data/nikoleta.jpeg"
-    },
-    {
-        "id": 7,
-        "Onoma": "Μάνος",
-        "Epitheto": "Καινίδης",
-        "Polh": "Σέρρες",
-        "Filoksenia": "Όχι",
-        "Ilikia": 19,
-        "Apasxolisi": "Μερική",
-        "Ekpaideush": "Δευτεροβάθμια",
-        "img": "https://www.w3schools.com/w3images/avatar2.png"
     }
 ]
   

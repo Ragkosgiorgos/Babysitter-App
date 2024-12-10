@@ -8,7 +8,7 @@ import ProgressTracker from "../../Components/ProgressTracker";
 function DimiourgiaAggelias(props) {
     
     const location = useLocation();
-    const uid = location.state.id; // Get the user id from the state
+    const uid = 1;
     console.log("User id:", uid);
 
     const steps = [
@@ -35,8 +35,22 @@ function DimiourgiaAggelias(props) {
         }
     };
 
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: ""
+    });
     
-    const [profiles, setProfiles] = useState([]); // Initialize as an empty array
+    const [profiles, setProfiles] = useState([]);
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value // Dynamically update the field using the name attribute
+        }));
+    }
 
     useEffect(() => {
         fetch("/data/ntantades.json")
@@ -92,7 +106,7 @@ function DimiourgiaAggelias(props) {
             case 1:
                 return (
                     <div style={{ textAlign: "center" }}>
-                        <input type="text" placeholder="Τίτλος αγγελίας" style={{ width: "50%", height: "3%", marginTop: "2%" }} />
+                        <input type="text" placeholder="Τίτλος αγγελίας" value={formData.name} onChange={handleInputChange} style={{ width: "50%", height: "3%", marginTop: "2%" }} />
                         <br />
                         <textarea placeholder="Περιγραφή αγγελίας" style={{ width: "50%", height: "10%", marginTop: "2%" }} />
 
