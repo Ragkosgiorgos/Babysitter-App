@@ -11,18 +11,18 @@ import InfoIcon from '@mui/icons-material/Info';
 import { useNavigate } from "react-router-dom";
 
 function MainAggeliesPGU() {
-  const [profiles, setProfiles] = useState([]); // Initialize as an empty array
-  const uid = 1; // Get the user id from the session
+  const [posts, setPosts] = useState([]); // Initialize as an empty array
+  const uid = 1; //? Get the user id from the session
 
   const handleDelete = (id) => {
     console.log("Delete:", id);
-    const updatedProfiles = profiles.filter(profile => profile.id_aggelias !== id);
-    setProfiles(updatedProfiles);
+    const updatedPosts = posts.filter(post => post.id !== id);
+    setPosts(updatedPosts);
   };
 
   const navigate = useNavigate();
 
-  const handleNewAggelia = () => {
+  const handleNewPost = () => {
     navigate("/nea-aggelia", { state: { id: uid } }); // Pass id as state
   };
 
@@ -36,8 +36,7 @@ function MainAggeliesPGU() {
         return response.json(); // Parse as JSON
       })
       .then((data) => {
-        console.log("Fetched data:", data); // Log the fetched data
-        setProfiles(data); // Update the state
+        setPosts(data); // Update the state
       })
       .catch((error) => {
         console.error("Error fetching JSON:", error);
@@ -70,7 +69,7 @@ function MainAggeliesPGU() {
               
               <button style={{  height: "3%", backgroundColor: "#2b8cbe", color: "white",
                                 borderRadius: "5px", cursor: "pointer", border: "3px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)" }}
-                                onClick={handleNewAggelia}>
+                                onClick={handleNewPost}>
                 Προσθήκη νέας αγγελίας
               </button>
               
@@ -88,12 +87,12 @@ function MainAggeliesPGU() {
                   </tr>
                 </thead>
                 <tbody>
-                  {profiles.filter(profile => profile.uid === uid)
-                  .map((profile) => (
-                    <tr key={profile.id_aggelias} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
-                      <td>{profile.id_aggelias}</td>
-                      <td>{profile.apasxolisi}</td>
-                      <td>{profile.status}</td>
+                  {posts.filter(post => post.uid === uid)
+                  .map((post) => (
+                    <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
+                      <td>{post.id}</td>
+                      <td>{}</td>
+                      <td>{post.status}</td>
                       <td style={{ display: "flex", justifyContent: "center", alignItems:"center", marginTop:"0.5em", gap:"10px" }}>
                         <VisibilityIcon style={{ cursor: "pointer" }} />
                         <ArrowForwardIcon style={{ cursor: "pointer" }} />

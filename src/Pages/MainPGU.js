@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -20,7 +20,7 @@ function MainPGU(props) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: "100vh" }}>
-      <Header log="not_connected" />
+      <Header log="connected" uid={1} name={"Ηλιάνα"} surname={"Τσουρέα"} property={"parent"} />
       <div style={{ flex: 1, overflowY: "auto" }}>
         <div style={{ display: "flex", justifyContent: "center" }}>
           <img style={{ marginRight: "8px", position: "relative", zIndex: 1 }} src="/hero1.avif" width="100%" height="500vh" alt="" />
@@ -52,9 +52,9 @@ function MainPGU(props) {
         </div>
         <div style={{ marginLeft: "2vh" }}><h6>Δείτε ενδεικτικές αγγελίες για εργασία:</h6></div>
         <div style={{ marginTop: "20px", marginLeft: "20px", display: "flex", gap: "5vh", justifyContent: "center" }}>
-          <JobofferReview/>
-          <JobofferReview/>
-          <JobofferReview/>
+          <JobofferReview id={1}/>
+          <JobofferReview id={2}/>
+          <JobofferReview id={3}/>
         </div>
 
       <div>

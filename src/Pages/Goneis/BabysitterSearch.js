@@ -32,7 +32,6 @@ function BabysitterSearch() {
       .then((data) => {
         setProfiles(data);
         setFilteredProfiles(data); // Initially, display all profiles
-        console.log("Fetched Profiles:", data); // Log profiles when they are fetched
       })
       .catch((error) => {
       })
