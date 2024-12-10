@@ -5,10 +5,10 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
-function BabysitterFilters(props) {
-  const [selectedCity, setSelectedCity] = useState("");
+function BabysitterFilters({ applyFilters, resetFilters }) {
+  const [selectedLocation, setSelectedLocation] = useState("");
   const [selectedAge, setSelectedAge] = useState("");
-  const [selectedEducation, setSelectedEducation] = useState(""); 
+  const [selectedEducation, setSelectedEducation] = useState("");
 
   const [fullTimeChecked, setFullTimeChecked] = useState(false);
   const [partTimeChecked, setPartTimeChecked] = useState(false);
@@ -53,23 +53,36 @@ function BabysitterFilters(props) {
     "Πρωτοβάθμια",
     "Δευτεροβάθμια",
     "Τριτοβάθμια"
-  ]
+  ];
 
   // Handle changes for city and age dropdowns
-  const handleCityChange = (event) => setSelectedCity(event.target.value);
-  const handleAgeChange = (event) => setSelectedAge(event.target.value);
+  const handleLocationChange = (event) => {
+    setSelectedLocation(event.target.value);
+    applyFilters(fullTimeChecked, partTimeChecked, event.target.value, selectedAge, selectedEducation, null);
+  };
+
+  const handleAgeChange = (event) => {
+    setSelectedAge(event.target.value);
+    applyFilters(fullTimeChecked, partTimeChecked, selectedLocation, event.target.value, selectedEducation, null);
+  };
+
   const handleEducationChange = (event) => setSelectedEducation(event.target.value);
 
-  const handleFullTimeChange = (event) => setFullTimeChecked(event.target.checked);
-  const handlePartTimeChange = (event) => setPartTimeChecked(event.target.checked);
+  const handleFullTimeChange = (event) => {
+    setFullTimeChecked(event.target.checked);
+    applyFilters(event.target.checked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, null);
+  };
+
+  const handlePartTimeChange = (event) => {
+    setPartTimeChecked(event.target.checked);
+    applyFilters(fullTimeChecked, event.target.checked, selectedLocation, selectedAge, selectedEducation, null);
+  };
 
   const handleClearAll = () => {
-    setSelectedCity("");
+    setSelectedLocation("");
     setSelectedAge("");
     setFullTimeChecked(false);
     setPartTimeChecked(false);
-    setSelectedEducation("");
-
     setTimeMondayFrom(null);
     setTimeMondayTo(null);
     setTimeTuesdayFrom(null);
@@ -84,8 +97,8 @@ function BabysitterFilters(props) {
     setTimeSaturdayTo(null);
     setTimeSundayFrom(null);
     setTimeSundayTo(null);
+    resetFilters();
   };
-
   return (
     <div style={{ display: "flex", flexDirection: "column", width: "30%",height:"100vh" }}>
       <div style={{ display: "flex", flexDirection: "column", marginTop: "10%", marginLeft: "40px" }}>
@@ -113,12 +126,12 @@ function BabysitterFilters(props) {
               <InputLabel id="area-select-label"></InputLabel>
               <Select
                 labelId="area-select-label"
-                value={selectedCity}
-                onChange={handleCityChange}
+                value={selectedLocation}
+                onChange={handleLocationChange}
                 style={{ width: "80%" }}
                 displayEmpty
               >
-                {selectedCity === "" && <MenuItem value="" disabled>Επιλέξτε Περιοχή</MenuItem>}
+                {selectedLocation === "" && <MenuItem value="" disabled>Επιλέξτε Περιοχή</MenuItem>}
                 {areasOfGreece.map((area) => (
                   <MenuItem key={area} value={area.toLowerCase()}>
                     {area}
