@@ -13,6 +13,12 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormLabel from '@mui/material/FormLabel';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import dayjs, { Dayjs } from 'dayjs';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { DateRangeCalendar } from '@mui/x-date-pickers-pro/DateRangeCalendar';
+import { DateRange } from "react-date-range";
+import "react-date-range/dist/styles.css"; // Main style file
+import "react-date-range/dist/theme/default.css"; // Theme CSS file
+
 
 
 function DimiourgiaSymbolaiou(props) {
@@ -41,6 +47,14 @@ function DimiourgiaSymbolaiou(props) {
         "Αναμονή για υπογραφή από επαγγελματία",
         "Αποδοχή ή απόρριψη συμβολαίου",
     ];
+
+    const [range, setRange] = useState([
+        {
+          startDate: new Date(),
+          endDate: new Date(),
+          key: "selection",
+        },
+      ]);
 
     const [currentStep, setCurrentStep] = useState(0);
     const [profiles, setProfiles] = useState([]);
@@ -221,7 +235,7 @@ function DimiourgiaSymbolaiou(props) {
                                 <hr />
                                                 
                             </div>
-                            <div style={{display: "flex",flexDirection: "column",width:"30%"}}>
+                            <div style={{display: "flex",flexDirection: "column",width:"50%"}}>
                                 <div style={{display: "flex",flexDirection: "column",marginTop: "2%",backgroundColor: "#ece7f2",borderRadius: "2%",justifyContent: "center",marginLeft: "5%",padding: "2%",height:"30vh"}}>
                                     <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                                             <b>Φιλοξενία</b>
@@ -239,20 +253,29 @@ function DimiourgiaSymbolaiou(props) {
                                     </FormControl>
                                                 
                                 </div>
-                                <div style={{display: "flex",flexDirection: "column",marginTop: "2%",backgroundColor: "#ece7f2",borderRadius: "2%",justifyContent: "center",marginLeft: "5%",padding: "2%",height:"30vh"}}>
-                                    <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                                            <b>Χρονικη διάρκεια</b>
-                                    </h2>
-                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                        <DateCalendar
-                                            value={value}
-                                            onChange={(newValue) => setValue(newValue)}
-                                            dayOfWeekFormatter={(weekday) => `${weekday.format('dd')}.`}
-                                        />
-                                    </LocalizationProvider>
-                                                
-                                </div>
+                                <div
+    style={{
+        display: "flex",
+        flexDirection: "column",
+        marginTop: "10%",
+        backgroundColor: "#ece7f2",
+        borderRadius: "2%",
+        justifyContent: "center",
+        marginLeft: "5%",
+        padding: "2%",
+        height: "30vh",
+    }}
+>
+    <DateRange
+        editableDateInputs={true}
+        onChange={(item) => setRange([item.selection])}
+        moveRangeOnFirstSelection={false}
+        ranges={range}
+    />
+</div>
+                                
                             </div>
+                            
                             </div>
                         </div>
                     </div>
@@ -285,7 +308,6 @@ function DimiourgiaSymbolaiou(props) {
     return (
         <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
             <Header log="connected" />
-
             <div style={{ flex: 1 }}>
                 <ProgressTracker steps={steps} activeStep={currentStep} />
 
