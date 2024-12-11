@@ -7,7 +7,6 @@ function JobPosting(props){
   const navigate = useNavigate();
 
   const handleRedirect = (id) => {
-    console.log("Redirecting to job posting with id:",id);
     navigate(`/aggelies/${id}`);
   }
 

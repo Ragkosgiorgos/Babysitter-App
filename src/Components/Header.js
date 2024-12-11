@@ -4,7 +4,6 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Link, useNavigate, useLocation } from 'react-router-dom';  // Import useNavigate and useLocation
 
 function Header(props) {
-    const uid = props.uid;
     const name = props.name;
     const surname = props.surname;
     const property = props.property;
@@ -221,8 +220,8 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/#">
-                                    Οι Αιτήσεις μου
+                                <a className="dropdown-item" href="/aggelies">
+                                    Οι Αγγελίες μου
                                 </a>
                             </li>
                             <li>

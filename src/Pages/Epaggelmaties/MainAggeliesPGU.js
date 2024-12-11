@@ -15,7 +15,6 @@ function MainAggeliesPGU() {
   const uid = 1; //? Get the user id from the session
 
   const handleDelete = (id) => {
-    console.log("Delete:", id);
     const updatedPosts = posts.filter(post => post.id !== id);
     setPosts(updatedPosts);
   };
@@ -95,7 +94,7 @@ function MainAggeliesPGU() {
                       <td>{post.status}</td>
                       <td style={{ display: "flex", justifyContent: "center", alignItems:"center", marginTop:"0.5em", gap:"10px" }}>
                         <VisibilityIcon style={{ cursor: "pointer" }} />
-                        <ArrowForwardIcon style={{ cursor: "pointer" }} />
+                        { post.status === "Σε προσωρινή αποθήκευση" ? <ArrowForwardIcon style={{ cursor: "pointer" }} onClick={() => navigate("/nea-aggelia", { state: { id: uid, stage: 2 } })} /> : <ArrowForwardIcon style={{ height: "0px" }}/> }
                         <DeleteForeverIcon style={{ cursor: "pointer" }} onClick={() => handleDelete(uid)} />
                       </td>
                     </tr>
