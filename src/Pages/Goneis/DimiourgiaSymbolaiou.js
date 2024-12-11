@@ -3,9 +3,35 @@ import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
 import ProgressTracker from "../../Components/ProgressTracker";
 import { useLocation } from "react-router-dom";
+import { Checkbox, FormControlLabel } from "@mui/material";
+import { MenuItem, Select, InputLabel, FormControl } from "@mui/material";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormLabel from '@mui/material/FormLabel';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import dayjs, { Dayjs } from 'dayjs';
+
 
 function DimiourgiaSymbolaiou(props) {
     const location = useLocation();
+
+    const [timeMondayFrom, setTimeMondayFrom] = useState(null);
+  const [timeMondayTo, setTimeMondayTo] = useState(null);
+  const [timeTuesdayFrom, setTimeTuesdayFrom] = useState(null);
+  const [timeTuesdayTo, setTimeTuesdayTo] = useState(null);
+  const [timeWednesdayFrom, setTimeWednesdayFrom] = useState(null);
+  const [timeWednesdayTo, setTimeWednesdayTo] = useState(null);
+  const [timeThursdayFrom, setTimeThursdayFrom] = useState(null);
+  const [timeThursdayTo, setTimeThursdayTo] = useState(null);
+  const [timeFridayFrom, setTimeFridayFrom] = useState(null);
+  const [timeFridayTo, setTimeFridayTo] = useState(null);
+  const [timeSaturdayFrom, setTimeSaturdayFrom] = useState(null);
+  const [timeSaturdayTo, setTimeSaturdayTo] = useState(null);
+  const [timeSundayFrom, setTimeSundayFrom] = useState(null);
+  const [timeSundayTo, setTimeSundayTo] = useState(null);
 
     const steps = [
         "Επιβεβαίωση προσωπικών στοιχείων",
@@ -18,6 +44,7 @@ function DimiourgiaSymbolaiou(props) {
 
     const [currentStep, setCurrentStep] = useState(0);
     const [profiles, setProfiles] = useState([]);
+    const [value,setValue] = useState(dayjs());;
 
     const [professionalData, setProfessionalData] = useState({
         firstName: "",
@@ -71,19 +98,7 @@ function DimiourgiaSymbolaiou(props) {
             case 0:
                 return (
                     <div style={{ textAlign: "center" }}>
-                        <div
-                            style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                marginTop: "2%",
-                                backgroundColor: "#ece7f2",
-                                borderRadius: "2%",
-                                width: "60%",
-                                justifyContent: "center",
-                                marginLeft: "20%",
-                                padding: "2%",
-                            }}
-                        >
+                        <div style={{display: "flex",flexDirection: "column",marginTop: "2%",backgroundColor: "#ece7f2",borderRadius: "2%",width: "60%",justifyContent: "center",marginLeft: "20%",padding: "2%",}}>
                             <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                                 <b>Επιβεβαιώστε τα προσωπικά σας στοιχεία</b>
                             </h2>
@@ -112,19 +127,7 @@ function DimiourgiaSymbolaiou(props) {
             case 1:
                 return (
                     <div style={{ textAlign: "center" }}>
-                        <div
-                            style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                marginTop: "2%",
-                                backgroundColor: "#ece7f2",
-                                borderRadius: "2%",
-                                width: "60%",
-                                justifyContent: "center",
-                                marginLeft: "20%",
-                                padding: "2%",
-                            }}
-                        >
+                        <div style={{display: "flex",flexDirection: "column",marginTop: "2%",backgroundColor: "#ece7f2",borderRadius: "2%",width: "60%",justifyContent: "center",marginLeft: "20%",padding: "2%",}}>
                             <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                                 <b>Επιβεβαιώστε τα στοιχεία του παιδιού</b>
                             </h2>
@@ -149,61 +152,108 @@ function DimiourgiaSymbolaiou(props) {
             case 2:
                 return (
                     <div style={{ textAlign: "center" }}>
-                        <h2>Συμπληρώστε τα στοιχεία επαγγελματία και στοιχεία εργασίας</h2>
-                        <div
-                            style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                marginTop: "2%",
-                                backgroundColor: "#ece7f2",
-                                borderRadius: "2%",
-                                width: "60%",
-                                justifyContent: "center",
-                                marginLeft: "20%",
-                                padding: "2%",
-                            }}
-                        >
-                            <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                                <b>Στοιχεία επαγγελματία για ταυτοποίηση</b>
-                            </h2>
-                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <label>
-                                <b>Όνομα:</b>
-                                <input
-                                    type="text"
-                                    name="firstName"
-                                    value={professionalData.firstName}
-                                    onChange={handleInputChange}
-                                    style={{ marginTop: "3%", width: "50%", marginLeft:"10px" }}
-                                />
-                                </label> 
-                            </h4>
-                            <hr />
-                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <label>
-                                <b>Επίθετο:</b>
-                                <input
-                                    type="text"
-                                    name="lastName"
-                                    value={professionalData.lastName}
-                                    onChange={handleInputChange}
-                                    style={{ marginTop: "3%", width: "50%",marginLeft:"10px" }}
-                                />
-                                </label> 
-                            </h4>
-                            <hr />
-                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <label>
-                                <b>ΑΦΜ:</b>
-                                <input
-                                    type="text"
-                                    name="afm"
-                                    value={professionalData.afm}
-                                    onChange={handleInputChange}
-                                    style={{ marginTop: "3%", width: "50%",marginLeft:"10px" }}
-                                />
-                                </label> 
-                            </h4>
+                        <div>
+                            <div style={{display: "flex",flexDirection: "column",marginTop: "2%",backgroundColor: "#ece7f2",borderRadius: "2%",width: "70%",justifyContent: "center",marginLeft: "15%",padding: "2%",}}>
+                                <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+                                    <b>Στοιχεία επαγγελματία για ταυτοποίηση</b>
+                                </h2>
+                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                    <label>
+                                        <b>Όνομα:</b>
+                                        <input type="text" name="firstName" value={professionalData.firstName} onChange={handleInputChange} style={{ marginTop: "3%", width: "50%", marginLeft:"10px" }}/>
+                                    </label> 
+                                </h4>
+                                <hr />
+                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                        <label>
+                                            <b>Επίθετο:</b>
+                                            <input type="text" name="lastName" value={professionalData.lastName} onChange={handleInputChange} style={{ marginTop: "3%", width: "50%",marginLeft:"10px" }}/>
+                                        </label> 
+                                </h4>
+                                <hr />
+                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                    <label>
+                                        <b>ΑΦΜ:</b>
+                                        <input type="text" name="afm" value={professionalData.afm} onChange={handleInputChange} style={{ marginTop: "3%", width: "50%",marginLeft:"10px" }}/>
+                                    </label> 
+                                </h4>
+                            </div>
+                            <div style={{display:"flex",flexDirection:"row"}} >
+                            <div style={{ display: "flex",flexDirection: "column",marginTop: "2%",backgroundColor: "#ece7f2",borderRadius: "2%",width: "30%",justifyContent: "center",marginLeft: "15%",padding: "2%",}}>
+                                <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+                                    <b>Επιλέξτε τις ημέρες και ώρες που
+                                    χρειάζεστε τον/την επαγγελματία</b>
+                                </h2>
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <div style={{ marginTop: "2vh", display: "flex", flexDirection: "column" }}>
+                                    <h6 style={{fontWeight:"bold"}}>Ημέρες και ώρες</h6>
+                                    <div style={{ marginTop: "1vh", display: "flex", flexDirection: "column", gap: "10px" , width:"80%"}}>
+                                        {[
+                                        { day: "Δευτέρα", from: timeMondayFrom, to: timeMondayTo, setFrom: setTimeMondayFrom, setTo: setTimeMondayTo },
+                                        { day: "Τρίτη", from: timeTuesdayFrom, to: timeTuesdayTo, setFrom: setTimeTuesdayFrom, setTo: setTimeTuesdayTo },
+                                        { day: "Τετάρτη", from: timeWednesdayFrom, to: timeWednesdayTo, setFrom: setTimeWednesdayFrom, setTo: setTimeWednesdayTo },
+                                        { day: "Πέμπτη", from: timeThursdayFrom, to: timeThursdayTo, setFrom: setTimeThursdayFrom, setTo: setTimeThursdayTo },
+                                        { day: "Παρασκευή", from: timeFridayFrom, to: timeFridayTo, setFrom: setTimeFridayFrom, setTo: setTimeFridayTo },
+                                        { day: "Σάββατο", from: timeSaturdayFrom, to: timeSaturdayTo, setFrom: setTimeSaturdayFrom, setTo: setTimeSaturdayTo },
+                                        { day: "Κυριακή", from: timeSundayFrom, to: timeSundayTo, setFrom: setTimeSundayFrom, setTo: setTimeSundayTo },
+                                        ].map(({ day, from, to, setFrom, setTo }) => (
+                                        <div key={day} style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+                                            <h8>{day}</h8>
+                                            <div style={{ display: "flex", gap: "10px" }}>
+                                            <TimePicker
+                                                label="Από"
+                                                value={from}
+                                                onChange={(newValue) => setFrom(newValue)}
+                                                renderInput={(params) => <input {...params} />}
+                                            />
+                                            <TimePicker
+                                                label="Έως"
+                                                value={to}
+                                                onChange={(newValue) => setTo(newValue)}
+                                                renderInput={(params) => <input {...params} />}
+                                            />
+                                            </div>
+                                        </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                </LocalizationProvider>
+                                <hr />
+                                                
+                            </div>
+                            <div style={{display: "flex",flexDirection: "column",width:"30%"}}>
+                                <div style={{display: "flex",flexDirection: "column",marginTop: "2%",backgroundColor: "#ece7f2",borderRadius: "2%",justifyContent: "center",marginLeft: "5%",padding: "2%",height:"30vh"}}>
+                                    <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+                                            <b>Φιλοξενία</b>
+                                    </h2>
+                                    <FormControl>
+                                        <FormLabel id="demo-radio-buttons-group-label"></FormLabel>
+                                        <RadioGroup
+                                            aria-labelledby="demo-radio-buttons-group-label"
+                                            defaultValue="female"
+                                            name="radio-buttons-group" style={{ textAlign: "left", textDecoration: "underline" }}
+                                        >
+                                            <FormControlLabel value="female" control={<Radio />} label="Στον χώρο του κηδεμόνα" />
+                                            <FormControlLabel value="male" control={<Radio />} label="Στον χώρο του επαγγελματία" />
+                                        </RadioGroup>
+                                    </FormControl>
+                                                
+                                </div>
+                                <div style={{display: "flex",flexDirection: "column",marginTop: "2%",backgroundColor: "#ece7f2",borderRadius: "2%",justifyContent: "center",marginLeft: "5%",padding: "2%",height:"30vh"}}>
+                                    <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+                                            <b>Χρονικη διάρκεια</b>
+                                    </h2>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DateCalendar
+                                            value={value}
+                                            onChange={(newValue) => setValue(newValue)}
+                                            dayOfWeekFormatter={(weekday) => `${weekday.format('dd')}.`}
+                                        />
+                                    </LocalizationProvider>
+                                                
+                                </div>
+                            </div>
+                            </div>
                         </div>
                     </div>
                 );
