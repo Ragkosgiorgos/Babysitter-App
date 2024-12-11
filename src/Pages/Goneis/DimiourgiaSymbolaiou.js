@@ -3,41 +3,35 @@ import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
 import ProgressTracker from "../../Components/ProgressTracker";
 import { useLocation } from "react-router-dom";
-import { Checkbox, FormControlLabel } from "@mui/material";
-import { MenuItem, Select, InputLabel, FormControl } from "@mui/material";
+import { FormControl, FormControlLabel } from "@mui/material";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormLabel from '@mui/material/FormLabel';
-import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
-import dayjs, { Dayjs } from 'dayjs';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { DateRangeCalendar } from '@mui/x-date-pickers-pro/DateRangeCalendar';
+import dayjs from 'dayjs';
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css"; // Main style file
 import "react-date-range/dist/theme/default.css"; // Theme CSS file
-
-
 
 function DimiourgiaSymbolaiou(props) {
     const location = useLocation();
 
     const [timeMondayFrom, setTimeMondayFrom] = useState(null);
-  const [timeMondayTo, setTimeMondayTo] = useState(null);
-  const [timeTuesdayFrom, setTimeTuesdayFrom] = useState(null);
-  const [timeTuesdayTo, setTimeTuesdayTo] = useState(null);
-  const [timeWednesdayFrom, setTimeWednesdayFrom] = useState(null);
-  const [timeWednesdayTo, setTimeWednesdayTo] = useState(null);
-  const [timeThursdayFrom, setTimeThursdayFrom] = useState(null);
-  const [timeThursdayTo, setTimeThursdayTo] = useState(null);
-  const [timeFridayFrom, setTimeFridayFrom] = useState(null);
-  const [timeFridayTo, setTimeFridayTo] = useState(null);
-  const [timeSaturdayFrom, setTimeSaturdayFrom] = useState(null);
-  const [timeSaturdayTo, setTimeSaturdayTo] = useState(null);
-  const [timeSundayFrom, setTimeSundayFrom] = useState(null);
-  const [timeSundayTo, setTimeSundayTo] = useState(null);
+    const [timeMondayTo, setTimeMondayTo] = useState(null);
+    const [timeTuesdayFrom, setTimeTuesdayFrom] = useState(null);
+    const [timeTuesdayTo, setTimeTuesdayTo] = useState(null);
+    const [timeWednesdayFrom, setTimeWednesdayFrom] = useState(null);
+    const [timeWednesdayTo, setTimeWednesdayTo] = useState(null);
+    const [timeThursdayFrom, setTimeThursdayFrom] = useState(null);
+    const [timeThursdayTo, setTimeThursdayTo] = useState(null);
+    const [timeFridayFrom, setTimeFridayFrom] = useState(null);
+    const [timeFridayTo, setTimeFridayTo] = useState(null);
+    const [timeSaturdayFrom, setTimeSaturdayFrom] = useState(null);
+    const [timeSaturdayTo, setTimeSaturdayTo] = useState(null);
+    const [timeSundayFrom, setTimeSundayFrom] = useState(null);
+    const [timeSundayTo, setTimeSundayTo] = useState(null);
 
     const steps = [
         "Επιβεβαίωση προσωπικών στοιχείων",
