@@ -14,7 +14,7 @@ function MainAggeliesPGU() {
   const [posts, setPosts] = useState([]); // Initialize as an empty array
   const uid = 1; //? Get the user id from the session
 
-  const handleDelete = (id) => {
+  const handleDelete = (id) => { //? Delete the post with the given id from the base
     const updatedPosts = posts.filter(post => post.id !== id);
     setPosts(updatedPosts);
   };

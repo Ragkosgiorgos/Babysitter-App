@@ -10,6 +10,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { useLocation } from 'react-router-dom';
+import dayjs from 'dayjs';
 
 function DimiourgiaAggelias() {
     const location = useLocation();
@@ -24,15 +25,26 @@ function DimiourgiaAggelias() {
         "Δημοσίευση αγγελίας",
     ];
 
+    const handleScrollToTop = () => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth', // Smooth scroll animation
+        });
+    };
+
     // Track the current step
     const [currentStep, setCurrentStep] = useState(stage || 0);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    //? At least one day availability
+    //? ageFrom <= ageTo
+    //? timeFrom > timeTo
 
     // Function to go to the next step
     const goToNextStep = (e) => {
         if (currentStep === 1) {
             setIsSubmitted(true);
             if (newData.description === "" || newData.area === "" || newData.ageFrom === "" || newData.ageTo === "" || newData.time === "" || newData.accomodation === "" ) {
+                handleScrollToTop();
                 return;
             }
             setIsSubmitted(false);
@@ -65,19 +77,19 @@ function DimiourgiaAggelias() {
         time: "",
         car: "",
         monFrom: "00:00",
-        monTo: "23:59",
+        monTo: "00:00",
         tueFrom: "00:00",
-        tueTo: "23:59",
+        tueTo: "00:00",
         wedFrom: "00:00",
-        wedTo: "23:59",
+        wedTo: "00:00",
         thuFrom: "00:00",
-        thuTo: "23:59",
+        thuTo: "00:00",
         friFrom: "00:00",
-        friTo: "23:59",
+        friTo: "00:00",
         satFrom: "00:00",
-        satTo: "23:59",
+        satTo: "00:00",
         sunFrom: "00:00",
-        sunTo: "23:59"
+        sunTo: "00:00",
     });
 
     const areasOfGreece = [
@@ -172,9 +184,10 @@ function DimiourgiaAggelias() {
                                       justifyContent: "center", marginLeft: "20%", padding: "2%", marginTop: "2%" }}>
 
                             <h2 style={{ textAlign: "center", textDecoration: "underline" }}><b>Συμπληρώστε τα στοιχεία της αγγελίας</b></h2>
-                            
-                            
-                            <h5 style={{ display: "flex", flexDirection: "row", fontWeight: "bold", marginTop: "3%" }}> Περιγραφή { isSubmitted && !newData.description ? <h5 style={{ color: "red", marginLeft: "20px", fontSize: "0.8em", borderTop: "20%" }}> *Συμπληρώστε </h5> : "" }</h5> 
+                                {isSubmitted && (!newData.description || !newData.area || !newData.ageFrom || !newData.ageTo || !newData.time || !newData.accomodation)
+                                             ? <h4 style={{ color: "red", textAlign: "center" }}> Παρακαλώ συμπληρωστε όλα τα πεδία </h4> : ""}
+                                             
+                            <h5 style={{ display: "flex", flexDirection: "row", fontWeight: "bold", marginTop: "3%" }}> Περιγραφή </h5> 
                             <textarea name="description" placeholder="Περιγραφή αγγελίας." value={newData.description} onChange={handleInputChange}
                                         style={{ marginLeft: "5%", marginBottom: "5%", width: "60%", height: "10vh", border: isSubmitted && !newData.description ? "1px solid red" : "" }}>
                             </textarea>
@@ -274,42 +287,40 @@ function DimiourgiaAggelias() {
 
                             <h5 style={{ fontWeight: "bold"}}> Διαθέσιμες ημέρες και ώρες </h5>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%" }}>
-                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                    <div style={{ marginTop: "2vh", display: "flex", flexDirection: "column" }}>
-                                        <h6 style={{ fontWeight:"bold" }}> Ημέρες και ώρες </h6>
-                                        <div style={{ marginTop: "1vh", display: "flex", flexDirection: "column", gap: "10px" , width:"80%", marginLeft: "10%" }}>
-                                            {[
-                                            { day: "Δευτέρα", from: newData.monFrom, to: newData.monTo, setFrom: (newValue) => setnewData({ ...newData, monFrom: newValue }), setTo: (newValue) => setnewData({ ...newData, monTo: newValue }) },
-                                            { day: "Τρίτη", from: newData.tueFrom, to: newData.tueTo, setFrom: (newValue) => setnewData({ ...newData, tueFrom: newValue }), setTo: (newValue) => setnewData({ ...newData, tueTo: newValue }) },
-                                            { day: "Τετάρτη", from: newData.wedFrom, to: newData.wedTo, setFrom: (newValue) => setnewData({ ...newData, wedFrom: newValue }), setTo: (newValue) => setnewData({ ...newData, wedTo: newValue }) },
-                                            { day: "Πέμπτη", from: newData.thuFrom, to: newData.thuTo, setFrom: (newValue) => setnewData({ ...newData, thuFrom: newValue }), setTo: (newValue) => setnewData({ ...newData, thuTo: newValue }) },
-                                            { day: "Παρασκευή", from: newData.friFrom, to: newData.friTo, setFrom: (newValue) => setnewData({ ...newData, friFrom: newValue }), setTo: (newValue) => setnewData({ ...newData, friTo: newValue }) },
-                                            { day: "Σάββατο", from: newData.satFrom, to: newData.satTo, setFrom: (newValue) => setnewData({ ...newData, satFrom: newValue }), setTo: (newValue) => setnewData({ ...newData, satTo: newValue }) },
-                                            { day: "Κυριακή", from: newData.sunFrom, to: newData.sunTo, setFrom: (newValue) => setnewData({ ...newData, sunFrom: newValue }), setTo: (newValue) => setnewData({ ...newData, sunTo: newValue }) },
-                                            ].map(({ day, from, to, setFrom, setTo }) => (
-                                            <div key={day} style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-                                                <h8>{day}</h8>
-                                                <div style={{ display: "flex", gap: "10px" }}>
+                                <div style={{ marginTop: "2vh", display: "flex", flexDirection: "column" }}>
+                                    <h6 style={{ fontWeight:"bold" }}> Ημέρες και ώρες </h6>
+                                    <div style={{ marginTop: "1vh", display: "flex", flexDirection: "column", gap: "10px" , width:"80%", marginLeft: "10%" }}>
+                                        {[
+                                        { day: "Δευτέρα", from: newData.monFrom, to: newData.monTo, setFrom: (newValue) => setnewData({ ...newData, monFrom: newValue }), setTo: (newValue) => setnewData({ ...newData, monTo: newValue }) },
+                                        { day: "Τρίτη", from: newData.tueFrom, to: newData.tueTo, setFrom: (newValue) => setnewData({ ...newData, tueFrom: newValue }), setTo: (newValue) => setnewData({ ...newData, tueTo: newValue }) },
+                                        { day: "Τετάρτη", from: newData.wedFrom, to: newData.wedTo, setFrom: (newValue) => setnewData({ ...newData, wedFrom: newValue }), setTo: (newValue) => setnewData({ ...newData, wedTo: newValue }) },
+                                        { day: "Πέμπτη", from: newData.thuFrom, to: newData.thuTo, setFrom: (newValue) => setnewData({ ...newData, thuFrom: newValue }), setTo: (newValue) => setnewData({ ...newData, thuTo: newValue }) },
+                                        { day: "Παρασκευή", from: newData.friFrom, to: newData.friTo, setFrom: (newValue) => setnewData({ ...newData, friFrom: newValue }), setTo: (newValue) => setnewData({ ...newData, friTo: newValue }) },
+                                        { day: "Σάββατο", from: newData.satFrom, to: newData.satTo, setFrom: (newValue) => setnewData({ ...newData, satFrom: newValue }), setTo: (newValue) => setnewData({ ...newData, satTo: newValue }) },
+                                        { day: "Κυριακή", from: newData.sunFrom, to: newData.sunTo, setFrom: (newValue) => setnewData({ ...newData, sunFrom: newValue }), setTo: (newValue) => setnewData({ ...newData, sunTo: newValue }) },
+                                        ].map(({ day, from, to, setFrom, setTo }) => (
+                                        <div key={day} style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+                                            <h8>{day}</h8>
+                                            <div style={{ display: "flex", gap: "10px" }}>
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <TimePicker
-                                                    label="Από"
-                                                    value={newData.from}
-                                                    onChange={(newValue) => setFrom(newValue)}
-                                                    renderInput={(params) => <input {...params} />}
-                                                    style={{  }}
+                                                    value={dayjs(from, 'HH:mm')}
+                                                    onChange={(newValue) => setFrom(newValue.format('HH:mm'))}
                                                 />
+                                            </LocalizationProvider>
+                                            <h8>-</h8>
+                                            
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <TimePicker
-                                                    label="Έως"
-                                                    value={newData.to}
-                                                    onChange={(newValue) => setTo(newValue)}
-                                                    renderInput={(params) => <input {...params} />}
-                                                    style={{  }}
+                                                    value={dayjs(to, 'HH:mm')}
+                                                    onChange={(newValue) => setTo(newValue.format('HH:mm'))}
                                                 />
-                                                </div>
+                                            </LocalizationProvider>
                                             </div>
-                                            ))}
                                         </div>
+                                        ))}
                                     </div>
-                                </LocalizationProvider>
+                                </div>
                             </div>
 
                         </div>
