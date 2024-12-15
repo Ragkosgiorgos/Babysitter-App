@@ -8,6 +8,7 @@ import BabysitterSearch from "./Pages/Goneis/BabysitterSearch";
 import MainAggeliesPGU from "./Pages/Epaggelmaties/MainAggeliesPGU";
 import DimiourgiaAggelias from "./Pages/Epaggelmaties/DimiourgiaAggelias";
 import DimiourgiaSymbolaiou from "./Pages/Goneis/DimiourgiaSymbolaiou";
+import PreviewAggelias from "./Pages/Epaggelmaties/PreviewAggelias";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
       <Route path="aggelies" element={<MainAggeliesPGU />} />
       <Route path="nea-aggelia" element={<DimiourgiaAggelias />} />
       <Route path="neo-symbolaio" element={<DimiourgiaSymbolaiou />} />
+      <Route path="preview-aggelias" element={<PreviewAggelias />} />
     </Routes>    
       </BrowserRouter>
     </div>

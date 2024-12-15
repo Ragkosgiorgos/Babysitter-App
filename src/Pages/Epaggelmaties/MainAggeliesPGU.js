@@ -25,6 +25,10 @@ function MainAggeliesPGU() {
     navigate("/nea-aggelia", { state: { id: uid } }); // Pass id as state
   };
 
+  const previewAggeliaRender = () => {
+    navigate("/preview-aggelias", { state: { id: uid } }); // Pass id as state
+  };
+
   useEffect(() => {
     fetch("/data/aggelies.json")
       .then((response) => {
@@ -93,7 +97,7 @@ function MainAggeliesPGU() {
                       <td>{}</td>
                       <td>{post.status}</td>
                       <td style={{ display: "flex", justifyContent: "center", alignItems:"center", marginTop:"0.5em", gap:"10px" }}>
-                        <VisibilityIcon style={{ cursor: "pointer" }} />
+                        <VisibilityIcon style={{ cursor: "pointer" }} onClick={previewAggeliaRender} />
                         { post.status === "Σε προσωρινή αποθήκευση" ? <ArrowForwardIcon style={{ cursor: "pointer" }} onClick={() => navigate("/nea-aggelia", { state: { id: uid, stage: 2 } })} /> : <ArrowForwardIcon style={{ height: "0px" }}/> }
                         <DeleteForeverIcon style={{ cursor: "pointer" }} onClick={() => handleDelete(uid)} />
                       </td>
