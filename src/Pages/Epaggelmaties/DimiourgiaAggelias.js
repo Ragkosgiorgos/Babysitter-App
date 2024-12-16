@@ -11,12 +11,78 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { useLocation } from 'react-router-dom';
 import dayjs from 'dayjs';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+import updateLocale from 'dayjs/plugin/updateLocale';
+import 'dayjs/locale/el';
+
+dayjs.extend(localizedFormat);
+dayjs.extend(updateLocale);
+
+// Update Greek locale to include custom AM/PM translations
+dayjs.updateLocale('el', {
+    meridiem: (hour) => (hour < 12 ? 'ΠΜ' : 'ΜΜ'), // Translate AM -> ΠΜ, PM -> ΜΜ
+    formats: {
+        LT: 'h:mm A', // Ensure it uses the "A" for AM/PM
+    },
+});
 
 function DimiourgiaAggelias() {
     const location = useLocation();
-    const { stage } = location.state; // Get the stage from the location state
+    const uid = location.state.uid; // Get the user id from the location state
+    const step = parseInt(location.state.step); // Get the step from the location state
 
-    const uid = 1; //? Get the user id from the session
+    const [profiles, setProfiles] = useState([]);
+    const [posts, setPosts] = useState([]);
+    const [user, setUser] = useState({});
+
+    useEffect(() => {
+        fetch("/data/ntantades.json")
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            setProfiles(data);
+          })
+          .catch((error) => {
+            console.error("Error fetching JSON:", error);
+          });
+    }, []);
+
+    useEffect(() => {
+        fetch("/data/aggelies.json")
+            .then((response) => {
+                console.log("Response:", response);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                setPosts(data);
+            })
+            .catch((error) => {
+                console.error("Error fetching JSON:", error);
+            });
+    }, []);
+    
+    // Match the babysitter's id with the user id
+    useEffect(() => {
+        if (profiles.length > 0) {
+            const user = profiles.find((user) => user.uid === uid);
+            setUser(user);
+        }
+    }, [profiles, uid]);
+
+    // Keep only the user's posts
+    useEffect(() => {
+        if (user && posts.length > 0) {
+            const userPosts = posts.filter((post) => post.uid === uid);
+            setPosts(userPosts);
+        }
+    }, [posts, uid]);
 
     const steps = [
         "Επιβεβαίωση προσωπικών στοιχείων",
@@ -28,22 +94,83 @@ function DimiourgiaAggelias() {
     const handleScrollToTop = () => {
         window.scrollTo({
           top: 0,
-          behavior: 'smooth', // Smooth scroll animation
+          behavior: 'smooth',
         });
     };
 
-    // Track the current step
-    const [currentStep, setCurrentStep] = useState(stage || 0);
-    const [isSubmitted, setIsSubmitted] = useState(false);
-    //? At least one day availability
-    //? ageFrom <= ageTo
-    //? timeFrom > timeTo
+    function capitalizeWords(str) {
+        if (str === undefined || str === null) {
+            return ''; // Return an empty string if the value is undefined or null
+        }
+        return str
+            .toLowerCase()
+            .split(" ")
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(" ");
+    }
 
-    // Function to go to the next step
+    // Track the current step
+    const [currentStep, setCurrentStep] = useState(step || 0);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
+    // At least one day availability
+    const [oneDay, setOneDay] = useState(true);
+    const checkDays = () => {
+        const hasOneDay = [
+            { day: "Δευτέρα", from: newData.monFrom, to: newData.monTo },
+            { day: "Τρίτη", from: newData.tueFrom, to: newData.tueTo },
+            { day: "Τετάρτη", from: newData.wedFrom, to: newData.wedTo },
+            { day: "Πέμπτη", from: newData.thuFrom, to: newData.thuTo },
+            { day: "Παρασκευή", from: newData.friFrom, to: newData.friTo },
+            { day: "Σάββατο", from: newData.satFrom, to: newData.satTo },
+            { day: "Κυριακή", from: newData.sunFrom, to: newData.sunTo },
+        ].some(({ from, to }) => from !== to);
+    
+        setOneDay(hasOneDay);
+        return hasOneDay;
+    };
+
+    // timeFrom < timeTo
+    const [correctTime, setCorrectTime] = useState(true);
+    const checkTime = () => {
+        const hasCorrectTime = [
+            { day: "Δευτέρα", from: newData.monFrom, to: newData.monTo },
+            { day: "Τρίτη", from: newData.tueFrom, to: newData.tueTo },
+            { day: "Τετάρτη", from: newData.wedFrom, to: newData.wedTo },
+            { day: "Πέμπτη", from: newData.thuFrom, to: newData.thuTo },
+            { day: "Παρασκευή", from: newData.friFrom, to: newData.friTo },
+            { day: "Σάββατο", from: newData.satFrom, to: newData.satTo },
+            { day: "Κυριακή", from: newData.sunFrom, to: newData.sunTo },
+        ].every(({ from, to }) => (dayjs(from, 'HH:mm').isBefore(dayjs(to, 'HH:mm'))) || (from === to));
+        
+        setCorrectTime(hasCorrectTime);
+        return hasCorrectTime;
+    };
+
+    // ageFrom <= ageTo
+    const [correctAge, setCorrectAge] = useState(true);
+    const checkAge = () => {
+        if (newData.ageFrom > newData.ageTo) {
+            setCorrectAge(false);
+            return false;
+        }
+        setCorrectAge(true);
+        return true;
+    };
+    
+    const goToMainAggelies = () => {
+        navigate(`/aggelies?uid=${uid}`);
+    };
+
+    const navigate = useNavigate();
+
     const goToNextStep = (e) => {
-        if (currentStep === 1) {
+        if (currentStep === 1) { // Check if the form is submitted correctly
             setIsSubmitted(true);
-            if (newData.description === "" || newData.area === "" || newData.ageFrom === "" || newData.ageTo === "" || newData.time === "" || newData.accomodation === "" ) {
+            checkAge();
+            checkTime();
+            checkDays();
+            if (!newData.description || !newData.area || !newData.ageFrom || !newData.ageTo || !newData.time || !newData.accomodation || !correctAge || !correctTime || !oneDay) {
                 handleScrollToTop();
                 return;
             }
@@ -51,23 +178,43 @@ function DimiourgiaAggelias() {
         }
         setCurrentStep(currentStep + 1);
     };
-
-    const navigate = useNavigate();
-
-    // Function to go to the previous step
+    
     const goToPreviousStep = () => {
-        if (currentStep > 0) {
-            setCurrentStep(currentStep - 1);
-        }
-        if (currentStep === 0) { // Go to the page of Aggelies
-            navigate("/aggelies");
-        }
+        setCurrentStep(currentStep - 1);
+    };
+
+    const handleTempSave = () => {
+        const newId = posts.length + 1;
+        setnewData((prevData) => ({
+            ...prevData,
+            id: newId,
+        }));
+
+        // Write the data to the database
+        const updatedPosts = [...posts, newData];
+        setPosts(updatedPosts);
+
+        setCurrentStep(3);
+    };
+
+    const handleFinalSave = () => {
+        const newId = posts.length + 1;
+        setnewData((prevData) => ({
+            ...prevData,
+            id: newId,
+            status: "Ενεργή",
+        }));
+        // Write the data to the database
+        const updatedPosts = [...posts, newData];
+        setPosts(updatedPosts);
+
+        setCurrentStep(3);
     };
 
     const [newData, setnewData] = useState({
         id: -1,
         uid: uid,
-        status: "Σε Προσωρινή Αποθήκευση",
+        status: "Σε Προσωρινή Αποθήκευση",//? Temporary status
         date: new Date().toLocaleDateString(),
         area: "",
         description: "",
@@ -92,6 +239,14 @@ function DimiourgiaAggelias() {
         sunTo: "00:00",
     });
 
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setnewData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
+
     const areasOfGreece = [
         "Αθήνα",
         "Θεσσαλονίκη",
@@ -112,46 +267,8 @@ function DimiourgiaAggelias() {
         2,
         2.5,
     ];
-    
-    const [profiles, setProfiles] = useState([]);
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setnewData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
-
-    useEffect(() => {
-        fetch("/data/ntantades.json")
-          .then((response) => {
-            console.log("Response:", response); // Debug the response object
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json(); // Parse as JSON
-          })
-          .then((data) => {
-            setProfiles(data); // Update the state
-          })
-          .catch((error) => {
-            console.error("Error fetching JSON:", error);
-          });
-    }, []);
-
-    function capitalizeWords(str) {
-        if (str === undefined || str === null) {
-            return ''; // Return an empty string if the value is undefined or null
-        }
-        return str
-            .toLowerCase()
-            .split(" ")
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(" ");
-    }
-    
-    const user = profiles.find(profile => profile.uid === uid);
+    //? If the user is not found, return an error message
     if (!user) {
         return <div>Δεν βρέθηκε ο χρήστης με id: {uid}</div>;
     }
@@ -184,8 +301,8 @@ function DimiourgiaAggelias() {
                                       justifyContent: "center", marginLeft: "20%", padding: "2%", marginTop: "2%" }}>
 
                             <h2 style={{ textAlign: "center", textDecoration: "underline" }}><b>Συμπληρώστε τα στοιχεία της αγγελίας</b></h2>
-                                {isSubmitted && (!newData.description || !newData.area || !newData.ageFrom || !newData.ageTo || !newData.time || !newData.accomodation)
-                                             ? <h4 style={{ color: "red", textAlign: "center" }}> Παρακαλώ συμπληρωστε όλα τα πεδία </h4> : ""}
+                                {isSubmitted && (!newData.description || !newData.area || !newData.ageFrom || !newData.ageTo || !newData.time || !newData.accomodation || !correctAge || !correctTime)
+                                             ? <h4 style={{ color: "red", textAlign: "center" }}> Παρακαλώ συμπληρωστε σωστά όλα τα πεδία </h4> : ""}
                                              
                             <h5 style={{ display: "flex", flexDirection: "row", fontWeight: "bold", marginTop: "3%" }}> Περιγραφή </h5> 
                             <textarea name="description" placeholder="Περιγραφή αγγελίας." value={newData.description} onChange={handleInputChange}
@@ -218,9 +335,10 @@ function DimiourgiaAggelias() {
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginBottom: "5%" }}>
                                 <div style={{ display: "flex", flexDirection: "column" }}>
                                     <h5 style={{ fontWeight: "bold"}}> Ηλικία παιδιού </h5>
-                                    <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "15%" }}>
+                                    <div style={{ marginLeft: "0%" }}>{!correctAge && <h6 style={{ color: "red" }}> <b>*Η ηλικία "από" πρέπει να είναι μικρότερη ή ίση από την ηλικία "εώς"</b> </h6>}</div>
+                                    <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%" }}>
                                         <div style={{ display: "flex", flexDirection: "column" }}>
-                                            <h7> από </h7>
+                                            <h6> από </h6>
 
                                             <FormControl>
                                                 <Select
@@ -244,7 +362,7 @@ function DimiourgiaAggelias() {
                                         </div>
                                                     
                                         <div style={{ display: "flex", flexDirection: "column" }}>
-                                            <h7> εώς </h7>
+                                            <h6> εώς </h6>
                                             <FormControl>
                                                 <Select
                                                     labelId="agg-ageTo-select-label"
@@ -286,9 +404,11 @@ function DimiourgiaAggelias() {
                             </div>
 
                             <h5 style={{ fontWeight: "bold"}}> Διαθέσιμες ημέρες και ώρες </h5>
+                            <div style={{ marginLeft: "0%" }}>{isSubmitted && !correctTime && <h6 style={{ color: "red" }}> <b>*Η ώρα "από" πρέπει να είναι νωρίτερα ή ίσα από την ώρα "εώς"</b> </h6>}</div>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%" }}>
                                 <div style={{ marginTop: "2vh", display: "flex", flexDirection: "column" }}>
                                     <h6 style={{ fontWeight:"bold" }}> Ημέρες και ώρες </h6>
+                                    <div style={{ marginLeft: "0%" }}>{isSubmitted && !oneDay && <h6 style={{ color: "red" }}> <b>*Πρέπει να δηλώσετε διαθεσιμότητα για τουλάχιστον ένα χρονικό διάστημα</b> </h6>}</div>
                                     <div style={{ marginTop: "1vh", display: "flex", flexDirection: "column", gap: "10px" , width:"80%", marginLeft: "10%" }}>
                                         {[
                                         { day: "Δευτέρα", from: newData.monFrom, to: newData.monTo, setFrom: (newValue) => setnewData({ ...newData, monFrom: newValue }), setTo: (newValue) => setnewData({ ...newData, monTo: newValue }) },
@@ -300,20 +420,21 @@ function DimiourgiaAggelias() {
                                         { day: "Κυριακή", from: newData.sunFrom, to: newData.sunTo, setFrom: (newValue) => setnewData({ ...newData, sunFrom: newValue }), setTo: (newValue) => setnewData({ ...newData, sunTo: newValue }) },
                                         ].map(({ day, from, to, setFrom, setTo }) => (
                                         <div key={day} style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-                                            <h8>{day}</h8>
+                                            <h6>{day}</h6>
                                             <div style={{ display: "flex", gap: "10px" }}>
-                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="el">
                                                 <TimePicker
                                                     value={dayjs(from, 'HH:mm')}
                                                     onChange={(newValue) => setFrom(newValue.format('HH:mm'))}
+                                                    format="h:mm A"
                                                 />
                                             </LocalizationProvider>
-                                            <h8>-</h8>
-                                            
-                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                            <h6>-</h6>
+                                            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="el">
                                                 <TimePicker
                                                     value={dayjs(to, 'HH:mm')}
                                                     onChange={(newValue) => setTo(newValue.format('HH:mm'))}
+                                                    format="h:mm A"
                                                 />
                                             </LocalizationProvider>
                                             </div>
@@ -401,7 +522,7 @@ function DimiourgiaAggelias() {
                                         { day: "Κυριακή", from: newData.sunFrom, to: newData.sunTo },
                                         ].map(({ day, from, to }) => (
                                         <div key={day} style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-                                            <h8>{day}</h8>
+                                            <h6>{day}</h6>
                                             <div style={{ display: "flex", gap: "10px", marginLeft: "20%" }}>
                                                 <div>{from}</div>-
                                                 <div>{to}</div>
@@ -424,12 +545,18 @@ function DimiourgiaAggelias() {
                 );
             case 4:
                 return (
-                    <div style={{ textAlign: "center", marginTop: "4%", marginBottom: "27%" }}>
-                        {navigate("/aggelies")}
+                    <div>
+                        {goToMainAggelies()}
+                    </div>
+                );
+            case -1:
+                return (
+                    <div>
+                        {goToMainAggelies()}
                     </div>
                 );
             default:
-                return <div>Invalid Step</div>;
+                return <div>Invalid Step {currentStep}</div>;
         }
     };
 
@@ -463,10 +590,10 @@ function DimiourgiaAggelias() {
                         || 
                         <div style={{ display: "flex", gap: "25%" }}>
                             <button style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5px", width: "100%" }}
-                                onClick={goToNextStep}> Προσωρινή αποθήκευση </button>
+                                onClick={handleTempSave}> Προσωρινή αποθήκευση </button>
                             
                             <button style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5px", width: "100%" }}
-                                onClick={goToNextStep}> Οριστική υποβολή </button>
+                                onClick={handleFinalSave}> Οριστική υποβολή </button>
                         </div>
                     }
                 </div>

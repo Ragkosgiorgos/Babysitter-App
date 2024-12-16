@@ -5,22 +5,49 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import Accordion from 'react-bootstrap/Accordion';
 import JobofferReview from "../Components/EpaggelmatiesComponent/JobofferReview";
-import { Link, useNavigate, useLocation } from 'react-router-dom';  
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 function MainPGU(props) {
-
   const navigate = useNavigate();  
-    const location = useLocation();  
+  const location = useLocation();  
 
-    const handleSearchRedirect = () => {
-        if (location.pathname !== '/anazitisi') {
-            navigate('/anazitisi');  
-        }
-    };
+  const handleSearchRedirect = () => {
+    if (location.pathname !== '/anazitisi') {
+        navigate('/anazitisi');  
+    }
+  };
+
+  const [ntantades, setNtantades] = useState([]);
+  const [ntanta, setNtanta] = useState({});
+  const uid = 2; //? Get the user id from the session
+  useEffect(() => {
+      fetch("/data/ntantades.json")
+          .then((response) => {
+              if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              return response.json();
+          })
+          .then((data) => {
+              setNtantades(data);
+          })
+          .catch((error) => {
+              console.error("Error fetching JSON:", error);
+          });
+  }, []);
+
+  // Match the babysitter's id with the user id
+  useEffect(() => {
+      if (ntantades.length > 0) {
+          const ntanta = ntantades.find((ntanta) => ntanta.uid === uid);
+          setNtanta(ntanta);
+      }
+  }, [ntantades, uid]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: "100vh" }}>
-      <Header log="connected" uid={1} name={"Ηλιάνα"} surname={"Τσουρέα"} property={"parent"} />
+      <Header log="connected" uid={ntanta.uid} name={ntanta.name} surname={ntanta.surname} property="babysitter" />
       <div style={{ flex: 1, overflowY: "auto" }}>
         <div style={{ display: "flex", justifyContent: "center" }}>
           <img style={{ marginRight: "8px", position: "relative", zIndex: 1 }} src="/hero1.avif" width="100%" height="500vh" alt="" />

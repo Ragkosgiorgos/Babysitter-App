@@ -11,8 +11,12 @@ import InfoIcon from '@mui/icons-material/Info';
 import { useNavigate } from "react-router-dom";
 
 function MainAggeliesPGU() {
-  const [posts, setPosts] = useState([]); // Initialize as an empty array
-  const uid = 1; //? Get the user id from the session
+  const params = new URLSearchParams(window.location.search);
+  const uid = parseInt(params.get("uid"));
+
+  const [posts, setPosts] = useState([]);
+  const [ntantades, setNtantades] = useState([]);
+  const [ntanta, setNtanta] = useState({});
 
   const handleDelete = (id) => { //? Delete the post with the given id from the base
     const updatedPosts = posts.filter(post => post.id !== id);
@@ -22,34 +26,66 @@ function MainAggeliesPGU() {
   const navigate = useNavigate();
 
   const handleNewPost = () => {
-    navigate("/nea-aggelia", { state: { id: uid } }); // Pass id as state
+    navigate("/nea-aggelia", { state: { uid: uid } });
   };
 
-  const previewAggeliaRender = () => {
-    navigate("/preview-aggelias", { state: { id: uid } }); // Pass id as state
+  const previewAggeliaRender = (aggelia_id) => {
+    navigate("/preview-aggelias", { state: { uid: uid, aggelia_id: aggelia_id } });
+  };
+
+  const handleTempView = () => {
+    navigate("/nea-aggelia", { state: { uid: uid, step: "2" } });
   };
 
   useEffect(() => {
     fetch("/data/aggelies.json")
       .then((response) => {
-        console.log("Response:", response); // Debug the response object
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        return response.json(); // Parse as JSON
+        return response.json();
       })
       .then((data) => {
-        setPosts(data); // Update the state
+        setPosts(data);
       })
       .catch((error) => {
         console.error("Error fetching JSON:", error);
       });
   }, []);
 
+  // Fetch the babysitter's data
+  useEffect(() => {
+      fetch("/data/ntantades.json")
+          .then((response) => {
+              if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              return response.json();
+          })
+          .then((data) => {
+              setNtantades(data);
+          })
+          .catch((error) => {
+              console.error("Error fetching JSON:", error);
+          });
+  }, []);
+  
+  // Match the babysitter's id with the user id
+  useEffect(() => {
+      if (ntantades.length > 0) {
+          const ntanta = ntantades.find((ntanta) => ntanta.uid === uid);
+          setNtanta(ntanta);
+      }
+  }, [ntantades, uid]);
+  
+  if (ntanta === undefined) {
+    return <div>Δεν βρέθηκε ο χρήστης με uid {uid}</div>;
+  }
+
   return (
     <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
       <div>
-        <Header log="not_connected" />
+        <Header log="connected" name={ntanta.name} surname={ntanta.surname} property="babysitter" />
 
         <div style={{ display: "flex", flexDirection: "column" }}>
 
@@ -97,9 +133,9 @@ function MainAggeliesPGU() {
                       <td>{}</td>
                       <td>{post.status}</td>
                       <td style={{ display: "flex", justifyContent: "center", alignItems:"center", marginTop:"0.5em", gap:"10px" }}>
-                        <VisibilityIcon style={{ cursor: "pointer" }} onClick={previewAggeliaRender} />
-                        { post.status === "Σε προσωρινή αποθήκευση" ? <ArrowForwardIcon style={{ cursor: "pointer" }} onClick={() => navigate("/nea-aggelia", { state: { id: uid, stage: 2 } })} /> : <ArrowForwardIcon style={{ height: "0px" }}/> }
-                        <DeleteForeverIcon style={{ cursor: "pointer" }} onClick={() => handleDelete(uid)} />
+                        { post.status !== "Σε προσωρινή αποθήκευση" ? <VisibilityIcon style={{ cursor: "pointer" }} onClick={() => previewAggeliaRender(post.id)} /> : <VisibilityIcon style={{ height: "0px" }}/> }
+                        { post.status === "Σε προσωρινή αποθήκευση" ? <ArrowForwardIcon style={{ cursor: "pointer" }} onClick={handleTempView} /> : <ArrowForwardIcon style={{ height: "0px" }}/> }
+                        <DeleteForeverIcon style={{ cursor: "pointer" }} onClick={() => handleDelete(post.id)} />
                       </td>
                     </tr>
                   ))}
@@ -107,16 +143,17 @@ function MainAggeliesPGU() {
               </table>
 
             </div>
-            
+
           </div>
 
         </div>
+
       </div>
-      
+
       <div>
         <Footer />
       </div>
-      
+
     </div>
   );
 }

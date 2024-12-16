@@ -8,12 +8,13 @@ import { useLocation } from 'react-router-dom';
 
 function PreviewAggelias() {
     const location = useLocation();
-    const id = location.state.id; //? Get the user id from the location state
+    const uid = location.state.uid; //? Get the user id from the location state
+    const aggelia_id = location.state.aggelia_id; //? Get the job id from the location state
 
     const navigate = useNavigate();
 
     const goToMainAggelies = () => {
-        navigate("/aggelies");
+        navigate(`/aggelies?uid=${uid}`);
     };
 
     const steps = [
@@ -23,41 +24,62 @@ function PreviewAggelias() {
         "Δημοσίευση αγγελίας",
     ];
 
-    const user = {
-        name: "Μαρία",
-        surname: "Παπαδοπούλου",
-        birthDate: "12/02/1985",
-        area: "Αθήνα",
-        phone: "6987456321",
-        email: "di@fi.com"
-    };
+    const [aggelies, setAggelies] = useState({});
+    const [aggelia, setAggelia] = useState({});
 
-    const aggelia = {
-        id: 1,
-        description: "hi there",
-        area: "athens",
-        ageFrom: "1",
-        ageTo: "5",
-        time: "part",
-        accomodation: "yes",
-        monFrom: "08:00",
-        monTo: "16:00",
-        tueFrom: "08:00",
-        tueTo: "16:00",
-        wedFrom: "08:00",
-        wedTo: "16:00",
-        thuFrom: "08:00",
-        thuTo: "16:00",
-        friFrom: "08:00",
-        friTo: "16:00",
-        satFrom: "08:00",
-        satTo: "16:00",
-        sunFrom: "08:00",
-        sunTo: "16:00",
-    };
+    const [ntantades, setNtantades] = useState([]);
+    const [ntanta, setNtanta] = useState({});
 
-    const uid =1;
+    // Fetch the babysitter's data
+    useEffect(() => {
+        fetch("/data/ntantades.json")
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                setNtantades(data);
+            })
+            .catch((error) => {
+                console.error("Error fetching JSON:", error);
+            });
+    }, []);
 
+    // Fetch the jobs' data
+    useEffect(() => {
+        fetch("/data/aggelies.json")
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                setAggelies(data);
+            })
+            .catch((error) => {
+                console.error("Error fetching JSON:", error);
+            });
+    }, []);
+
+    // Match the babysitter's id with the user id
+    useEffect(() => {
+        if (ntantades.length > 0) {
+            const ntanta = ntantades.find((ntanta) => ntanta.uid === uid);
+            setNtanta(ntanta);
+        }
+    }, [ntantades, uid]);
+
+    // Match the job's id with the user id
+    useEffect(() => {
+        if (aggelies.length > 0) {
+            const aggelia = aggelies.find((aggelia) => aggelia.id === aggelia_id);
+            setAggelia(aggelia);
+        }
+    }, [aggelies, aggelia_id]);
+    
     function capitalizeWords(str) {
         if (str === undefined || str === null) {
             return ''; // Return an empty string if the value is undefined or null
@@ -71,7 +93,7 @@ function PreviewAggelias() {
 
     return (
         <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-            <Header log="connected" id={uid} property="babysitter" name={user.name} surname={user.surname} />
+            <Header log="connected" name={ntanta.name} surname={ntanta.surname} property="babysitter" />
 
             <div style={{ flex: 1 }}>
                 <Breadcrumbs />
@@ -86,17 +108,17 @@ function PreviewAggelias() {
                             <div style={{ display: "flex", flexDirection: "column", backgroundColor: "#ece7f2", borderRadius: "2%",
                                             justifyContent: "center", padding: "2%" }}>
                                 <h2 style={{ textAlign: "center", textDecoration: "underline" }}><b> Τα προσωπικά σας στοιχεία </b></h2>
-                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Όνομα:</b> {user.name} </h4>
+                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Όνομα:</b> {ntanta.name} </h4>
                                 <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
-                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Επίθετο:</b> {user.surname}</h4>
+                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Επίθετο:</b> {ntanta.surname}</h4>
                                 <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
-                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Ημερομηνία γέννησης:</b> {user.birthDate}</h4>
+                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Ημερομηνία γέννησης:</b> {ntanta.birthDate}</h4>
                                 <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
-                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Πόλη:</b> {user.area}</h4>
+                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Πόλη:</b> {ntanta.area}</h4>
                                 <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
-                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Αριθμός κινητού τηλεφώνου:</b> {user.phone}</h4>
+                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Αριθμός κινητού τηλεφώνου:</b> {ntanta.phone}</h4>
                                 <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
-                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Email:</b> {user.email}</h4>
+                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Email:</b> {ntanta.email}</h4>
                             </div>
                         </div>
 
@@ -153,7 +175,7 @@ function PreviewAggelias() {
                                     { day: "Κυριακή", from: aggelia.sunFrom, to: aggelia.sunTo },
                                     ].map(({ day, from, to }) => (
                                     <div key={day} style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-                                        <h8>{day}</h8>
+                                        <h6>{day}</h6>
                                         <div style={{ display: "flex", gap: "10px", marginLeft: "20%" }}>
                                             <div>{from}</div>-
                                             <div>{to}</div>

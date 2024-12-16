@@ -257,7 +257,7 @@ const handleDateRangeChange = (item) => {
                                                 <h6 style={{ fontWeight: "bold" }}>Ημέρες και ώρες</h6>
                                                 {Object.keys(stepTwoData.availability).map((day) => (
                                                     <div key={day} style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-                                                        <h8>{day}</h8>
+                                                        <h6>{day}</h6>
                                                         <div style={{ display: "flex", gap: "10px" }}>
                                                             <TimePicker
                                                                 label="Από"

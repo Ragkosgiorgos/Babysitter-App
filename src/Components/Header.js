@@ -107,7 +107,7 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/aggelies">
+                                <a className="dropdown-item" href={`/aggelies?uid=${props.uid}`}>
                                     Οι Αγγελίες μου
                                 </a>
                             </li>

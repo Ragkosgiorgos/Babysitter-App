@@ -10,6 +10,18 @@
         "email": "rand@iliana.com",
         "afm": "123456789",
         "img": "/data/iliana.jpeg"
+    },
+    {
+        "uid": 2,
+        "name": "Αλέξανδρος",
+        "surname": "Καραγιάννης",
+        "area": "Πάτρα",
+        "birthDate": "1998-03-01",
+        "education": "Δευτεροβάθμια",
+        "phone": "6987654322",
+        "email": "alex@rand.com",
+        "afm": "123456389",
+        "img": "/data/alex.jpeg"
     }
 ]
   

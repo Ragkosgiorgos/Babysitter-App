@@ -106,7 +106,7 @@ function BabysitterFilters({ applyFilters, resetFilters }) {
           <h4 style={{fontWeight:"bold"}}>Φίλτρα αναζήτησης</h4>
             <button
               style={{ backgroundColor: "white", border: "1px solid white" }} onClick={handleClearAll}>
-                <h8 style={{ marginLeft: "10px", marginTop: "1vh", textDecoration:"underline" }}>Καθαρισμός</h8>
+                <h6 style={{ marginLeft: "10px", marginTop: "1vh", textDecoration:"underline" }}>Καθαρισμός</h6>
             </button>
         </div>
         <div style={{ marginTop: "2vh" }}>
@@ -174,7 +174,7 @@ function BabysitterFilters({ applyFilters, resetFilters }) {
                   { day: "Κυριακή", from: timeSundayFrom, to: timeSundayTo, setFrom: setTimeSundayFrom, setTo: setTimeSundayTo },
                 ].map(({ day, from, to, setFrom, setTo }) => (
                   <div key={day} style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-                    <h8>{day}</h8>
+                    <h6>{day}</h6>
                     <div style={{ display: "flex", gap: "10px" }}>
                       <TimePicker
                         label="Από"
