@@ -113,7 +113,7 @@ function Header(props) {
                             </li>
                             <li>
                                 <a className="dropdown-item" href="/#">
-                                    Τα ραντεβού μου
+                                    Τα Ραντεβού μου
                                 </a>
                             </li>
                             <li>

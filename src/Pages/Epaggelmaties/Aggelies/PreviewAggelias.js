@@ -1,8 +1,8 @@
 import React , { useState, useEffect } from "react";
-import Header from "../../Components/Header";
-import Footer from "../../Components/Footer";
-import Breadcrumbs from "../../Components/Breadcrump";
-import ProgressTracker from "../../Components/ProgressTracker";
+import Header from "../../../Components/Header";
+import Footer from "../../../Components/Footer";
+import Breadcrumbs from "../../../Components/Breadcrump";
+import ProgressTracker from "../../../Components/ProgressTracker";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 

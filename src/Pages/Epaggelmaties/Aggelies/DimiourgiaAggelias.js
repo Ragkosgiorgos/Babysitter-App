@@ -1,8 +1,8 @@
 import React , { useState, useEffect } from "react";
-import Header from "../../Components/Header";
-import Footer from "../../Components/Footer";
-import Breadcrumbs from "../../Components/Breadcrump";
-import ProgressTracker from "../../Components/ProgressTracker";
+import Header from "../../../Components/Header";
+import Footer from "../../../Components/Footer";
+import Breadcrumbs from "../../../Components/Breadcrump";
+import ProgressTracker from "../../../Components/ProgressTracker";
 import { useNavigate } from "react-router-dom";
 import { MenuItem, Select, FormControl } from "@mui/material";
 import { Radio, RadioGroup, FormControlLabel } from "@mui/material";
@@ -82,7 +82,7 @@ function DimiourgiaAggelias() {
             const userPosts = posts.filter((post) => post.uid === uid);
             setPosts(userPosts);
         }
-    }, [posts, uid]);
+    }, [user, posts, uid]);
 
     const steps = [
         "Επιβεβαίωση προσωπικών στοιχείων",

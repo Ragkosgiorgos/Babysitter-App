@@ -3,10 +3,7 @@ import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
 import Breadcrumbs from "../../Components/Breadcrump";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
@@ -65,7 +62,7 @@ function MainRantevouPGU() {
             </div>
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%", marginLeft: "70%" }}>
               
-              <button  onClick={routeChangeAvailable} style={{  height: "3%", backgroundColor: "#2b8cbe", color: "white", border: "none", 
+              <button  onClick={routeChangeAvailable} style={{  height: "3%", backgroundColor: "#2b8cbe", color: "white", 
                                 borderRadius: "5px", cursor: "pointer", border: "3px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)" }}>
                 Επεξεργασία διαθέσιμων ραντεβού
               </button>

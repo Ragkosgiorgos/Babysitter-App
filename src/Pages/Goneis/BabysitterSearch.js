@@ -5,18 +5,6 @@ import Breadcrumbs from "../../Components/Breadcrump";
 import BabysitterFilters from "../../Components/GoneisComponents/BabysitterFilters";
 import JobPosting from "../../Components/EpaggelmatiesComponent/JobPosting";
 
-// Helper function to capitalize first letter of each word
-function capitalizeWords(str) {
-  if (str === undefined || str === null) {
-    return ''; // Return an empty string if the value is undefined or null
-  }
-  return str
-    .toLowerCase()
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
-
 function BabysitterSearch() {
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
@@ -58,6 +46,18 @@ function BabysitterSearch() {
         console.error("Error fetching JSON:", error);
       });
   }, []);
+
+  // Helper function to capitalize first letter of each word
+  /*function capitalizeWords(str) {
+    if (str === undefined || str === null) {
+      return ''; // Return an empty string if the value is undefined or null
+    }
+    return str
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  }*/
 
   const applyFilters = (
     fullTimeChecked,

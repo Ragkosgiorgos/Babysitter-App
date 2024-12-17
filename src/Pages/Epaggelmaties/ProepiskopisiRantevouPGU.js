@@ -3,9 +3,7 @@ import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
 import Breadcrumbs from "../../Components/Breadcrump";
 import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import InfoIcon from '@mui/icons-material/Info';
-import { redirect, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 function ProepiskopisiRantevouPGU(props) {
@@ -39,7 +37,7 @@ function ProepiskopisiRantevouPGU(props) {
       window.location.href = aitisi.link;
     }
     
-    if(aitisi == undefined){return}
+    if(aitisi === undefined){return}
     return (
       <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
         <div>

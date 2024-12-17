@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
 import Breadcrumbs from "../../Components/Breadcrump";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
@@ -17,37 +15,15 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
 import { useNavigate } from "react-router-dom";
 
-
 function AddRantevouPGU() {
-  const [profiles, setProfiles] = useState([]); // Initialize as an empty array
 
-  const navigate = useNavigate(); 
-  
-
-  useEffect(() => {
-    fetch("/data/rantevou.json")
-      .then((response) => {
-        console.log("Response:", response); // Debug the response object
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json(); // Parse as JSON
-      })
-      .then((data) => {
-        console.log("Fetched data:", data); // Log the fetched data
-        setProfiles(data); // Update the state
-      })
-      .catch((error) => {
-        console.error("Error fetching JSON:", error);
-      });
-  }, []);
+  const navigate = useNavigate();
 
   const today = dayjs();
 
-  const isInPast = (date) => (date.get('year') < dayjs().get('year')) || (date.get('year') == dayjs().get('year') && date.get('month') < dayjs().get('month')) || (date.get('year') == dayjs().get('year') && date.get('month') == dayjs().get('month') && date.get('date') < dayjs().get('date'));
+  const isInPast = (date) => (date.get('year') < dayjs().get('year')) || (date.get('year') === dayjs().get('year') && date.get('month') < dayjs().get('month')) || (date.get('year') === dayjs().get('year') && date.get('month') === dayjs().get('month') && date.get('date') < dayjs().get('date'));
 
   return (
     <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
