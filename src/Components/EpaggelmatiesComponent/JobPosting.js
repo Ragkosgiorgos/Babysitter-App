@@ -5,11 +5,23 @@ function JobPosting(props){
   const profile = props.profile;
   const post = props.post;
   const id = post.id;
+
+  const calculateAge = (birthdate) => {
+    const birthDate = new Date(birthdate);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+    const dayDifference = today.getDate() - birthDate.getDate();
+    if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+      age--;
+    }
+    return age;
+  };
   
   const navigate = useNavigate();
 
   const handleRedirect = (id) => {
-    navigate(`/aggelies/${id}`);
+    navigate(`/view-post?id=${id}`);
   }
 
   return(
@@ -19,14 +31,14 @@ function JobPosting(props){
 
         <div style={{display:"flex",flexDirection:"row"}}>
 
-          <img style={{ marginRight: "2vh", marginLeft:"2vh", marginTop:"2vh" }} src={profile.imgn} width="100vw" height="100vh" className="d-inline-block align-top" alt=""/>
+          <img style={{ marginRight: "2vh", marginLeft:"2vh", marginTop:"2vh" }} src={profile.img} width="100vw" height="100vh" className="d-inline-block align-top" alt=""/>
 
           <div style={{display:"flex",flexDirection:"column",marginTop:"2vh"}}>
 
-            <h3> {profile.onoma} {profile.surname} </h3>
+            <h3> {profile.name} {profile.surname} </h3>
             <div style={{display:"flex", flexDirection:"column", marginLeft:"0%", marginRight:"0%"}}>
               <h6> <b>Πόλη:</b> {post.area} </h6>
-              <h6> <b>Ηλικία:</b> {profile.age} </h6>
+              <h6> <b>Ηλικία:</b> {calculateAge(profile.birthDate)} </h6>
               <h6> <b>Εκπαίδευση:</b> {profile.education} </h6>
               <h6> <b>Χρόνος Απασχόλησης:</b> {post.time} </h6>
               <h6> <b>Φιλοξενία στον χώρο του/της:</b> {post.accomodation} </h6>

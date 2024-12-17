@@ -4,6 +4,21 @@ import { MenuItem, Select, InputLabel, FormControl } from "@mui/material";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from 'dayjs';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+import updateLocale from 'dayjs/plugin/updateLocale';
+import 'dayjs/locale/el';
+
+dayjs.extend(localizedFormat);
+dayjs.extend(updateLocale);
+
+// Update Greek locale to include custom AM/PM translations
+dayjs.updateLocale('el', {
+    meridiem: (hour) => (hour < 12 ? 'ΠΜ' : 'ΜΜ'), // Translate AM -> ΠΜ, PM -> ΜΜ
+    formats: {
+        LT: 'h:mm', // Ensure it uses the "A" for AM/PM
+    },
+});
 
 function BabysitterFilters({ applyFilters, resetFilters }) {
   const [selectedLocation, setSelectedLocation] = useState("");
@@ -42,10 +57,10 @@ function BabysitterFilters({ applyFilters, resetFilters }) {
   ];
 
   const age = [
-    "0,5",
-    "1.0",
+    "0.5",
+    "1",
     "1.5",
-    "2.0",
+    "2",
     "2.5",
   ];
 
@@ -100,7 +115,7 @@ function BabysitterFilters({ applyFilters, resetFilters }) {
     resetFilters();
   };
   return (
-    <div style={{ display: "flex", flexDirection: "column", width: "30%",height:"100vh" }}>
+    <div style={{ display: "flex", flexDirection: "column", width: "30%" }}>
       <div style={{ display: "flex", flexDirection: "column", marginTop: "10%", marginLeft: "40px" }}>
         <div style={{ display: "flex", flexDirection: "row" }}>
           <h4 style={{fontWeight:"bold"}}>Φίλτρα αναζήτησης</h4>
@@ -131,7 +146,7 @@ function BabysitterFilters({ applyFilters, resetFilters }) {
                 style={{ width: "80%" }}
                 displayEmpty
               >
-                {selectedLocation === "" && <MenuItem value="" disabled>Επιλέξτε Περιοχή</MenuItem>}
+                {<MenuItem value="">Επιλέξτε Περιοχή</MenuItem>}
                 {areasOfGreece.map((area) => (
                   <MenuItem key={area} value={area.toLowerCase()}>
                     {area}
@@ -151,49 +166,52 @@ function BabysitterFilters({ applyFilters, resetFilters }) {
                 style={{ width: "80%" }}
                 displayEmpty
               >
-                {selectedAge === "" && <MenuItem value="" disabled>Επιλέξτε Ηλικία</MenuItem>}
+                {<MenuItem value="">Επιλέξτε Ηλικία</MenuItem>}
                 {age.map((item) => (
                   <MenuItem key={item} value={item.toLowerCase()}>
-                    {item}
+                    {item} ετών
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
         </div>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <div style={{ marginTop: "2vh", display: "flex", flexDirection: "column" }}>
-            <h6 style={{fontWeight:"bold"}}>Ημέρες και ώρες</h6>
-              <div style={{ marginTop: "1vh", display: "flex", flexDirection: "column", gap: "10px" , width:"80%"}}>
-                {[
-                  { day: "Δευτέρα", from: timeMondayFrom, to: timeMondayTo, setFrom: setTimeMondayFrom, setTo: setTimeMondayTo },
-                  { day: "Τρίτη", from: timeTuesdayFrom, to: timeTuesdayTo, setFrom: setTimeTuesdayFrom, setTo: setTimeTuesdayTo },
-                  { day: "Τετάρτη", from: timeWednesdayFrom, to: timeWednesdayTo, setFrom: setTimeWednesdayFrom, setTo: setTimeWednesdayTo },
-                  { day: "Πέμπτη", from: timeThursdayFrom, to: timeThursdayTo, setFrom: setTimeThursdayFrom, setTo: setTimeThursdayTo },
-                  { day: "Παρασκευή", from: timeFridayFrom, to: timeFridayTo, setFrom: setTimeFridayFrom, setTo: setTimeFridayTo },
-                  { day: "Σάββατο", from: timeSaturdayFrom, to: timeSaturdayTo, setFrom: setTimeSaturdayFrom, setTo: setTimeSaturdayTo },
-                  { day: "Κυριακή", from: timeSundayFrom, to: timeSundayTo, setFrom: setTimeSundayFrom, setTo: setTimeSundayTo },
-                ].map(({ day, from, to, setFrom, setTo }) => (
-                  <div key={day} style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-                    <h6>{day}</h6>
-                    <div style={{ display: "flex", gap: "10px" }}>
-                      <TimePicker
-                        label="Από"
-                        value={from}
-                        onChange={(newValue) => setFrom(newValue)}
-                        renderInput={(params) => <input {...params} />}
-                      />
+        <div style={{ marginTop: "2vh", display: "flex", flexDirection: "column" }}>
+          <h6 style={{fontWeight:"bold"}}>Ημέρες και ώρες</h6>
+            <div style={{ marginTop: "1vh", display: "flex", flexDirection: "column", gap: "10px" , width:"80%"}}>
+              {[
+                { day: "Δευτέρα", from: timeMondayFrom, to: timeMondayTo, setFrom: setTimeMondayFrom, setTo: setTimeMondayTo },
+                { day: "Τρίτη", from: timeTuesdayFrom, to: timeTuesdayTo, setFrom: setTimeTuesdayFrom, setTo: setTimeTuesdayTo },
+                { day: "Τετάρτη", from: timeWednesdayFrom, to: timeWednesdayTo, setFrom: setTimeWednesdayFrom, setTo: setTimeWednesdayTo },
+                { day: "Πέμπτη", from: timeThursdayFrom, to: timeThursdayTo, setFrom: setTimeThursdayFrom, setTo: setTimeThursdayTo },
+                { day: "Παρασκευή", from: timeFridayFrom, to: timeFridayTo, setFrom: setTimeFridayFrom, setTo: setTimeFridayTo },
+                { day: "Σάββατο", from: timeSaturdayFrom, to: timeSaturdayTo, setFrom: setTimeSaturdayFrom, setTo: setTimeSaturdayTo },
+                { day: "Κυριακή", from: timeSundayFrom, to: timeSundayTo, setFrom: setTimeSundayFrom, setTo: setTimeSundayTo },
+              ].map(({ day, from, to, setFrom, setTo }) => (
+                <div key={day} style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+                  <h6>{day}</h6>
+                  <div style={{ display: "flex", gap: "10px" }}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="el">
+                    <TimePicker
+                      label="Από"
+                      value={from ? dayjs(from, 'HH:mm') : null}
+                      onChange={(newValue) => setFrom(newValue.format('HH:mm'))}
+                      format="h:mm"
+                    />
+                  </LocalizationProvider>
+                    <h6 style={{marginTop: "5%"}}><b>-</b></h6>
+                    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="el">
                       <TimePicker
                         label="Έως"
-                        value={to}
-                        onChange={(newValue) => setTo(newValue)}
-                        renderInput={(params) => <input {...params} />}
+                        value={to ? dayjs(to, 'HH:mm') : null}
+                        onChange={(newValue) => setTo(newValue.format('HH:mm'))}
+                        format="h:mm"
                       />
-                    </div>
+                    </LocalizationProvider>
                   </div>
-                ))}
-              </div>
-          </div>
-        </LocalizationProvider>
+                </div>
+              ))}
+            </div>
+        </div>
         <div style={{ marginTop: "2vh" }}>
           <h6 style={{fontWeight:"bold"}}>Εκπαίδευση</h6>
             <FormControl fullWidth style={{ marginTop: "1vh" }}>
@@ -205,7 +223,7 @@ function BabysitterFilters({ applyFilters, resetFilters }) {
                 style={{ width: "80%" }}
                 displayEmpty
               >
-                {selectedEducation === "" && <MenuItem value="" disabled>Επιλέξτε Εκπαίδευση</MenuItem>}
+                {<MenuItem value="">Επιλέξτε Εκπαίδευση</MenuItem>}
                 {education.map((edu) => (
                   <MenuItem key={edu} value={edu.toLowerCase()}>
                     {edu}
