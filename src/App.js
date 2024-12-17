@@ -10,6 +10,7 @@ import DimiourgiaAggelias from "./Pages/Epaggelmaties/DimiourgiaAggelias";
 import DimiourgiaSymbolaiou from "./Pages/Goneis/DimiourgiaSymbolaiou";
 import PreviewAggelias from "./Pages/Epaggelmaties/PreviewAggelias";
 import GoneisProfile from "./Pages/Goneis/GoneisProfile";
+import EpaggelmatiesProfile from "./Pages/Epaggelmaties/EpaggelmatiesProfile";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
       <Route path="neo-symbolaio" element={<DimiourgiaSymbolaiou />} />
       <Route path="preview-aggelias" element={<PreviewAggelias />} />
       <Route path="goneis/profile" element = {<GoneisProfile />} />
+      <Route path="epaggelmaties/profile" element = {<EpaggelmatiesProfile />} />
     </Routes>    
       </BrowserRouter>
     </div>
