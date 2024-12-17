@@ -7,11 +7,11 @@ import ReactDOM from "react-dom/client";
 import BabysitterSearch from "./Pages/Goneis/BabysitterSearch";
 import MainAggeliesPGU from "./Pages/Epaggelmaties/MainAggeliesPGU";
 import DimiourgiaAggelias from "./Pages/Epaggelmaties/DimiourgiaAggelias";
-import DimiourgiaSymbolaiou from "./Pages/Goneis/DimiourgiaSymbolaiou";
-import PreviewAggelias from "./Pages/Epaggelmaties/PreviewAggelias";
-import GoneisProfile from "./Pages/Goneis/GoneisProfile";
-import EpaggelmatiesProfile from "./Pages/Epaggelmaties/EpaggelmatiesProfile";
-
+import MainRantevouPGU from "./Pages/Epaggelmaties/MainRantevouPGU"
+import AvailableRantevouPGU from "./Pages/Epaggelmaties/AvailableRantevouPGU";
+import AddRantevouPGU from "./Pages/Epaggelmaties/AddRantevouPGU"
+import ProepiskopisiRantevouPGU from "./Pages/Epaggelmaties/ProepiskopisiRantevouPGU";
+import EditRantevouPGU from "./Pages/Epaggelmaties/EditRantevouPGU";
 function App() {
   return (
     <div className="App">
@@ -23,10 +23,12 @@ function App() {
       <Route path="epaggelmaties" element={<MainEpaggelmatiesPGU />} />
       <Route path="aggelies" element={<MainAggeliesPGU />} />
       <Route path="nea-aggelia" element={<DimiourgiaAggelias />} />
-      <Route path="neo-symbolaio" element={<DimiourgiaSymbolaiou />} />
-      <Route path="preview-aggelias" element={<PreviewAggelias />} />
-      <Route path="goneis/profile" element = {<GoneisProfile />} />
-      <Route path="epaggelmaties/profile" element = {<EpaggelmatiesProfile />} />
+      
+      <Route path="epaggelmaties/rantevou" element={<MainRantevouPGU />} />
+      <Route path="epaggelmaties/rantevou/available" element={<AvailableRantevouPGU />} />
+      <Route path="epaggelmaties/rantevou/available/add" element={<AddRantevouPGU />} />
+      <Route path="epaggelmaties/rantevou/proepiskopisi" element={<ProepiskopisiRantevouPGU />} />
+      <Route path="epaggelmaties/rantevou/available/edit" element={<EditRantevouPGU />} />
     </Routes>    
       </BrowserRouter>
     </div>
