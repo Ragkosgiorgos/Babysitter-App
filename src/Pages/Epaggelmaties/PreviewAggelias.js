@@ -8,8 +8,8 @@ import { useLocation } from 'react-router-dom';
 
 function PreviewAggelias() {
     const location = useLocation();
-    const uid = location.state.uid; //? Get the user id from the location state
-    const aggelia_id = location.state.aggelia_id; //? Get the job id from the location state
+    const uid = location.state.uid;
+    const aggelia_id = location.state.aggelia_id;
 
     const navigate = useNavigate();
 

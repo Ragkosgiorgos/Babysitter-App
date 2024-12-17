@@ -52,7 +52,8 @@ function MainPGU(props) {
         <div style={{ display: "flex", justifyContent: "center" }}>
           <img style={{ marginRight: "8px", position: "relative", zIndex: 1 }} src="/hero1.avif" width="100%" height="500vh" alt="" />
         </div>
-        <div style={{ backgroundColor: "white", position: "relative", zIndex: 2, marginTop: "-10vh", display: "flex", width: "50%", justifyContent: "center", margin: "0 auto", flexDirection: "column", border: "1px solid black", borderRadius: "15px", height: "20vh" }}>
+        <div style={{ backgroundColor: "white", position: "relative", zIndex: 2, display: "flex", width: "50%", justifyContent: "center", margin: "0 auto",
+                     flexDirection: "column", border: "1px solid black", borderRadius: "15px", height: "20vh", marginTop: "-10vh" }}>
           <h6 style={{ textAlign: "center" }}>Βρείτε τον/την επαγγελματία που σας ταιριάζει!</h6>
           <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginTop: "3%" }}>
             <div style={{ display: "flex", width: "30%", outline: "1px solid black", marginLeft: "10%", borderRadius: "15px", height: "5vh" }}>
@@ -71,7 +72,10 @@ function MainPGU(props) {
             />
           </Link>
             </div>
-            <span style={{ marginRight: "10%", textDecoration: "underline" }}>Βρείτε εργασία</span>
+            <Link to="/epaggelmaties" className="nav-link" style={{background: "none",border: "none",padding: 0,cursor: "pointer",width: "30%",display: "flex",alignItems: "center",justifyContent: "space-between", textDecoration: "none" }}>
+              <span style={{ marginRight: "10%", textDecoration: "underline" }}>Βρείτε εργασία</span>
+            </Link>
+            
           </div>
         </div>
         <div style={{ display: "flex", justifyContent: "center", marginTop: "25px" }}>
@@ -80,8 +84,8 @@ function MainPGU(props) {
         <div style={{ marginLeft: "2vh" }}><h6>Δείτε ενδεικτικές αγγελίες για εργασία:</h6></div>
         <div style={{ marginTop: "20px", marginLeft: "20px", display: "flex", gap: "5vh", justifyContent: "center" }}>
           <JobofferReview id={1}/>
-          <JobofferReview id={2}/>
-          <JobofferReview id={3}/>
+          <JobofferReview id={4}/>
+          <JobofferReview id={5}/>
         </div>
 
       <div>

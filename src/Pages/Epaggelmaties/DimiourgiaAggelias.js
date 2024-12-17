@@ -202,7 +202,7 @@ function DimiourgiaAggelias() {
         setnewData((prevData) => ({
             ...prevData,
             id: newId,
-            status: "Ενεργή",
+            status: "Δημοσιευμένη",
         }));
         // Write the data to the database
         const updatedPosts = [...posts, newData];
@@ -214,7 +214,7 @@ function DimiourgiaAggelias() {
     const [newData, setnewData] = useState({
         id: -1,
         uid: uid,
-        status: "Σε Προσωρινή Αποθήκευση",//? Temporary status
+        status: "Σε Προσωρινή Αποθήκευση",
         date: new Date().toLocaleDateString(),
         area: "",
         description: "",
@@ -539,8 +539,11 @@ function DimiourgiaAggelias() {
             case 3:
                 return (
                     <div style={{ textAlign: "center", marginTop: "4%", marginBottom: "27%" }}>
-                        <h2>Η αγγελία σας με κωδικό {newData.id} δημοσιεύτηκε με επιτυχία!</h2>
-                        <h4>Μπορείτε να δείτε την αγγελία σας στην κατηγορία "Αγγελίες μου".</h4>
+                        
+                        {newData.status === "Δημοσιευμένη" && <h2>Η αγγελία σας με κωδικό {newData.id} δημοσιεύτηκε με επιτυχία!</h2>}
+                        {newData.status === "Σε Προσωρινή Αποθήκευση" && <h2>Η αγγελία σας με κωδικό {newData.id} αποθηκεύτηκε με επιτυχία!<br/>
+                                                                             Μπορείτε να την επεξεργαστείτε και να την οριστικοποιήσετε αργότερα.</h2>}
+                        <h4>Μπορείτε να δείτε την αγγελία σας στην κατηγορία "Οι Αγγελίες μου".</h4>
                     </div>
                 );
             case 4:
