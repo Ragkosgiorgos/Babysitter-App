@@ -18,8 +18,9 @@ function capitalizeWords(str) {
 }
 
 function BabysitterSearch() {
+  const [posts, setPosts] = useState([]);
+  const [filteredPosts, setFilteredPosts] = useState([]);
   const [profiles, setProfiles] = useState([]);
-  const [filteredProfiles, setFilteredProfiles] = useState([]);
 
   useEffect(() => {
     fetch("/data/ntantades.json")
@@ -31,7 +32,25 @@ function BabysitterSearch() {
       })
       .then((data) => {
         setProfiles(data);
-        setFilteredProfiles(data); // Initially, display all profiles
+      })
+      .catch((error) => {
+      })
+      .catch((error) => {
+        console.error("Error fetching JSON:", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetch("/data/aggelies.json")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setPosts(data);
+        setFilteredPosts(data);
       })
       .catch((error) => {
       })
@@ -48,28 +67,26 @@ function BabysitterSearch() {
     selectedEducation,
     timeSlots
   ) => {
-    console.log("Filters Applied: ", { fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, timeSlots });
-
-    let filtered = profiles;
+    let filtered = posts;
 
     // Filter by Χρόνος Απασχόλησης
     if (fullTimeChecked || partTimeChecked) {
-      filtered = filtered.filter(profile =>
-        (fullTimeChecked && profile.Apasxolisi === "Πλήρης") ||
-        (partTimeChecked && profile.Apasxolisi === "Μερική")
+      filtered = filtered.filter(post =>
+        (fullTimeChecked && post.time === "Πλήρης") ||
+        (partTimeChecked && post.time === "Μερική")
       );
     }
 
     // Filter by Περιοχή Διαμονής
     if (selectedLocation) {
-      filtered = filtered.filter(profile => profile.Polh.toLowerCase() === selectedLocation.toLowerCase());
+      filtered = filtered.filter(post => post.area.toLowerCase() === selectedLocation.toLowerCase());
     }
     
     // Filter by Ηλικία Παιδιού
     if (selectedAge) {
-      filtered = filtered.filter(profile => {
-        const minAge = parseFloat(profile.hlikia_apo);
-        const maxAge = parseFloat(profile.hlikia_ews);
+      filtered = filtered.filter(post => {
+        const minAge = parseFloat(post.ageFrom);
+        const maxAge = parseFloat(post.ageTo);
         return selectedAge >= minAge && selectedAge <= maxAge;
       });
     }
@@ -81,15 +98,15 @@ function BabysitterSearch() {
 
     // Filter by Time Slots (if available)
     if (timeSlots) {
-      filtered = filtered.filter((profile) => {
+      filtered = filtered.filter((post) => {
         return Object.keys(timeSlots).every((day) => {
           const { from, to } = timeSlots[day];
           if (from && to) {
-            const profileFrom = profile[`time_${day}_from`];
-            const profileTo = profile[`time_${day}_to`];
+            const postFrom = post[`time_${day}_from`];
+            const postTo = post[`time_${day}_to`];
             return (
-              (profileFrom >= from && profileTo <= to) ||
-              (profileFrom <= to && profileTo >= from)
+              (postFrom >= from && postTo <= to) ||
+              (postFrom <= to && postTo >= from)
             );
           }
           return true; // If no time slots are selected for a day, do not filter
@@ -97,42 +114,47 @@ function BabysitterSearch() {
       });
     }
 
-    setFilteredProfiles(filtered);
+    setFilteredPosts(filtered);
   };
 
   const resetFilters = () => {
-    // Reset the filtered profiles to all profiles when clearing filters
-    setFilteredProfiles(profiles);
+    setFilteredPosts(posts);
   };
 
   return (
     <div style={{ display: "flex", flexDirection: "column",minHeight:"185vh" }}>
+
     <Header log="not_connected" />
+
     <div style={{ flex: 1, display: "flex", flexDirection: "column", overflowY: "auto" }}>
+
       <Breadcrumbs />
+
       <div style={{ display: "flex", flex: 1 }}>
-        {/* Filters Section */}
+
         <BabysitterFilters
-          applyFilters={applyFilters} // Pass the applyFilters function here
-          resetFilters={resetFilters} // Pass the resetFilters function here
+            applyFilters={applyFilters}
+            resetFilters={resetFilters}
         />
-        {/* Job Postings Section */}
+
         <div style={{ flex: 1, padding: "1em" }}>
-          {filteredProfiles.map((profile) => (
+
+          {filteredPosts.map((post) => (
             <JobPosting
-              key={profile.id}
-              profile={{
-                ...profile,
-                apasxolisi: capitalizeWords(profile.apasxolisi),
-                area: capitalizeWords(profile.area),
-              }}
+              key={post.id}
+              post={post}
             />
           ))}
+
         </div>
+
       </div>
+
       <Footer />
+
     </div>
-</div>
+
+  </div>
 
   );
 }

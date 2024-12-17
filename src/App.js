@@ -19,7 +19,7 @@ function App() {
       <Routes>
       <Route path="/" element={<MainPGU />} />
       <Route path="goneis" element={<MainGoneisPGU />} />
-      <Route path="goneis/anazitisi" element={<BabysitterSearch />} />
+      <Route path="anazitisi" element={<BabysitterSearch />} />
       <Route path="epaggelmaties" element={<MainEpaggelmatiesPGU />} />
       <Route path="aggelies" element={<MainAggeliesPGU />} />
       <Route path="nea-aggelia" element={<DimiourgiaAggelias />} />

@@ -2,7 +2,9 @@ import React from "react";
 import { useNavigate } from 'react-router-dom';  // Import useNavigate and useLocation
 
 function JobPosting(props){
-  const {Onoma,Epitheto,Polh,Ilikia,Ekpaideush,Apasxolisi,Filoksenia,imgn, id} = props.profile;
+  const profile = props.profile;
+  const post = props.post;
+  const id = post.id;
   
   const navigate = useNavigate();
 
@@ -17,17 +19,17 @@ function JobPosting(props){
 
         <div style={{display:"flex",flexDirection:"row"}}>
 
-          <img style={{ marginRight: "2vh", marginLeft:"2vh", marginTop:"2vh" }} src={imgn} width="100vw" height="100vh" className="d-inline-block align-top" alt=""/>
+          <img style={{ marginRight: "2vh", marginLeft:"2vh", marginTop:"2vh" }} src={profile.imgn} width="100vw" height="100vh" className="d-inline-block align-top" alt=""/>
 
           <div style={{display:"flex",flexDirection:"column",marginTop:"2vh"}}>
 
-            <h3> {Onoma} {Epitheto} </h3>
+            <h3> {profile.onoma} {profile.surname} </h3>
             <div style={{display:"flex", flexDirection:"column", marginLeft:"0%", marginRight:"0%"}}>
-              <h6> <b>Πόλη:</b> {Polh} </h6>
-              <h6> <b>Ηλικία:</b> {Ilikia} </h6>
-              <h6> <b>Εκπαίδευση:</b> {Ekpaideush} </h6>
-              <h6> <b>Χρόνος Απασχόλησης:</b> {Apasxolisi} </h6>
-              <h6> <b>Φιλοξενία στον χώρο του/της:</b> {Filoksenia} </h6>
+              <h6> <b>Πόλη:</b> {post.area} </h6>
+              <h6> <b>Ηλικία:</b> {profile.age} </h6>
+              <h6> <b>Εκπαίδευση:</b> {profile.education} </h6>
+              <h6> <b>Χρόνος Απασχόλησης:</b> {post.time} </h6>
+              <h6> <b>Φιλοξενία στον χώρο του/της:</b> {post.accomodation} </h6>
             </div>
 
           </div>
