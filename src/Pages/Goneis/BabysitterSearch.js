@@ -4,6 +4,8 @@ import Footer from "../../Components/Footer";
 import Breadcrumbs from "../../Components/Breadcrump";
 import BabysitterFilters from "../../Components/GoneisComponents/BabysitterFilters";
 import JobPosting from "../../Components/EpaggelmatiesComponent/JobPosting";
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
 
 function BabysitterSearch() {
   const [posts, setPosts] = useState([]);
@@ -91,7 +93,7 @@ function BabysitterSearch() {
       filtered = filtered.filter(profile => profile.education === selectedEducation);
     }
 
-    if (timeSlots) {
+    if (timeSlots) {//?
       /*filtered = filtered.filter((post) => {
         return Object.keys(timeSlots).every((day) => {
           const { from, to } = timeSlots[day];
@@ -115,8 +117,42 @@ function BabysitterSearch() {
     setFilteredPosts(matchedPosts);
   };
 
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
+  const handlePageChange = (event, value) => {
+    setStartFrom((value - 1) * postsPerPage);console.log(value);
+    handleScrollToTop();
+  }
+
+  const [startFrom, setStartFrom] = useState(0);
+  const [postsPerPage, setPostsPerPage] = useState(4);
+
+  const handleChangeRowsPerPage = (event) => {
+    setPostsPerPage(parseInt(event.target.value, 10));
+    setStartFrom(0);
+  };
+
+  function rowsPerPageSelection() {
+    return (
+      <div style={{ display: "flex", justifyContent: "right", alignItems: "center" }}>
+        <p style={{ marginRight: "1em" }}>Αγγελίες ανά σελίδα:</p>
+        <select value={postsPerPage} onChange={handleChangeRowsPerPage} style={{ marginBottom: "1em", marginRight: "1em" }}>
+          {<option value={5}>5</option>}
+          {<option value={10}>10</option>}
+          {<option value={20}>20</option>}
+          {<option value={50}>50</option>}
+        </select>
+      </div>
+    );
+  }
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", minHeight: "185vh" }}>
+    <div style={{ display: "flex", flexDirection: "column" }}>
       <Header log="not_connected" />
 
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflowY: "auto" }}>
@@ -126,15 +162,27 @@ function BabysitterSearch() {
           <BabysitterFilters applyFilters={applyFilters} resetFilters={resetFilters} />
 
           <div style={{ flex: 1, padding: "1em" }}>
-            {filteredPosts.map(({ profile, ...post }) => (
-              <JobPosting
-                key={post.id}
-                post={post}
-                profile={profile}
-              />
-            ))}
+            {rowsPerPageSelection()}
+            <div style={{ flex: 1, padding: "1em" }}>
+              
+              <Stack spacing={2} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                {filteredPosts.slice(startFrom, startFrom + postsPerPage).map(({ profile, ...post }) => (
+                  <JobPosting
+                    key={post.id}
+                    post={post}
+                    profile={profile}
+                  />
+                ))}
+              </Stack>
+
+            </div>
+
+            <Pagination 
+                count={Math.ceil(filteredPosts.length / postsPerPage)} 
+                onChange={handlePageChange}
+                style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "1em" }}
+            />
           </div>
-          
         </div>
 
         <Footer />
