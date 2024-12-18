@@ -13,9 +13,9 @@ function MainEpaggelmatiesPGU(props){
             <Breadcrumbs />
             <div style={{ marginLeft: "2vh",marginTop:"6vh" }}><h6>Δείτε αγγελίες άλλων babysitter:</h6></div>
             <div style={{ marginTop: "20px", marginLeft: "20px", display: "flex", gap: "5vh", justifyContent: "center" }}>
-                <JobofferReview/>
-                <JobofferReview/>
-                <JobofferReview/>
+                <JobofferReview id={1}/>
+                <JobofferReview id={2}/>
+                <JobofferReview id={3}/>
             </div>
             <div style={{ display: "flex", justifyContent: "center", marginTop: "25px" }}>
                 <img style={{ height: "33vh" }} src="/Epaggelmatiesprogress.png" alt="" />
@@ -41,7 +41,7 @@ function MainEpaggelmatiesPGU(props){
             <div>
                 <Accordion defaultActiveKey="0" style={{width:"90%", margin:"auto", marginTop:"1.5vh"}}>
                 <Accordion.Item eventKey="0">
-                    <Accordion.Header>ΔΙΑΔΙΚΑΣΙΑ ΕΥΡΕΣΗΣ ΕΡΓΑΣΙΑΣ</Accordion.Header>
+                    <Accordion.Header>Διαδικασία εύρεσης εργασίας</Accordion.Header>
                     <Accordion.Body>
                     <span>
                         Αφού εγγραφείται στο Μητρώο Επιμελητών/τριών και δημιουργήσετε το προφιλ σας μπορείτε:

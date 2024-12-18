@@ -26,7 +26,7 @@ function JobofferReview(props) {
 
     const navigate = useNavigate();
     const handleSearchRedirect = () => {
-        navigate(`/anazitisi/${job_id}`);
+        navigate(`/view-post?id=${job_id}`);
     }
 
     useEffect(() => {
