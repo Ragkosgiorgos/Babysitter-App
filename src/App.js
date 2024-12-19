@@ -13,6 +13,7 @@ import AddRantevouPGU from "./Pages/Epaggelmaties/AddRantevouPGU"
 import ProepiskopisiRantevouPGU from "./Pages/Epaggelmaties/ProepiskopisiRantevouPGU";
 import EditRantevouPGU from "./Pages/Epaggelmaties/EditRantevouPGU";
 import ViewJobPost from "./Pages/Goneis/ViewJobPost";
+import PreviewAggelias from "./Pages/Epaggelmaties/Aggelies/PreviewAggelias";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="aggelies" element={<MainAggeliesPGU />} />
           
           <Route path="nea-aggelia" element={<DimiourgiaAggelias />} />
+          <Route path="preview-aggelias" element={<PreviewAggelias />} />
 
           <Route path="view-post" element={<ViewJobPost />} />
           
