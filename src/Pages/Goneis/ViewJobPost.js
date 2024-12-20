@@ -38,6 +38,10 @@ function ViewJobPost() {
             });
     }, []);
 
+    const handleReturn = () => {
+        window.history.back();
+    };
+
     useEffect(() => {
         if (posts.length > 0) {
             const post = posts.find((post) => post.id === id);
@@ -150,7 +154,7 @@ function ViewJobPost() {
                             </div>
                             <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "2%" }}>
                                 <DirectionsCarIcon style={{ width: "2.5vw", height: "2.5vh" }} />
-                                {post.transport ? "Διαθέτει" : "Δεν διαθέτει"} μεταφορικό μέσο
+                                {post.car ? "Διαθέτει" : "Δεν διαθέτει"} μεταφορικό μέσο
                             </div>
                             <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "2%" }}>
                                 <WorkHistoryIcon style={{ width: "2.5vw", height: "2.5vh" }} />
@@ -168,15 +172,21 @@ function ViewJobPost() {
                         <Carousel data-bs-theme="dark" style={{ width: "100%", height: "100%" }}>
                             <Carousel.Item>
                                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                                    //? Aksiologisi
+                                    {/* //? Aksiologisi */}
                                 </div>
                             </Carousel.Item>
                         </Carousel>
 
                     </div>
 
+                    
+
                 </div>
-        
+                
+                <button style={{ width: "7vw", height: "4vh", marginTop: "2vh", marginLeft: "4vh", borderRadius: "5%" }} onClick={handleReturn}>
+                    Επιστροφή
+                </button>
+
                 <Footer />
         
             </div>

@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import { Checkbox, FormControlLabel } from "@mui/material";
 import { MenuItem, Select, InputLabel, FormControl } from "@mui/material";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import updateLocale from 'dayjs/plugin/updateLocale';
 import 'dayjs/locale/el';
+import Radio from '@mui/material/Radio';
 
 dayjs.extend(localizedFormat);
 dayjs.extend(updateLocale);
@@ -28,20 +26,7 @@ function BabysitterFilters({ applyFilters, resetFilters }) {
   const [fullTimeChecked, setFullTimeChecked] = useState(false);
   const [partTimeChecked, setPartTimeChecked] = useState(false);
 
-  const [timeMondayFrom, setTimeMondayFrom] = useState(null);
-  const [timeMondayTo, setTimeMondayTo] = useState(null);
-  const [timeTuesdayFrom, setTimeTuesdayFrom] = useState(null);
-  const [timeTuesdayTo, setTimeTuesdayTo] = useState(null);
-  const [timeWednesdayFrom, setTimeWednesdayFrom] = useState(null);
-  const [timeWednesdayTo, setTimeWednesdayTo] = useState(null);
-  const [timeThursdayFrom, setTimeThursdayFrom] = useState(null);
-  const [timeThursdayTo, setTimeThursdayTo] = useState(null);
-  const [timeFridayFrom, setTimeFridayFrom] = useState(null);
-  const [timeFridayTo, setTimeFridayTo] = useState(null);
-  const [timeSaturdayFrom, setTimeSaturdayFrom] = useState(null);
-  const [timeSaturdayTo, setTimeSaturdayTo] = useState(null);
-  const [timeSundayFrom, setTimeSundayFrom] = useState(null);
-  const [timeSundayTo, setTimeSundayTo] = useState(null);
+  const [hasCar, setHasCar] = useState(false);
 
   const areasOfGreece = [
     "Αθήνα",
@@ -73,47 +58,44 @@ function BabysitterFilters({ applyFilters, resetFilters }) {
   // Handle changes for city and age dropdowns
   const handleLocationChange = (event) => {
     setSelectedLocation(event.target.value);
-    applyFilters(fullTimeChecked, partTimeChecked, event.target.value, selectedAge, selectedEducation, null);
+    applyFilters(fullTimeChecked, partTimeChecked, event.target.value, selectedAge, selectedEducation, hasCar);
   };
 
   const handleAgeChange = (event) => {
     setSelectedAge(event.target.value);
-    applyFilters(fullTimeChecked, partTimeChecked, selectedLocation, event.target.value, selectedEducation, null);
+    applyFilters(fullTimeChecked, partTimeChecked, selectedLocation, event.target.value, selectedEducation, hasCar);
   };
 
-  const handleEducationChange = (event) => setSelectedEducation(event.target.value);
+  const handleEducationChange = (event) => {
+    setSelectedEducation(event.target.value);
+    applyFilters(fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, event.target.value, hasCar);
+  };
 
   const handleFullTimeChange = (event) => {
     setFullTimeChecked(event.target.checked);
-    applyFilters(event.target.checked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, null);
+    applyFilters(event.target.checked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, hasCar);
   };
 
   const handlePartTimeChange = (event) => {
     setPartTimeChecked(event.target.checked);
-    applyFilters(fullTimeChecked, event.target.checked, selectedLocation, selectedAge, selectedEducation, null);
+    applyFilters(fullTimeChecked, event.target.checked, selectedLocation, selectedAge, selectedEducation, hasCar);
   };
+
+  const handleCarChange = (event) => {
+    setHasCar(event.target.value === "Ναι");console.log(event.target.value);
+    applyFilters(fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, event.target.value === "Ναι");
+  }
 
   const handleClearAll = () => {
     setSelectedLocation("");
     setSelectedAge("");
     setFullTimeChecked(false);
     setPartTimeChecked(false);
-    setTimeMondayFrom(null);
-    setTimeMondayTo(null);
-    setTimeTuesdayFrom(null);
-    setTimeTuesdayTo(null);
-    setTimeWednesdayFrom(null);
-    setTimeWednesdayTo(null);
-    setTimeThursdayFrom(null);
-    setTimeThursdayTo(null);
-    setTimeFridayFrom(null);
-    setTimeFridayTo(null);
-    setTimeSaturdayFrom(null);
-    setTimeSaturdayTo(null);
-    setTimeSundayFrom(null);
-    setTimeSundayTo(null);
+    setSelectedEducation("");
+    setHasCar(false);
     resetFilters();
   };
+
   return (
     <div style={{ display: "flex", flexDirection: "column", width: "30%" }}>
       <div style={{ display: "flex", flexDirection: "column", marginTop: "10%", marginLeft: "40px" }}>
@@ -177,40 +159,7 @@ function BabysitterFilters({ applyFilters, resetFilters }) {
         </div>
         <div style={{ marginTop: "2vh", display: "flex", flexDirection: "column" }}>
           <h6 style={{fontWeight:"bold"}}>Ημέρες και ώρες</h6>
-            <div style={{ marginTop: "1vh", display: "flex", flexDirection: "column", gap: "10px" , width:"80%"}}>
-              {[
-                { day: "Δευτέρα", from: timeMondayFrom, to: timeMondayTo, setFrom: setTimeMondayFrom, setTo: setTimeMondayTo },
-                { day: "Τρίτη", from: timeTuesdayFrom, to: timeTuesdayTo, setFrom: setTimeTuesdayFrom, setTo: setTimeTuesdayTo },
-                { day: "Τετάρτη", from: timeWednesdayFrom, to: timeWednesdayTo, setFrom: setTimeWednesdayFrom, setTo: setTimeWednesdayTo },
-                { day: "Πέμπτη", from: timeThursdayFrom, to: timeThursdayTo, setFrom: setTimeThursdayFrom, setTo: setTimeThursdayTo },
-                { day: "Παρασκευή", from: timeFridayFrom, to: timeFridayTo, setFrom: setTimeFridayFrom, setTo: setTimeFridayTo },
-                { day: "Σάββατο", from: timeSaturdayFrom, to: timeSaturdayTo, setFrom: setTimeSaturdayFrom, setTo: setTimeSaturdayTo },
-                { day: "Κυριακή", from: timeSundayFrom, to: timeSundayTo, setFrom: setTimeSundayFrom, setTo: setTimeSundayTo },
-              ].map(({ day, from, to, setFrom, setTo }) => (
-                <div key={day} style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-                  <h6>{day}</h6>
-                  <div style={{ display: "flex", gap: "10px" }}>
-                  <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="el">
-                    <TimePicker
-                      label="Από"
-                      value={from ? dayjs(from, 'HH:mm') : null}
-                      onChange={(newValue) => setFrom(newValue.format('HH:mm'))}
-                      format="h:mm"
-                    />
-                  </LocalizationProvider>
-                    <h6 style={{marginTop: "5%"}}><b>-</b></h6>
-                    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="el">
-                      <TimePicker
-                        label="Έως"
-                        value={to ? dayjs(to, 'HH:mm') : null}
-                        onChange={(newValue) => setTo(newValue.format('HH:mm'))}
-                        format="h:mm"
-                      />
-                    </LocalizationProvider>
-                  </div>
-                </div>
-              ))}
-            </div>
+            {/*//? */}
         </div>
         <div style={{ marginTop: "2vh" }}>
           <h6 style={{fontWeight:"bold"}}>Εκπαίδευση</h6>
@@ -231,6 +180,26 @@ function BabysitterFilters({ applyFilters, resetFilters }) {
                 ))}
               </Select>
             </FormControl>
+        </div>
+        <div style={{ marginTop: "2vh" }}>
+          <h6 style={{fontWeight:"bold"}}>Μεταφορικό μέσο</h6>
+          <Radio
+            checked={hasCar}
+            onChange={handleCarChange}
+            value="Ναι"
+            name="radio-buttons"
+            inputProps={{ 'aria-label': 'Ναι' }}
+          />
+          Ναι
+          <Radio
+            checked={!hasCar}
+            onChange={handleCarChange}
+            value="Όχι"
+            name="radio-buttons"
+            inputProps={{ 'aria-label': 'Όχι' }}
+          />
+          Όχι
+
         </div>
       </div>
     </div>

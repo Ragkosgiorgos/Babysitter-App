@@ -66,7 +66,19 @@ function BabysitterSearch() {
     }
   }, [profiles, posts]);
 
-  const applyFilters = (fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, timeSlots) => {
+    // Capitalize the first letter of each word
+    function capitalizeWords(str) {
+      if (str === undefined || str === null) {
+          return '';
+      }
+      return str
+          .toLowerCase()
+          .split(" ")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ");
+    }
+
+  const applyFilters = (fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, hasCar) => {
     let filtered = matchedPosts;
 
     // Filter logic remains the same as before...
@@ -90,24 +102,11 @@ function BabysitterSearch() {
     }
 
     if (selectedEducation) {
-      filtered = filtered.filter(profile => profile.education === selectedEducation);
+      filtered = filtered.filter(profile => profile.profile.education === capitalizeWords(selectedEducation));
     }
 
-    if (timeSlots) {//?
-      /*filtered = filtered.filter((post) => {
-        return Object.keys(timeSlots).every((day) => {
-          const { from, to } = timeSlots[day];
-          if (from && to) {
-            const postFrom = post[`time_${day}_from`];
-            const postTo = post[`time_${day}_to`];
-            return (
-              (postFrom >= from && postTo <= to) ||
-              (postFrom <= to && postTo >= from)
-            );
-          }
-          return true;
-        });
-      });*/
+    if (hasCar) {
+      filtered = filtered.filter(profile => profile.car === true);
     }
 
     setFilteredPosts(filtered);
@@ -125,12 +124,12 @@ function BabysitterSearch() {
   };
 
   const handlePageChange = (event, value) => {
-    setStartFrom((value - 1) * postsPerPage);console.log(value);
+    setStartFrom((value - 1) * postsPerPage);
     handleScrollToTop();
   }
 
   const [startFrom, setStartFrom] = useState(0);
-  const [postsPerPage, setPostsPerPage] = useState(4);
+  const [postsPerPage, setPostsPerPage] = useState(5);
 
   const handleChangeRowsPerPage = (event) => {
     setPostsPerPage(parseInt(event.target.value, 10));
@@ -152,7 +151,7 @@ function BabysitterSearch() {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Header log="not_connected" />
 
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflowY: "auto" }}>
