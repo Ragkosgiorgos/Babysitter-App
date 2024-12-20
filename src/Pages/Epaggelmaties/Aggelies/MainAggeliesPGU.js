@@ -33,8 +33,8 @@ function MainAggeliesPGU() {
     navigate("/preview-aggelias", { state: { uid: uid, aggelia_id: aggelia_id } });
   };
 
-  const handleTempView = () => {
-    navigate("/nea-aggelia", { state: { uid: uid, step: "2" } });
+  const handleTempView = (post_id) => {
+    navigate("/nea-aggelia", { state: { uid: uid, step: "2", post_id: post_id } });
   };
 
   useEffect(() => {
@@ -134,7 +134,7 @@ function MainAggeliesPGU() {
                       <td>{post.status}</td>
                       <td style={{ display: "flex", justifyContent: "center", alignItems:"center", marginTop:"0.5em", gap:"10px" }}>
                         { post.status !== "Σε προσωρινή αποθήκευση" ? <VisibilityIcon style={{ cursor: "pointer" }} onClick={() => previewAggeliaRender(post.id)} /> : <VisibilityIcon style={{ height: "0px" }}/> }
-                        { post.status === "Σε προσωρινή αποθήκευση" ? <ArrowForwardIcon style={{ cursor: "pointer" }} onClick={handleTempView} /> : <ArrowForwardIcon style={{ height: "0px" }}/> }
+                        { post.status === "Σε προσωρινή αποθήκευση" ? <ArrowForwardIcon style={{ cursor: "pointer" }} onClick={() => handleTempView(post.id)} /> : <ArrowForwardIcon style={{ height: "0px" }}/> }
                         <DeleteForeverIcon style={{ cursor: "pointer" }} onClick={() => handleDelete(post.id)} />
                       </td>
                     </tr>

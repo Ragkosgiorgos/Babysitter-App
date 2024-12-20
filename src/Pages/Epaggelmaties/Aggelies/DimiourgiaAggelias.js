@@ -30,6 +30,7 @@ function DimiourgiaAggelias() {
     const location = useLocation();
     const uid = location.state.uid; // Get the user id from the location state
     const step = parseInt(location.state.step); // Get the step from the location state
+    const post_id = parseInt(location.state.post_id) || -1; // Get the post id from the location state
 
     const [profiles, setProfiles] = useState([]);
     const [posts, setPosts] = useState([]);
@@ -83,6 +84,17 @@ function DimiourgiaAggelias() {
             setPosts(userPosts);
         }
     }, [user, posts, uid]);
+
+    useEffect(() => {
+        if (post_id !== -1) {
+            const foundPost = posts.find((post) => post.id === post_id);
+            if (foundPost) {
+                setnewData(foundPost);console.log("Found post:", foundPost);
+                newData.ageFrom = parseFloat(newData.ageFrom);
+                newData.ageTo = parseFloat(newData.ageTo);
+            }
+        }
+    }, [post_id, posts]);   
 
     const steps = [
         "Επιβεβαίωση προσωπικών στοιχείων",
@@ -214,7 +226,7 @@ function DimiourgiaAggelias() {
     const [newData, setnewData] = useState({
         id: -1,
         uid: uid,
-        status: "Σε Προσωρινή Αποθήκευση",
+        status: "Σε προσωρινή Αποθήκευση",
         date: new Date().toLocaleDateString(),
         area: "",
         description: "",
@@ -315,7 +327,7 @@ function DimiourgiaAggelias() {
                                     <Select
                                         labelId="agg-area-select-label"
                                         name="area"
-                                        value={newData.area}
+                                        value={capitalizeWords(newData.area)}
                                         onChange={handleInputChange}
                                         style={{ height: "auto" }}
                                         displayEmpty
@@ -541,7 +553,7 @@ function DimiourgiaAggelias() {
                     <div style={{ textAlign: "center", marginTop: "4%", marginBottom: "27%" }}>
                         
                         {newData.status === "Δημοσιευμένη" && <h2>Η αγγελία σας με κωδικό {newData.id} δημοσιεύτηκε με επιτυχία!</h2>}
-                        {newData.status === "Σε Προσωρινή Αποθήκευση" && <h2>Η αγγελία σας με κωδικό {newData.id} αποθηκεύτηκε με επιτυχία!<br/>
+                        {newData.status === "Σε προσωρινή Αποθήκευση" && <h2>Η αγγελία σας με κωδικό {newData.id} αποθηκεύτηκε με επιτυχία!<br/>
                                                                              Μπορείτε να την επεξεργαστείτε και να την οριστικοποιήσετε αργότερα.</h2>}
                         <h4>Μπορείτε να δείτε την αγγελία σας στην κατηγορία "Οι Αγγελίες μου".</h4>
                     </div>
