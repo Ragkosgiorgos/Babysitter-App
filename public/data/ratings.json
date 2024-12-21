@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "id_p": 1,
+        "id_b": 2,
+        "rating": 10,
+        "comment": "Great babysitter!"
+    },
+    {
+        "id": 2,
+        "id_p": 2,
+        "id_b": 2,
+        "rating": 8,
+        "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris pharetra eu massa vitae viverra. Suspendisse volutpat massa quis eros luctus, a imperdiet orci lobortis. Nunc finibus, mauris sed vestibulum cursus, sapien sapien scelerisque leo, id molestie purus dui quis nulla. Quisque venenatis ac nibh id dignissim. Integer at mollis felis, molestie cursus nibh. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam maximus ullamcorper lacus eget pretium. "
+    },
+    {
+        "id": 3,
+        "id_p": 3,
+        "id_b": 3,
+        "rating": 6,
+        "comment": "Average babysitter!"
+    },
+    {
+        "id": 4,
+        "id_p": 4,
+        "id_b": 1,
+        "rating": 3,
+        "comment": "Bad babysitter!"
+    },
+    {
+        "id": 5,
+        "id_p": 1,
+        "id_b": 5,
+        "rating": 1,
+        "comment": "Terrible babysitter!"
+    }
+]

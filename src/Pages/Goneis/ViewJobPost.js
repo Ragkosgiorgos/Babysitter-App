@@ -11,6 +11,7 @@ import PlaceIcon from '@mui/icons-material/Place';
 import SchoolIcon from '@mui/icons-material/School';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
+import { useNavigate } from "react-router-dom";
 
 function ViewJobPost() {
     const params = new URLSearchParams(window.location.search);
@@ -20,6 +21,10 @@ function ViewJobPost() {
     const [post, setPost] = useState({});
     const [profiles, setProfiles] = useState([]);
     const [profile, setProfile] = useState({});
+    const [ratings, setRatings] = useState([]);
+    const [filteredRatings, setFilteredRatings] = useState([]);
+    const [epistoles, setEpistoles] = useState([]);
+    const [filteredEpistoles, setFilteredEpistoles] = useState([]);
 
     useEffect(() => {
         fetch("/data/aggelies.json")
@@ -73,6 +78,70 @@ function ViewJobPost() {
         }
     }, [profiles, post]);
 
+    useEffect(() => {
+        fetch("/data/ratings.json")
+            .then((response) => {
+                console.log("Response:", response);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                setRatings(data);
+            })
+            .catch((error) => {
+                console.error("Error fetching JSON:", error);
+            });
+    }, []);
+
+    useEffect(() => {
+        if (ratings.length > 0 && profile && profile.uid) {
+            const filteredRatings = ratings.filter((rating) => rating.id_b === profile.uid);
+            setFilteredRatings(filteredRatings);
+        }
+    }, [ratings, post, profile]);
+
+    useEffect(() => {
+        fetch("/data/epistoles.json")
+            .then((response) => {
+                console.log("Response:", response);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                setEpistoles(data);
+            })
+            .catch((error) => {
+                console.error("Error fetching JSON:", error);
+            });
+    }, []);
+
+    useEffect(() => {
+        if (epistoles.length > 0 && profile && profile.uid) {
+            const filteredEpistoles = epistoles.filter((epistole) => epistole.id_b === profile.uid);
+            setFilteredEpistoles(filteredEpistoles);
+        }
+    }, [epistoles, post, profile]);
+
+    const TruncatedText = ({ text }) => {
+        const maxLength = 150;
+
+        const truncate = (str, length) => {
+        if (str.length <= length) return str;
+
+        const truncated = str.slice(0, length); // Initial truncation
+        const lastSpaceIndex = truncated.lastIndexOf(" "); // Find last space before cutoff
+        return str.slice(0, lastSpaceIndex) + "...";
+        };
+
+        const truncatedText = truncate(text, maxLength);
+
+        return <p>{truncatedText}</p>;
+    };
+
     const calculateAge = (birthdate) => {
         const birthDate = new Date(birthdate);
         const today = new Date();
@@ -85,9 +154,14 @@ function ViewJobPost() {
         return age;
     };
 
-    const handleFileClick = () => {
-        // Opens the file in a new tab
-        window.open("https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", "_blank");
+    const handleFileClick = (link) => {
+        window.open(link, "_blank");
+    };
+
+    const navigate = useNavigate();
+    
+    const handleViewRating = (r_id) => {
+        navigate("/view-rating");
     };
 
     if (!profile || !post) {
@@ -118,23 +192,25 @@ function ViewJobPost() {
                     </div>
                 </div>
 
-                <div style={{ display: "flex", flex: 1, justifyContent: "center", flexDirection: "row", marginLeft: "7vh" }}>
+                <div style={{ display: "flex", flex: 1, justifyContent: "center", flexDirection: "row", textAlign: "center" }}>
                     
-                    <div style={{ display: "flex", flex: 1, flexDirection: "column", marginLeft: "2%", alignItems: "center" }}>
-                        <span style={{ fontSize: "20px" }}><b>Συστατικές επιστολές</b></span>
-                        {/*//? List of recommendation letter */}
-                        <ul>
-                            <li style={{ cursor: "pointer" }}>
-                                <span onClick={handleFileClick} style={{ color: "blue" }}>
-                                    Επιστολή 1
-                                </span>
-                            </li>
+                    <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center" }}>
+                        <span style={{ fontSize: "20px" }}><b style={{textDecoration:"underline"}}>Συστατικές επιστολές</b></span>
+                        <ul style={{marginTop:"2vh"}}>
+                            {filteredEpistoles.length === 0 ? <h6 style={{marginTop:"2vh"}}>Δεν υπάρχουν επιστολές!</h6> : ""}
+                            {filteredEpistoles.map((epistole, index) => (
+                                <li key={epistole.id} style={{marginBottom:"2vh"}}>
+                                    <span style={{ fontSize:"20px", cursor:"pointer", color:"blue" }} onClick={() => handleFileClick(epistole.link)}>
+                                        {`Επιστολή ${index + 1}`}
+                                    </span>
+                                </li>
+                            ))}
                         </ul>
 
                     </div>
 
-                    <div style={{ display: "flex", flex: 1, flexDirection: "column", marginLeft: "2%", alignItems: "center" }}>
-                        <span style={{ fontSize: "20px" }}><b>Πληροφορίες</b></span>
+                    <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center" }}>
+                        <span style={{ fontSize: "20px" }}><b style={{textDecoration:"underline"}}>Πληροφορίες</b></span>
                         <div style={{ display: "flex", flexDirection: "column", marginTop: "2%" }}>
                             <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "2%" }}>
                                 <HomeIcon style={{ width: "2.5vw", height: "2.5vh" }} />
@@ -160,26 +236,28 @@ function ViewJobPost() {
                                 <WorkHistoryIcon style={{ width: "2.5vw", height: "2.5vh" }} />
                                 {profile.workExperience}
                             </div>
-
                         </div>
-                        
                     </div>
 
-                    <div style={{ display: "flex", flex: 1, flexDirection: "column", marginLeft: "2%", alignItems: "center" }}>
-                        <span style={{ fontSize: "20px" }}><b>Αξιολογήσεις</b></span>
-                        {/*//?List of ratings*/}
-                        {/*rating.count > 0 ? div : "Den yparoxun aksiologiseis"*/}
-                        <Carousel data-bs-theme="dark" style={{ width: "100%", height: "100%" }}>
-                            <Carousel.Item>
-                                <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                                    {/* //? Aksiologisi */}
-                                </div>
-                            </Carousel.Item>
-                        </Carousel>
+                    <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center" }}>
+                        <span style={{ fontSize: "20px" }}><b style={{textDecoration:"underline"}}>Αξιολογήσεις</b></span>
+                        {filteredRatings.length === 0 ? <h5 style={{marginTop:"4vh"}}>Δεν υπάρχουν αξιολογήσεις!</h5> : 
+                        <Carousel data-bs-theme="dark" style={{ width: "20vw", height: "30vh", marginTop: "2vh" }}>
+                            {filteredRatings.map((rating) => (
+                                <Carousel.Item key={rating.id}>
+                                    <h3>Βαθμολογία: {rating.rating}</h3>
+                                    <p style={{ width:"70%", textAlign:"center", margin:"auto" }}>
+                                        {TruncatedText({ text: rating.comment })}
+                                    </p>
+                                    <button style={{ width: "5vw", height: "3vh", borderRadius: "5%" }} onClick = {() => handleViewRating(rating.id)}>
+                                        Προβολή
+                                    </button>
+                                </Carousel.Item>
+                                
+                            ))}
+                        </Carousel>}
 
                     </div>
-
-                    
 
                 </div>
                 

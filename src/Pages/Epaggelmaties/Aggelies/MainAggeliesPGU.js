@@ -18,7 +18,7 @@ function MainAggeliesPGU() {
   const [ntantades, setNtantades] = useState([]);
   const [ntanta, setNtanta] = useState({});
 
-  const handleDelete = (id) => { //? Delete the post with the given id from the base
+  const handleDelete = (id) => {
     const updatedPosts = posts.filter(post => post.id !== id);
     setPosts(updatedPosts);
   };
