@@ -2,11 +2,19 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Link, useNavigate, useLocation } from 'react-router-dom';  // Import useNavigate and useLocation
+import { signOut } from 'firebase/auth';  // Import signOut
+import { FIREBASE_AUTH } from '../config/firebase';  // Import the Firebase authentication instance
 
 function Header(props) {
-    const name = props.name;
-    const surname = props.surname;
-    const property = props.property;
+    const user = props.user;
+    let name = '';
+    let surname = '';
+    let property = '';
+    if (user) {
+        name = user.firstName;
+        //surname = user.surname;
+        property = user.property;
+    }
 
     const navigate = useNavigate();  
     const location = useLocation();  
@@ -22,8 +30,23 @@ function Header(props) {
             navigate('/epaggelmaties');  
         }
     };
+    
+    const handleUnsubscribe = () => {
+        const handleLogout = async () => {
+                try {
+                    await signOut(FIREBASE_AUTH);
+                    navigate('/');
+                } catch (error) {
+                    console.error('Error logging out:', error);
+                }
+            };
 
-    if (props.log === 'connected' && property === 'babysitter') {
+        handleLogout();
+        navigate('/');
+        window.location.reload();
+    };
+
+    if (user && property === 'babysitter') {
         return (
             <nav className="navbar navbar-expand-lg" style={{ backgroundColor: '#2E86AB' }}>
                 <div className="container-fluid" style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -132,7 +155,7 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/#" style={{ color: 'red', borderTop: "2px solid #333" }}>
+                                <a className="dropdown-item" href="/#" style={{ color: 'red', borderTop: "2px solid #333" }} onClick={handleUnsubscribe}>
                                     Αποσύνδεση
                                 </a>
                             </li>
@@ -141,7 +164,7 @@ function Header(props) {
                 </div>
             </nav>
         );
-    } else if (props.log === 'connected' && property === 'parent') {
+    } else if (user && property === 'parent') {
         return (
             <nav className="navbar navbar-expand-lg" style={{ backgroundColor: '#2E86AB' }}>
                 <div className="container-fluid" style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -240,7 +263,7 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/#" style={{ color: 'red', borderTop: "2px solid #333" }}>
+                                <a className="dropdown-item" href="/#" style={{ color: 'red', borderTop: "2px solid #333" }} onClick={handleUnsubscribe}>
                                     Αποσύνδεση
                                 </a>
                             </li>
@@ -249,7 +272,7 @@ function Header(props) {
                 </div>
             </nav>
         );
-    } else if (props.log === 'not_connected') {
+    } else if (!user) {
         return (
             <nav className="navbar navbar-expand-lg" style={{ backgroundColor: '#2E86AB' }}>
                 <div className="container-fluid" style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -311,8 +334,12 @@ function Header(props) {
                         </ul>
                     </div>
                     <div className="dropdown ms-3">
-                        <button style={{ marginRight: '8px', borderRadius: '15%' }}>Σύνδεση</button>
-                        <button style={{ marginRight: '8px', borderRadius: '15%' }}>Εγγραφή</button>
+                        <button style={{ marginRight: '8px', borderRadius: '15%' }} onClick={() => navigate('/login')}>
+                            Σύνδεση
+                        </button>
+                        <button style={{ marginRight: '8px', borderRadius: '15%' }} onClick={() => navigate('/register')}>
+                            Εγγραφή
+                        </button>
                     </div>
                 </div>
             </nav>

@@ -7,6 +7,11 @@ import Accordion from 'react-bootstrap/Accordion';
 import JobofferReview from "../Components/EpaggelmatiesComponent/JobofferReview";
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { FIREBASE_DB} from '../config/firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
+import { FIREBASE_AUTH } from '../config/firebase';
+import { use } from "react";
 
 function MainPGU(props) {
   const navigate = useNavigate();  
@@ -17,6 +22,45 @@ function MainPGU(props) {
         navigate('/anazitisi');  
     }
   };
+
+  // get if user is logged in
+  const [uuid, setUuid] = useState(null);
+  useEffect(() => {
+      const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+          if (user) {
+              setUuid(user.uid);
+          }
+      });
+      return () => unsubscribe();
+  }, []);
+
+  // get users from firebase
+  const [userData, setUserData] = useState([]);
+  const fetchUserData = async () => {
+      try {
+          const q = query(collection(FIREBASE_DB, 'user')); // Query all users
+          const querySnapshot = await getDocs(q);
+          const users = querySnapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+          }));
+          setUserData(users);
+      } catch (error) {
+          console.error('Error fetching user data:', error);
+      }
+  };
+  fetchUserData();
+
+  // Match the user's id with the user id
+  const [user, setUser] = useState({});
+  useEffect(() => {
+      if (userData.length > 0) {
+          const user = userData.find((user) => user.userId === uuid);
+          setUser(user);
+      }
+  }
+  , [userData, uuid]);
+  console.log(user);
 
   const [ntantades, setNtantades] = useState([]);
   const [ntanta, setNtanta] = useState({});
@@ -47,7 +91,7 @@ function MainPGU(props) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: "100vh" }}>
-      <Header log="connected" uid={ntanta.uid} name={ntanta.name} surname={ntanta.surname} property="babysitter" />
+      <Header user={user} />
       <div style={{ flex: 1, overflowY: "auto" }}>
         <div style={{ display: "flex", justifyContent: "center" }}>
           <img style={{ marginRight: "8px", position: "relative", zIndex: 1 }} src="/hero1.avif" width="100%" height="500vh" alt="" />
