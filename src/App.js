@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainPGU from "./Pages/MainPGU";
 import MainGoneisPGU from "./Pages/Goneis/MainGoneisPGU";
 import MainEpaggelmatiesPGU from "./Pages/Epaggelmaties/MainEpaggelmatiesPGU";
-import ReactDOM from "react-dom/client";
 import BabysitterSearch from "./Pages/Goneis/BabysitterSearch";
 import MainAggeliesPGU from "./Pages/Epaggelmaties/Aggelies/MainAggeliesPGU";
 import DimiourgiaAggelias from "./Pages/Epaggelmaties/Aggelies/DimiourgiaAggelias";
@@ -14,6 +13,12 @@ import ProepiskopisiRantevouPGU from "./Pages/Epaggelmaties/ProepiskopisiRantevo
 import EditRantevouPGU from "./Pages/Epaggelmaties/EditRantevouPGU";
 import ViewJobPost from "./Pages/Goneis/ViewJobPost";
 import PreviewAggelias from "./Pages/Epaggelmaties/Aggelies/PreviewAggelias";
+import GonRatingMain from "./Pages/Goneis/Ratings/GonRatingMain";
+import EpaggRatingMain from "./Pages/Epaggelmaties/Ratings/EpaggRatingMain";
+import ViewRating from "./Pages/Epaggelmaties/Ratings/ViewRating";
+import Login from "./Components/Login";
+import Register from "./Components/Register";
+import Profile from "./Components/Profile";
 
 function App() {
   return (
@@ -22,6 +27,9 @@ function App() {
       <BrowserRouter>
 
         <Routes>
+          <Route path="profile" element={<Profile/>} />
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register/>} />
 
           <Route path="/" element={<MainPGU />} />
           <Route path="goneis" element={<MainGoneisPGU />} />
@@ -41,6 +49,14 @@ function App() {
           <Route path="epaggelmaties/rantevou/available/add" element={<AddRantevouPGU />} />
           <Route path="epaggelmaties/rantevou/proepiskopisi" element={<ProepiskopisiRantevouPGU />} />
           <Route path="epaggelmaties/rantevou/available/edit" element={<EditRantevouPGU />} />
+
+          <Route path="goneis/ratings" element={<GonRatingMain />} />
+
+          <Route path="epaggelmaties/ratings" element={<EpaggRatingMain />} />
+
+          <Route path="preview-aksiologisis" element={<ViewRating />} />
+
+          <Route path="*" element={<h1>404 - Not Found</h1>} />
 
         </Routes>
 

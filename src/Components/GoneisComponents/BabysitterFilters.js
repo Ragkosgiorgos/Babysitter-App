@@ -26,6 +26,9 @@ function BabysitterFilters({ applyFilters, resetFilters }) {
   const [fullTimeChecked, setFullTimeChecked] = useState(false);
   const [partTimeChecked, setPartTimeChecked] = useState(false);
 
+  const [weekdays, setWeekdays] = useState(false);
+  const [weekends, setWeekends] = useState(false);
+
   const [hasCar, setHasCar] = useState(false);
 
   const areasOfGreece = [
@@ -68,22 +71,32 @@ function BabysitterFilters({ applyFilters, resetFilters }) {
 
   const handleEducationChange = (event) => {
     setSelectedEducation(event.target.value);
-    applyFilters(fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, event.target.value, hasCar);
+    applyFilters(fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, event.target.value, hasCar, weekdays, weekends);
   };
 
   const handleFullTimeChange = (event) => {
     setFullTimeChecked(event.target.checked);
-    applyFilters(event.target.checked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, hasCar);
+    applyFilters(event.target.checked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, hasCar, weekdays, weekends);
   };
 
   const handlePartTimeChange = (event) => {
     setPartTimeChecked(event.target.checked);
-    applyFilters(fullTimeChecked, event.target.checked, selectedLocation, selectedAge, selectedEducation, hasCar);
+    applyFilters(fullTimeChecked, event.target.checked, selectedLocation, selectedAge, selectedEducation, hasCar, weekdays, weekends);
   };
 
   const handleCarChange = (event) => {
     setHasCar(event.target.value === "Ναι");console.log(event.target.value);
-    applyFilters(fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, event.target.value === "Ναι");
+    applyFilters(fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, event.target.value === "Ναι", weekdays, weekends);
+  }
+
+  const handleWeekdaysChange = (event) => {
+    setWeekdays(event.target.checked);
+    applyFilters(fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, hasCar, event.target.checked, weekends);
+  };
+
+  const handleWeekendsChange = (event) => {
+    setWeekends(event.target.checked);
+    applyFilters(fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, hasCar, weekdays, event.target.checked);
   }
 
   const handleClearAll = () => {
@@ -91,6 +104,8 @@ function BabysitterFilters({ applyFilters, resetFilters }) {
     setSelectedAge("");
     setFullTimeChecked(false);
     setPartTimeChecked(false);
+    setWeekdays(false);
+    setWeekends(false);
     setSelectedEducation("");
     setHasCar(false);
     resetFilters();
@@ -157,9 +172,16 @@ function BabysitterFilters({ applyFilters, resetFilters }) {
               </Select>
             </FormControl>
         </div>
-        <div style={{ marginTop: "2vh", display: "flex", flexDirection: "column" }}>
+        <div style={{ marginTop: "2vh" }}>
           <h6 style={{fontWeight:"bold"}}>Ημέρες και ώρες</h6>
-            {/*//? */}
+          <FormControlLabel
+            control={<Checkbox checked={weekdays} onChange={handleWeekdaysChange} />}
+            label="Καθημερινές"
+          />
+          <FormControlLabel
+            control={<Checkbox checked={weekends} onChange={handleWeekendsChange} />}
+            label="Σαββατοκύριακο"
+          />
         </div>
         <div style={{ marginTop: "2vh" }}>
           <h6 style={{fontWeight:"bold"}}>Εκπαίδευση</h6>

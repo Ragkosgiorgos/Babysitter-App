@@ -105,6 +105,18 @@ function MainAggeliesPGU() {
                 </Tooltip>
             </div>
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%", marginLeft: "70%" }}>
+
+              <Tooltip title={
+                              <div style={{ display: "flex", justifyContent: "center", gap: "5%", flexDirection:"column", fontSize:"1.5em" }}>
+                                Για την δημιουργία αγγελίας χρειάζονται τα εξής:
+                                <ul> 
+                                  <li>Τίτλος αγγελίας</li>
+                                  <li>Περιγραφή αγγελίας</li>
+                                  <li>Επιλογή πλήρης/μερικής απασχόλησης</li>
+                                </ul>
+                              </div>} placement="top" style={{marginTop:"3%"}}>
+                  <Button> <InfoIcon /> </Button>
+                </Tooltip>
               
               <button style={{  height: "3%", backgroundColor: "#2b8cbe", color: "white",
                                 borderRadius: "5px", cursor: "pointer", border: "3px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)" }}
@@ -130,7 +142,7 @@ function MainAggeliesPGU() {
                   .map((post) => (
                     <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
                       <td>{post.id}</td>
-                      <td>{}</td>
+                      <td>{/*//? */}</td>
                       <td>{post.status}</td>
                       <td style={{ display: "flex", justifyContent: "center", alignItems:"center", marginTop:"0.5em", gap:"10px" }}>
                         { post.status !== "Σε προσωρινή αποθήκευση" ? <VisibilityIcon style={{ cursor: "pointer" }} onClick={() => previewAggeliaRender(post.id)} /> : <VisibilityIcon style={{ height: "0px" }}/> }

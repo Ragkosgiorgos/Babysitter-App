@@ -10,7 +10,8 @@
         "ageFrom": "1",
         "ageTo": "2.5",
         "time": "Μερική",
-        "car": false
+        "car": false,
+        "days": "Καθημερινές"
     },
     {
         "id": 2,
@@ -23,7 +24,8 @@
         "ageFrom": "1",
         "ageTo": "2.5",
         "time": "Πλήρης",
-        "car": true
+        "car": true,
+        "days": "Καθημερινές"
     },
     {
         "id": 3,
@@ -36,7 +38,8 @@
         "ageFrom": "1",
         "ageTo": "2.5",
         "time": "Μερική",
-        "car": false
+        "car": false,
+        "days": "Σαββατοκύριακο"
     },
     {
         "id": 4,
@@ -49,7 +52,8 @@
         "ageFrom": "1",
         "ageTo": "2.5",
         "time": "Μερική",
-        "car": true
+        "car": true,
+        "days": "Καθημερινές"
     },
     {
         "id": 5,
@@ -62,7 +66,8 @@
         "ageFrom": "0.5",
         "ageTo": "2.5",
         "time": "Πλήρης",
-        "car": false
+        "car": false,
+        "days": "Σαββατοκύριακο"
     },
     {
         "id": 6,
@@ -75,7 +80,8 @@
         "ageFrom": "0.5",
         "ageTo": "2.5",
         "time": "Μερική",
-        "car": true
+        "car": true,
+        "days": "Καθημερινές"
     },
     {
         "id": 7,
@@ -88,6 +94,7 @@
         "ageFrom": "0.5",
         "ageTo": "2.5",
         "time": "Πλήρης",
-        "car": false
+        "car": false,
+        "days": "Σαββατοκύριακο"
     }
 ]

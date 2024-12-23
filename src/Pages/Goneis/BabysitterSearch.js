@@ -78,7 +78,7 @@ function BabysitterSearch() {
           .join(" ");
     }
 
-  const applyFilters = (fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, hasCar) => {
+  const applyFilters = (fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, hasCar, weekdays, weekends) => {
     let filtered = matchedPosts;
 
     // Filter logic remains the same as before...
@@ -107,6 +107,14 @@ function BabysitterSearch() {
 
     if (hasCar) {
       filtered = filtered.filter(profile => profile.car === true);
+    }
+
+    if (weekdays) {
+      filtered = filtered.filter(post => post.days === "Καθημερινές");
+    }
+
+    if (weekends) {
+      filtered = filtered.filter(post => post.days === "Σαββατοκύριακο");
     }
 
     setFilteredPosts(filtered);

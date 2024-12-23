@@ -84,7 +84,7 @@ function Header(props) {
                             </li>
                         </ul>
                     </div>
-                    <div className="dropdown ms-3" style={{marginRight:"1%"}}>
+                    <div className="dropdown ms-3" style={{marginRight:"5%"}}>
                         <button
                             className="btn btn-secondary dropdown-toggle"
                             type="button"
@@ -127,7 +127,7 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/#">
+                                <a className="dropdown-item" href={`/epaggelmaties/ratings?uid=${props.uid}`}>
                                     Οι Αξιολογήσεις μου
                                 </a>
                             </li>
@@ -235,7 +235,7 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/#">
+                                <a className="dropdown-item" href={`/goneis/ratings?uid=${props.uid}`}>
                                     Οι Αξιολογήσεις μου
                                 </a>
                             </li>

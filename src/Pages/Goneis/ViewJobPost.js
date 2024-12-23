@@ -12,6 +12,7 @@ import SchoolIcon from '@mui/icons-material/School';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
 import { useNavigate } from "react-router-dom";
+import EventIcon from '@mui/icons-material/Event';
 
 function ViewJobPost() {
     const params = new URLSearchParams(window.location.search);
@@ -161,7 +162,7 @@ function ViewJobPost() {
     const navigate = useNavigate();
     
     const handleViewRating = (r_id) => {
-        navigate("/view-rating");
+        navigate("/preview-aksiologisis", { state: { aggelia_id: r_id } });
     };
 
     if (!profile || !post) {
@@ -192,7 +193,7 @@ function ViewJobPost() {
                     </div>
                 </div>
 
-                <div style={{ display: "flex", flex: 1, justifyContent: "center", flexDirection: "row", textAlign: "center" }}>
+                <div style={{ display: "flex", flex: 1, justifyContent: "center", flexDirection: "row", textAlign: "center", marginTop: "4vh" }}>
                     
                     <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center" }}>
                         <span style={{ fontSize: "20px" }}><b style={{textDecoration:"underline"}}>Συστατικές επιστολές</b></span>
@@ -235,6 +236,10 @@ function ViewJobPost() {
                             <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "2%" }}>
                                 <WorkHistoryIcon style={{ width: "2.5vw", height: "2.5vh" }} />
                                 {profile.workExperience}
+                            </div>
+                            <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "2%" }}>
+                                <EventIcon style={{ width: "2.5vw", height: "2.5vh" }} />
+                                {post.days}
                             </div>
                         </div>
                     </div>
