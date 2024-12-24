@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 function AvailableRantevouPGU() {
   const [profiles, setProfiles] = useState([]); // Initialize as an empty array
 
-
   const navigate = useNavigate();  
   const routeChangeAdd = () =>{ 
     navigate("./add");
@@ -42,7 +41,7 @@ function AvailableRantevouPGU() {
   return (
     <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
       <div>
-        <Header log="not_connected" />
+        <Header />
 
         <div style={{ display: "flex", flexDirection: "column", overflow: "auto" }}>
 

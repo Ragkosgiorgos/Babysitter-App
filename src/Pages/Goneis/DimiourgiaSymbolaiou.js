@@ -17,49 +17,42 @@ import "react-date-range/dist/styles.css"; // Main style file
 import "react-date-range/dist/theme/default.css"; // Theme CSS file
 import ProgressTracker from "../../Components/ProgressTracker";
 
-
-
-
 function DimiourgiaSymbolaiou(props) {
-    
-  const [weekdays, setWeekdays] = useState(false);
-  const [weekends, setWeekends] = useState(false);
-  const [selectedTime, setSelectedTime] = useState(dayjs());
+    const [weekdays, setWeekdays] = useState(false);
+    const [weekends, setWeekends] = useState(false);
+    const [selectedTime, setSelectedTime] = useState(dayjs());
 
-  const handleWeekdaysChange = (event) => {
-    setWeekdays(event.target.checked);
-  };
+    const handleWeekdaysChange = (event) => {
+        setWeekdays(event.target.checked);
+    };
 
-  const handleWeekendsChange = (event) => {
-    setWeekends(event.target.checked);
-  };
+    const handleWeekendsChange = (event) => {
+        setWeekends(event.target.checked);
+    };
 
-  const validateStepTwo = () => {
-    return (
-        professionalData.firstName.trim() !== "" &&
-        professionalData.lastName.trim() !== "" &&
-        professionalData.afm.trim() !== "" &&
-        (weekdays || weekends) && // At least one checkbox selected
-        stepTwoData.hostingPreference.trim() !== "" &&
-        stepTwoData.employmentTime.trim() !== "" &&
-        stepTwoData.dateRange.length > 0 // Ensure date range is selected
-    );
-};
+    const validateStepTwo = () => {
+        return (
+            professionalData.firstName.trim() !== "" &&
+            professionalData.lastName.trim() !== "" &&
+            professionalData.afm.trim() !== "" &&
+            (weekdays || weekends) && // At least one checkbox selected
+            stepTwoData.hostingPreference.trim() !== "" &&
+            stepTwoData.employmentTime.trim() !== "" &&
+            stepTwoData.dateRange.length > 0 // Ensure date range is selected
+        );
+    };
 
-const [validationMessage, setValidationMessage] = useState("");
+    const [validationMessage, setValidationMessage] = useState("");
 
-const handleNextStep = () => {
-    if (!validateStepTwo()) {
-        setValidationMessage("Παρακαλώ συμπληρώστε όλα τα πεδία πριν προχωρήσετε.");
-        return;
-    }
-    setValidationMessage(""); // Clear the message if validation passes
-    goToNextStep();
-};
+    const handleNextStep = () => {
+        if (!validateStepTwo()) {
+            setValidationMessage("Παρακαλώ συμπληρώστε όλα τα πεδία πριν προχωρήσετε.");
+            return;
+        }
+        setValidationMessage(""); // Clear the message if validation passes
+        goToNextStep();
+    };
 
-
-  
-    
     const location = useLocation();
     const [stepTwoData, setStepTwoData] = useState({
         availability: {
@@ -83,59 +76,58 @@ const handleNextStep = () => {
     });
     
     // Update availability time for a specific day
-const handleTimeChange = (day, type, newValue) => {
-    setStepTwoData((prevData) => {
-        const updatedData = {
-            ...prevData,
-            availability: {
-                ...prevData.availability,
-                [day]: {
-                    ...prevData.availability[day],
-                    [type]: newValue,
+    const handleTimeChange = (day, type, newValue) => {
+        setStepTwoData((prevData) => {
+            const updatedData = {
+                ...prevData,
+                availability: {
+                    ...prevData.availability,
+                    [day]: {
+                        ...prevData.availability[day],
+                        [type]: newValue,
+                    },
                 },
-            },
-        };
-        console.log("Updated Step Two Data (availability):", updatedData);
-        return updatedData;
-    });
-};
+            };
+            console.log("Updated Step Two Data (availability):", updatedData);
+            return updatedData;
+        });
+    };
 
-// Update hosting preference
-const handleHostingPreferenceChange = (event) => {
-    setStepTwoData((prevData) => {
-        const updatedData = {
-            ...prevData,
-            hostingPreference: event.target.value,
-        };
-        console.log("Updated Step Two Data (hostingPreference):", updatedData);
-        return updatedData;
-    });
-};
+    // Update hosting preference
+    const handleHostingPreferenceChange = (event) => {
+        setStepTwoData((prevData) => {
+            const updatedData = {
+                ...prevData,
+                hostingPreference: event.target.value,
+            };
+            console.log("Updated Step Two Data (hostingPreference):", updatedData);
+            return updatedData;
+        });
+    };
 
-// Update employment time
-const handleEmploymentTimeChange = (event) => {
-    setStepTwoData((prevData) => {
-        const updatedData = {
-            ...prevData,
-            employmentTime: event.target.value,
-        };
-        console.log("Updated Step Two Data (employmentTime):", updatedData);
-        return updatedData;
-    });
-};
+    // Update employment time
+    const handleEmploymentTimeChange = (event) => {
+        setStepTwoData((prevData) => {
+            const updatedData = {
+                ...prevData,
+                employmentTime: event.target.value,
+            };
+            console.log("Updated Step Two Data (employmentTime):", updatedData);
+            return updatedData;
+        });
+    };
 
-// Update date range
-const handleDateRangeChange = (item) => {
-    setStepTwoData((prevData) => {
-        const updatedData = {
-            ...prevData,
-            dateRange: [item.selection],
-        };
-        console.log("Updated Step Two Data (dateRange):", updatedData);
-        return updatedData;
-    });
-};
-
+    // Update date range
+    const handleDateRangeChange = (item) => {
+        setStepTwoData((prevData) => {
+            const updatedData = {
+                ...prevData,
+                dateRange: [item.selection],
+            };
+            console.log("Updated Step Two Data (dateRange):", updatedData);
+            return updatedData;
+        });
+    };
 
     const steps = [
         "Επιβεβαίωση προσωπικών στοιχείων",
@@ -156,7 +148,7 @@ const handleDateRangeChange = (item) => {
 
     const [currentStep, setCurrentStep] = useState(0);
     const [profiles, setProfiles] = useState([]);
-    const [value,setValue] = useState(dayjs());;
+    const [value, setValue] = useState(dayjs());;
 
     const [professionalData, setProfessionalData] = useState({
         firstName: "",
@@ -610,7 +602,7 @@ const handleDateRangeChange = (item) => {
 
     return (
         <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-            <Header log="connected" property={"parent"} name={khdemonas?.name} surname={khdemonas?.surname} />
+            <Header />
             <div style={{ flex: 1 }}>
                 <ProgressTracker steps={steps} activeStep={currentStep} />
     

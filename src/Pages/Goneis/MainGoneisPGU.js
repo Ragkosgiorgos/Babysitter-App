@@ -3,22 +3,19 @@ import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
 import Accordion from 'react-bootstrap/Accordion';
 import Breadcrumbs from "../../Components/Breadcrump";
-import { Link, useNavigate, useLocation } from 'react-router-dom';  
+import { Link, useNavigate } from 'react-router-dom';  
 
 function MainGoneisPGU(props){
-    const navigate = useNavigate();  
-    const location = useLocation();  
+    const navigate = useNavigate(); 
 
     const handleSearchRedirect = () => {
-        if (location.pathname !== '/anazitisi') {
-            navigate('/anazitisi');  
-        }
+        navigate('/anazitisi');  
     };
     
     return(
         <div style={{ display: 'flex', flexDirection: 'column', height: "100vh" }}>
             <div style={{marginBottom:"30px"}}>
-                <Header log='not_connected' act="Goneis" />
+                <Header />
             </div>
 
             <div style={{marginLeft:"20px"}}>

@@ -4,18 +4,42 @@ import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrump";
 import ProgressTracker from "../../../Components/ProgressTracker";
 import { useNavigate } from "react-router-dom";
-import { useLocation } from 'react-router-dom';
+import { onAuthStateChanged } from "firebase/auth";
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
 
 function PreviewAggelias() {
-    const location = useLocation();
-    const uid = location.state.uid;
-    const aggelia_id = location.state.aggelia_id;
-
     const navigate = useNavigate();
+    
+    const params = new URLSearchParams(window.location.search);
+    const aggelia_id = parseInt(params.get("aggelia_id"));
 
-    const goToMainAggelies = () => {
-        navigate(`/aggelies?uid=${uid}`);
+    // Check if user is logged in, get the user's UUID and fetch user data
+    const [uuid, setUuid] = useState(null);
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+            if (user) {
+                setUuid(user.uid);
+            }
+        });
+        return () => unsubscribe();
+    }, []);
+    
+    const [user, setUser] = useState({});
+    const fetchUserData = async () => {
+        try {
+            const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
+            const querySnapshot = await getDocs(q);
+            const users = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setUser(users[0]);
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
     };
+    fetchUserData();
 
     const steps = [
         "Επιβεβαίωση προσωπικών στοιχείων",
@@ -26,26 +50,6 @@ function PreviewAggelias() {
 
     const [aggelies, setAggelies] = useState({});
     const [aggelia, setAggelia] = useState({});
-
-    const [ntantades, setNtantades] = useState([]);
-    const [ntanta, setNtanta] = useState({});
-
-    // Fetch the babysitter's data
-    useEffect(() => {
-        fetch("/data/ntantades.json")
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then((data) => {
-                setNtantades(data);
-            })
-            .catch((error) => {
-                console.error("Error fetching JSON:", error);
-            });
-    }, []);
 
     // Fetch the jobs' data
     useEffect(() => {
@@ -63,14 +67,6 @@ function PreviewAggelias() {
                 console.error("Error fetching JSON:", error);
             });
     }, []);
-
-    // Match the babysitter's id with the user id
-    useEffect(() => {
-        if (ntantades.length > 0) {
-            const ntanta = ntantades.find((ntanta) => ntanta.uid === uid);
-            setNtanta(ntanta);
-        }
-    }, [ntantades, uid]);
 
     // Match the job's id with the user id
     useEffect(() => {
@@ -91,9 +87,17 @@ function PreviewAggelias() {
             .join(" ");
     }
 
+    const goToMainAggelies = () => {
+        navigate(`/aggelies?uid=${user.userId}`);
+    };
+
+    if (!user || !aggelia) {//? Error fetching data
+        return <div>Error fetching data...</div>;
+    }
+
     return (
         <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-            <Header log="connected" name={ntanta.name} surname={ntanta.surname} property="babysitter" />
+            <Header />
 
             <div style={{ flex: 1 }}>
                 <Breadcrumbs />
@@ -108,17 +112,17 @@ function PreviewAggelias() {
                             <div style={{ display: "flex", flexDirection: "column", backgroundColor: "#ece7f2", borderRadius: "2%",
                                             justifyContent: "center", padding: "2%" }}>
                                 <h2 style={{ textAlign: "center", textDecoration: "underline" }}><b> Τα προσωπικά σας στοιχεία </b></h2>
-                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Όνομα:</b> {ntanta.name} </h4>
+                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Όνομα:</b> {user.firstName}</h4>
                                 <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
-                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Επίθετο:</b> {ntanta.surname}</h4>
+                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Επίθετο:</b> {user.lastName}</h4>
                                 <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
-                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Ημερομηνία γέννησης:</b> {ntanta.birthDate}</h4>
+                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Ημερομηνία γέννησης:</b> {user.birthDate}</h4>
                                 <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
-                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Πόλη:</b> {ntanta.area}</h4>
+                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Πόλη:</b> {user.area}</h4>
                                 <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
-                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Αριθμός κινητού τηλεφώνου:</b> {ntanta.phone}</h4>
+                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Αριθμός κινητού τηλεφώνου:</b> {user.phone}</h4>
                                 <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
-                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Email:</b> {ntanta.email}</h4>
+                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Email:</b> {user.email}</h4>
                             </div>
                         </div>
 
@@ -163,27 +167,6 @@ function PreviewAggelias() {
 
                         <h5 style={{ fontWeight: "bold"}}> Διαθέσιμες ημέρες και ώρες </h5>
                         <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%" }}>
-                            <div style={{ display: "flex", flexDirection: "column" }}>
-                                <div style={{ display: "flex", flexDirection: "column", gap: "10px" , width:"80%" }}>
-                                    {[
-                                    { day: "Δευτέρα", from: aggelia.monFrom, to: aggelia.monTo },
-                                    { day: "Τρίτη", from: aggelia.tueFrom, to: aggelia.tueTo },
-                                    { day: "Τετάρτη", from: aggelia.wedFrom, to: aggelia.wedTo },
-                                    { day: "Πέμπτη", from: aggelia.thuFrom, to: aggelia.thuTo },
-                                    { day: "Παρασκευή", from: aggelia.friFrom, to: aggelia.friTo },
-                                    { day: "Σάββατο", from: aggelia.satFrom, to: aggelia.satTo },
-                                    { day: "Κυριακή", from: aggelia.sunFrom, to: aggelia.sunTo },
-                                    ].map(({ day, from, to }) => (
-                                    <div key={day} style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-                                        <h6>{day}</h6>
-                                        <div style={{ display: "flex", gap: "10px", marginLeft: "20%" }}>
-                                            <div>{from}</div>-
-                                            <div>{to}</div>
-                                        </div>
-                                    </div>
-                                    ))}
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>

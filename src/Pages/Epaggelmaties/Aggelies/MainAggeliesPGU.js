@@ -9,34 +9,43 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
 import { useNavigate } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
 
 function MainAggeliesPGU() {
-  const params = new URLSearchParams(window.location.search);
-  const uid = parseInt(params.get("uid"));
-
-  const [posts, setPosts] = useState([]);
-  const [ntantades, setNtantades] = useState([]);
-  const [ntanta, setNtanta] = useState({});
-
-  const handleDelete = (id) => {
-    const updatedPosts = posts.filter(post => post.id !== id);
-    setPosts(updatedPosts);
-  };
-
   const navigate = useNavigate();
 
-  const handleNewPost = () => {
-    navigate("/nea-aggelia", { state: { uid: uid } });
+  // Check if user is logged in, get the user's UUID and fetch user data
+  const [uuid, setUuid] = useState(null);
+  useEffect(() => {
+      const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+          if (user) {
+              setUuid(user.uid);
+          }
+      });
+      return () => unsubscribe();
+  }, []);
+
+  const [user, setUser] = useState({});
+  const fetchUserData = async () => {
+      try {
+          const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
+          const querySnapshot = await getDocs(q);
+          const users = querySnapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+          }));
+          setUser(users[0]);
+      } catch (error) {
+          console.error('Error fetching user data:', error);
+      }
   };
 
-  const previewAggeliaRender = (aggelia_id) => {
-    navigate("/preview-aggelias", { state: { uid: uid, aggelia_id: aggelia_id } });
-  };
+  fetchUserData();
 
-  const handleTempView = (post_id) => {
-    navigate("/nea-aggelia", { state: { uid: uid, step: "2", post_id: post_id } });
-  };
-
+  // Fetch the job posts' data
+  const [posts, setPosts] = useState([]);
   useEffect(() => {
     fetch("/data/aggelies.json")
       .then((response) => {
@@ -53,39 +62,37 @@ function MainAggeliesPGU() {
       });
   }, []);
 
-  // Fetch the babysitter's data
-  useEffect(() => {
-      fetch("/data/ntantades.json")
-          .then((response) => {
-              if (!response.ok) {
-                  throw new Error(`HTTP error! status: ${response.status}`);
-              }
-              return response.json();
-          })
-          .then((data) => {
-              setNtantades(data);
-          })
-          .catch((error) => {
-              console.error("Error fetching JSON:", error);
-          });
-  }, []);
-  
-  // Match the babysitter's id with the user id
-  useEffect(() => {
-      if (ntantades.length > 0) {
-          const ntanta = ntantades.find((ntanta) => ntanta.uid === uid);
-          setNtanta(ntanta);
-      }
-  }, [ntantades, uid]);
-  
-  if (ntanta === undefined) {
-    return <div>Δεν βρέθηκε ο χρήστης με uid {uid}</div>;
+  // Delete a job post
+  const handleDelete = (id) => {
+    const updatedPosts = posts.filter(post => post.id !== id);
+    setPosts(updatedPosts);//? Write the updated posts to the database
+  };
+
+  // Redirect to the new job post page
+  const handleNewPost = () => {
+    navigate("/nea-aggelia");
+  };
+
+  // Redirect to the job post preview page
+  const previewAggeliaRender = (aggelia_id) => {
+    navigate(`/preview-aggelias?aggelia_id=${aggelia_id}`);
+  };
+
+  // Redirect to the temporary job post view page
+  const handleTempView = (post_id) => {
+    navigate(`/nea-aggelia?step=2&post_id=${post_id}`);
+  };
+
+  // Error handling
+  if (!user) {
+    return <div>Error fetching user data</div>;
+    //? Error handling for fetching user data
   }
 
   return (
     <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
       <div>
-        <Header log="connected" name={ntanta.name} surname={ntanta.surname} property="babysitter" />
+        <Header />
 
         <div style={{ display: "flex", flexDirection: "column" }}>
 
@@ -138,11 +145,11 @@ function MainAggeliesPGU() {
                   </tr>
                 </thead>
                 <tbody>
-                  {posts.filter(post => post.uid === uid)
+                  {posts.filter(post => post.uid === user.userId)
                   .map((post) => (
                     <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
                       <td>{post.id}</td>
-                      <td>{/*//? */}</td>
+                      <td>{/*//? Decide if to put Aitiseis Endiaferontos count */}</td>
                       <td>{post.status}</td>
                       <td style={{ display: "flex", justifyContent: "center", alignItems:"center", marginTop:"0.5em", gap:"10px" }}>
                         { post.status !== "Σε προσωρινή αποθήκευση" ? <VisibilityIcon style={{ cursor: "pointer" }} onClick={() => previewAggeliaRender(post.id)} /> : <VisibilityIcon style={{ height: "0px" }}/> }

@@ -4,40 +4,50 @@ import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrump";
 import ProgressTracker from "../../../Components/ProgressTracker";
 import { useNavigate } from "react-router-dom";
-import { MenuItem, Select, FormControl } from "@mui/material";
-import { Radio, RadioGroup, FormControlLabel } from "@mui/material";
-import { useLocation } from 'react-router-dom';
-import dayjs from 'dayjs';
-import localizedFormat from 'dayjs/plugin/localizedFormat';
-import updateLocale from 'dayjs/plugin/updateLocale';
+import { MenuItem, Select, FormControl, RadioGroup, FormControlLabel, Radio } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
-import 'dayjs/locale/el';
-
-dayjs.extend(localizedFormat);
-dayjs.extend(updateLocale);
-
-// Update Greek locale to include custom AM/PM translations
-dayjs.updateLocale('el', {
-    meridiem: (hour) => (hour < 12 ? 'ΠΜ' : 'ΜΜ'), // Translate AM -> ΠΜ, PM -> ΜΜ
-    formats: {
-        LT: 'h:mm A', // Ensure it uses the "A" for AM/PM
-    },
-});
+import { onAuthStateChanged } from "firebase/auth";
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { FIREBASE_AUTH, FIREBASE_DB } from "../../../config/firebase";
 
 function DimiourgiaAggelias() {
-    const location = useLocation();
     const navigate = useNavigate();
 
-    const uid = location.state.uid || -1; // Get the user id from the location state
-    const step = parseInt(location.state.step) || 0; // Get the step from the location state
-    const post_id = parseInt(location.state.post_id) || -1; // Get the post id from the location state
+    const params = new URLSearchParams(window.location.search);
+    const step = parseInt(params.get("step")) || 0;
+    const post_id = parseInt(params.get("post_id")) || -1;
 
-    const [profiles, setProfiles] = useState([]);
-    const [posts, setPosts] = useState([]);
+    // Check if user is logged in, get the user's UUID and fetch user data
+    const [uuid, setUuid] = useState(null);
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+            if (user) {
+                setUuid(user.uid);
+            }
+        });
+        return () => unsubscribe();
+    }, []);
+    
     const [user, setUser] = useState({});
+    const fetchUserData = async () => {
+        try {
+            const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
+            const querySnapshot = await getDocs(q);
+            const users = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setUser(users[0]);
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
+    };
+    fetchUserData();
+
+    const [posts, setPosts] = useState([]);
     const [newData, setnewData] = useState({
         id: -1,
-        uid: uid,
+        uid: uuid,
         status: "Σε προσωρινή αποθήκευση",
         date: new Date().toLocaleDateString(),
         area: "",
@@ -51,23 +61,6 @@ function DimiourgiaAggelias() {
     const [currentStep, setCurrentStep] = useState(step || 0);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [correctAge, setCorrectAge] = useState(true);
-
-    // Fetch all babysitters' data
-    useEffect(() => {
-        fetch("/data/ntantades.json")
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-          })
-          .then((data) => {
-            setProfiles(data);
-          })
-          .catch((error) => {
-            console.error("Error fetching JSON:", error);
-          });
-    }, []);
 
     // Fetch all job posts
     useEffect(() => {
@@ -86,22 +79,14 @@ function DimiourgiaAggelias() {
                 console.error("Error fetching JSON:", error);
             });
     }, []);
-    
-    // Set the user's data based on their uid
-    useEffect(() => {
-        if (profiles.length > 0) {
-            const user = profiles.find((user) => user.uid === uid);
-            setUser(user);
-        }
-    }, [profiles, uid]);
 
     // Keep only the user's posts
     useEffect(() => {
         if (user && posts.length > 0) {
-            const userPosts = posts.filter((post) => post.uid === uid);
+            const userPosts = posts.filter((post) => post.uid === user.userId);
             setPosts(userPosts);
         }
-    }, [user, posts, uid]);
+    }, [user, posts]);
 
     // If post_id === -1 then we are creating a new post, otherwise we are editing an existing one
     useEffect(() => {
@@ -131,7 +116,7 @@ function DimiourgiaAggelias() {
     };
     
     const goToMainAggelies = () => {
-        navigate(`/aggelies?uid=${uid}`);
+        navigate("/aggelies");
     };
 
     // Go to the next step
@@ -164,14 +149,14 @@ function DimiourgiaAggelias() {
 
     // Set the post status to "Σε προσωρινή αποθήκευση"
     const handleTempSave = () => {
-        const newId = posts.length + 1;
+        const newId = newData.id === -1 ? posts.length + 1 : newData.id;
         setnewData((prevData) => ({
             ...prevData,
             id: newId,
             status: "Σε προσωρινή αποθήκευση",
         }));
 
-        // Write the data to the database
+        //? Write the data to the database
         const updatedPosts = [...posts, newData];
         setPosts(updatedPosts);
 
@@ -181,7 +166,7 @@ function DimiourgiaAggelias() {
     // Set the post status to "Δημοσιευμένη"
     const handleFinalSave = () => {
         setnewData((prevData) => {
-            const newId = posts.length + 1;
+            const newId = newData.id === -1 ? posts.length + 1 : newData.id;
             const finalData = {
                 ...prevData,
                 id: newId,
@@ -189,7 +174,7 @@ function DimiourgiaAggelias() {
             };
             setPosts([...posts, finalData]);
             return finalData;
-        });
+        });//? Write the updated posts to the database
     
         setCurrentStep(3);
     };
@@ -254,7 +239,7 @@ function DimiourgiaAggelias() {
 
     //? If the user is not found, return an error message
     if (!user) {
-        return <div>Δεν βρέθηκε ο χρήστης με id: {uid}</div>;
+        return <div>Δεν βρέθηκε ο χρήστης</div>;
     }
 
     const renderStepContent = () => {
@@ -267,32 +252,32 @@ function DimiourgiaAggelias() {
                             <h2 style={{ textAlign: "left", textDecoration: "underline" }}><b>Επιβεβαιώστε τα προσωπικά σας στοιχεία</b></h2>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginTop: "3%" }}>
                                 <h4 style={{ textAlign: "left" }}><b>Όνομα:</b> {user.name} </h4>
-                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate(`/edit-profile?uid=${uid}`)} />
+                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate(`/edit-profile?uid=${user.userId}`)} />
                             </div>
                             <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginTop: "3%" }}>
                                 <h4 style={{ textAlign: "left" }}><b>Επίθετο:</b> {user.surname}</h4>
-                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate(`/edit-profile?uid=${uid}`)} />
+                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate(`/edit-profile?uid=${user.userId}`)} />
                             </div>
                             <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginTop: "3%" }}>
                                 <h4 style={{ textAlign: "left" }}><b>Ημερομηνία γέννησης:</b> {user.birthDate}</h4>
-                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate(`/edit-profile?uid=${uid}`)} />
+                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate(`/edit-profile?uid=${user.userId}`)} />
                             </div>
                             <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginTop: "3%" }}>
                                 <h4 style={{ textAlign: "left" }}><b>Πόλη:</b> {user.area}</h4>
-                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate(`/edit-profile?uid=${uid}`)} />
+                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate(`/edit-profile?uid=${user.userId}`)} />
                             </div>
                             <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginTop: "3%" }}>
                                 <h4 style={{ textAlign: "left" }}><b>Αριθμός κινητού τηλεφώνου:</b> {user.phone}</h4>
-                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate(`/edit-profile?uid=${uid}`)} />
+                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate(`/edit-profile?uid=${user.userId}`)} />
                             </div>
                             <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginTop: "3%" }}>
                                 <h4 style={{ textAlign: "left" }}><b>Email:</b> {user.email}</h4>
-                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate(`/edit-profile?uid=${uid}`)} />
+                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate(`/edit-profile?uid=${user.userId}`)} />
                             </div>
                         </div>
                     </div>
@@ -406,7 +391,7 @@ function DimiourgiaAggelias() {
                             </div>
 
                             <h5 style={{ fontWeight: "bold"}}> Διαθέσιμες ημέρες και ώρες </h5>
-                            {/*//? */}
+                            {/*//? Available days for working */}
 
                         </div>
                 );
@@ -473,7 +458,7 @@ function DimiourgiaAggelias() {
                             </div>
 
                             <h5 style={{ fontWeight: "bold"}}> Διαθέσιμες ημέρες και ώρες </h5>
-                            {/*//? */}
+                            {/*//? Available days for working */}
 
                         </div>
                 </div>
@@ -507,7 +492,7 @@ function DimiourgiaAggelias() {
 
     return (
         <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-            <Header log="connected" id={uid} property="babysitter" name={user.name} surname={user.surname} />
+            <Header />
 
             <div style={{ flex: 1 }}>
                 <Breadcrumbs />

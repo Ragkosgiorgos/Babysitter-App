@@ -9,7 +9,7 @@ function MainEpaggelmatiesPGU(props){
 
     return(
         <div>
-            <Header log='not_connected' act="Epaggelmaties" />
+            <Header />
             <Breadcrumbs />
             <div style={{ marginLeft: "2vh",marginTop:"6vh" }}><h6>Δείτε αγγελίες άλλων babysitter:</h6></div>
             <div style={{ marginTop: "20px", marginLeft: "20px", display: "flex", gap: "5vh", justifyContent: "center" }}>
@@ -18,7 +18,7 @@ function MainEpaggelmatiesPGU(props){
                 <JobofferReview id={3}/>
             </div>
             <div style={{ display: "flex", justifyContent: "center", marginTop: "25px" }}>
-                <img style={{ height: "33vh" }} src="/Epaggelmatiesprogress.png" alt="" />
+                <img style={{ height: "33vh" }} src="/progressBabysitter.png" alt="" />
             </div>
             <div>
                 <Accordion defaultActiveKey="0" style={{width:"90%", margin:"auto", marginTop:"1.5vh"}}>

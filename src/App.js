@@ -41,10 +41,10 @@ function App() {
           <Route path="aggelies" element={<MainAggeliesPGU />} />
           
           <Route path="nea-aggelia" element={<DimiourgiaAggelias />} />
-          <Route path="neo-symbolaio" element={<DimiourgiaSymbolaiou />} />
           <Route path="preview-aggelias" element={<PreviewAggelias />} />
-
           <Route path="view-post" element={<ViewJobPost />} />
+
+          <Route path="neo-symbolaio" element={<DimiourgiaSymbolaiou />} />
           
           <Route path="epaggelmaties/rantevou" element={<MainRantevouPGU />} />
           <Route path="epaggelmaties/rantevou/available" element={<AvailableRantevouPGU />} />
@@ -56,7 +56,7 @@ function App() {
 
           <Route path="epaggelmaties/ratings" element={<EpaggRatingMain />} />
 
-          <Route path="preview-aksiologisis" element={<ViewRating />} />
+          <Route path="epaggelmaties/ratings/preview-aksiologisis" element={<ViewRating />} />
 
           <Route path="*" element={<h1>404 - Not Found</h1>} />
 

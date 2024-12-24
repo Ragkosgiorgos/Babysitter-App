@@ -28,7 +28,7 @@ function AddRantevouPGU() {
   return (
     <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
       <div>
-        <Header log="not_connected" />
+        <Header />
 
         <div style={{ display: "flex", flexDirection: "column", overflow: "auto" }}>
 

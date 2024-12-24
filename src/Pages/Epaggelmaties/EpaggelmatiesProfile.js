@@ -79,7 +79,7 @@ function EpaggelmatiasProfile() {
 
   return (
     <div>
-    <Header log="connected" uid={1} name={epaggelmatias?.name } surname={epaggelmatias?.surname} property={"babysitter"}/>
+    <Header />
       <div style={{ textAlign: "center", display: "flex", justifyContent: "center", marginTop: "90px" }}>
         <div style={{ display: "flex", width: "80%" }}>
           {/* Left column with the image */}

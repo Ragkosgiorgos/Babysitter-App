@@ -11,25 +11,24 @@ function ProepiskopisiRantevouPGU(props) {
   const {id} = location.state || {};
   let navigate = useNavigate();
   
+  const [profiles, setProfiles] = useState([]); // Initialize as an empty array
 
-    const [profiles, setProfiles] = useState([]); // Initialize as an empty array
-  
-    useEffect(() => {
-      fetch("/data/rantevou.json")
-        .then((response) => {
-          console.log("Response:", response); // Debug the response object
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.json(); // Parse as JSON
-        })
-        .then((data) => {
-          console.log("Fetched data:", data); // Log the fetched data
-          setProfiles(data); // Update the state
-        })
-        .catch((error) => {
-          console.error("Error fetching JSON:", error);
-        });
+  useEffect(() => {
+    fetch("/data/rantevou.json")
+      .then((response) => {
+        console.log("Response:", response); // Debug the response object
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json(); // Parse as JSON
+      })
+      .then((data) => {
+        console.log("Fetched data:", data); // Log the fetched data
+        setProfiles(data); // Update the state
+      })
+      .catch((error) => {
+        console.error("Error fetching JSON:", error);
+      });
     }, []);
 
     const aitisi = profiles.find(profile => profile.id_aitisis === id);
@@ -41,7 +40,7 @@ function ProepiskopisiRantevouPGU(props) {
     return (
       <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
         <div>
-          <Header log="not_connected" />
+          <Header />
   
           <div style={{ display: "flex", flexDirection: "column", overflow: "auto" }}>
   

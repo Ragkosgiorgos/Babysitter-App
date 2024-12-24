@@ -1,15 +1,27 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Header from "../../../Components/Header";
 import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
 import Typography from '@mui/material/Typography';
 import Footer from "../../../Components/Footer";
+import { onAuthStateChanged } from 'firebase/auth';
+import { FIREBASE_AUTH } from "../../../config/firebase";
 
 function ViewRating() {
-  const location = useLocation();
-  const id = location.state.aggelia_id;
+  const params = new URLSearchParams(window.location.search);
+  const id = parseInt(params.get('id')) || -1;
+
+  // Check if user is logged in, get the user's UUID and fetch user data
+  const [uuid, setUuid] = useState(null);
+  useEffect(() => {
+      const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+          if (user) {
+              setUuid(user.uid);
+          }
+      });
+      return () => unsubscribe();
+  }, []);
 
   const [ratings, setRatings] = useState([]);
   const [rating, setRating] = useState({});
@@ -57,15 +69,11 @@ function ViewRating() {
     if (profiles.length > 0 && rating) {
       setProfile(profiles.find(profile => profile.uid === rating.id_b));
     }
-  }, [profiles, id, rating]);
+  }, [profiles, rating]);
 
   const goBack = () => { 
     window.history.back();
   };
-
-  if (!rating || !profile) {
-      return <div>Loading...</div>;
-  }
 
   const calculateAge = (birthdate) => {
     const birthDate = new Date(birthdate);
@@ -79,10 +87,14 @@ function ViewRating() {
     return age;
   };
 
+  if (!rating || !profile) {//? Error handling
+      return <div>Error loading rating {id}</div>;
+  }
+
   return (
     <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
       <div>
-        <Header log="connected" name={"d"} surname={"d"} property="babysitter" />
+        <Header />
 
         <div style={{ display: "flex", flexDirection: "column", marginTop: "3%" }}>
 

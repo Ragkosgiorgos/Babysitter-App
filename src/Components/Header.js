@@ -1,23 +1,42 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import { Link, useNavigate, useLocation } from 'react-router-dom';  // Import useNavigate and useLocation
-import { signOut } from 'firebase/auth';  // Import signOut
-import { FIREBASE_AUTH } from '../config/firebase';  // Import the Firebase authentication instance
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
+import { useEffect, useState } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { getDocs, query, collection, where } from 'firebase/firestore';
+import { FIREBASE_DB, FIREBASE_AUTH } from '../config/firebase';
 
 function Header(props) {
-    const user = props.user;
-    let name = '';
-    let surname = '';
-    let property = '';
-    if (user) {
-        name = user.firstName;
-        //surname = user.surname;
-        property = user.property;
-    }
+    const navigate = useNavigate();
+    const location = useLocation();
 
-    const navigate = useNavigate();  
-    const location = useLocation();  
+    // Check if user is logged in, get the user's UUID and fetch user data
+    const [uuid, setUuid] = useState(null);
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+            if (user) {
+                setUuid(user.uid);
+            }
+        });
+        return () => unsubscribe();
+    }, []);
+    const [user, setUser] = useState({});
+    const fetchUserData = async () => {
+        try {
+            const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
+            const querySnapshot = await getDocs(q);
+            const users = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setUser(users[0]);
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
+    };
+    fetchUserData();
 
     const handleGoneisRedirect = () => {
         if (location.pathname !== '/goneis') {
@@ -46,7 +65,7 @@ function Header(props) {
         window.location.reload();
     };
 
-    if (user && property === 'babysitter') {
+    if (user && user.property === 'babysitter') {
         return (
             <nav className="navbar navbar-expand-lg" style={{ backgroundColor: '#2E86AB' }}>
                 <div className="container-fluid" style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -116,7 +135,7 @@ function Header(props) {
                             aria-expanded="false"
                             style={{ backgroundColor: "white", color: "black" }}
                         >
-                            {name} {surname}
+                            {user.firstName} {user.lastName}
                         </button>
                         <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton" >
                             <li>
@@ -130,7 +149,7 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href={`/aggelies?uid=${props.uid}`}>
+                                <a className="dropdown-item" href="/aggelies">
                                     Οι Αγγελίες μου
                                 </a>
                             </li>
@@ -150,7 +169,7 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href={`/epaggelmaties/ratings?uid=${props.uid}`}>
+                                <a className="dropdown-item" href="/epaggelmaties/ratings">
                                     Οι Αξιολογήσεις μου
                                 </a>
                             </li>
@@ -164,7 +183,7 @@ function Header(props) {
                 </div>
             </nav>
         );
-    } else if (user && property === 'parent') {
+    } else if (user && user.property === 'parent') {
         return (
             <nav className="navbar navbar-expand-lg" style={{ backgroundColor: '#2E86AB' }}>
                 <div className="container-fluid" style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -234,7 +253,7 @@ function Header(props) {
                             aria-expanded="false"
                             style={{ backgroundColor: "white", color: "black" }}
                         >
-                            {name} {surname}
+                            {user.firstName} {user.lastName}
                         </button>
                         <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton" >
                             <li>

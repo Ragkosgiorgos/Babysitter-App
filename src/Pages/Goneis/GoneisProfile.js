@@ -110,7 +110,7 @@ function GoneisProfile() {
 
   return (
     <div>
-      <Header log="connected" uid={1} name={"Νικολέτα"} surname={"Αντωνίου"} property={"parent"} />
+      <Header />
 
       <div style={{ textAlign: "center", display: "flex", justifyContent: "center", marginTop: "90px" }}>
         <div style={{ display: "flex", width: "80%" }}>

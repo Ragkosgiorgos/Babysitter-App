@@ -1,22 +1,6 @@
 import React, { useState } from "react";
-import { Checkbox, FormControlLabel } from "@mui/material";
-import { MenuItem, Select, InputLabel, FormControl } from "@mui/material";
-import dayjs from 'dayjs';
-import localizedFormat from 'dayjs/plugin/localizedFormat';
-import updateLocale from 'dayjs/plugin/updateLocale';
-import 'dayjs/locale/el';
+import { Checkbox, FormControlLabel, Select, MenuItem, InputLabel, FormControl } from "@mui/material";
 import Radio from '@mui/material/Radio';
-
-dayjs.extend(localizedFormat);
-dayjs.extend(updateLocale);
-
-// Update Greek locale to include custom AM/PM translations
-dayjs.updateLocale('el', {
-    meridiem: (hour) => (hour < 12 ? 'ΠΜ' : 'ΜΜ'), // Translate AM -> ΠΜ, PM -> ΜΜ
-    formats: {
-        LT: 'h:mm', // Ensure it uses the "A" for AM/PM
-    },
-});
 
 function BabysitterFilters({ applyFilters, resetFilters }) {
   const [selectedLocation, setSelectedLocation] = useState("");

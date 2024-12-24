@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
 import Breadcrumbs from "../../Components/Breadcrump";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Carousel } from 'react-bootstrap';
 import HomeIcon from '@mui/icons-material/Home';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -11,12 +10,43 @@ import PlaceIcon from '@mui/icons-material/Place';
 import SchoolIcon from '@mui/icons-material/School';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
-import { useNavigate } from "react-router-dom";
 import EventIcon from '@mui/icons-material/Event';
+import { onAuthStateChanged } from 'firebase/auth';
+import { FIREBASE_DB, FIREBASE_AUTH } from "../../config/firebase";
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 function ViewJobPost() {
+    const navigate = useNavigate();
+
     const params = new URLSearchParams(window.location.search);
     const id = parseInt(params.get("id"));
+
+    // Check if user is logged in, get the user's UUID and fetch user data
+    const [uuid, setUuid] = useState(null);
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+            if (user) {
+                setUuid(user.uid);
+            }
+        });
+        return () => unsubscribe();
+    }, []);
+    
+    const [user, setUser] = useState({});
+    const fetchUserData = async () => {
+        try {
+            const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
+            const querySnapshot = await getDocs(q);
+            const users = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setUser(users[0]);
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
+    };
+    fetchUserData();
 
     const [posts, setPosts] = useState([]);
     const [post, setPost] = useState({});
@@ -43,10 +73,6 @@ function ViewJobPost() {
                 console.error("Error fetching JSON:", error);
             });
     }, []);
-
-    const handleReturn = () => {
-        window.history.back();
-    };
 
     useEffect(() => {
         if (posts.length > 0) {
@@ -127,6 +153,18 @@ function ViewJobPost() {
         }
     }, [epistoles, post, profile]);
 
+    const handleReturn = () => {
+        window.history.back();
+    };
+
+    const handleFileClick = (link) => {
+        window.open(link, "_blank");
+    };
+
+    const handleViewRating = (r_id) => {
+        navigate(`/preview-aksiologisis?id=${r_id}`);
+    };
+
     const TruncatedText = ({ text }) => {
         const maxLength = 150;
 
@@ -155,24 +193,14 @@ function ViewJobPost() {
         return age;
     };
 
-    const handleFileClick = (link) => {
-        window.open(link, "_blank");
-    };
-
-    const navigate = useNavigate();
-    
-    const handleViewRating = (r_id) => {
-        navigate("/preview-aksiologisis", { state: { aggelia_id: r_id } });
-    };
-
-    if (!profile || !post) {
+    if (!profile || !post || !user) {
         //? Error frame
         return null;
     }
 
     return (
         <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-            <Header log="not_connected" />
+            <Header />
     
             <div style={{ flex: 1, display: "flex", flexDirection: "column", overflowY: "auto" }}>
                 <Breadcrumbs />
@@ -254,7 +282,8 @@ function ViewJobPost() {
                                     <p style={{ width:"70%", textAlign:"center", margin:"auto" }}>
                                         {TruncatedText({ text: rating.comment })}
                                     </p>
-                                    <button style={{ width: "5vw", height: "3vh", borderRadius: "5%" }} onClick = {() => handleViewRating(rating.id)}>
+                                    <button style={{ width: "3vw", height: "3vh", borderRadius: "5%", fontSize: "12px" }}
+                                            onClick = {() => handleViewRating(rating.id)}>
                                         Προβολή
                                     </button>
                                 </Carousel.Item>

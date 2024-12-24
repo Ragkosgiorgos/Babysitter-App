@@ -160,7 +160,7 @@ function BabysitterSearch() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <Header log="not_connected" />
+      <Header />
 
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflowY: "auto" }}>
         <Breadcrumbs />
