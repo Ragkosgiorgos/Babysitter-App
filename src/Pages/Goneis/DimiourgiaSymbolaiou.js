@@ -1,21 +1,65 @@
 import React, { useState, useEffect } from "react";
-import Header from "../../Components/Header";
-import Footer from "../../Components/Footer";
-import ProgressTracker from "../../Components/ProgressTracker";
-import { useLocation } from "react-router-dom";
-import { FormControl, FormControlLabel } from "@mui/material";
+
+import { FormControl, FormControlLabel, Radio, RadioGroup, FormLabel } from "@mui/material";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormLabel from '@mui/material/FormLabel';
+import Checkbox from '@mui/material/Checkbox';
 import dayjs from 'dayjs';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+import updateLocale from 'dayjs/plugin/updateLocale';
+import 'dayjs/locale/el'; // Greek locale
+import Footer from "../../Components/Footer";
+import Header from "../../Components/Header";
+import { useLocation } from "react-router-dom";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css"; // Main style file
 import "react-date-range/dist/theme/default.css"; // Theme CSS file
+import ProgressTracker from "../../Components/ProgressTracker";
+
+
+
 
 function DimiourgiaSymbolaiou(props) {
+    
+  const [weekdays, setWeekdays] = useState(false);
+  const [weekends, setWeekends] = useState(false);
+  const [selectedTime, setSelectedTime] = useState(dayjs());
+
+  const handleWeekdaysChange = (event) => {
+    setWeekdays(event.target.checked);
+  };
+
+  const handleWeekendsChange = (event) => {
+    setWeekends(event.target.checked);
+  };
+
+  const validateStepTwo = () => {
+    return (
+        professionalData.firstName.trim() !== "" &&
+        professionalData.lastName.trim() !== "" &&
+        professionalData.afm.trim() !== "" &&
+        (weekdays || weekends) && // At least one checkbox selected
+        stepTwoData.hostingPreference.trim() !== "" &&
+        stepTwoData.employmentTime.trim() !== "" &&
+        stepTwoData.dateRange.length > 0 // Ensure date range is selected
+    );
+};
+
+const [validationMessage, setValidationMessage] = useState("");
+
+const handleNextStep = () => {
+    if (!validateStepTwo()) {
+        setValidationMessage("Παρακαλώ συμπληρώστε όλα τα πεδία πριν προχωρήσετε.");
+        return;
+    }
+    setValidationMessage(""); // Clear the message if validation passes
+    goToNextStep();
+};
+
+
+  
+    
     const location = useLocation();
     const [stepTwoData, setStepTwoData] = useState({
         availability: {
@@ -248,33 +292,34 @@ const handleDateRangeChange = (item) => {
                                     </h4>
                                 </div>
                                 <div style={{ display: "flex", flexDirection: "row" }}>
-                                    <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "30%", justifyContent: "center", marginLeft: "15%", padding: "2%", }}>
-                                        <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                                            <b>Επιλέξτε τις ημέρες και ώρες που χρειάζεστε τον/την επαγγελματία</b>
-                                        </h2>
-                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                            <div style={{ marginTop: "2vh", display: "flex", flexDirection: "column" }}>
-                                                <h6 style={{ fontWeight: "bold" }}>Ημέρες και ώρες</h6>
-                                                {Object.keys(stepTwoData.availability).map((day) => (
-                                                    <div key={day} style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-                                                        <h6>{day}</h6>
-                                                        <div style={{ display: "flex", gap: "10px" }}>
-                                                            <TimePicker
-                                                                label="Από"
-                                                                value={stepTwoData.availability[day].from}
-                                                                onChange={(newValue) => handleTimeChange(day, "from", newValue)}
-                                                            />
-                                                            <TimePicker
-                                                                label="Έως"
-                                                                value={stepTwoData.availability[day].to}
-                                                                onChange={(newValue) => handleTimeChange(day, "to", newValue)}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                ))}
+                                    <div style={{ display: "flex", flexDirection: "column", width: "50%" }}>
+                                        <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", justifyContent: "center", marginLeft: "5%", padding: "2%", height: "30vh" }}>
+                                            <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+                                                <b>Ημέρες και ώρες</b>
+                                            </h2>
+                                                <FormControlLabel
+                                                    control={<Checkbox checked={weekdays} onChange={handleWeekdaysChange} />}
+                                                    label="Καθημερινές"
+                                                />
+                                                <FormControlLabel
+                                                    control={<Checkbox checked={weekends} onChange={handleWeekendsChange} />}
+                                                    label="Σαββατοκύριακο"
+                                                />
+                                        </div >
+                                            <div style={{ display: "flex", flexDirection: "column", marginTop: "100px", backgroundColor: "#ece7f2", borderRadius: "2%", justifyContent: "center", marginLeft: "5%", padding: "2%", height: "30vh" }}>
+                                            <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+                                            <b>Διάρκεια απασχόλησης</b>
+                                            </h2>
+                                            
+                                                <DateRange
+                                                    editableDateInputs={true}
+                                                    onChange={handleDateRangeChange}
+                                                    moveRangeOnFirstSelection={false}
+                                                    ranges={stepTwoData.dateRange}
+                                                />
                                             </div>
-                                        </LocalizationProvider>
                                     </div>
+                                    
                                     <div style={{ display: "flex", flexDirection: "column", width: "50%" }}>
                                         <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", justifyContent: "center", marginLeft: "5%", padding: "2%", height: "30vh" }}>
                                             <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
@@ -307,14 +352,6 @@ const handleDateRangeChange = (item) => {
                                                 <FormControlLabel value="full-time" control={<Radio />} label="Πλήρης" />
                                             </RadioGroup>
                                         </FormControl>
-                                        </div>
-                                        <div style={{ display: "flex", flexDirection: "column", marginTop: "10%", backgroundColor: "#ece7f2", borderRadius: "2%", justifyContent: "center", marginLeft: "5%", padding: "2%", height: "30vh" }}>
-                                            <DateRange
-                                                editableDateInputs={true}
-                                                onChange={handleDateRangeChange}
-                                                moveRangeOnFirstSelection={false}
-                                                ranges={stepTwoData.dateRange}
-                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -393,31 +430,19 @@ const handleDateRangeChange = (item) => {
                         </div>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
-                        <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                            <b>Ημέρες και ώρες</b>
-                        </h2>
-                        {Object.keys(stepTwoData.availability)
-                            .filter(day => stepTwoData.availability[day].from && stepTwoData.availability[day].to) // Only include days with both from and to times
-                            .map((day) => {
-                                // Greek day mapping
-                                const dayInGreek = {
-                                    Monday: "Δευτέρα",
-                                    Tuesday: "Τρίτη",
-                                    Wednesday: "Τετάρτη",
-                                    Thursday: "Πέμπτη",
-                                    Friday: "Παρασκευή",
-                                    Saturday: "Σάββατο",
-                                    Sunday: "Κυριακή"
-                                };
-
-                                return (
-                                    <div key={day} style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", gap: "10px" }}>
-                                        <h4>{dayInGreek[day]}</h4>
-                                        <p><b>Από:</b> {stepTwoData.availability[day].from.format("HH:mm")} <b>Έως:</b> {stepTwoData.availability[day].to.format("HH:mm")}</p>
-                                    </div>
-                                );
-                            })}
-                    </div>
+                    <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+                        <b>Ημέρες και ώρες</b>
+                    </h2>
+                    <p>
+                        {weekdays && weekends
+                            ? "Καθημερινές και Σαββατοκύριακο"
+                            : weekdays
+                            ? "Καθημερινές"
+                            : weekends
+                            ? "Σαββατοκύριακο"
+                            : "Δεν έχει επιλεχθεί κάποια επιλογή"}
+                    </p>
+                </div>
                     <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
                         <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                             <b>Φιλοξενία</b>
@@ -585,12 +610,12 @@ const handleDateRangeChange = (item) => {
 
     return (
         <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-        <Header log="connected"  property={"parent"} name={khdemonas?.name} surname={khdemonas?.surname} />
+            <Header log="connected" property={"parent"} name={khdemonas?.name} surname={khdemonas?.surname} />
             <div style={{ flex: 1 }}>
                 <ProgressTracker steps={steps} activeStep={currentStep} />
-
+    
                 {renderStepContent()}
-
+    
                 <div
                     style={{
                         display: "flex",
@@ -615,7 +640,7 @@ const handleDateRangeChange = (item) => {
                     >
                         Προηγούμενο
                     </button>
-
+    
                     <button
                         style={{
                             height: "3%",
@@ -625,17 +650,26 @@ const handleDateRangeChange = (item) => {
                             marginTop: "2%",
                             width: "12%",
                         }}
-                        onClick={goToNextStep}
-                        disabled={currentStep === steps.length - 1}
+                        onClick={() => {
+                            if (currentStep === 2) {
+                                if (!validateStepTwo()) {
+                                    alert("Συμπληρώστε όλα τα πεδία πριν προχωρήσετε.");
+                                    return;
+                                }
+                            }
+                            goToNextStep();
+                        }}
                     >
                         Επόμενο
                     </button>
                 </div>
             </div>
-
+    
             <Footer />
         </div>
     );
+    
+    
 }
 
 export default DimiourgiaSymbolaiou;

@@ -19,6 +19,7 @@ import ViewRating from "./Pages/Epaggelmaties/Ratings/ViewRating";
 import Login from "./Components/Login";
 import Register from "./Components/Register";
 import Profile from "./Components/Profile";
+import DimiourgiaSymbolaiou from "./Pages/Goneis/DimiourgiaSymbolaiou";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
           <Route path="aggelies" element={<MainAggeliesPGU />} />
           
           <Route path="nea-aggelia" element={<DimiourgiaAggelias />} />
+          <Route path="neo-symbolaio" element={<DimiourgiaSymbolaiou />} />
           <Route path="preview-aggelias" element={<PreviewAggelias />} />
 
           <Route path="view-post" element={<ViewJobPost />} />
