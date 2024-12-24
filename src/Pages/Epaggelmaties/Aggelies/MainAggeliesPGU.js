@@ -114,14 +114,16 @@ function MainAggeliesPGU() {
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%", marginLeft: "70%" }}>
 
               <Tooltip title={
-                              <div style={{ display: "flex", justifyContent: "center", gap: "5%", flexDirection:"column", fontSize:"1.5em" }}>
+                              <div style={{ display: "flex", justifyContent: "center", gap: "5%", flexDirection:"column", fontSize:"1.2em", textAlign:"left" }}>
                                 Για την δημιουργία αγγελίας χρειάζονται τα εξής:
                                 <ul> 
                                   <li>Τίτλος αγγελίας</li>
                                   <li>Περιγραφή αγγελίας</li>
                                   <li>Επιλογή πλήρης/μερικής απασχόλησης</li>
+                                  <li>Επιλογή περιοχής</li>
+                                  <li>Επιλογή διαθεσιμότητας(ΣΚ/Καθημερινές/Και τα δύο)</li>
                                 </ul>
-                              </div>} placement="top" style={{marginTop:"3%"}}>
+                              </div>} placement="top">
                   <Button> <InfoIcon /> </Button>
                 </Tooltip>
               

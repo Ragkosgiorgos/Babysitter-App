@@ -162,7 +162,7 @@ function ViewJobPost() {
     };
 
     const handleViewRating = (r_id) => {
-        navigate(`/preview-aksiologisis?id=${r_id}`);
+        navigate(`/epaggelmaties/ratings/preview-aksiologisis?id=${r_id}`);
     };
 
     const TruncatedText = ({ text }) => {

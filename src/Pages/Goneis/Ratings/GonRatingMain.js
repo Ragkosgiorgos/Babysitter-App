@@ -72,7 +72,7 @@ function GonRatingMain() {
   }, [posts, uuid]);
 
   const previewRating = (id) => {
-    navigate(`/preview-aksiologisis?id=${id}`);
+    navigate(`/epaggelmaties/ratings/preview-aksiologisis?id=${id}`);
   };
 
   const handleNewRating = () => {

@@ -48,7 +48,7 @@ export default function Register(){
                 />
             </div>
             <button type='submit'> {loading ? 'Creating user' : 'Register'}</button>
-            <a href='/'>Already have an Account?</a>
+            <a href='/login'>Already have an Account?</a>
         </form>
       </div>
     )
