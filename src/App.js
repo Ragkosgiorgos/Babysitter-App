@@ -20,6 +20,7 @@ import Login from "./Components/Login";
 import Register from "./Components/Register";
 import Profile from "./Components/Profile";
 import DimiourgiaSymbolaiou from "./Pages/Goneis/DimiourgiaSymbolaiou";
+import ApodoxiSymbolaiou from "./Pages/Epaggelmaties/Symbolaia/ApodoxiSymbolaiou";
 
 function App() {
   return (
@@ -45,6 +46,8 @@ function App() {
           <Route path="view-post" element={<ViewJobPost />} />
 
           <Route path="neo-symbolaio" element={<DimiourgiaSymbolaiou />} />
+          <Route path="apodoxi-symbolaiou" element={<ApodoxiSymbolaiou />} />
+
           
           <Route path="epaggelmaties/rantevou" element={<MainRantevouPGU />} />
           <Route path="epaggelmaties/rantevou/available" element={<AvailableRantevouPGU />} />
