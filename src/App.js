@@ -21,6 +21,7 @@ import Register from "./Components/Register";
 import Profile from "./Components/Profile";
 import DimiourgiaSymbolaiou from "./Pages/Goneis/DimiourgiaSymbolaiou";
 import ApodoxiSymbolaiou from "./Pages/Epaggelmaties/Symbolaia/ApodoxiSymbolaiou";
+import MainSymbolaiaEpaggelmatiesPGU from "./Pages/Epaggelmaties/Symbolaia/MainSymbolaiaEpaggelmatiesPGU";
 
 function App() {
   return (
@@ -54,6 +55,8 @@ function App() {
           <Route path="epaggelmaties/rantevou/available/add" element={<AddRantevouPGU />} />
           <Route path="epaggelmaties/rantevou/proepiskopisi" element={<ProepiskopisiRantevouPGU />} />
           <Route path="epaggelmaties/rantevou/available/edit" element={<EditRantevouPGU />} />
+
+          <Route path="epaggelmaties/symbolaia" element={<MainSymbolaiaEpaggelmatiesPGU />} />
 
           <Route path="goneis/ratings" element={<GonRatingMain />} />
 

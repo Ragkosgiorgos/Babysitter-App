@@ -49,6 +49,12 @@ function Header(props) {
             navigate('/epaggelmaties');  
         }
     };
+
+    const handleEpaggelmatiesSymbolaiaRedirect = () => {
+        if (location.pathname !== '/epaggelmaties/symbolaia') {
+            navigate('/epaggelmaties');  
+        }
+    };
     
     const handleUnsubscribe = () => {
         const handleLogout = async () => {
@@ -159,7 +165,7 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/#">
+                                <a className="dropdown-item" href="/epaggelmaties/symbolaia">
                                     Τα Συμβόλαιά μου
                                 </a>
                             </li>
