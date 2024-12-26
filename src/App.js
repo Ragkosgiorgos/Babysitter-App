@@ -22,6 +22,9 @@ import Profile from "./Components/Profile";
 import DimiourgiaSymbolaiou from "./Pages/Goneis/DimiourgiaSymbolaiou";
 import ApodoxiSymbolaiou from "./Pages/Epaggelmaties/Symbolaia/ApodoxiSymbolaiou";
 import MainSymbolaiaEpaggelmatiesPGU from "./Pages/Epaggelmaties/Symbolaia/MainSymbolaiaEpaggelmatiesPGU";
+import EpaggelmatiasProfile from "./Pages/Epaggelmaties/EpaggelmatiesProfile";
+import GoneisProfile from "./Pages/Goneis/GoneisProfile";
+import CreateRating from "./Pages/Goneis/Ratings/CreateRating";
 
 function App() {
   return (
@@ -37,6 +40,9 @@ function App() {
           <Route path="/" element={<MainPGU />} />
           <Route path="goneis" element={<MainGoneisPGU />} />
 
+          <Route path="/epaggelmaties/profile" element={<EpaggelmatiasProfile />} />
+          <Route path="/goneis/profile" element={<GoneisProfile />} />
+
           <Route path="anazitisi" element={<BabysitterSearch />} />
 
           <Route path="epaggelmaties" element={<MainEpaggelmatiesPGU />} />
@@ -48,7 +54,6 @@ function App() {
 
           <Route path="neo-symbolaio" element={<DimiourgiaSymbolaiou />} />
           <Route path="apodoxi-symbolaiou" element={<ApodoxiSymbolaiou />} />
-
           
           <Route path="epaggelmaties/rantevou" element={<MainRantevouPGU />} />
           <Route path="epaggelmaties/rantevou/available" element={<AvailableRantevouPGU />} />
@@ -59,6 +64,7 @@ function App() {
           <Route path="epaggelmaties/symbolaia" element={<MainSymbolaiaEpaggelmatiesPGU />} />
 
           <Route path="goneis/ratings" element={<GonRatingMain />} />
+          <Route path="goneis/ratings/add" element={<CreateRating />} />
 
           <Route path="epaggelmaties/ratings" element={<EpaggRatingMain />} />
 

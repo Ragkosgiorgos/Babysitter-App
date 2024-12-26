@@ -6,11 +6,14 @@ import Rating from '@mui/material/Rating';
 import Typography from '@mui/material/Typography';
 import Footer from "../../../Components/Footer";
 import { onAuthStateChanged } from 'firebase/auth';
-import { FIREBASE_AUTH } from "../../../config/firebase";
+import { FIREBASE_AUTH, FIREBASE_DB } from '../../../config/firebase';
+import { calculateAge } from "../../../Utils/Methods/CalculateAge";
+import { collection, query, getDocs, where } from 'firebase/firestore';
+import { use } from "react";
 
 function ViewRating() {
   const params = new URLSearchParams(window.location.search);
-  const id = parseInt(params.get('id')) || -1;
+  const id = params.get('id') || -1;
 
   // Check if user is logged in, get the user's UUID and fetch user data
   const [uuid, setUuid] = useState(null);
@@ -23,72 +26,48 @@ function ViewRating() {
       return () => unsubscribe();
   }, []);
 
-  const [ratings, setRatings] = useState([]);
   const [rating, setRating] = useState({});
-  const [profiles, setProfiles] = useState([]);
   const [profile, setProfile] = useState({});
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch("/data/ratings.json")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const q1 = query(collection(FIREBASE_DB, 'ratings'), where('id', '==', id));
+        const querySnapshot1 = await getDocs(q1);
+        const ratings = querySnapshot1.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setRating(ratings[0]);
+  
+        if (ratings.length > 0) {
+          const rating = ratings[0];
+          const q2 = query(collection(FIREBASE_DB, 'user'), where('userId', '==', rating.id_b));
+          const querySnapshot2 = await getDocs(q2);
+          const profiles = querySnapshot2.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setProfile(profiles[0]);
         }
-        return response.json();
-      })
-      .then((data) => {
-        setRatings(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching JSON:", error);
-      });
-    }, []);
-
-  useEffect(() => {
-    setRating(ratings.find(rating => rating.id === id));
-  }, [ratings, id]);
-
-  useEffect(() => {
-    fetch("/data/ntantades.json")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setProfiles(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching JSON:", error);
-      });
-    }
-  , []);
-
-  useEffect(() => {
-    if (profiles.length > 0 && rating) {
-      setProfile(profiles.find(profile => profile.uid === rating.id_b));
-    }
-  }, [profiles, rating]);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchData();
+  }, [id]);  
 
   const goBack = () => { 
     window.history.back();
   };
 
-  const calculateAge = (birthdate) => {
-    const birthDate = new Date(birthdate);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDifference = today.getMonth() - birthDate.getMonth();
-    const dayDifference = today.getDate() - birthDate.getDate();
-    if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
-      age--;
-    }
-    return age;
-  };
-
   if (!rating || !profile) {//? Error handling
-      return <div>Error loading rating {id}</div>;
+    return <div>Error loading rating {id}</div>;
   }
 
   return (
@@ -101,11 +80,11 @@ function ViewRating() {
           <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", gap: "3%", marginLeft: "20%", width: "60%" }}>
 
             <div style={{ display: "flex", flexDirection: "row" }}>
-              <img src={profile.img} alt="Profile" style={{ width: "200px", height: "200px", borderRadius: "3%" }} />
+              {profile.photoURL ? <img src={profile.photoURL} alt="profile" style={{ width: "150", height: "150", borderRadius: "50%" }} /> : <img src="https://www.w3schools.com/howto/img_avatar.png" alt="profile" style={{ width: "200px", height: "200px", borderRadius: "50%" }} />}
             </div>
 
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <h1>{profile.name} {profile.surname} ({calculateAge(profile.birthDate)} ετών)</h1>
+              <h1>{profile.firstName} {profile.lastName} ({calculateAge(profile.birthDate)} ετών)</h1>
               <p style={{ width: "80%"}} > {profile.description}</p>
             </div>
             
@@ -116,31 +95,31 @@ function ViewRating() {
             <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
               <Box component="fieldset" mb={3} borderColor="transparent">
                 <Typography component="legend">Εξυπηρετικότητα</Typography>
-                <Rating size="large" name="read-only" value={rating.rating_help} readOnly />
+                <Rating size="large" name="read-only" value={rating.rating_help || 0} readOnly />
               </Box>
 
               <Box component="fieldset" mb={3} borderColor="transparent">
                 <Typography component="legend">Επικοινωνία</Typography>
-                <Rating size="large" name="read-only" value={rating.rating_contact} readOnly />
+                <Rating size="large" name="read-only" value={rating.rating_contact || 0} readOnly />
               </Box>
             </div>
 
             <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", marginLeft: "2.5%" }}>
               <Box component="fieldset" mb={3} borderColor="transparent">
-                <Typography component="legend">Εξυπηρετικότητα</Typography>
-                <Rating size="large" name="read-only" value={rating.rating_relationship} readOnly />
+                <Typography component="legend">Σχέση με το παιδί</Typography>
+                <Rating size="large" name="read-only" value={rating.rating_relationship || 0} readOnly />
               </Box>
 
               <Box component="fieldset" mb={3} borderColor="transparent">
                 <Typography component="legend">Εξυπηρετικότητα</Typography>
-                <Rating size="large" name="read-only" value={rating.rating_fulfill} readOnly />
+                <Rating size="large" name="read-only" value={rating.rating_fulfill || 0} readOnly />
               </Box>
             </div>
             
             <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", marginLeft: "3%" }}>
               <Box component="fieldset" mb={3} borderColor="transparent">
                 <Typography component="legend">Συνολική βαθμολογία</Typography>
-                <Rating size="large" name="read-only" value={rating.rating} readOnly />
+                <Rating size="large" name="read-only" value={rating.rating || 0} readOnly />
               </Box>
             </div>
 

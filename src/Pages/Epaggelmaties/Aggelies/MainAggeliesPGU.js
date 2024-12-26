@@ -46,21 +46,20 @@ function MainAggeliesPGU() {
 
   // Fetch the job posts' data
   const [posts, setPosts] = useState([]);
-  useEffect(() => {
-    fetch("/data/aggelies.json")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setPosts(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching JSON:", error);
-      });
-  }, []);
+  const fetchPosts = async () => {
+    try {
+        const q = query(collection(FIREBASE_DB, 'aggelies'), where('uid', '==', uuid));
+        const querySnapshot = await getDocs(q);
+        const posts = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+        setPosts(posts);
+    } catch (error) {
+        console.error('Error fetching posts:', error);
+    }
+  };
+  fetchPosts();
 
   // Delete a job post
   const handleDelete = (id) => {
@@ -83,10 +82,9 @@ function MainAggeliesPGU() {
     navigate(`/nea-aggelia?step=2&post_id=${post_id}`);
   };
 
-  // Error handling
+  //? Error handling
   if (!user) {
     return <div>Error fetching user data</div>;
-    //? Error handling for fetching user data
   }
 
   return (
@@ -147,8 +145,7 @@ function MainAggeliesPGU() {
                   </tr>
                 </thead>
                 <tbody>
-                  {posts.filter(post => post.uid === user.userId)
-                  .map((post) => (
+                  {posts.map((post) => (
                     <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
                       <td>{post.id}</td>
                       <td>{/*//? Decide if to put Aitiseis Endiaferontos count */}</td>

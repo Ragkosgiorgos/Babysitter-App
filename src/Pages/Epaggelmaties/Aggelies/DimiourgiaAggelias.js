@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { MenuItem, Select, FormControl, RadioGroup, FormControlLabel, Radio } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../../config/firebase";
 
 function DimiourgiaAggelias() {
@@ -62,32 +62,6 @@ function DimiourgiaAggelias() {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [correctAge, setCorrectAge] = useState(true);
 
-    // Fetch all job posts
-    useEffect(() => {
-        fetch("/data/aggelies.json")
-            .then((response) => {
-                console.log("Response:", response);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then((data) => {
-                setPosts(data);
-            })
-            .catch((error) => {
-                console.error("Error fetching JSON:", error);
-            });
-    }, []);
-
-    // Keep only the user's posts
-    useEffect(() => {
-        if (user && posts.length > 0) {
-            const userPosts = posts.filter((post) => post.uid === user.userId);
-            setPosts(userPosts);
-        }
-    }, [user, posts]);
-
     // If post_id === -1 then we are creating a new post, otherwise we are editing an existing one
     useEffect(() => {
         if (post_id !== -1) {
@@ -96,8 +70,8 @@ function DimiourgiaAggelias() {
                 setnewData((prevData) => ({
                     ...prevData,
                     ...foundPost,
-                    ageFrom: parseFloat(foundPost.ageFrom),
-                    ageTo: parseFloat(foundPost.ageTo),
+                    ageFrom: foundPost.ageFrom,
+                    ageTo: foundPost.ageTo,
                     area: decapitalizeWords(foundPost.area),
                     status: "Σε προσωρινή αποθήκευση",
                 }));
@@ -164,7 +138,7 @@ function DimiourgiaAggelias() {
     };
 
     // Set the post status to "Δημοσιευμένη"
-    const handleFinalSave = () => {
+    const handleFinalSave = async () => {
         setnewData((prevData) => {
             const newId = newData.id === -1 ? posts.length + 1 : newData.id;
             const finalData = {
@@ -174,9 +148,17 @@ function DimiourgiaAggelias() {
             };
             setPosts([...posts, finalData]);
             return finalData;
-        });//? Write the updated posts to the database
-    
-        setCurrentStep(3);
+        });
+
+        // Add the data to the database
+        try {
+            const docRef = collection(FIREBASE_DB, 'aggelies');
+            await addDoc(docRef, newData);
+        } catch (error) {
+            console.error("Error adding document:", error);
+        } finally {
+            setCurrentStep(3);
+        }
     };
 
     // Screen smoothly scrolls to the top
@@ -252,32 +234,32 @@ function DimiourgiaAggelias() {
                             <h2 style={{ textAlign: "left", textDecoration: "underline" }}><b>Επιβεβαιώστε τα προσωπικά σας στοιχεία</b></h2>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginTop: "3%" }}>
                                 <h4 style={{ textAlign: "left" }}><b>Όνομα:</b> {user.name} </h4>
-                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate(`/edit-profile?uid=${user.userId}`)} />
+                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate("/edit-profile")} />
                             </div>
                             <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginTop: "3%" }}>
                                 <h4 style={{ textAlign: "left" }}><b>Επίθετο:</b> {user.surname}</h4>
-                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate(`/edit-profile?uid=${user.userId}`)} />
+                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate("/edit-profile")} />
                             </div>
                             <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginTop: "3%" }}>
                                 <h4 style={{ textAlign: "left" }}><b>Ημερομηνία γέννησης:</b> {user.birthDate}</h4>
-                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate(`/edit-profile?uid=${user.userId}`)} />
+                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate("/edit-profile")} />
                             </div>
                             <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginTop: "3%" }}>
                                 <h4 style={{ textAlign: "left" }}><b>Πόλη:</b> {user.area}</h4>
-                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate(`/edit-profile?uid=${user.userId}`)} />
+                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate("/edit-profile")} />
                             </div>
                             <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginTop: "3%" }}>
                                 <h4 style={{ textAlign: "left" }}><b>Αριθμός κινητού τηλεφώνου:</b> {user.phone}</h4>
-                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate(`/edit-profile?uid=${user.userId}`)} />
+                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate("/edit-profile")} />
                             </div>
                             <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginTop: "3%" }}>
                                 <h4 style={{ textAlign: "left" }}><b>Email:</b> {user.email}</h4>
-                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate(`/edit-profile?uid=${user.userId}`)} />
+                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate("/edit-profile")} />
                             </div>
                         </div>
                     </div>

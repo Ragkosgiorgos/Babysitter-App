@@ -145,7 +145,7 @@ function Header(props) {
                         </button>
                         <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton" >
                             <li>
-                                <a className="dropdown-item"  href={`/epaggelmaties/profile?uid=${props.uid}`}>
+                                <a className="dropdown-item"  href="epaggelmaties/profile">
                                     Το Προφίλ μου
                                 </a>
                             </li>
@@ -263,7 +263,7 @@ function Header(props) {
                         </button>
                         <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton" >
                             <li>
-                                <a className="dropdown-item" href={`/goneis/profile?uid=${props.uid}`}>
+                                <a className="dropdown-item" href="goneis/profile">
                                     Το Προφίλ μου
                                 </a>
                             </li>
@@ -283,7 +283,7 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href={`/goneis/ratings?uid=${props.uid}`}>
+                                <a className="dropdown-item" href="/goneis/ratings">
                                     Οι Αξιολογήσεις μου
                                 </a>
                             </li>

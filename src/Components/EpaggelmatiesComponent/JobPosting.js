@@ -1,22 +1,11 @@
 import React from "react";
-import { useNavigate } from 'react-router-dom';  // Import useNavigate and useLocation
+import { useNavigate } from 'react-router-dom';
+import { calculateAge } from "../../Utils/Methods/CalculateAge";
 
 function JobPosting(props){
   const profile = props.profile;
   const post = props.post;
   const id = post.id;
-
-  const calculateAge = (birthdate) => {
-    const birthDate = new Date(birthdate);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDifference = today.getMonth() - birthDate.getMonth();
-    const dayDifference = today.getDate() - birthDate.getDate();
-    if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
-      age--;
-    }
-    return age;
-  };
   
   const navigate = useNavigate();
 

@@ -9,7 +9,7 @@ import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
 
 function GonRatingMain() {
@@ -41,35 +41,33 @@ function GonRatingMain() {
       }
   };
   fetchUserData();
-  
-  const [posts, setPosts] = useState([]);
+
   const [filteredPosts, setFilteredPosts] = useState([]);
+  const fetchPosts = async () => {
+    try {
+        const q = query(collection(FIREBASE_DB, 'ratings'), where('id_p', '==', uuid));
+        const querySnapshot = await getDocs(q);
+        const posts = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+        setFilteredPosts(posts);
+    } catch (error) {
+        console.error('Error fetching posts:', error);
+    } finally {
+        
+    }
+  };
+  fetchPosts();
 
   const handleDelete = (id) => {
-    const updatedPosts = posts.filter(post => post.id !== id);
-    setPosts(updatedPosts);
+    const updatedPosts = filteredPosts.filter(post => post.id !== id);
+    setFilteredPosts(updatedPosts);
+
+    // Delete the post from the database
+    const postRef = doc(FIREBASE_DB, 'ratings', id);
+    deleteDoc(postRef);
   };
-
-  
-  useEffect(() => {
-    fetch("/data/ratings.json")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setPosts(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching JSON:", error);
-      });
-  }, []);
-
-  useEffect(() => {
-      setFilteredPosts(posts.filter(post => post.id_b === uuid));
-  }, [posts, uuid]);
 
   const previewRating = (id) => {
     navigate(`/epaggelmaties/ratings/preview-aksiologisis?id=${id}`);
@@ -126,8 +124,7 @@ function GonRatingMain() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredPosts.filter(post => post.id_b === uuid)
-                  .map((post) => (
+                  {filteredPosts.map((post) => (
                     <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
                       <td>{post.id}</td>
                       <td>{user.firstName} {user.lastName}</td>

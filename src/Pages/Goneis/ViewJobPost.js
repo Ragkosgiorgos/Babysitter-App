@@ -14,6 +14,7 @@ import EventIcon from '@mui/icons-material/Event';
 import { onAuthStateChanged } from 'firebase/auth';
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../config/firebase";
 import { collection, query, where, getDocs } from 'firebase/firestore';
+import { calculateAge } from "../../Utils/Methods/CalculateAge";
 
 function ViewJobPost() {
     const navigate = useNavigate();
@@ -179,18 +180,6 @@ function ViewJobPost() {
         const truncatedText = truncate(text, maxLength);
 
         return <p>{truncatedText}</p>;
-    };
-
-    const calculateAge = (birthdate) => {
-        const birthDate = new Date(birthdate);
-        const today = new Date();
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const monthDifference = today.getMonth() - birthDate.getMonth();
-        const dayDifference = today.getDate() - birthDate.getDate();
-        if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
-          age--;
-        }
-        return age;
     };
 
     if (!profile || !post || !user) {

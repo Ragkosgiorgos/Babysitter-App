@@ -12,7 +12,7 @@ function PreviewAggelias() {
     const navigate = useNavigate();
     
     const params = new URLSearchParams(window.location.search);
-    const aggelia_id = parseInt(params.get("aggelia_id"));
+    const aggelia_id = params.get("aggelia_id");
 
     // Check if user is logged in, get the user's UUID and fetch user data
     const [uuid, setUuid] = useState(null);
@@ -48,33 +48,22 @@ function PreviewAggelias() {
         "Δημοσίευση αγγελίας",
     ];
 
-    const [aggelies, setAggelies] = useState({});
+    // Fetch the job's data
     const [aggelia, setAggelia] = useState({});
-
-    // Fetch the jobs' data
-    useEffect(() => {
-        fetch("/data/aggelies.json")
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then((data) => {
-                setAggelies(data);
-            })
-            .catch((error) => {
-                console.error("Error fetching JSON:", error);
-            });
-    }, []);
-
-    // Match the job's id with the user id
-    useEffect(() => {
-        if (aggelies.length > 0) {
-            const aggelia = aggelies.find((aggelia) => aggelia.id === aggelia_id);
-            setAggelia(aggelia);
+    const fetchAggeliesData = async () => {
+        try {
+            const q = query(collection(FIREBASE_DB, 'aggelies'), where('id', '==', aggelia_id));
+            const querySnapshot = await getDocs(q);
+            const aggelies = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setAggelia(aggelies[0]);
+        } catch (error) {
+            console.error('Error fetching job data:', error);
         }
-    }, [aggelies, aggelia_id]);
+    };
+    fetchAggeliesData();
     
     function capitalizeWords(str) {
         if (str === undefined || str === null) {
@@ -90,7 +79,8 @@ function PreviewAggelias() {
     const goToMainAggelies = () => {
         navigate(`/aggelies?uid=${user.userId}`);
     };
-
+console.log(aggelia_id);
+console.log(user);
     if (!user || !aggelia) {//? Error fetching data
         return <div>Error fetching data...</div>;
     }
