@@ -1,38 +1,30 @@
 import React, { useState, useEffect } from "react";
 import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
-import { onAuthStateChanged } from 'firebase/auth';
+import ClearIcon from '@mui/icons-material/Clear';
 import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
-import { FIREBASE_DB, FIREBASE_AUTH } from '../../config/firebase';
-import { CircularProgress } from "@mui/material";
+import { FIREBASE_DB, FIREBASE_AUTH } from "../../config/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
-function EpaggelmatiasProfile() {
-  const [loading, setLoading] = useState(false);
-
-  const [editedData, setEditedData] = useState({
-    name: "",
-    surname: "",
-    area: "",
-    birthDate: "",
-    education: "",
-    phone: "",
-    email: "",
-    afm: "",
-  });
+function GoneisProfile() {
+  const [editedData, setEditedData] = useState({});
 
   const [isEditing, setIsEditing] = useState({
-    name: false,
-    surname: false,
-    area: false,
+    firstName: false,
+    lastName: false,
     birthDate: false,
-    education: false,
-    phone: false,
-    email: false,
     afm: false,
+    address: false,
+    area: false,
+    email: false,
+    phone: false,
+    
+    description: false,
+    education: false,
+    img: false,
   });
 
-  const [profileImage, setProfileImage] = useState(""); // State to store selected image
-
+  // Fetch the user's data from the database (babysitter)
   const [uuid, setUuid] = useState(null);
   useEffect(() => {
       const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
@@ -42,220 +34,173 @@ function EpaggelmatiasProfile() {
       });
       return () => unsubscribe();
   }, []);
-  
-  const [user, setUser] = useState({});
-  const fetchUserData = async () => {
-      try {
-          const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
-          const querySnapshot = await getDocs(q);
-          const users = querySnapshot.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-          }));
-          setUser(users[0]);
-      } catch (error) {
-          console.error('Error fetching user data:', error);
-      }
-  };
-  fetchUserData();
 
-  const handleEditClick = (field) => {
-    setIsEditing({ ...isEditing, [field]: true });
-    setEditedData({ ...editedData, [field]: user?.[field] });
-  };
+  const [babysitter, setbabysitter] = useState({});
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const q = query(collection(FIREBASE_DB, "user"), where("userId", "==", uuid));
+        const querySnapshot = await getDocs(q);
+        const profiles = querySnapshot.docs.map((doc) => ({
+          uid: doc.id,
+          ...doc.data(),
+        }));
+        setEditedData(profiles[0]);
+        setbabysitter(profiles[0]);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    }
+
+    fetchUserData();
+  }, [uuid]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditedData({ ...editedData, [name]: value });
   };
 
-  const handleSaveChanges = (field) => {
-    const updatedData = { ...user, [field]: editedData[field] };
-    setUser(updatedData);
-    setIsEditing({ ...isEditing, [field]: false });
-    setLoading(true);
-  
-    const userRef = collection(FIREBASE_DB, "user");
-    const q = query(userRef, where("userId", "==", uuid));
-  
-    getDocs(q)
-      .then((querySnapshot) => {
-        const updatePromises = querySnapshot.docs.map((docSnapshot) => {
-          const docRef = doc(FIREBASE_DB, "user", docSnapshot.id);
-          return updateDoc(docRef, updatedData);
-        });
-
-        return Promise.all(updatePromises); // Wait for all updates to complete
-      })
-      .catch((error) => {
-        console.error("Error updating document:", error);
-      })
-      .finally(() => {
-        setLoading(false); // Stop loading
-      });
+  const handleEditClick = (field) => {
+    setIsEditing({ ...isEditing, [field]: true });
+    setEditedData({ ...editedData, [field]: babysitter?.[field] || "" });
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImage(reader.result);
-      };
-      reader.readAsDataURL(file);
+  // Save changes to the database
+  const handleSaveChanges = (field) => {
+    setIsEditing({ ...isEditing, [field]: false });
+    setbabysitter({ ...babysitter, [field]: editedData[field] });
+
+    try {
+      const userRef = doc(FIREBASE_DB, "user", babysitter.uid);
+      updateDoc(userRef, {
+        [field]: editedData[field],
+      });
+    } catch (error) {
+      console.error("Error updating document:", error);
     }
   };
 
-  if (!user || user.property !== "babysitter") {
-    return (
-      <div style={{ textAlign: "center", marginTop: "90px" }}>
-        <h1>Δεν είστε εγγεγραμμένος ως επαγγελματίας</h1>
-        <a href="/register">Εγγραφή ως επαγγελματίας</a>
-      </div>
-    );
-  }
+  // Handle image selection from file input
+  const handleImageChange = (e) => {
+    setEditedData({ ...editedData, img: true });
+    setbabysitter({ ...babysitter, img: true });
+
+    try {
+      const userRef = doc(FIREBASE_DB, "user", babysitter.uid);
+      updateDoc(userRef, {
+        img: true,
+      });
+    } catch (error) {
+      console.error("Error updating document:", error);
+    }
+  };
+
+  // Delete the image from the database
+  const handleDeleteImage = () => {
+    setEditedData({ ...editedData, img: false });
+    setbabysitter({ ...babysitter, img: false });
+
+    try {
+      const userRef = doc(FIREBASE_DB, "user", babysitter.uid);
+      updateDoc(userRef, {
+        img: false,
+      });
+    } catch (error) {
+      console.error("Error updating document:", error);
+    }
+  };
 
   return (
     <div>
       <Header />
-      <div
-        style={{
-          textAlign: "center",
-          display: "flex",
-          justifyContent: "center",
-          marginTop: "90px",
-        }}
-      >
-        <div style={{ display: "flex", width: "80%" }}>
-          {/* Left column with the image */}
-          <div style={{ width: "30%", marginTop: "90px", position: "relative" }}>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <h6 style={{ marginTop: "3%" , backgroundColor: "#D9EAFD", borderRadius: "50%", width: "80px", height: "80px", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                {profileImage ? "Photo" : "No photo"}
-              </h6>
-              <button
-                onClick={() => document.getElementById("fileInput").click()}
-                style={{
-                  position: "absolute",
-                  top: "0px",
-                  right: "0px",
-                  color: "white",
-                  border: "none",
-                  padding: "5px 10px",
-                  borderRadius: "50%",
-                  cursor: "pointer",
-                }}
-              >
-                <img src="/edit (1).svg" alt="Edit" style={{ width: "20px", height: "20px" }} />
-              </button>
-              <input
-                type="file"
-                id="fileInput"
-                style={{ display: "none" }}
-                accept="image/*"
-                onChange={handleImageChange}
-              />
-            </div>
+
+      <h1 style={{ textAlign: "center", marginTop: "25px", textDecoration: "underline" }}> <b>Το προφίλ μου</b> </h1>
+      <div style={{ textAlign: "center", display: "flex", justifyContent: "center", marginTop: "25px" }}>
+
+        <div style={{ display: "flex", width: "80%", gap: "20px" }}>
+          
+          <div style={{ display: "flex", flexDirection: "column", width: "25%", backgroundColor: "#ece7f2", borderRadius: "2%", padding: "2%", marginTop: "10px", height: "50%", marginRight: "20px", justifyContent: "center", alignItems: "center" }}>
+
+            <h3 style={{ textAlign: "center", textDecoration: "underline" }}> <b> Φωτογραφία </b> </h3>
+            <h6 style={{ marginTop: "3%" , backgroundColor: "#D9EAFD", borderRadius: "50%", width: "80px", height: "80px", display: "flex", justifyContent: "center", alignItems: "center", border: "1px solid #333" }}>
+              {babysitter.img ? "Photo" : "No photo"}
+            </h6> <hr style={{ width: "100%" }} />
+
+            <button style={{ marginTop: "10px", backgroundColor: "green", color: "white", borderRadius: "5px", cursor: "pointer", border: "1px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", width: "50%" }}
+              onClick={() => document.getElementById("fileInput").click()}>
+              Επιλογή φωτογραφίας
+            </button>
+
+            <input
+              type="file"
+              id="fileInput"
+              style={{ display: "none" }}
+              onChange={handleImageChange}
+            />
+
+            <button style={{ marginTop: "10px", backgroundColor: "red", color: "white", borderRadius: "5px", cursor: "pointer", border: "1px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", width: "50%" }}
+              onClick={handleDeleteImage}>
+              <ClearIcon /> Αφαίρεση
+            </button>
           </div>
 
-          {/* Main content area */}
           <div style={{ display: "flex", flexDirection: "column", width: "70%" }}>
-            <h2>Στοιχεία Επαγγελματία</h2>
-            <div
-              style={{
-                backgroundColor: "#ece7f2",
-                borderRadius: "2%",
-                padding: "2%",
-                display: "flex",
-                flexDirection: "column",
-                marginTop: "10px",
-              }}
-            >
-              {loading ? ( // Show the loader when loading is true
-                <div style={{ display: "flex", justifyContent: "center", margin: "20px 0" }}>
-                  <CircularProgress />
-                </div>
-              ) : (
-                <>
-                  <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                    <b>Επιβεβαιώστε τα προσωπικά σας στοιχεία</b>
-                  </h2>
-                  {[
-                    "firstName",
-                    "lastName",
-                    "area",
-                    "birthDate",
-                    "education",
-                    "phone",
-                    "email",
-                    "afm",
-                  ].map((field) => (
-                    <div key={field}>
-                      <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                          }}
-                        >
-                          <div style={{ width: "80%" }}>
-                            <b>
-                              {field === "firstName"
-                                ? "Όνομα"
-                                : field === "lastName"
-                                ? "Επίθετο"
-                                : field === "area"
-                                ? "Περιοχή"
-                                : field === "birthDate"
-                                ? "Ημερομηνία Γέννησης"
-                                : field === "education"
-                                ? "Εκπαίδευση"
-                                : field === "phone"
-                                ? "Τηλέφωνο"
-                                : field === "email"
-                                ? "Email"
-                                : "ΑΦΜ"}:
-                            </b>{" "}
-                            {isEditing[field] ? (
-                              <input
-                                type={field === "birthDate" ? "date" : "text"}
-                                name={field}
-                                value={editedData[field]}
-                                onChange={handleInputChange}
-                              />
-                            ) : (
-                              user?.[field]
-                            )}
-                          </div>
-                          {isEditing[field] && (
-                            <button
-                              style={{ marginRight: "10px" }}
-                              onClick={() => handleSaveChanges(field)}
-                            >
-                              Save
-                            </button>
-                          )}
-                          <img
-                            style={{ cursor: "pointer" }}
-                            src="/edit (1).svg"
-                            alt="Edit"
-                            onClick={() => handleEditClick(field)}
-                          />
-                        </div>
-                      </h4>
-                      <hr />
-                    </div>
-                  ))}
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-      <Footer />
-    </div>
-  );
-};
+            {/* Parent's Details */}
+            <div style={{ backgroundColor: "#ece7f2", borderRadius: "2%", padding: "2%", display: "flex", flexDirection: "column", marginTop: "10px" }}>
 
-export default EpaggelmatiasProfile;
+              <h3 style={{ textAlign: "left", textDecoration: "underline" }}>
+                <b> Τα προσωπικά σας στοιχεία </b>
+              </h3>
+
+              {["firstName", "lastName", "birthDate", "afm", "email", "phone"].map((field) => (
+                <div key={field}>
+                  <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <div style={{ width: "80%" }}>
+                        <b>
+                          {field === "name" ? "Όνομα"
+                            : field === "surname" ? "Επίθετο"
+                            : field === "birthDate" ? "Ημερομηνία γέννησης"
+                            : field === "afm" ? "ΑΦΜ"
+                            : field === "email" ? "Email"
+                            : "Τηλέφωνο"}:
+                        </b>{" "}
+                        {isEditing[field] ? (
+                          <input
+                            type={field === "birthDate" ? "date" : "text"}
+                            name={field}
+                            value={editedData[field]}
+                            onChange={handleInputChange}
+                          />
+                        ) : (
+                          babysitter?.[field] || "N/A"
+                        )}
+                      </div>
+                      {isEditing[field] && (
+                        <button style={{ marginRight: "10px", fontSize: "12px", padding: "5px 10px", borderRadius: "5px", cursor: "pointer", border: "1px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", color: "white", backgroundColor: "green" }}
+                          onClick={() => handleSaveChanges(field)}>
+                          Αποθήκευση
+                        </button>
+                      )}
+                      <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick(field)}/>
+                    </div>
+                  </h4>
+                  <hr />
+                </div>
+              ))}
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <Footer />
+
+    </div>
+
+  );
+}
+
+export default GoneisProfile;

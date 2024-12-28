@@ -22,7 +22,7 @@ function MainPGU(props) {
       <div style={{ flex: 1, overflowY: "auto" }}>
 
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <img style={{ marginRight: "8px", position: "relative", zIndex: 1 }} src="/hero1.avif" width="100%" height="500vh" alt="" />
+          <img style={{ position: "relative", zIndex: 1 }} src="/hero1.avif" width="100%" height="500vh" alt="" />
         </div>
 
         <div style={{ backgroundColor: "white", position: "relative", zIndex: 2, display: "flex", width: "50%", justifyContent: "center", margin: "0 auto",

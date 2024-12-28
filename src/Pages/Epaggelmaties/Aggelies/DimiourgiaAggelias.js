@@ -4,13 +4,12 @@ import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrump";
 import ProgressTracker from "../../../Components/ProgressTracker";
-import { capitalizeWords, decapitalizeWords } from "../../../Utils/Methods/index";
+import { capitalizeWords } from "../../../Utils/Methods/index";
 import { MenuItem, Select, FormControl, RadioGroup, FormControlLabel, Radio } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, addDoc, setDoc, doc } from 'firebase/firestore';
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../../config/firebase";
-import { parse } from "date-fns";
 
 function DimiourgiaAggelias() {
     const navigate = useNavigate();
@@ -69,15 +68,13 @@ function DimiourgiaAggelias() {
         const fetchPostData = async () => {
             if (post_id !== "") {
                 try {
-                    const q = query(collection(FIREBASE_DB, 'aggelies'), where('id', '==', post_id), where('uid', '==', uuid));
+                    const q = query(collection(FIREBASE_DB, 'aggelies'), where('id', '==', post_id));
                     const querySnapshot = await getDocs(q);
                     const posts = querySnapshot.docs.map((doc) => ({
                         id: doc.id,
                         ...doc.data(),
                     }));
-
-                    setnewData(posts[0] || {});
-
+                    setnewData(posts[0]);
                 } catch (error) {
                     console.error('Error fetching post data:', error);
                 }
@@ -85,7 +82,7 @@ function DimiourgiaAggelias() {
         };
 
         fetchPostData();
-    }, [post_id, FIREBASE_DB]);
+    }, [post_id]);
 
     // ageFrom <= ageTo
     function checkAge() {
