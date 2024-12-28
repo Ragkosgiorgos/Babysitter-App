@@ -60,6 +60,7 @@ function MainPGU(props) {
         <div style={{ marginLeft: "2vh" }}><h6>Δείτε ενδεικτικές αγγελίες για εργασία:</h6></div>
 
         <div style={{ marginTop: "20px", marginLeft: "20px", display: "flex", gap: "5vh", justifyContent: "center" }}>
+          {/*//? Correct ids*/}
           <JobofferReview id={1}/>
           <JobofferReview id={4}/>
           <JobofferReview id={5}/>

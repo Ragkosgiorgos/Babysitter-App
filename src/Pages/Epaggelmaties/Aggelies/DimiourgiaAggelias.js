@@ -1,21 +1,23 @@
 import React , { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrump";
 import ProgressTracker from "../../../Components/ProgressTracker";
-import { useNavigate } from "react-router-dom";
+import { capitalizeWords, decapitalizeWords } from "../../../Utils/Methods/index";
 import { MenuItem, Select, FormControl, RadioGroup, FormControlLabel, Radio } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc, setDoc, doc } from 'firebase/firestore';
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../../config/firebase";
+import { parse } from "date-fns";
 
 function DimiourgiaAggelias() {
     const navigate = useNavigate();
 
     const params = new URLSearchParams(window.location.search);
     const step = parseInt(params.get("step")) || 0;
-    const post_id = parseInt(params.get("post_id")) || -1;
+    const post_id = params.get("post_id") || "";
 
     // Check if user is logged in, get the user's UUID and fetch user data
     const [uuid, setUuid] = useState(null);
@@ -44,10 +46,9 @@ function DimiourgiaAggelias() {
     };
     fetchUserData();
 
-    const [posts, setPosts] = useState([]);
     const [newData, setnewData] = useState({
-        id: -1,
-        uid: uuid,
+        id: post_id,
+        uid: "",
         status: "Σε προσωρινή αποθήκευση",
         date: new Date().toLocaleDateString(),
         area: "",
@@ -57,6 +58,7 @@ function DimiourgiaAggelias() {
         ageTo: "",
         time: "",
         car: "",
+        dates: "",
     });
     const [currentStep, setCurrentStep] = useState(step || 0);
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -64,20 +66,26 @@ function DimiourgiaAggelias() {
 
     // If post_id === -1 then we are creating a new post, otherwise we are editing an existing one
     useEffect(() => {
-        if (post_id !== -1) {
-            const foundPost = posts.find((post) => post.id === post_id);
-            if (foundPost) {
-                setnewData((prevData) => ({
-                    ...prevData,
-                    ...foundPost,
-                    ageFrom: foundPost.ageFrom,
-                    ageTo: foundPost.ageTo,
-                    area: decapitalizeWords(foundPost.area),
-                    status: "Σε προσωρινή αποθήκευση",
-                }));
+        const fetchPostData = async () => {
+            if (post_id !== "") {
+                try {
+                    const q = query(collection(FIREBASE_DB, 'aggelies'), where('id', '==', post_id), where('uid', '==', uuid));
+                    const querySnapshot = await getDocs(q);
+                    const posts = querySnapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }));
+
+                    setnewData(posts[0] || {});
+
+                } catch (error) {
+                    console.error('Error fetching post data:', error);
+                }
             }
-        }
-    }, [post_id, posts]);
+        };
+
+        fetchPostData();
+    }, [post_id, FIREBASE_DB]);
 
     // ageFrom <= ageTo
     function checkAge() {
@@ -88,9 +96,14 @@ function DimiourgiaAggelias() {
         setCorrectAge(true);
         return true;
     };
-    
-    const goToMainAggelies = () => {
-        navigate("/aggelies");
+
+    // Handle the input change from user
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setnewData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
     };
 
     // Go to the next step
@@ -112,52 +125,80 @@ function DimiourgiaAggelias() {
         setCurrentStep(currentStep - 1);
     };
 
-    // Handle the input change from user
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setnewData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
-
     // Set the post status to "Σε προσωρινή αποθήκευση"
-    const handleTempSave = () => {
-        const newId = newData.id === -1 ? posts.length + 1 : newData.id;
-        setnewData((prevData) => ({
-            ...prevData,
-            id: newId,
-            status: "Σε προσωρινή αποθήκευση",
-        }));
+    const handleTempSave = async () => {
+        if (post_id === "") { // If post_id === -1 then we are creating a new post
+            newData.uid = uuid;
+            newData.status = "Σε προσωρινή αποθήκευση";
+            try{
+                const aggeliesRef = collection(FIREBASE_DB, 'aggelies');
 
-        //? Write the data to the database
-        const updatedPosts = [...posts, newData];
-        setPosts(updatedPosts);
+                const docRef = await addDoc(aggeliesRef, newData);
 
-        setCurrentStep(3);
+                const documentId = docRef.id;
+                newData.id = documentId;
+
+                await setDoc(docRef, { id: documentId }, { merge: true });
+
+            } catch (error) {
+                console.error('Error adding document:', error);
+
+            } finally {
+                setCurrentStep(3);
+            }
+        } else { // Otherwise we are editing an existing post
+            try {
+                const postRef = doc(FIREBASE_DB, 'aggelies', post_id);
+                await setDoc(postRef, newData, { merge: true });
+
+            } catch (error) {
+                console.error('Error updating document:', error);
+
+            } finally {
+                setCurrentStep(3);
+            }
+        }
     };
 
     // Set the post status to "Δημοσιευμένη"
     const handleFinalSave = async () => {
-        setnewData((prevData) => {
-            const newId = newData.id === -1 ? posts.length + 1 : newData.id;
-            const finalData = {
-                ...prevData,
-                id: newId,
-                status: "Δημοσιευμένη",
-            };
-            setPosts([...posts, finalData]);
-            return finalData;
-        });
+        if (post_id === "") { // If post_id === -1 then we are creating a new post
+            newData.uid = uuid;
+            newData.status = "Δημοσιευμένη";
+            try{
+                const aggeliesRef = collection(FIREBASE_DB, 'aggelies');
 
-        // Add the data to the database
-        try {
-            const docRef = collection(FIREBASE_DB, 'aggelies');
-            await addDoc(docRef, newData);
-        } catch (error) {
-            console.error("Error adding document:", error);
-        } finally {
-            setCurrentStep(3);
+                const docRef = await addDoc(aggeliesRef, newData);
+
+                const documentId = docRef.id;
+                newData.id = documentId;
+
+                await setDoc(docRef, { id: documentId }, { merge: true });
+
+            } catch (error) {
+                console.error('Error adding document:', error);
+
+            } finally {
+                setCurrentStep(3);
+            }
+        } else { // Otherwise we are editing an existing post
+            newData.status = "Δημοσιευμένη";
+            try {
+                const q = query(collection(FIREBASE_DB, 'aggelies'), where('id', '==', post_id), where('uid', '==', uuid));
+                const querySnapshot = await getDocs(q);
+                const posts = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                const postRef = doc(FIREBASE_DB, 'aggelies', posts[0].id);
+                await setDoc(postRef, newData, { merge: true });
+
+            } catch (error) {
+                console.error('Error updating document:', error);
+
+            } finally {
+                setCurrentStep(3);
+            }
         }
     };
 
@@ -169,29 +210,9 @@ function DimiourgiaAggelias() {
         });
     };
 
-    // Capitalize the first letter of each word
-    function capitalizeWords(str) {
-        if (str === undefined || str === null) {
-            return '';
-        }
-        return str
-            .toLowerCase()
-            .split(" ")
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(" ");
-    }
-
-    // Decapitalize the first letter of each word
-    function decapitalizeWords(str) {
-        if (str === undefined || str === null) {
-            return '';
-        }
-        return str
-            .toLowerCase()
-            .split(" ")
-            .map((word) => word.charAt(0).toLowerCase() + word.slice(1))
-            .join(" ");
-    }
+    const goToMainAggelies = () => {
+        navigate("/aggelies");
+    };
 
     const steps = [
         "Επιβεβαίωση προσωπικών στοιχείων",
@@ -233,12 +254,12 @@ function DimiourgiaAggelias() {
                             justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
                             <h2 style={{ textAlign: "left", textDecoration: "underline" }}><b>Επιβεβαιώστε τα προσωπικά σας στοιχεία</b></h2>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginTop: "3%" }}>
-                                <h4 style={{ textAlign: "left" }}><b>Όνομα:</b> {user.name} </h4>
+                                <h4 style={{ textAlign: "left" }}><b>Όνομα:</b> {user.firstName} </h4>
                                 <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate("/edit-profile")} />
                             </div>
                             <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginTop: "3%" }}>
-                                <h4 style={{ textAlign: "left" }}><b>Επίθετο:</b> {user.surname}</h4>
+                                <h4 style={{ textAlign: "left" }}><b>Επίθετο:</b> {user.lastName}</h4>
                                 <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate("/edit-profile")} />
                             </div>
                             <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
@@ -372,8 +393,22 @@ function DimiourgiaAggelias() {
                                 </RadioGroup>
                             </div>
 
+                            <h5 style={{ fontWeight: "bold"}}> Διαθέτω μεταφορικό μέσο </h5>
+                            <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
+                                <RadioGroup row aria-label="car" name="car" value={newData.car} onChange={handleInputChange} style={{ border: isSubmitted && !newData.car ? "1px solid red" : "", padding: "5px", borderRadius: "4px" }}>
+                                    <FormControlLabel value="Ναι" control={<Radio />} label="Ναι" />
+                                    <FormControlLabel value="Όχι" control={<Radio />} label="Όχι" />
+                                </RadioGroup>
+                            </div>
+
                             <h5 style={{ fontWeight: "bold"}}> Διαθέσιμες ημέρες και ώρες </h5>
-                            {/*//? Available days for working */}
+                            <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%" }}>
+                                <RadioGroup row aria-label="dates" name="dates" value={newData.dates} onChange={handleInputChange} style={{ border: isSubmitted && !newData.dates ? "1px solid red" : "", padding: "5px", borderRadius: "4px" }}>
+                                    <FormControlLabel value="Σαββατοκύριακο" control={<Radio />} label="Σαββατοκύριακο" />
+                                    <FormControlLabel value="Καθημερινές" control={<Radio />} label="Καθημερινές" />
+                                    <FormControlLabel value="Και τα δύο" control={<Radio />} label="Και τα δύο" />
+                                </RadioGroup>
+                            </div>
 
                         </div>
                 );
@@ -420,10 +455,10 @@ function DimiourgiaAggelias() {
                                     <h5 style={{ fontWeight: "bold"}}> Ηλικία παιδιού </h5>
                                     <div style={{ display: "flex", flexDirection: "column", gap: "5%", marginLeft: "15%" }}>
                                         <div style={{ display: "flex", flexDirection: "column" }}>
-                                            από: {newData.ageFrom}
+                                            από: {newData.ageFrom} χρόνων
                                         </div>
                                         <div style={{ display: "flex", flexDirection: "column" }}>
-                                            εώς: {newData.ageTo}
+                                            εώς: {newData.ageTo} χρόνων
                                         </div>
                                     </div>
                                 </div>
@@ -439,8 +474,15 @@ function DimiourgiaAggelias() {
                                 {newData.accomodation}
                             </div>
 
+                            <h5 style={{ fontWeight: "bold"}}> Διαθέτω μεταφορικό μέσο </h5>
+                            <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
+                                {newData.car}
+                            </div>
+
                             <h5 style={{ fontWeight: "bold"}}> Διαθέσιμες ημέρες και ώρες </h5>
-                            {/*//? Available days for working */}
+                            <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%" }}>
+                                {newData.dates === "Και τα δύο" ? "Σαββατοκύριακο και καθημερινές" : newData.dates}
+                            </div>
 
                         </div>
                 </div>

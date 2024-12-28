@@ -87,9 +87,6 @@ function EpaggelmatiasProfile() {
 
         return Promise.all(updatePromises); // Wait for all updates to complete
       })
-      .then(() => {
-        console.log("All documents updated successfully!");
-      })
       .catch((error) => {
         console.error("Error updating document:", error);
       })
@@ -133,11 +130,9 @@ function EpaggelmatiasProfile() {
           {/* Left column with the image */}
           <div style={{ width: "30%", marginTop: "90px", position: "relative" }}>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <img
-                src={profileImage || "/profile.png"}
-                alt="Profile"
-                style={{ width: "200px", height: "200px", borderRadius: "50%" }}
-              />
+              <h6 style={{ marginTop: "3%" , backgroundColor: "#D9EAFD", borderRadius: "50%", width: "80px", height: "80px", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                {profileImage ? "Photo" : "No photo"}
+              </h6>
               <button
                 onClick={() => document.getElementById("fileInput").click()}
                 style={{

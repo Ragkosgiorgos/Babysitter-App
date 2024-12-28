@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
 import Breadcrumbs from "../../Components/Breadcrump";
-import { Link, useNavigate } from "react-router-dom";
 import { Carousel } from 'react-bootstrap';
 import HomeIcon from '@mui/icons-material/Home';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -11,10 +11,10 @@ import SchoolIcon from '@mui/icons-material/School';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
 import EventIcon from '@mui/icons-material/Event';
+import { calculateAge, TruncatedText } from "../../Utils/Methods/index";
 import { onAuthStateChanged } from 'firebase/auth';
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../config/firebase";
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { calculateAge } from "../../Utils/Methods/CalculateAge";
 
 function ViewJobPost() {
     const navigate = useNavigate();
@@ -166,25 +166,8 @@ function ViewJobPost() {
         navigate(`/epaggelmaties/ratings/preview-aksiologisis?id=${r_id}`);
     };
 
-    const TruncatedText = ({ text }) => {
-        const maxLength = 150;
-
-        const truncate = (str, length) => {
-        if (str.length <= length) return str;
-
-        const truncated = str.slice(0, length); // Initial truncation
-        const lastSpaceIndex = truncated.lastIndexOf(" "); // Find last space before cutoff
-        return str.slice(0, lastSpaceIndex) + "...";
-        };
-
-        const truncatedText = truncate(text, maxLength);
-
-        return <p>{truncatedText}</p>;
-    };
-
-    if (!profile || !post || !user) {
-        //? Error frame
-        return null;
+    if (!profile || !post || !user) {//? Error frame
+        return <div>Error</div>;
     }
 
     return (
@@ -196,8 +179,9 @@ function ViewJobPost() {
 
                 <div style={{ display: "flex", flex: 1, justifyContent: "center", marginTop: "5vh" }}>
                     <div style={{ display: "flex", flex: 1, marginLeft: "15%",   borderRadius: "2vh" }}>
-                        <img src={profile.img} className="d-inline-block align-top" alt="" width={"300vw"} height={"300vh"} 
-                            style={{ marginTop: "3vh", borderRadius: "2%" }} />
+                        <h6 style={{ marginTop: "3%" , backgroundColor: "#D9EAFD", borderRadius: "50%", width: "80px", height: "80px", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                            {profile.img ? "Photo" : "No photo"}
+                        </h6>
                     </div>
                     <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center", marginRight: "20%" }}>
                         <h2><b>{profile.name} {profile.surname}</b> ({calculateAge(profile.birthDate)})</h2>

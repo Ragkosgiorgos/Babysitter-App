@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrump";
-import { onAuthStateChanged } from 'firebase/auth';
-import { collection, query, where, getDocs } from 'firebase/firestore';
-import { FIREBASE_DB, FIREBASE_AUTH } from '../../../config/firebase';
 import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
 import Typography from '@mui/material/Typography';
-import { calculateAge } from "../../../Utils/Methods/CalculateAge";
-import { useNavigate } from "react-router-dom";
+import { calculateAge } from "../../../Utils/Methods/index";
+import ProgressTracker from "../../../Components/ProgressTracker";
+import { onAuthStateChanged } from 'firebase/auth';
+import { collection, query, where, getDocs, addDoc, setDoc } from 'firebase/firestore';
+import { FIREBASE_DB, FIREBASE_AUTH } from '../../../config/firebase';
 
 function CreateRating() {
+  const navigate = useNavigate();
+
+  // Get user's UUID and fetch user data
   const [uuid, setUuid] = useState(null);
   useEffect(() => {
       const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
@@ -21,27 +25,50 @@ function CreateRating() {
       });
       return () => unsubscribe();
   }, []);
-  
-  const [profile, setProfile] = useState({});
+
+  const [profiles, setProfiles] = useState([]);
   const fetchUserData = async () => {
       try {
-          const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
-          const querySnapshot = await getDocs(q);
-          const users = querySnapshot.docs.map((doc) => ({
+          const q1 = query(collection(FIREBASE_DB, 'user'), where('property', '==', 'babysitter'));
+          const querySnapshot1 = await getDocs(q1);
+          const users1 = querySnapshot1.docs.map((doc) => ({
               id: doc.id,
               ...doc.data(),
           }));
-          setProfile(users[0]);
+          setProfiles(users1);
       } catch (error) {
           console.error('Error fetching user data:', error);
       }
   };
   fetchUserData();
 
+  // Fetch all the babysitters that the user has hired
+  const [contracts, setContracts] = useState([]);
+  const fetchContracts = async () => {
+    try {
+        const q = query(collection(FIREBASE_DB, 'contracts'), where('id_p', '==', uuid));
+        const querySnapshot = await getDocs(q);
+        const contracts = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+        setContracts(contracts);
+    } catch (error) {
+        console.error('Error fetching contracts:', error);
+    }
+  };
+  fetchContracts();
+
+  const hiredBabysitters = profiles.filter((profile) => {
+    return contracts.some((contract) => contract.id_b === profile.userId);
+  });
+
+  const [babysitter, setBabysitter] = useState({});
+
   const [rating, setRating] = useState({
     id: 0,
     id_b: 0,
-    id_p: 0,
+    id_p: uuid,
     rating: 0,
     comment: "",
     rating_contact: 0,
@@ -50,69 +77,80 @@ function CreateRating() {
     rating_help: 0
   });
 
-  const navigate = useNavigate();
-  
-  const goBack = () => {
-    window.history.back();
-  }
-
-  const submitRating = () => {
-    console.log(rating);
-  }
-
-  // First choose the babysitter from those who have been hired by the user
-  // Then choose the rating to give to the babysitter
-  // Then submit the rating to the firebase database
-  // Then go back to the previous page
-  // Use render to display the page
-
   const steps = [
-    "Επιλέξτε τη νταντά που θέλετε να αξιολογήσετε",
-    "Αξιολογήστε τη νταντά"
+    "Επιλέξτε τον επαγγελματία που θέλετε να αξιολογήσετε",
+    "Αξιολογήστε τον επαγγελματία"
   ];
 
   const [activeStep, setActiveStep] = useState(0);
 
+  // Submit rating to the database
+  const submitRating = async () => {
+    rating.id_p = uuid;
+    rating.id_b = babysitter.userId;
+    try{
+      const ratingsRef = collection(FIREBASE_DB, 'ratings');
+
+      const docRef = await addDoc(ratingsRef, rating);
+
+      const documentId = docRef.id;
+
+      await setDoc(docRef, { id: documentId }, { merge: true });
+    } catch (error) {
+      console.error('Error adding document:', error);
+    } finally {
+      
+    }
+  };
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const handleNext = () => {
+    if (activeStep === 0 && !babysitter.userId) {
+      setIsSubmitting(true);
+      return;
+    }
     setActiveStep((prevStep) => prevStep + 1);
+    if (activeStep === 1) {
+      submitRating();
+    }
   };
 
   const handleBack = () => {
     setActiveStep((prevStep) => prevStep - 1);
-    if (activeStep === 1) {
+    if (activeStep === 2) {
       goBack();
     }
   };
 
-  const [hiredBabysitters, setHiredBabysitters] = useState([]);
+  const goBack = () => {
+    window.history.back();
+  }
+
+  const setBabysitterChoice = (babysitter_id) => {
+    const babysitter = profiles.filter((profile) => profile.userId === babysitter_id);
+    setBabysitter(babysitter[0]);
+  };
 
   const renderStep = (step) => {
     switch (step) {
-      //? Choose the babysitter from those who have been hired by the user
       case 0:
         return (
           <div style={{ display: "flex", flexDirection: "column", gap: "2%" }}>
-            <Typography variant="h4" style={{ color: "#2b8cbe" }}>
-              {steps[0]}
-            </Typography>
-
-            <Box style={{ display: "flex", flexDirection: "column", gap: "2%" }}>
+            <h3 style={{ marginTop: "3%", textAlign: "center" }}>Επιλέξτε τον επαγγελματία που θέλετε να αξιολογήσετε</h3>
+            {isSubmitting && !babysitter.userId && ( <p style={{ color: "red", marginLeft: "25%" }}>Παρακαλώ επιλέξτε νταντά</p> )}
+            <select
+              style={{ width: "50%", height: "30px", marginLeft: "25%" }}
+              onChange={(e) => setBabysitterChoice(e.target.value)}
+              value={babysitter.userId || ""}
+            >
+              <option value="" disabled> Επιλέξτε νταντά </option>
               {hiredBabysitters.map((babysitter) => (
-                <div style={{ display: "flex", flexDirection: "row", gap: "2%" }}>
-                  <Typography variant="h6" style={{ color: "#2b8cbe" }}>
-                    {babysitter.name}
-                  </Typography>
-
-                  <button style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5%", width: "12%", cursor: "pointer", border: "1px solid #333",
-                                  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)" }} onClick={() => {
-                                    setRating({ ...rating, id_b: babysitter.id });
-                                    handleNext();
-                                  }}>
-                    Επιλογή
-                  </button>
-                </div>
+                <option key={babysitter.userId} value={babysitter.userId}>
+                  {babysitter.firstName} {babysitter.lastName}
+                </option>
               ))}
-            </Box>
+
+            </select>
           </div>
         );
       case 1:
@@ -120,13 +158,15 @@ function CreateRating() {
           <div>
             <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", gap: "3%", marginLeft: "20%", width: "60%" }}>
 
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                {profile.img ? "Photo" : "No photo"}
+              <div style={{ display: "flex", flexDirection: "row", marginTop: "2%" }}>
+                <h6 style={{ marginTop: "3%" , backgroundColor: "#D9EAFD", borderRadius: "50%", width: "80px", height: "80px", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                  {babysitter.img ? "Photo" : "No photo"}
+                </h6>
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <h1>{profile.name} {profile.surname} ({calculateAge(profile.birthDate)} ετών)</h1>
-                <p style={{ width: "80%"}} > {profile.description}</p>
+              <div style={{ display: "flex", flexDirection: "column", marginTop: "3%" }}>
+                <h1>{babysitter.firstName} {babysitter.lastName} ({calculateAge(babysitter.birthDate)} ετών)</h1>
+                <p style={{ width: "80%"}} > {babysitter.description}</p>
               </div>
                   
             </div>
@@ -200,7 +240,7 @@ function CreateRating() {
 
             <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginTop: "3%", backgroundColor: "#D9EAFD", borderRadius: "10px", width: "50%", marginLeft: "25%" }}>
               <textarea
-                style={{ width: "80%", height: "100px", marginLeft: "2%", marginTop: "2%" }}
+                style={{ width: "90%", height: "100px", marginLeft: "5%", marginTop: "2%" , marginBottom: "2%", borderRadius: "5px", border: "1px solid #333" }}
                 placeholder="Σχόλια"
                 value={rating.comment}
                 onChange={(e) => setRating({ ...rating, comment: e.target.value })}
@@ -218,8 +258,10 @@ function CreateRating() {
         <div>
           <Header />
 
-          <div style={{ display: "flex", flexDirection: "column", marginTop: "3%" }}>
+          <div style={{ display: "flex", flexDirection: "column" }}>
             <Breadcrumbs />
+
+            <ProgressTracker activeStep={activeStep} steps={steps} />
 
             {renderStep(activeStep)}
 

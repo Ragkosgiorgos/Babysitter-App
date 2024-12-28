@@ -6,6 +6,7 @@ import BabysitterFilters from "../../Components/GoneisComponents/BabysitterFilte
 import JobPosting from "../../Components/EpaggelmatiesComponent/JobPosting";
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
+import { capitalizeWords } from "../../Utils/Methods/index";
 
 function BabysitterSearch() {
   const [posts, setPosts] = useState([]);
@@ -65,18 +66,6 @@ function BabysitterSearch() {
       setFilteredPosts(matched);
     }
   }, [profiles, posts]);
-
-    // Capitalize the first letter of each word
-    function capitalizeWords(str) {
-      if (str === undefined || str === null) {
-          return '';
-      }
-      return str
-          .toLowerCase()
-          .split(" ")
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(" ");
-    }
 
   const applyFilters = (fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, hasCar, weekdays, weekends) => {
     let filtered = matchedPosts;

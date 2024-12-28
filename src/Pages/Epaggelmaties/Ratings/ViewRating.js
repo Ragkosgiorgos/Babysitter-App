@@ -1,38 +1,22 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../../Components/Header";
+import Footer from "../../../Components/Footer";
 import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
 import Typography from '@mui/material/Typography';
-import Footer from "../../../Components/Footer";
-import { onAuthStateChanged } from 'firebase/auth';
-import { FIREBASE_AUTH, FIREBASE_DB } from '../../../config/firebase';
-import { calculateAge } from "../../../Utils/Methods/CalculateAge";
+import { calculateAge } from "../../../Utils/Methods/index";
+import { FIREBASE_DB } from '../../../config/firebase';
 import { collection, query, getDocs, where } from 'firebase/firestore';
-import { use } from "react";
 
 function ViewRating() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id') || -1;
 
-  // Check if user is logged in, get the user's UUID and fetch user data
-  const [uuid, setUuid] = useState(null);
-  useEffect(() => {
-      const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
-          if (user) {
-              setUuid(user.uid);
-          }
-      });
-      return () => unsubscribe();
-  }, []);
-
   const [rating, setRating] = useState({});
   const [profile, setProfile] = useState({});
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
       try {
         const q1 = query(collection(FIREBASE_DB, 'ratings'), where('id', '==', id));
         const querySnapshot1 = await getDocs(q1);
@@ -55,7 +39,7 @@ function ViewRating() {
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
-        setLoading(false);
+        
       }
     };
   
@@ -80,7 +64,9 @@ function ViewRating() {
           <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", gap: "3%", marginLeft: "20%", width: "60%" }}>
 
             <div style={{ display: "flex", flexDirection: "row" }}>
-              {profile.photoURL ? <img src={profile.photoURL} alt="profile" style={{ width: "150", height: "150", borderRadius: "50%" }} /> : <img src="https://www.w3schools.com/howto/img_avatar.png" alt="profile" style={{ width: "200px", height: "200px", borderRadius: "50%" }} />}
+              <h6 style={{ marginTop: "3%" , backgroundColor: "#D9EAFD", borderRadius: "50%", width: "80px", height: "80px", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                {profile.img ? "Photo" : "No photo"}
+              </h6>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column" }}>

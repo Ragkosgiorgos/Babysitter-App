@@ -1,56 +1,38 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { TruncatedText } from "../../Utils/Methods/index";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { FIREBASE_DB } from "../../config/firebase";
 
 function JobofferReview(props) {
+    const navigate = useNavigate();
     const job_id = props.id;
 
-    const [aggelies, setAggelies] = useState([]);
     const [aggelia, setAggelia] = useState({});
-
-    const TruncatedText = ({ text }) => {
-        const maxLength = 150;
-
-        const truncate = (str, length) => {
-        if (str.length <= length) return str;
-
-        const truncated = str.slice(0, length); // Initial truncation
-        const lastSpaceIndex = truncated.lastIndexOf(" "); // Find last space before cutoff
-        return str.slice(0, lastSpaceIndex) + "...";
-        };
-
-        const truncatedText = truncate(text, maxLength);
-
-        return <p>{truncatedText}</p>;
+    const fetchPosts = async () => {
+        try {
+            const q = query(collection(FIREBASE_DB, 'aggelies'), where('id', '==', job_id));
+            const querySnapshot = await getDocs(q);
+            const posts = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setAggelia(posts[0]);
+        } catch (error) {
+            console.error('Error fetching posts:', error);
+        } finally {
+            
+        }
     };
+    fetchPosts();
 
-    const navigate = useNavigate();
     const handleSearchRedirect = () => {
         navigate(`/view-post?id=${job_id}`);
+    };
+
+    if (!aggelia) { //?Error handling
+        return <div>Δεν βρέθηκε η αγγελία</div>;
     }
-
-    useEffect(() => {
-        fetch("/data/aggelies.json")
-        .then((response) => {
-            if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then((data) => {
-            setAggelies(data);
-        })
-        .catch((error) => {
-            console.error("Error fetching JSON:", error);
-        });
-    }, []);
-
-    useEffect(() => {
-        if (aggelies.length > 0) {
-        const aggelia = aggelies.find((aggelia) => aggelia.id === job_id);
-        setAggelia(aggelia || {});
-        }
-    }, [aggelies, job_id]);
 
     return (
         <div
@@ -82,7 +64,7 @@ function JobofferReview(props) {
                 marginTop: "5%",
             }}
             >
-            {TruncatedText({ text: aggelia.description || "" })}
+            {TruncatedText(aggelia.description || "")}
             </span>
         </div>
         <div

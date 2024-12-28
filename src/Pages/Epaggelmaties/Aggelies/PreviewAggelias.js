@@ -1,9 +1,10 @@
 import React , { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrump";
 import ProgressTracker from "../../../Components/ProgressTracker";
-import { useNavigate } from "react-router-dom";
+import { capitalizeWords } from "../../../Utils/Methods/index";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
@@ -41,18 +42,11 @@ function PreviewAggelias() {
     };
     fetchUserData();
 
-    const steps = [
-        "Επιβεβαίωση προσωπικών στοιχείων",
-        "Συμπλήρωση στοιχείων εργασίας",
-        "Προεπισκόπηση και Υποβολή",
-        "Δημοσίευση αγγελίας",
-    ];
-
     // Fetch the job's data
     const [aggelia, setAggelia] = useState({});
     const fetchAggeliesData = async () => {
         try {
-            const q = query(collection(FIREBASE_DB, 'aggelies'), where('id', '==', aggelia_id));
+            const q = query(collection(FIREBASE_DB, 'aggelies'), where('id', '==', aggelia_id), where('uid', '==', uuid));
             const querySnapshot = await getDocs(q);
             const aggelies = querySnapshot.docs.map((doc) => ({
                 id: doc.id,
@@ -64,23 +58,18 @@ function PreviewAggelias() {
         }
     };
     fetchAggeliesData();
-    
-    function capitalizeWords(str) {
-        if (str === undefined || str === null) {
-            return ''; // Return an empty string if the value is undefined or null
-        }
-        return str
-            .toLowerCase()
-            .split(" ")
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(" ");
-    }
 
     const goToMainAggelies = () => {
-        navigate(`/aggelies?uid=${user.userId}`);
+        navigate("/aggelies");
     };
-console.log(aggelia_id);
-console.log(user);
+    
+    const steps = [
+        "Επιβεβαίωση προσωπικών στοιχείων",
+        "Συμπλήρωση στοιχείων εργασίας",
+        "Προεπισκόπηση και Υποβολή",
+        "Δημοσίευση αγγελίας",
+    ];
+
     if (!user || !aggelia) {//? Error fetching data
         return <div>Error fetching data...</div>;
     }
@@ -155,8 +144,14 @@ console.log(user);
                             {aggelia.accomodation}
                         </div>
 
+                        <h5 style={{ fontWeight: "bold"}}> Διαθέτω μεταφορικό μέσο </h5>
+                        <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
+                            {aggelia.car}
+                        </div>
+
                         <h5 style={{ fontWeight: "bold"}}> Διαθέσιμες ημέρες και ώρες </h5>
                         <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%" }}>
+                            {aggelia.dates === "Και τα δύο" ? "Σαββατοκύριακο και καθημερινές" : aggelia.dates}
                         </div>
                     </div>
                 </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrump";
@@ -7,7 +8,6 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
-import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
@@ -42,6 +42,7 @@ function GonRatingMain() {
   };
   fetchUserData();
 
+  // Fetch user's ratings from the database
   const [filteredPosts, setFilteredPosts] = useState([]);
   const fetchPosts = async () => {
     try {
@@ -60,6 +61,7 @@ function GonRatingMain() {
   };
   fetchPosts();
 
+  // Delete a post from the database
   const handleDelete = (id) => {
     const updatedPosts = filteredPosts.filter(post => post.id !== id);
     setFilteredPosts(updatedPosts);
@@ -77,7 +79,7 @@ function GonRatingMain() {
     navigate("/goneis/ratings/add");
   };
 
-  if (!user) {
+  if (!user) { //? Error handling
     return <div>Δεν βρέθηκε ο χρήστης με uid {uuid}</div>;
   }
 

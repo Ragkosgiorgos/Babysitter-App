@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from 'react-router-dom';
-import { calculateAge } from "../../Utils/Methods/CalculateAge";
+import { calculateAge } from "../../Utils/Methods/index";
 
 function JobPosting(props){
   const profile = props.profile;
@@ -20,7 +20,9 @@ function JobPosting(props){
 
         <div style={{display:"flex",flexDirection:"row"}}>
 
-          <img style={{ marginRight: "2vh", marginLeft:"2vh", marginTop:"2vh" }} src={profile.img} width="100vw" height="100vh" className="d-inline-block align-top" alt=""/>
+          <h6 style={{ marginTop: "3%" , backgroundColor: "#D9EAFD", borderRadius: "50%", width: "80px", height: "80px", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                  {profile.img ? "Photo" : "No photo"}
+          </h6>
 
           <div style={{display:"flex",flexDirection:"column",marginTop:"2vh"}}>
 

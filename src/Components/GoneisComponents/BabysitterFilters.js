@@ -69,8 +69,8 @@ function BabysitterFilters({ applyFilters, resetFilters }) {
   };
 
   const handleCarChange = (event) => {
-    setHasCar(event.target.value === "Ναι");console.log(event.target.value);
-    applyFilters(fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, event.target.value === "Ναι", weekdays, weekends);
+    setHasCar(event.target.value);
+    applyFilters(fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, event.target.value, weekdays, weekends);
   }
 
   const handleWeekdaysChange = (event) => {
