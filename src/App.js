@@ -25,6 +25,7 @@ import MainSymbolaiaEpaggelmatiesPGU from "./Pages/Epaggelmaties/Symbolaia/MainS
 import EpaggelmatiasProfile from "./Pages/Epaggelmaties/EpaggelmatiesProfile";
 import GoneisProfile from "./Pages/Goneis/GoneisProfile";
 import CreateRating from "./Pages/Goneis/Ratings/CreateRating";
+import MainSymbolaiaGoneisPGU from "./Pages/Goneis/MainSymbolaiaGoneis";
 
 function App() {
   return (
@@ -65,6 +66,7 @@ function App() {
 
           <Route path="goneis/ratings" element={<GonRatingMain />} />
           <Route path="goneis/ratings/add" element={<CreateRating />} />
+          <Route path="goneis/symbolaia" element={<MainSymbolaiaGoneisPGU />} />
 
           <Route path="epaggelmaties/ratings" element={<EpaggRatingMain />} />
 
