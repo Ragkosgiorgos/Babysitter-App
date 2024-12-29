@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
@@ -9,150 +9,92 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import PlaceIcon from '@mui/icons-material/Place';
 import SchoolIcon from '@mui/icons-material/School';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
-import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
 import EventIcon from '@mui/icons-material/Event';
-import { calculateAge, TruncatedText } from "../../Utils/Methods/index";
-import { onAuthStateChanged } from 'firebase/auth';
-import { FIREBASE_DB, FIREBASE_AUTH } from "../../config/firebase";
+import { calculateAge, capitalizeWords, TruncatedText } from "../../Utils/Methods/index";
+import { FIREBASE_DB } from "../../config/firebase";
 import { collection, query, where, getDocs } from 'firebase/firestore';
 
 function ViewJobPost() {
     const navigate = useNavigate();
 
     const params = new URLSearchParams(window.location.search);
-    const id = parseInt(params.get("id"));
+    const id = params.get("id");
 
-    // Check if user is logged in, get the user's UUID and fetch user data
-    const [uuid, setUuid] = useState(null);
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
-            if (user) {
-                setUuid(user.uid);
-            }
-        });
-        return () => unsubscribe();
-    }, []);
-    
-    const [user, setUser] = useState({});
-    const fetchUserData = async () => {
-        try {
-            const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
-            const querySnapshot = await getDocs(q);
-            const users = querySnapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            }));
-            setUser(users[0]);
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-        }
-    };
-    fetchUserData();
-
-    const [posts, setPosts] = useState([]);
+    // Fetch job post data
     const [post, setPost] = useState({});
-    const [profiles, setProfiles] = useState([]);
+    useEffect(() => {
+        const fetchPostData = async () => {
+            try {
+                const q = query(collection(FIREBASE_DB, 'aggelies'), where('id', '==', id));
+                const querySnapshot = await getDocs(q);
+                const posts = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                setPost(posts[0]);
+            } catch (error) {
+                console.error('Error fetching post data:', error);
+            }
+        };
+        fetchPostData();
+    }, [id]);
+
+    // Fetch babysitter's profile data
     const [profile, setProfile] = useState({});
-    const [ratings, setRatings] = useState([]);
+    useEffect(() => {
+        const fetchProfileData = async () => {
+            try {
+                const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', post.uid));
+                const querySnapshot = await getDocs(q);
+                const profiles = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                setProfile(profiles[0]);
+            } catch (error) {
+                console.error('Error fetching profile data:', error);
+            }
+        };
+        fetchProfileData();
+    }, [post.uid]);
+
+    // Fetch ratings on the babysitter
     const [filteredRatings, setFilteredRatings] = useState([]);
-    const [epistoles, setEpistoles] = useState([]);
+    useEffect(() => {
+        const fetchRatingsData = async () => {
+            try {
+                const q = query(collection(FIREBASE_DB, 'ratings'), where('id_b', '==', post.uid));
+                const querySnapshot = await getDocs(q);
+                const ratings = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                setFilteredRatings(ratings);
+            } catch (error) {
+                console.error('Error fetching ratings data:', error);
+            }
+        };
+        fetchRatingsData();
+    }, [post.uid]);
+
+    // Fetch epistoles
     const [filteredEpistoles, setFilteredEpistoles] = useState([]);
-
     useEffect(() => {
-        fetch("/data/aggelies.json")
-            .then((response) => {
-                console.log("Response:", response);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then((data) => {
-                setPosts(data);
-            })
-            .catch((error) => {
-                console.error("Error fetching JSON:", error);
-            });
-    }, []);
-
-    useEffect(() => {
-        if (posts.length > 0) {
-            const post = posts.find((post) => post.id === id);
-            setPost(post);
-        }
-    }, [posts, id]);
-
-    useEffect(() => {
-        fetch("/data/ntantades.json")
-            .then((response) => {
-                console.log("Response:", response);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then((data) => {
-                setProfiles(data);
-            })
-            .catch((error) => {
-                console.error("Error fetching JSON:", error);
-            });
-    }, []);
-
-    useEffect(() => {
-        if (profiles.length > 0 && post && post.uid) {
-            const profile = profiles.find((profile) => profile.uid === post.uid);
-            setProfile(profile);
-        }
-    }, [profiles, post]);
-
-    useEffect(() => {
-        fetch("/data/ratings.json")
-            .then((response) => {
-                console.log("Response:", response);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then((data) => {
-                setRatings(data);
-            })
-            .catch((error) => {
-                console.error("Error fetching JSON:", error);
-            });
-    }, []);
-
-    useEffect(() => {
-        if (ratings.length > 0 && profile && profile.uid) {
-            const filteredRatings = ratings.filter((rating) => rating.id_b === profile.uid);
-            setFilteredRatings(filteredRatings);
-        }
-    }, [ratings, post, profile]);
-
-    useEffect(() => {
-        fetch("/data/epistoles.json")
-            .then((response) => {
-                console.log("Response:", response);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then((data) => {
-                setEpistoles(data);
-            })
-            .catch((error) => {
-                console.error("Error fetching JSON:", error);
-            });
-    }, []);
-
-    useEffect(() => {
-        if (epistoles.length > 0 && profile && profile.uid) {
-            const filteredEpistoles = epistoles.filter((epistole) => epistole.id_b === profile.uid);
-            setFilteredEpistoles(filteredEpistoles);
-        }
-    }, [epistoles, post, profile]);
+        const fetchEpistolesData = async () => {
+            try {
+                const q = query(collection(FIREBASE_DB, 'epistoles'), where('id_b', '==', post.uid));
+                const querySnapshot = await getDocs(q);
+                const epistoles = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                setFilteredEpistoles(epistoles);
+            } catch (error) {
+                console.error('Error fetching epistoles data:', error);
+            }
+        };
+        fetchEpistolesData();
+    }, [id]);
 
     const handleReturn = () => {
         window.history.back();
@@ -166,7 +108,7 @@ function ViewJobPost() {
         navigate(`/epaggelmaties/ratings/preview-aksiologisis?id=${r_id}`);
     };
 
-    if (!profile || !post || !user) {//? Error frame
+    if (!profile || !post) {//? Error frame
         return <div>Error</div>;
     }
 
@@ -184,7 +126,7 @@ function ViewJobPost() {
                         </h6>
                     </div>
                     <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center", marginRight: "20%" }}>
-                        <h2><b>{profile.name} {profile.surname}</b> ({calculateAge(profile.birthDate)})</h2>
+                        <h2><b>{profile.firstName} {profile.lastName}</b> ({calculateAge(profile.birthDate)} ετών)</h2>
                         <h4>{post.description}</h4>
                         <Link to={`/epaggelmaties/aitisi-endiaferontos?ntanta=${profile.uid}`}>
                             <button className="btn btn-primary" style={{ width: "20vw", marginTop: "2vh" }}>
@@ -224,7 +166,7 @@ function ViewJobPost() {
                             </div>
                             <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "2%" }}>
                                 <PlaceIcon style={{ width: "2.5vw", height: "2.5vh" }} />
-                                {post.area}
+                                {capitalizeWords(post.area)}
                             </div>
                             <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "2%" }}>
                                 <SchoolIcon style={{ width: "2.5vw", height: "2.5vh" }} />
@@ -232,15 +174,11 @@ function ViewJobPost() {
                             </div>
                             <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "2%" }}>
                                 <DirectionsCarIcon style={{ width: "2.5vw", height: "2.5vh" }} />
-                                {post.car ? "Διαθέτει" : "Δεν διαθέτει"} μεταφορικό μέσο
-                            </div>
-                            <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "2%" }}>
-                                <WorkHistoryIcon style={{ width: "2.5vw", height: "2.5vh" }} />
-                                {profile.workExperience}
+                                {post.car === "Ναι" ? "Διαθέτει" : "Δεν διαθέτει"} μεταφορικό μέσο
                             </div>
                             <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "2%" }}>
                                 <EventIcon style={{ width: "2.5vw", height: "2.5vh" }} />
-                                {post.days}
+                                {post.dates}
                             </div>
                         </div>
                     </div>
@@ -253,11 +191,11 @@ function ViewJobPost() {
                                 <Carousel.Item key={rating.id}>
                                     <h3>Βαθμολογία: {rating.rating}</h3>
                                     <p style={{ width:"70%", textAlign:"center", margin:"auto" }}>
-                                        {TruncatedText({ text: rating.comment })}
+                                        {TruncatedText(rating.comment)}
                                     </p>
                                     <button style={{ width: "3vw", height: "3vh", borderRadius: "5%", fontSize: "12px" }}
                                             onClick = {() => handleViewRating(rating.id)}>
-                                        Προβολή
+                                        Προβολή{/* //?Fix button */}
                                     </button>
                                 </Carousel.Item>
                                 

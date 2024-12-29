@@ -7,70 +7,60 @@ import JobPosting from "../../Components/EpaggelmatiesComponent/JobPosting";
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import { capitalizeWords } from "../../Utils/Methods/index";
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { FIREBASE_DB } from "../../config/firebase";
 
 function BabysitterSearch() {
-  const [posts, setPosts] = useState([]);
   const [profiles, setProfiles] = useState([]);
   const [matchedPosts, setMatchedPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
 
+  // Fetch profiles and posts from Firebase
   useEffect(() => {
-    fetch("/data/ntantades.json")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setProfiles(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching JSON:", error);
-      });
+    const fetchProfiles = async () => {
+      try {
+        const q = query(collection(FIREBASE_DB, 'user'));
+        const querySnapshot = await getDocs(q);
+        const profiles = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setProfiles(profiles);
+      }  catch (error) {
+        console.error('Error fetching profiles:', error);
+      }
+    };
+    fetchProfiles();
   }, []);
 
   useEffect(() => {
-    fetch("/data/aggelies.json")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setPosts(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching JSON:", error);
-      });
+    const fetchPosts = async () => {
+      try {
+        const q = query(collection(FIREBASE_DB, 'aggelies'), where('status', '==', 'Δημοσιευμένη'));
+        const querySnapshot = await getDocs(q);
+        const posts = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setMatchedPosts(posts);
+        setFilteredPosts(posts);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      }
+    };
+    fetchPosts();
   }, []);
+  
+  // Match each post with its corresponding profile
+  matchedPosts.forEach(post => {
+    const profile = profiles.find(profile => profile.userId === post.uid);
+    post.profile = profile;
+  });
 
-  useEffect(() => { // Match posts and profiles by uid
-    if (profiles.length > 0 && posts.length > 0) {
-      const matched = posts
-        .map((post) => {
-          const profile = profiles.find((p) => p.uid === post.uid && post.status === "Δημοσιευμένη");
-          if (profile) {
-            return { ...post, profile }; // Combine post and profile data
-          } else {
-            return null; // Exclude unmatched posts
-          }
-        })
-        .filter(Boolean); // Remove unmatched posts
-
-      // Sort posts by date published (newest first)
-      matched.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-      setMatchedPosts(matched);
-      setFilteredPosts(matched);
-    }
-  }, [profiles, posts]);
-
+  // Apply filters to the posts
   const applyFilters = (fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, hasCar, weekdays, weekends) => {
     let filtered = matchedPosts;
 
-    // Filter logic remains the same as before...
     if (fullTimeChecked || partTimeChecked) {
       filtered = filtered.filter(post =>
         (fullTimeChecked && post.time === "Πλήρης") ||
@@ -95,15 +85,19 @@ function BabysitterSearch() {
     }
 
     if (hasCar) {
-      filtered = filtered.filter(profile => profile.car === true);
+      if (hasCar === "Ναι") {
+        filtered = filtered.filter(post => post.car === hasCar);
+      }
     }
 
-    if (weekdays) {
-      filtered = filtered.filter(post => post.days === "Καθημερινές");
-    }
-
-    if (weekends) {
-      filtered = filtered.filter(post => post.days === "Σαββατοκύριακο");
+    // If the user has selected the weekdays or weekends option, filter the posts accordingly
+    // If both options are selected, no filtering is needed
+    if (weekdays && !weekends) {
+      filtered = filtered.filter(post => post.dates === "Καθημερινές" || post.dates === "Και τα δύο");
+    } else if (weekends && !weekdays) {
+      filtered = filtered.filter(post => post.dates === "Σαββατοκύριακο" || post.dates === "Και τα δύο");
+    } else if (weekdays && weekends) {
+      filtered = filtered.filter(post => post.dates === "Και τα δύο");
     }
 
     setFilteredPosts(filtered);
@@ -120,6 +114,7 @@ function BabysitterSearch() {
     });
   };
 
+  // Change num of page displayed from pagination
   const handlePageChange = (event, value) => {
     setStartFrom((value - 1) * postsPerPage);
     handleScrollToTop();
@@ -128,11 +123,13 @@ function BabysitterSearch() {
   const [startFrom, setStartFrom] = useState(0);
   const [postsPerPage, setPostsPerPage] = useState(5);
 
+  // Change num of posts displayed per page
   const handleChangeRowsPerPage = (event) => {
     setPostsPerPage(parseInt(event.target.value, 10));
     setStartFrom(0);
   };
 
+  // User can select how many posts to display per page
   function rowsPerPageSelection() {
     return (
       <div style={{ display: "flex", justifyContent: "right", alignItems: "center" }}>
@@ -171,13 +168,19 @@ function BabysitterSearch() {
                 ))}
               </Stack>
 
+              {
+                filteredPosts.length === 0 &&
+                <h3 style={{ textAlign: "center", marginTop: "2em" }}>Δεν βρέθηκαν αγγελίες</h3>
+              }
+
             </div>
 
+            { filteredPosts.length > 0 &&
             <Pagination 
                 count={Math.ceil(filteredPosts.length / postsPerPage)} 
                 onChange={handlePageChange}
                 style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "1em" }}
-            />
+            /> }
           </div>
         </div>
 

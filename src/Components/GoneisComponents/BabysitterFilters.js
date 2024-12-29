@@ -37,9 +37,10 @@ function BabysitterFilters({ applyFilters, resetFilters }) {
   ];
 
   const education = [
-    "Πρωτοβάθμια",
-    "Δευτεροβάθμια",
-    "Τριτοβάθμια"
+    "Δημοτικό",
+    "Γυμνάσιο",
+    "Λύκειο",
+    "Πανεπιστήμιο",
   ];
 
   // Handle changes for city and age dropdowns
@@ -91,7 +92,7 @@ function BabysitterFilters({ applyFilters, resetFilters }) {
     setWeekdays(false);
     setWeekends(false);
     setSelectedEducation("");
-    setHasCar(false);
+    setHasCar("Όχι");
     resetFilters();
   };
 
@@ -189,22 +190,14 @@ function BabysitterFilters({ applyFilters, resetFilters }) {
         </div>
         <div style={{ marginTop: "2vh" }}>
           <h6 style={{fontWeight:"bold"}}>Μεταφορικό μέσο</h6>
-          <Radio
-            checked={hasCar}
-            onChange={handleCarChange}
-            value="Ναι"
-            name="radio-buttons"
-            inputProps={{ 'aria-label': 'Ναι' }}
+          <FormControlLabel
+            control={<Radio checked={hasCar === "Ναι"} onChange={handleCarChange} value={"Ναι"} />}
+            label="Ναι"
           />
-          Ναι
-          <Radio
-            checked={!hasCar}
-            onChange={handleCarChange}
-            value="Όχι"
-            name="radio-buttons"
-            inputProps={{ 'aria-label': 'Όχι' }}
+          <FormControlLabel
+            control={<Radio checked={hasCar === "Όχι"} onChange={handleCarChange} value={"Όχι"} />}
+            label="Όχι"
           />
-          Όχι
 
         </div>
       </div>
