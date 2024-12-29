@@ -20,80 +20,61 @@ function ViewJobPost() {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
 
-    // Fetch job post data
-    const [post, setPost] = useState({});
+    const [post, setPost] = useState(null);
+    const [profile, setProfile] = useState(null);
+    const [filteredRatings, setFilteredRatings] = useState([]);
+    const [filteredEpistoles, setFilteredEpistoles] = useState([]);
+
     useEffect(() => {
-        const fetchPostData = async () => {
+        const fetchData = async () => {
             try {
-                const q = query(collection(FIREBASE_DB, 'aggelies'), where('id', '==', id));
-                const querySnapshot = await getDocs(q);
-                const posts = querySnapshot.docs.map((doc) => ({
+                // Fetch post data
+                const postQuery = query(collection(FIREBASE_DB, 'aggelies'), where('id', '==', id));
+                const postQuerySnapshot = await getDocs(postQuery);
+                const posts = postQuerySnapshot.docs.map((doc) => ({
                     id: doc.id,
                     ...doc.data(),
                 }));
-                setPost(posts[0]);
-            } catch (error) {
-                console.error('Error fetching post data:', error);
-            }
-        };
-        fetchPostData();
-    }, [id]);
+                const fetchedPost = posts[0];
+                setPost(fetchedPost);
 
-    // Fetch babysitter's profile data
-    const [profile, setProfile] = useState({});
-    useEffect(() => {
-        const fetchProfileData = async () => {
-            try {
-                const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', post.uid));
-                const querySnapshot = await getDocs(q);
-                const profiles = querySnapshot.docs.map((doc) => ({
+                if (!fetchedPost?.uid) {
+                    console.warn('Post UID is missing or invalid.');
+                    return; // Exit early if no UID is available
+                }
+
+                // Fetch profile data
+                const profileQuery = query(collection(FIREBASE_DB, 'user'), where('userId', '==', fetchedPost.uid));
+                const profileQuerySnapshot = await getDocs(profileQuery);
+                const profiles = profileQuerySnapshot.docs.map((doc) => ({
                     id: doc.id,
                     ...doc.data(),
                 }));
                 setProfile(profiles[0]);
-            } catch (error) {
-                console.error('Error fetching profile data:', error);
-            }
-        };
-        fetchProfileData();
-    }, [post.uid]);
 
-    // Fetch ratings on the babysitter
-    const [filteredRatings, setFilteredRatings] = useState([]);
-    useEffect(() => {
-        const fetchRatingsData = async () => {
-            try {
-                const q = query(collection(FIREBASE_DB, 'ratings'), where('id_b', '==', post.uid));
-                const querySnapshot = await getDocs(q);
-                const ratings = querySnapshot.docs.map((doc) => ({
+                // Fetch ratings data
+                const ratingsQuery = query(collection(FIREBASE_DB, 'ratings'), where('id_b', '==', fetchedPost.uid));
+                const ratingsQuerySnapshot = await getDocs(ratingsQuery);
+                const ratings = ratingsQuerySnapshot.docs.map((doc) => ({
                     id: doc.id,
                     ...doc.data(),
                 }));
                 setFilteredRatings(ratings);
-            } catch (error) {
-                console.error('Error fetching ratings data:', error);
-            }
-        };
-        fetchRatingsData();
-    }, [post.uid]);
 
-    // Fetch epistoles
-    const [filteredEpistoles, setFilteredEpistoles] = useState([]);
-    useEffect(() => {
-        const fetchEpistolesData = async () => {
-            try {
-                const q = query(collection(FIREBASE_DB, 'epistoles'), where('id_b', '==', post.uid));
-                const querySnapshot = await getDocs(q);
-                const epistoles = querySnapshot.docs.map((doc) => ({
+                // Fetch epistoles data
+                const epistolesQuery = query(collection(FIREBASE_DB, 'epistoles'), where('id_b', '==', fetchedPost.uid));
+                const epistolesQuerySnapshot = await getDocs(epistolesQuery);
+                const epistoles = epistolesQuerySnapshot.docs.map((doc) => ({
                     id: doc.id,
                     ...doc.data(),
                 }));
                 setFilteredEpistoles(epistoles);
             } catch (error) {
-                console.error('Error fetching epistoles data:', error);
+                console.error('Error fetching data:', error);
             }
         };
-        fetchEpistolesData();
+
+        fetchData();
     }, [id]);
 
     const handleReturn = () => {
@@ -113,27 +94,34 @@ function ViewJobPost() {
     }
 
     return (
-        <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+        <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
             <Header />
     
             <div style={{ flex: 1, display: "flex", flexDirection: "column", overflowY: "auto" }}>
                 <Breadcrumbs />
 
-                <div style={{ display: "flex", flex: 1, justifyContent: "center", marginTop: "5vh" }}>
-                    <div style={{ display: "flex", flex: 1, marginLeft: "15%",   borderRadius: "2vh" }}>
-                        <h6 style={{ marginTop: "3%" , backgroundColor: "#D9EAFD", borderRadius: "50%", width: "80px", height: "80px", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                            {profile.img ? "Photo" : "No photo"}
-                        </h6>
-                    </div>
-                    <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center", marginRight: "20%" }}>
-                        <h2><b>{profile.firstName} {profile.lastName}</b> ({calculateAge(profile.birthDate)} ετών)</h2>
-                        <h4>{post.description}</h4>
-                        <Link to={`/epaggelmaties/aitisi-endiaferontos?ntanta=${profile.uid}`}>
+                <div style={{ display: "flex", flex: 1, flexDirection: "row", justifyContent: "center", marginTop: "4vh" }}>
+
+                    <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center" }}>
+                        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "2vw" }}>
+                            <h6 style={{ backgroundColor: "#D9EAFD", borderRadius: "50%", width: "80px", height: "80px", display: "flex", justifyContent: "center", alignItems: "center", border: "2px solid black" }}>
+                                {profile.img ? "Photo" : "No photo"}
+                            </h6>
+                            <h3><b>{profile.firstName} {profile.lastName}</b> ({calculateAge(profile.birthDate)} ετών)</h3>
+                        </div>
+
+                        <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                            <h6> <b style={{ textDecoration: "underline" }}>Περιγραφή:</b> {post.description} </h6>
+                        </div>
+
+                        <Link to={`/epaggelmaties/aitisi-endiaferontos?ntanta=${profile.userId}`}>
                             <button className="btn btn-primary" style={{ width: "20vw", marginTop: "2vh" }}>
                                 Επικοινωνία
                             </button>
                         </Link>
+
                     </div>
+
                 </div>
 
                 <div style={{ display: "flex", flex: 1, justifyContent: "center", flexDirection: "row", textAlign: "center", marginTop: "4vh" }}>
@@ -150,7 +138,6 @@ function ViewJobPost() {
                                 </li>
                             ))}
                         </ul>
-
                     </div>
 
                     <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center" }}>
@@ -193,9 +180,9 @@ function ViewJobPost() {
                                     <p style={{ width:"70%", textAlign:"center", margin:"auto" }}>
                                         {TruncatedText(rating.comment)}
                                     </p>
-                                    <button style={{ width: "3vw", height: "3vh", borderRadius: "5%", fontSize: "12px" }}
+                                    <button style={{ borderRadius: "5%", fontSize: "12px" }}
                                             onClick = {() => handleViewRating(rating.id)}>
-                                        Προβολή{/* //?Fix button */}
+                                        Προβολή
                                     </button>
                                 </Carousel.Item>
                                 
@@ -206,7 +193,8 @@ function ViewJobPost() {
 
                 </div>
                 
-                <button style={{ width: "7vw", height: "4vh", marginTop: "2vh", marginLeft: "4vh", borderRadius: "5%" }} onClick={handleReturn}>
+                <button style={{ height: "5%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5%", width: "12%", cursor: "pointer", border: "1px solid #333", 
+                      boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", marginLeft: "4%", marginTop: "2%" }} onClick={handleReturn}>
                     Επιστροφή
                 </button>
 

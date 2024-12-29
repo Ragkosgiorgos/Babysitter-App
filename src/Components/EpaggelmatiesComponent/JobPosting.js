@@ -20,7 +20,7 @@ function JobPosting(props){
 
         <div style={{display:"flex",flexDirection:"row"}}>
 
-          <h6 style={{ marginTop: "3%" , backgroundColor: "#D9EAFD", borderRadius: "50%", width: "80px", height: "80px", display: "flex", justifyContent: "center", alignItems: "center", marginLeft: "2%", marginRight: "3%" }}>
+          <h6 style={{ marginTop: "3%" , backgroundColor: "#D9EAFD", borderRadius: "50%", width: "80px", height: "80px", display: "flex", justifyContent: "center", alignItems: "center", marginLeft: "2%", marginRight: "3%", border: "2px solid black" }}>
                   {profile.img ? "Photo" : "No photo"}
           </h6>
 
