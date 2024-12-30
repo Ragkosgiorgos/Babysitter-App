@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-
 import { FormControl, FormControlLabel, Radio, RadioGroup, FormLabel } from "@mui/material";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -8,19 +7,49 @@ import Checkbox from '@mui/material/Checkbox';
 import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import updateLocale from 'dayjs/plugin/updateLocale';
-import 'dayjs/locale/el'; // Greek locale
+import 'dayjs/locale/el'; 
 import Footer from "../../Components/Footer";
 import Header from "../../Components/Header";
 import { useLocation } from "react-router-dom";
 import { DateRange } from "react-date-range";
-import "react-date-range/dist/styles.css"; // Main style file
-import "react-date-range/dist/theme/default.css"; // Theme CSS file
+import "react-date-range/dist/styles.css"; 
+import "react-date-range/dist/theme/default.css"; 
 import ProgressTracker from "../../Components/ProgressTracker";
+import { onAuthStateChanged } from "firebase/auth";
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { FIREBASE_DB, FIREBASE_AUTH } from '../../config/firebase.js'
 
 function DimiourgiaSymbolaiou(props) {
     const [weekdays, setWeekdays] = useState(false);
     const [weekends, setWeekends] = useState(false);
     const [selectedTime, setSelectedTime] = useState(dayjs());
+
+    // Check if user is logged in, get the user's UUID and fetch user data
+    const [uuid, setUuid] = useState(null);
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+            if (user) {
+                setUuid(user.uid);
+            }
+        });
+        return () => unsubscribe();
+    }, []);
+
+    const [khdemonas, setKhdemonas] = useState({});
+    const fetchUserData = async () => {
+        try {
+            const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
+            const querySnapshot = await getDocs(q);
+            const users = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setKhdemonas(users[0]);
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
+    };
+    fetchUserData();
 
     const handleWeekdaysChange = (event) => {
         setWeekdays(event.target.checked);
@@ -55,17 +84,11 @@ function DimiourgiaSymbolaiou(props) {
 
     const location = useLocation();
     const [stepTwoData, setStepTwoData] = useState({
-        availability: {
-            Monday: { from: null, to: null },
-            Tuesday: { from: null, to: null },
-            Wednesday: { from: null, to: null },
-            Thursday: { from: null, to: null },
-            Friday: { from: null, to: null },
-            Saturday: { from: null, to: null },
-            Sunday: { from: null, to: null },
-        },
-        hostingPreference: "guardian", // Default value
-        employmentTime: "part-time",
+        id: '',
+        id_p: '',
+        id_b: '',
+        time:'', // Απασχόληση
+        date: new Date().toLocaleDateString(),
         dateRange: [
             {
                 startDate: new Date(),
@@ -73,25 +96,8 @@ function DimiourgiaSymbolaiou(props) {
                 key: "selection",
             },
         ],
+        status: ''
     });
-    
-    // Update availability time for a specific day
-    const handleTimeChange = (day, type, newValue) => {
-        setStepTwoData((prevData) => {
-            const updatedData = {
-                ...prevData,
-                availability: {
-                    ...prevData.availability,
-                    [day]: {
-                        ...prevData.availability[day],
-                        [type]: newValue,
-                    },
-                },
-            };
-            console.log("Updated Step Two Data (availability):", updatedData);
-            return updatedData;
-        });
-    };
 
     // Update hosting preference
     const handleHostingPreferenceChange = (event) => {
@@ -104,6 +110,28 @@ function DimiourgiaSymbolaiou(props) {
             return updatedData;
         });
     };
+
+    const [isMatched, setIsMatched] = useState(false);
+    const [babysitter, setBabysitter] = useState({});
+    const findBabysitter = async (afm) => {
+        try {
+            const q = query(collection(FIREBASE_DB, 'user'), where('property', '==', 'babysitter'), where('afm', '==', afm));
+            const querySnapshot = await getDocs(q);
+            const users = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setBabysitter(users[0]);
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        } finally {
+            if (!babysitter) {
+                setIsMatched(true);
+            }
+        }
+        //? Set error message if !babysitter
+        // else display their data
+    }
 
     // Update employment time
     const handleEmploymentTimeChange = (event) => {
@@ -147,7 +175,6 @@ function DimiourgiaSymbolaiou(props) {
       ]);
 
     const [currentStep, setCurrentStep] = useState(0);
-    const [profiles, setProfiles] = useState([]);
     const [value, setValue] = useState(dayjs());;
 
     const [professionalData, setProfessionalData] = useState({
@@ -155,24 +182,6 @@ function DimiourgiaSymbolaiou(props) {
         lastName: "",
         afm: "",
     });
-
-    useEffect(() => {
-        fetch("/data/khdemones.json")
-            .then((response) => {
-                console.log("Response:", response);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then((data) => {
-                console.log("Fetched data:", data);
-                setProfiles(data);
-            })
-            .catch((error) => {
-                console.error("Error fetching JSON:", error);
-            });
-    }, []);
 
     const goToNextStep = () => {
         if (currentStep < steps.length - 1) {
@@ -185,8 +194,6 @@ function DimiourgiaSymbolaiou(props) {
             setCurrentStep(currentStep - 1);
         }
     };
-
-    const khdemonas = profiles.find((profile) => profile.uid === 2);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -207,11 +214,11 @@ function DimiourgiaSymbolaiou(props) {
                                 <b>Επιβεβαιώστε τα προσωπικά σας στοιχεία</b>
                             </h2>
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Όνομα:</b> {khdemonas?.name || "N/A"}
+                                <b>Όνομα:</b> {khdemonas?.firstName || "N/A"}
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Επίθετο:</b> {khdemonas?.surname || "N/A"}
+                                <b>Επίθετο:</b> {khdemonas?.lastName || "N/A"}
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
@@ -236,11 +243,11 @@ function DimiourgiaSymbolaiou(props) {
                                 <b>Επιβεβαιώστε τα στοιχεία του παιδιού</b>
                             </h2>
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Όνομα:</b> {khdemonas?.childName || "N/A"}
+                                <b>Όνομα:</b> {khdemonas?.childFirstName || "N/A"}
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Επίθετο:</b> {khdemonas?.childSurname || "N/A"}
+                                <b>Επίθετο:</b> {khdemonas?.childLastName || "N/A"}
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
@@ -248,7 +255,7 @@ function DimiourgiaSymbolaiou(props) {
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>ΑΜΚΑ:</b> {khdemonas?.amka || "N/A"}
+                                <b>ΑΜΚΑ:</b> {khdemonas?.childAmka || "N/A"}
                             </h4>
                         </div>
                     </div>
@@ -361,11 +368,11 @@ function DimiourgiaSymbolaiou(props) {
                                 <b>Προσωπικά στοιχεία κηδεμόνα</b>
                             </h2>
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Όνομα:</b> {khdemonas?.name || "N/A"}
+                                <b>Όνομα:</b> {khdemonas?.firstName || "N/A"}
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Επίθετο:</b> {khdemonas?.surname || "N/A"}
+                                <b>Επίθετο:</b> {khdemonas?.lastName || "N/A"}
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
@@ -387,11 +394,11 @@ function DimiourgiaSymbolaiou(props) {
                                 <b>Προσωπικά στοιχεία παιδιού</b>
                             </h2>
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Όνομα:</b> {khdemonas?.childName || "N/A"}
+                                <b>Όνομα:</b> {khdemonas?.childFirstName || "N/A"}
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Επίθετο:</b> {khdemonas?.childSurname || "N/A"}
+                                <b>Επίθετο:</b> {khdemonas?.childLastName || "N/A"}
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
@@ -399,7 +406,7 @@ function DimiourgiaSymbolaiou(props) {
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>ΑΜΚΑ:</b> {khdemonas?.amka || "N/A"}
+                                <b>ΑΜΚΑ:</b> {khdemonas?.childAmka || "N/A"}
                             </h4>
                         </div>
                     </div>

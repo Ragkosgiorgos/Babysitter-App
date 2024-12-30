@@ -273,7 +273,7 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/#">
+                                <a className="dropdown-item" href="/goneis/symbolaia">
                                     Τα Συμβόλαιά μου
                                 </a>
                             </li>

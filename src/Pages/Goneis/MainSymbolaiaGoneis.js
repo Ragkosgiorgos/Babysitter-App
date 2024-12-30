@@ -10,14 +10,59 @@ import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
 import { useNavigate } from "react-router-dom";
 import ReplayIcon from '@mui/icons-material/Replay';
-
-
+import { onAuthStateChanged } from "firebase/auth";
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { FIREBASE_DB, FIREBASE_AUTH } from '../../config/firebase.js'
 
 function MainSymbolaiaGoneisPGU() {
   const navigate = useNavigate();
 
-  const handleRedirect = () => {
-    navigate('/apodoxi-symbolaiou'); 
+  // Check if user is logged in, get the user's UUID and fetch user data
+  const [uuid, setUuid] = useState(null);
+  useEffect(() => {
+      const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+          if (user) {
+              setUuid(user.uid);
+          }
+      });
+      return () => unsubscribe();
+  }, []);
+
+  const [user, setUser] = useState({});
+  const fetchUserData = async () => {
+      try {
+          const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
+          const querySnapshot = await getDocs(q);
+          const users = querySnapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+          }));
+          setUser(users[0]);
+      } catch (error) {
+          console.error('Error fetching user data:', error);
+      }
+  };
+  fetchUserData();
+
+    // Fetch the job posts' data
+    const [contracts, setContracts] = useState([]);
+    const fetchPosts = async () => {
+    try {
+        const q = query(collection(FIREBASE_DB, 'contracts'), where('id_p', '==', uuid));
+        const querySnapshot = await getDocs(q);
+        const posts = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+        setContracts(posts);
+    } catch (error) {
+        console.error('Error fetching posts:', error);
+    }
+    };
+    fetchPosts();
+
+  const handleNewContract = () => {
+    navigate('/neo-symbolaio');
   };
 
   return (
@@ -45,13 +90,21 @@ function MainSymbolaiaGoneisPGU() {
               </Tooltip>
             </div>
 
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%", marginLeft: "70%" }}>  
+                <button style={{  height: "3%", backgroundColor: "#2b8cbe", color: "white",
+                    borderRadius: "5px", cursor: "pointer", border: "3px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)" }}
+                    onClick={handleNewContract}>
+                    Δημιουργία νέου συμβολαίου
+                </button>
+            </div>
+
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
 
               <table style={{ width: "80%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius: "10px" }}>
                 <thead style={{ lineHeight: "2em" }}>
                   <tr style={{ borderBottom: "2px solid #333" }}>
                     <th>Κωδικός συμβολαίου</th>
-                    <th>Ονοματεπώνυμο συμβαλλόμενου</th>
+                    <th>Ονοματεπώνυμο επαγγελματία</th>
                     <th>Κατάσταση συμβολαίου</th>
                     <th>Αξιολόγηση</th>
                     <th style={{width:"150px"}}></th>
@@ -59,22 +112,17 @@ function MainSymbolaiaGoneisPGU() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>Hliana</td>
-                    <td>Σε ισχύ</td>
-                    <td>Προβολή</td>
-                    <DeleteForeverIcon 
-      style={{ cursor: "pointer", marginLeft: "10px", color: "black" }} 
-      
-    />
-    <ReplayIcon
-      style={{ cursor: "pointer", marginLeft: "10px"}}
-    />
-    <VisibilityIcon
-    style={{ cursor: "pointer",marginLeft:"10px" }} 
-  />
-                  </tr>
+                    { contracts.map((contract) => (
+                        <tr>
+                            <td>{contract.id}</td>
+                            <td>{/*//? */}</td>
+                            <td>{contract.status}</td>
+                            <td>Προβολή</td>
+                            <DeleteForeverIcon style={{ cursor: "pointer", marginLeft: "10px", color: "black" }}/>
+                            <ReplayIcon style={{ cursor: "pointer", marginLeft: "10px"}} />
+                            <VisibilityIcon style={{ cursor: "pointer",marginLeft:"10px" }}/>
+                        </tr>
+                    ))}
                 </tbody>
               </table>
 
