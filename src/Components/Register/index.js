@@ -16,7 +16,7 @@ export default function Register(){
     try {
       const res = await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
       console.log("User registered:", res.user);
-      window.location.href = "/";
+      window.location.href = "/profile";
     } catch (error) {
       alert(error.message);
     } finally {

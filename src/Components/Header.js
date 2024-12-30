@@ -22,6 +22,7 @@ function Header(props) {
         });
         return () => unsubscribe();
     }, []);
+    
     const [user, setUser] = useState({});
     const fetchUserData = async () => {
         try {
@@ -36,7 +37,9 @@ function Header(props) {
             console.error('Error fetching user data:', error);
         }
     };
-    fetchUserData();
+    useEffect(() => {
+        fetchUserData();
+    }, [uuid]);
 
     const handleGoneisRedirect = () => {
         if (location.pathname !== '/goneis') {
@@ -46,12 +49,6 @@ function Header(props) {
 
     const handleEpaggelmatiesRedirect = () => {
         if (location.pathname !== '/epaggelmaties') {
-            navigate('/epaggelmaties');  
-        }
-    };
-
-    const handleEpaggelmatiesSymbolaiaRedirect = () => {
-        if (location.pathname !== '/epaggelmaties/symbolaia') {
             navigate('/epaggelmaties');  
         }
     };
@@ -78,7 +75,7 @@ function Header(props) {
                     <div>
                         <img
                             style={{ marginRight: '8px' }}
-                            src="/logo192.png"
+                            src="/favicon_hero.png"
                             width="30"
                             height="30"
                             className="d-inline-block align-top"
@@ -145,7 +142,7 @@ function Header(props) {
                         </button>
                         <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton" >
                             <li>
-                                <a className="dropdown-item"  href="epaggelmaties/profile">
+                                <a className="dropdown-item"  href="/epaggelmaties/profile">
                                     Το Προφίλ μου
                                 </a>
                             </li>
@@ -196,7 +193,7 @@ function Header(props) {
                     <div>
                         <img
                             style={{ marginRight: '8px' }}
-                            src="/logo192.png"
+                            src="/favicon_hero.png"
                             width="30"
                             height="30"
                             className="d-inline-block align-top"
@@ -263,13 +260,8 @@ function Header(props) {
                         </button>
                         <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton" >
                             <li>
-                                <a className="dropdown-item" href="goneis/profile">
+                                <a className="dropdown-item" href="/goneis/profile">
                                     Το Προφίλ μου
-                                </a>
-                            </li>
-                            <li>
-                                <a className="dropdown-item" href="/aggelies">
-                                    Οι Αγγελίες μου
                                 </a>
                             </li>
                             <li>
@@ -304,7 +296,7 @@ function Header(props) {
                     <div>
                         <img
                             style={{ marginRight: '8px' }}
-                            src="/logo192.png"
+                            src="/favicon_hero.png"
                             width="30"
                             height="30"
                             className="d-inline-block align-top"

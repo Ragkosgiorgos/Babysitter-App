@@ -110,6 +110,10 @@ function GoneisProfile() {
     }
   };
 
+  if (!babysitter) { //? Error handling
+    return <div>Loading...</div>;
+  }
+
   return (
     <div>
       <Header />

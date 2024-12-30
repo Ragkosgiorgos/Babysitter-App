@@ -18,27 +18,27 @@ function GonRatingMain() {
   // Check if user is logged in, get the user's UUID and fetch user data
   const [uuid, setUuid] = useState(null);
   useEffect(() => {
-      const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
-          if (user) {
-              setUuid(user.uid);
-          }
-      });
-      return () => unsubscribe();
+    const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+        if (user) {
+            setUuid(user.uid);
+        }
+    });
+    return () => unsubscribe();
   }, []);
   
   const [user, setUser] = useState({});
   const fetchUserData = async () => {
-      try {
-          const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
-          const querySnapshot = await getDocs(q);
-          const users = querySnapshot.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-          }));
-          setUser(users[0]);
-      } catch (error) {
-          console.error('Error fetching user data:', error);
-      }
+    try {
+      const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
+      const querySnapshot = await getDocs(q);
+      const users = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+      }));
+      setUser(users[0]);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
   };
   fetchUserData();
 
@@ -55,11 +55,32 @@ function GonRatingMain() {
         setFilteredPosts(posts);
     } catch (error) {
         console.error('Error fetching posts:', error);
-    } finally {
-        
     }
   };
   fetchPosts();
+
+  // Find the babysitters
+  const [babysitters, setBabysitters] = useState([]);
+  const fetchBabysitters = async () => {
+    try {
+      const q = query(collection(FIREBASE_DB, 'user'), where('property', '==', 'babysitter'));
+      const querySnapshot = await getDocs(q);
+      const babysitters = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+      }));
+      setBabysitters(babysitters);
+    } catch (error) {
+      console.error('Error fetching babysitters:', error);
+    }
+  };
+  fetchBabysitters();
+
+  // Find the babysitter's name to display in the table
+  const findBabysitter = (id) => {
+    const babysitter = babysitters.find(babysitter => babysitter.userId === id);
+    return babysitter ? babysitter.firstName + " " + babysitter.lastName : "Δεν βρέθηκε";
+  };
 
   // Delete a post from the database
   const handleDelete = (id) => {
@@ -119,17 +140,15 @@ function GonRatingMain() {
               <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
                 <thead style={{ lineHeight: "2em"}}>
                   <tr style={{ borderBottom: "2px solid #333" }}>
-                    <th>Κωδικός αξιολόγησης</th>
-                    <th>Κηδεμόνας</th>
-                    <th>Βαθμολογία</th>
+                    <th>Επαγγελματίας</th>
+                    <th>Συνολική βαθμολογία</th>
                     <th>Ενέργειες</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredPosts.map((post) => (
                     <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
-                      <td>{post.id}</td>
-                      <td>{user.firstName} {user.lastName}</td>
+                      <td>{findBabysitter(post.id_b)}</td>
                       <td>{post.rating}</td>
                       <td style={{ display: "flex", justifyContent: "center", alignItems:"center", marginTop:"0.5em", gap:"10px" }}>
                         <VisibilityIcon style={{ cursor: "pointer" }} onClick={() => previewRating(post.id)} />

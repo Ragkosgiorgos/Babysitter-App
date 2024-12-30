@@ -36,20 +36,22 @@ function DimiourgiaSymbolaiou(props) {
     }, []);
 
     const [khdemonas, setKhdemonas] = useState({});
-    const fetchUserData = async () => {
-        try {
-            const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
-            const querySnapshot = await getDocs(q);
-            const users = querySnapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            }));
-            setKhdemonas(users[0]);
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-        }
-    };
-    fetchUserData();
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
+                const querySnapshot = await getDocs(q);
+                const users = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                setKhdemonas(users[0]);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+        fetchUserData();
+    }, [uuid]);
 
     const handleWeekdaysChange = (event) => {
         setWeekdays(event.target.checked);

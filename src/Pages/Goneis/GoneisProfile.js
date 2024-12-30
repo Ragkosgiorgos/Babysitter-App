@@ -113,6 +113,10 @@ function GoneisProfile() {
     }
   };
 
+  if (!khdemonas) { //? Error handling
+    return <h1>Loading...</h1>;
+  }
+
   return (
     <div>
       <Header />
