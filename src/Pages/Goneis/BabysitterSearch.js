@@ -9,8 +9,12 @@ import Stack from '@mui/material/Stack';
 import { capitalizeWords } from "../../Utils/Methods/index";
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { FIREBASE_DB } from "../../config/firebase";
+import { useLocation } from "react-router-dom";
 
 function BabysitterSearch() {
+  const location = useLocation();
+  const { area, age, accomodation, day } = location.state;
+
   const [profiles, setProfiles] = useState([]);
   const [matchedPosts, setMatchedPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
@@ -152,7 +156,7 @@ function BabysitterSearch() {
         <Breadcrumbs />
 
         <div style={{ display: "flex", flex: 1 }}>
-          <BabysitterFilters applyFilters={applyFilters} resetFilters={resetFilters} />
+          <BabysitterFilters applyFilters={applyFilters} resetFilters={resetFilters} ageR={age} areaR={area} accomodationR={accomodation} dayR={day} />
 
           <div style={{ flex: 1, padding: "1em" }}>
             {rowsPerPageSelection()}

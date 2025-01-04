@@ -2,16 +2,16 @@ import React, { useState } from "react";
 import { Checkbox, FormControlLabel, Select, MenuItem, InputLabel, FormControl } from "@mui/material";
 import Radio from '@mui/material/Radio';
 
-function BabysitterFilters({ applyFilters, resetFilters }) {
-  const [selectedLocation, setSelectedLocation] = useState("");
+function BabysitterFilters({ applyFilters, resetFilters, ageR, areaR, accomodationR, dayR }) {
+  const [selectedLocation, setSelectedLocation] = useState(areaR || "");
   const [selectedAge, setSelectedAge] = useState("");
   const [selectedEducation, setSelectedEducation] = useState("");
 
   const [fullTimeChecked, setFullTimeChecked] = useState(false);
   const [partTimeChecked, setPartTimeChecked] = useState(false);
 
-  const [weekdays, setWeekdays] = useState(false);
-  const [weekends, setWeekends] = useState(false);
+  const [weekdays, setWeekdays] = useState(dayR === "Καθημερινές" || dayR === "Και τα δύο");
+  const [weekends, setWeekends] = useState(dayR === "Σαββατοκύριακο" || dayR === "Και τα δύο");
 
   const [hasCar, setHasCar] = useState(false);
 
