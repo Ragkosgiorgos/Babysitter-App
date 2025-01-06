@@ -110,12 +110,12 @@ function ViewJobPost() {
                             <h3><b>{profile.firstName} {profile.lastName}</b> ({calculateAge(profile.birthDate)} ετών)</h3>
                         </div>
 
-                        <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", width: "60%", marginTop: "2vh", marginBottom: "2vh" }}>
                             <h6> <b style={{ textDecoration: "underline" }}>Περιγραφή:</b> {post.description} </h6>
                         </div>
 
                         <Link to={`/epaggelmaties/aitisi-endiaferontos?ntanta=${profile.userId}`}>
-                            <button className="btn btn-primary" style={{ width: "20vw", marginTop: "2vh" }}>
+                            <button className="btn btn-primary" style={{ width: "20vw", marginTop: "2vh", marginBottom: "2vh" }}>
                                 Επικοινωνία
                             </button>
                         </Link>

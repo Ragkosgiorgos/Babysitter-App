@@ -62,7 +62,7 @@ function BabysitterSearch() {
   });
 
   // Apply filters to the posts
-  const applyFilters = (fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, hasCar, weekdays, weekends) => {
+  const applyFilters = (fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, hasCar, weekdays, weekends, accomodationS) => {
     let filtered = matchedPosts;
 
     if (fullTimeChecked || partTimeChecked) {
@@ -102,6 +102,10 @@ function BabysitterSearch() {
       filtered = filtered.filter(post => post.dates === "Σαββατοκύριακο" || post.dates === "Και τα δύο");
     } else if (weekdays && weekends) {
       filtered = filtered.filter(post => post.dates === "Και τα δύο");
+    }
+
+    if (accomodationS) {
+      filtered = filtered.filter(post => post.accomodation === accomodationS);
     }
 
     setFilteredPosts(filtered);

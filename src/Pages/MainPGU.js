@@ -115,7 +115,7 @@ function MainPGU() {
               >
                 {<MenuItem value="">Επιλέξτε Ηλικία</MenuItem>}
                 {ages.map((item) => (
-                  <MenuItem key={item} value={item.toLowerCase()}>
+                  <MenuItem key={item} value={item}>
                     {item} ετών
                   </MenuItem>
                 ))}
@@ -130,12 +130,12 @@ function MainPGU() {
               <Select
                 labelId="accomodation-select-label"
                 value={accomodation}
-                onChange={(e) => setAccomodation(e.target.value === "Σπίτι μου" ? "Όχι" : "Ναι")}
+                onChange={(e) => setAccomodation(e.target.value)}
                 style={{ width: "80%" }}
                 displayEmpty
               >
-                {<MenuItem value="">Επιλέξτε Φιλοξενία</MenuItem>}
-                {["Σπίτι μου", "Στου επαγγελματία"].map((item) => (
+                {<MenuItem value="">Επιλέξτε Χώρο Φιλοξενίας</MenuItem>}
+                {["Στον χώρο μου", "Στον χώρο του επαγγελματία"].map((item) => (
                   <MenuItem key={item} value={item.toLowerCase()}>
                     {item}
                   </MenuItem>
