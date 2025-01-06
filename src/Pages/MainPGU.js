@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -7,6 +7,9 @@ import Accordion from 'react-bootstrap/Accordion';
 import JobofferReview from "../Components/EpaggelmatiesComponent/JobofferReview";
 import { useNavigate } from 'react-router-dom';
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { Carousel } from 'react-bootstrap';
+import { FIREBASE_DB } from "../config/firebase";
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 function MainPGU() {
   const navigate = useNavigate();
@@ -15,6 +18,24 @@ function MainPGU() {
   const [area, setArea] = useState("");
   const [accomodation, setAccomodation] = useState("");
   const [day, setDay] = useState("");
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const q = query(collection(FIREBASE_DB, "aggelies"), where("status", "==", "Δημοσιευμένη"));
+        const postQuerySnapshot = await getDocs(q);
+        const posts = postQuerySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setPosts(posts);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      } 
+    }
+    fetchPosts();
+  }, []);
 
   const areasOfGreece = [
     "Αθήνα",
@@ -156,13 +177,30 @@ function MainPGU() {
           <img style={{ height: "25vh" }} src="/progressParents.png" alt="" />
         </div>
 
-        <div style={{ marginLeft: "2vh" }}><h6>Δείτε ενδεικτικές αγγελίες για εργασία:</h6></div>
+        <div style={{ textAlign: "center", marginTop: "5vh" }}><h3><b>Δείτε ενδεικτικές αγγελίες για εργασία:</b></h3></div>
 
         <div style={{ marginTop: "20px", marginLeft: "20px", display: "flex", gap: "5vh", justifyContent: "center" }}>
-          {/*//? Correct ids*/}
-          <JobofferReview id={1}/>
-          <JobofferReview id={4}/>
-          <JobofferReview id={5}/>
+          <Carousel
+            data-bs-theme="dark"
+            style={{ width: "90%", height: "40vh", margin: "auto", justifyContent: "center" }}
+          >
+            {/* Group posts into sets of 3 */}
+            {posts.reduce((acc, post, index) => {
+              if (index % 3 === 0) {
+                acc.push(posts.slice(index, index + 3));
+              }
+              return acc;
+            }
+            , []).map((postSet, index) => (
+              <Carousel.Item key={index}>
+                <div style={{ display: "flex", justifyContent: "center", gap: "5vh" }}>
+                  {postSet.map((post) => (
+                    <JobofferReview key={post.id} id={post.id} />
+                  ))}
+                </div>
+              </Carousel.Item>
+            ))}
+          </Carousel>
         </div>
 
       <div>

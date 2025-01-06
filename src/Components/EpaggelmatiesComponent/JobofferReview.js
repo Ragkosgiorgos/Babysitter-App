@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { TruncatedText } from "../../Utils/Methods/index";
+import { TruncatedText, capitalizeWords } from "../../Utils/Methods/index";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { FIREBASE_DB } from "../../config/firebase";
 
@@ -41,7 +41,7 @@ function JobofferReview(props) {
             borderRadius: "15px",
             margin: "10px",
             padding: "10px",
-            width: "23%",
+            width: "20%",
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
@@ -50,7 +50,7 @@ function JobofferReview(props) {
         >
         <div>
             <span style={{ marginLeft: "4%" }}>
-            <b>Περιοχή:</b> {aggelia.area}
+            <b>Περιοχή:</b> {capitalizeWords(aggelia.area)}
             </span>
             <div
             style={{
