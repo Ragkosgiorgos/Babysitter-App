@@ -129,20 +129,21 @@ function Header(props) {
                             </li>
                         </ul>
                     </div>
-                    <div className="dropdown ms-3" style={{marginRight:"5%"}}>
+                    <div className="dropdown ms-3">
                         <button
                             className="btn btn-secondary dropdown-toggle"
                             type="button"
                             id="dropdownMenuButton"
                             data-bs-toggle="dropdown"
+                            data-bs-boundary="viewport"
                             aria-expanded="false"
                             style={{ backgroundColor: "white", color: "black" }}
                         >
                             {user.firstName} {user.lastName}
                         </button>
-                        <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton" >
+                        <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                             <li>
-                                <a className="dropdown-item"  href="/epaggelmaties/profile">
+                                <a className="dropdown-item" href="/epaggelmaties/profile">
                                     Το Προφίλ μου
                                 </a>
                             </li>
@@ -177,7 +178,12 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/#" style={{ color: 'red', borderTop: "2px solid #333" }} onClick={handleUnsubscribe}>
+                                <a
+                                    className="dropdown-item"
+                                    href="/#"
+                                    style={{ color: "red", borderTop: "2px solid #333" }}
+                                    onClick={handleUnsubscribe}
+                                >
                                     Αποσύνδεση
                                 </a>
                             </li>
@@ -247,18 +253,19 @@ function Header(props) {
                             </li>
                         </ul>
                     </div>
-                    <div className="dropdown ms-3" style={{marginRight:"1%"}}>
+                    <div className="dropdown ms-3">
                         <button
                             className="btn btn-secondary dropdown-toggle"
                             type="button"
                             id="dropdownMenuButton"
                             data-bs-toggle="dropdown"
+                            data-bs-boundary="viewport"
                             aria-expanded="false"
                             style={{ backgroundColor: "white", color: "black" }}
                         >
                             {user.firstName} {user.lastName}
                         </button>
-                        <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton" >
+                        <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                             <li>
                                 <a className="dropdown-item" href="/goneis/profile">
                                     Το Προφίλ μου
@@ -280,7 +287,12 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/#" style={{ color: 'red', borderTop: "2px solid #333" }} onClick={handleUnsubscribe}>
+                                <a
+                                    className="dropdown-item"
+                                    href="/#"
+                                    style={{ color: "red", borderTop: "2px solid #333" }}
+                                    onClick={handleUnsubscribe}
+                                >
                                     Αποσύνδεση
                                 </a>
                             </li>
@@ -292,8 +304,16 @@ function Header(props) {
     } else if (!user) {
         return (
             <nav className="navbar navbar-expand-lg" style={{ backgroundColor: '#2E86AB' }}>
-                <div className="container-fluid" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <div>
+                <div
+                    className="container-fluid"
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                    }}
+                >
+                    {/* Logo and Brand Name */}
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
                         <img
                             style={{ marginRight: '8px' }}
                             src="/favicon_hero.png"
@@ -313,27 +333,41 @@ function Header(props) {
                             aria-controls="navbarNavDropdown"
                             aria-expanded="false"
                             aria-label="Toggle navigation"
+                            style={{ marginLeft: '10px' }}
                         >
                             <span className="navbar-toggler-icon"></span>
                         </button>
                     </div>
+
+                    {/* Navbar Links and Buttons */}
                     <div
-                        className="collapse navbar-collapse ms-auto"
+                        className="collapse navbar-collapse"
                         id="navbarNavDropdown"
                         style={{
                             display: 'flex',
                             justifyContent: 'flex-end',
                             alignItems: 'center',
-                            marginRight: '5%',
+                            gap: '140px',
                         }}
                     >
-                        <ul className="navbar-nav" style={{ display: 'flex', flexDirection: 'row', listStyleType: 'none' }}>
+                        {/* Navbar Links */}
+                        <ul
+                            className="navbar-nav"
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                listStyleType: 'none',
+                                margin: 0,
+                                padding: 0,
+                                gap: '30px',
+                            }}
+                        >
                             <li className="nav-item">
                                 <Link
                                     className={props.act !== 'goneis' ? 'nav-link' : 'nav-link active'}
                                     to="/goneis"
                                     style={{ color: 'white' }}
-                                    onClick={handleGoneisRedirect}  
+                                    onClick={handleGoneisRedirect}
                                 >
                                     Βρείτε babysitter
                                 </Link>
@@ -343,20 +377,46 @@ function Header(props) {
                                     className={props.act !== 'job' ? 'nav-link' : 'nav-link active'}
                                     to="/epaggelmaties"
                                     style={{ color: 'white' }}
-                                    onClick={handleEpaggelmatiesRedirect}  
+                                    onClick={handleEpaggelmatiesRedirect}
                                 >
                                     Βρείτε εργασία
                                 </Link>
                             </li>
                         </ul>
-                    </div>
-                    <div className="dropdown ms-3">
-                        <button style={{ marginRight: '8px', borderRadius: '15%' }} onClick={() => navigate('/login')}>
-                            Σύνδεση
-                        </button>
-                        <button style={{ marginRight: '8px', borderRadius: '15%' }} onClick={() => navigate('/register')}>
-                            Εγγραφή
-                        </button>
+
+                        {/* Login and Register Buttons */}
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                            <button
+                                style={{
+                                    backgroundColor: '#007bff',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '5px',
+                                    padding: '8px 16px',
+                                    cursor: 'pointer',
+                                    fontSize: '14px',
+                                    border: '1px solid white',
+                                }}
+                                onClick={() => navigate('/login')}
+                            >
+                                Σύνδεση
+                            </button>
+                            <button
+                                style={{
+                                    backgroundColor: '#28a745',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '5px',
+                                    padding: '8px 16px',
+                                    cursor: 'pointer',
+                                    fontSize: '14px',
+                                    border: '1px solid white',
+                                }}
+                                onClick={() => navigate('/register')}
+                            >
+                                Εγγραφή
+                            </button>
+                        </div>
                     </div>
                 </div>
             </nav>

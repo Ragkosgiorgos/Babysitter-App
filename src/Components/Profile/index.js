@@ -4,6 +4,7 @@ import { FIREBASE_AUTH , FIREBASE_DB} from '../../config/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import { convertDateFormat } from '../../Utils/Methods';
 
 export default function Profile() {
     const [email, setEmail] = useState(null);
@@ -325,6 +326,7 @@ export default function Profile() {
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Property</th>
+                            <th>Birth Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -333,6 +335,7 @@ export default function Profile() {
                                 <td>{user.firstName}</td>
                                 <td>{user.lastName}</td>
                                 <td>{user.property}</td>
+                                <td>{convertDateFormat(user.birthDate)}</td>
                             </tr>
                         ))}
                     </tbody>

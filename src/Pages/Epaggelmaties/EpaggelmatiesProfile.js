@@ -5,6 +5,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import { convertDateFormat } from "../../Utils/Methods";
 
 function GoneisProfile() {
   const [editedData, setEditedData] = useState({});
@@ -162,8 +163,8 @@ function GoneisProfile() {
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <div style={{ width: "80%" }}>
                         <b>
-                          {field === "name" ? "Όνομα"
-                            : field === "surname" ? "Επίθετο"
+                          {field === "firstName" ? "Όνομα"
+                            : field === "lastName" ? "Επίθετο"
                             : field === "birthDate" ? "Ημερομηνία γέννησης"
                             : field === "afm" ? "ΑΦΜ"
                             : field === "email" ? "Email"
@@ -177,7 +178,7 @@ function GoneisProfile() {
                             onChange={handleInputChange}
                           />
                         ) : (
-                          babysitter?.[field] || "N/A"
+                          field === "birthDate" ? convertDateFormat(babysitter[field]) : (babysitter[field] || "N/A")
                         )}
                       </div>
                       {isEditing[field] && (

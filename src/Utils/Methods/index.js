@@ -49,3 +49,14 @@ export function capitalizeWords(str) {
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(" ");
 }
+
+export function convertDateFormat(dateStr) {
+    if (dateStr === undefined || dateStr === null) {
+        return '';
+    }
+    // Split the input string into parts
+    const [year, month, day] = dateStr.split("-");
+
+    // Return the date in DD/MM/YYYY format
+    return `${day}/${month}/${year}`;
+}
