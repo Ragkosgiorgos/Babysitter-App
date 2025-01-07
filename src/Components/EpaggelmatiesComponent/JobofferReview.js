@@ -30,8 +30,8 @@ function JobofferReview(props) {
         navigate(`/view-post?id=${job_id}`);
     };
 
-    if (!aggelia) { //?Error handling
-        return <div>Δεν βρέθηκε η αγγελία</div>;
+    if (!aggelia) {
+        navigate("/404");
     }
 
     return (

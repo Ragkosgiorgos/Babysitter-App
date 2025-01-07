@@ -4,11 +4,14 @@ import Footer from "../../../Components/Footer";
 import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
 import Typography from '@mui/material/Typography';
+import { useNavigate } from "react-router-dom";
 import { calculateAge } from "../../../Utils/Methods/index";
 import { FIREBASE_DB } from '../../../config/firebase';
 import { collection, query, getDocs, where } from 'firebase/firestore';
 
 function ViewRating() {
+  const navigate = useNavigate();
+
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id') || -1;
 
@@ -50,8 +53,8 @@ function ViewRating() {
     window.history.back();
   };
 
-  if (!rating || !profile) {//? Error handling
-    return <div>Error loading rating {id}</div>;
+  if (!rating || !profile) {
+    navigate("/404");
   }
 
   return (

@@ -80,8 +80,8 @@ function EpaggRatingMain() {
     navigate(`preview-aksiologisis?id=${rating_id}`);
   };
   
-  if (!user) { //? Εrror handling
-    return <div>Δεν βρέθηκε ο χρήστης με uid {uuid}</div>;
+  if (!user) {
+    navigate("/404");
   }
 
   return (

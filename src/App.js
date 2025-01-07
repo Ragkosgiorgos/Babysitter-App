@@ -26,6 +26,7 @@ import EpaggelmatiasProfile from "./Pages/Epaggelmaties/EpaggelmatiesProfile";
 import GoneisProfile from "./Pages/Goneis/GoneisProfile";
 import CreateRating from "./Pages/Goneis/Ratings/CreateRating";
 import MainSymbolaiaGoneisPGU from "./Pages/Goneis/MainSymbolaiaGoneis";
+import ErrorPage from "./Components/ErrorPage";
 
 function App() {
   return (
@@ -73,7 +74,7 @@ function App() {
 
           <Route path="epaggelmaties/ratings/preview-aksiologisis" element={<ViewRating />} />
 
-          <Route path="*" element={<h1>404 - Not Found</h1>} />
+          <Route path="*" element={<ErrorPage />} />
 
         </Routes>
 

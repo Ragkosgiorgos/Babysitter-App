@@ -70,8 +70,8 @@ function PreviewAggelias() {
         "Δημοσίευση αγγελίας",
     ];
 
-    if (!user || !aggelia) {//? Error fetching data
-        return <div>Error fetching data...</div>;
+    if (!user || !aggelia) {
+        navigate("/404");
     }
 
     return (

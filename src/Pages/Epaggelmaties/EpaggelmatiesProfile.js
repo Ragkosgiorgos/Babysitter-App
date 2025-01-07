@@ -6,8 +6,11 @@ import { collection, query, where, getDocs, doc, updateDoc } from "firebase/fire
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { convertDateFormat } from "../../Utils/Methods";
+import { useNavigate } from "react-router-dom";
 
 function GoneisProfile() {
+  const navigate = useNavigate();
+
   const [editedData, setEditedData] = useState({});
 
   const [isEditing, setIsEditing] = useState({
@@ -111,12 +114,12 @@ function GoneisProfile() {
     }
   };
 
-  if (!babysitter) { //? Error handling
-    return <div>Loading...</div>;
+  if (!babysitter) {
+    navigate("/404");
   }
 
   return (
-    <div>
+    <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
       <Header />
 
       <h1 style={{ textAlign: "center", marginTop: "25px", textDecoration: "underline" }}> <b>Το προφίλ μου</b> </h1>

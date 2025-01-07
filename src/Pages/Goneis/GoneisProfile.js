@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
 import ClearIcon from '@mui/icons-material/Clear';
+import { useNavigate } from "react-router-dom";
 import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { convertDateFormat } from "../../Utils/Methods";
 
 function GoneisProfile() {
+  const navigate = useNavigate();
+
   const [editedData, setEditedData] = useState({});
 
   const [isEditing, setIsEditing] = useState({
@@ -114,8 +117,8 @@ function GoneisProfile() {
     }
   };
 
-  if (!khdemonas) { //? Error handling
-    return <h1>Loading...</h1>;
+  if (!khdemonas) {
+    navigate("/404");
   }
 
   return (

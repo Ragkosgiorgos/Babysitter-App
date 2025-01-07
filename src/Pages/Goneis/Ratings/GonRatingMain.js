@@ -100,8 +100,8 @@ function GonRatingMain() {
     navigate("/goneis/ratings/add");
   };
 
-  if (!user) { //? Error handling
-    return <div>Δεν βρέθηκε ο χρήστης με uid {uuid}</div>;
+  if (!user) {
+    navigate("/404");
   }
 
   return (

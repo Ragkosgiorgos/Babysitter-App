@@ -84,9 +84,8 @@ function MainAggeliesPGU() {
       navigate(`/nea-aggelia?step=2&post_id=${post_id}`);
     };
 
-    //? Error handling
     if (!user) {
-      return <div>Error fetching user data</div>;
+      navigate("/404");
     }
 
     return (

@@ -237,9 +237,9 @@ function DimiourgiaAggelias() {
         2.5,
     ];
 
-    //? If the user is not found, return an error message
+
     if (!user) {
-        return <div>Δεν βρέθηκε ο χρήστης</div>;
+        navigate("/404");
     }
 
     const renderStepContent = () => {

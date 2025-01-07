@@ -89,8 +89,8 @@ function ViewJobPost() {
         navigate(`/epaggelmaties/ratings/preview-aksiologisis?id=${r_id}`);
     };
 
-    if (!profile || !post) {//? Error frame
-        return <div>Error</div>;
+    if (!profile || !post) {
+        navigate('/404');
     }
 
     return (
