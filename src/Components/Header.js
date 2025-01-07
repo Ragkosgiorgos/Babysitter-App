@@ -14,6 +14,7 @@ function Header(props) {
 
     // Check if user is logged in, get the user's UUID and fetch user data
     const [uuid, setUuid] = useState(null);
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
             if (user) {
@@ -25,6 +26,7 @@ function Header(props) {
     
     const [user, setUser] = useState({});
     const fetchUserData = async () => {
+        setLoading(true);
         try {
             const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
             const querySnapshot = await getDocs(q);
@@ -35,6 +37,9 @@ function Header(props) {
             setUser(users[0]);
         } catch (error) {
             console.error('Error fetching user data:', error);
+        }
+        finally {
+            setLoading(false);
         }
     };
     useEffect(() => {
@@ -67,6 +72,8 @@ function Header(props) {
         navigate('/');
         window.location.reload();
     };
+
+    
 
     if (user && user.property === 'babysitter') {
         return (

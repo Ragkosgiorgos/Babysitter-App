@@ -18,11 +18,6 @@ function ApodoxiSymbolaiou(){
     const { contractId } = useParams();
     const [loading, setLoading] = useState(true); // Define loading state
     const [contract, setContract] = useState(null); // Define contract state
-    const [babysitter, setBabysitter] = useState({});
-    const [workingDaysFormatted, setWorkingDaysFormatted] = useState(""); // State for working days text
-    const [startDateFormatted, setStartDateFormatted] = useState(""); // State for formatted start date
-    const [endDateFormatted, setEndDateFormatted] = useState(""); // State for formatted end date
-    let workingDaysText = "";
     const navigate = useNavigate();
     const handleRedirect = () => {
         navigate('/epaggelmaties/symbolaia'); 
@@ -38,6 +33,7 @@ function ApodoxiSymbolaiou(){
 
     useEffect(() => {
         const fetchContract = async () => {
+            setLoading(true);
             try {
                 if (!contractId) {
                     console.error('contractId is not defined');
@@ -49,23 +45,6 @@ function ApodoxiSymbolaiou(){
           
                 if (contractSnapshot.exists()) {
                     setContract(contractSnapshot.data()); // Set contract data if found
-                    const formattedDate = format(new Date(contract.dateRange.startDate), "EEEE d MMMM yyyy", { locale: el });
-                    setStartDateFormatted(formattedDate);
-                    const formattedDate1 = format(new Date(contract.dateRange.endDate), "EEEE d MMMM yyyy", { locale: el });
-                    setEndDateFormatted(formattedDate1);
-
-                    const workingDays = contract.workingDays;
-                    
-                    if (workingDays.weekdays && workingDays.weekends) {
-                        workingDaysText = "Kαθημερινές και Σαββατοκύριακα";
-                    } else if (workingDays.weekdays) {
-                        workingDaysText = "Καθημερινές";
-                    } else if (workingDays.weekends) {
-                        workingDaysText = "Σαββατοκύριακα";
-                    }
-
-                    setWorkingDaysFormatted(workingDaysText);
-
                     console.log('Contract fetched: ', contractSnapshot.data()); // Log fetched contract data
                 } else {
                     console.log('No such contract!');
@@ -165,8 +144,10 @@ fetchParentData();
             console.error("Error updating contract status:", error);
         }
     };
-    
 
+    if(loading){
+        <div>Loading...</div>
+    }
     
     const renderStepContent = () => {
         switch (currentStep) {

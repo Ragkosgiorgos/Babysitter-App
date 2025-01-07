@@ -17,7 +17,7 @@ function MainSymbolaiaEpaggelmatiesPGU() {
   const navigate = useNavigate();
   
   const [contracts, setContracts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchContracts = async () => {

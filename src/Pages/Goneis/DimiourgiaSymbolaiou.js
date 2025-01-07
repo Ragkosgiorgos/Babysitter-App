@@ -31,6 +31,7 @@ function DimiourgiaSymbolaiou(props) {
     const [uuid, setUuid] = useState(null);
     const [profiles, setProfiles] = useState([]);
     const [contracts, setContracts] = useState([]);
+    const [contract, setContract] = useState([]);
     const [khdemonas, setKhdemonas] = useState({});
     const [stepTwoData, setStepTwoData] = useState({
         id: '',
@@ -110,6 +111,29 @@ function DimiourgiaSymbolaiou(props) {
                     ...doc.data(),
                 }));
                 setContracts(contracts);
+            } catch (error) {
+                console.error('Error fetching contracts:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchContracts();
+    }, [uuid]);
+
+
+    // Fetch all contracts based on user UUID
+    useEffect(() => {
+        if (!contractId) return; // Don't fetch if UUID is not set
+        const fetchContracts = async () => {
+            setLoading(true);
+            try {
+                const q = query(collection(FIREBASE_DB, 'contracts'), where('id', '==', contractId));
+                const querySnapshot = await getDocs(q);
+                const contract = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                setContract(contract);
             } catch (error) {
                 console.error('Error fetching contracts:', error);
             } finally {
@@ -232,7 +256,6 @@ function DimiourgiaSymbolaiou(props) {
         "Συμπλήρωση στοιχείων επαγγελματία και στοιχείων εργασίας",
         "Προεπισκόπηση και υποβολή",
         "Αναμονή για υπογραφή από επαγγελματία",
-        "Αποδοχή ή απόρριψη συμβολαίου",
     ];
 
     const goToNextStep = () => {
@@ -317,159 +340,156 @@ function DimiourgiaSymbolaiou(props) {
                 case 2:
                     return (
                         <div
-  style={{
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: "120vh",  // Ensures the content takes up full viewport height
-    padding: "0 10%",
-  }}
->
-  <div style={{ width: "80%" }}>
-    {/* First Box */}
-    <div
-      style={{
-        backgroundColor: "#ece7f2",
-        borderRadius: "2%",
-        padding: "2%",
-        height: "20vh",
-        textAlign: "center",
-        marginBottom: "20px",
-      }}
-    >
-      <h3 style={{ marginTop: "3%" }}>
-        Επιλέξτε τον επαγγελματία που θέλετε να κάνετε συμβόλαιο
-      </h3>
-      {isSubmitting && !babysitter.userId && (
-        <p style={{ color: "red", marginLeft: "25%" }}>Παρακαλώ επιλέξτε νταντά</p>
-      )}
-      <select
-        style={{ width: "50%", height: "30px" }}
-        onChange={(e) => setBabysitterChoice(e.target.value)}
-        value={babysitter.userId || ""}
-      >
-        <option value="" disabled>
-          Επιλέξτε νταντά
-        </option>
-        {hiredBabysitters.map((babysitter) => (
-          <option key={babysitter.userId} value={babysitter.userId}>
-            {babysitter.firstName} {babysitter.lastName}
-          </option>
-        ))}
-      </select>
-    </div>
+                            style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                minHeight: "120vh", 
+                                padding: "0 10%",
+                            }}
+                            >
+                            <div style={{ width: "80%" }}>
+                                {/* First Box */}
+                                <div
+                                style={{
+                                    backgroundColor: "#ece7f2",
+                                    borderRadius: "2%",
+                                    padding: "2%",
+                                    height: "20vh",
+                                    textAlign: "center",
+                                    marginBottom: "20px",
+                                }}
+                                >
+                                <h3 style={{ marginTop: "3%" }}>
+                                    Επιλέξτε τον επαγγελματία που θέλετε να κάνετε συμβόλαιο
+                                </h3>
+                                {isSubmitting && !babysitter.userId && (
+                                    <p style={{ color: "red", marginLeft: "25%" }}>Παρακαλώ επιλέξτε νταντά</p>
+                                )}
+                                <select
+                                    style={{ width: "50%", height: "30px" }}
+                                    onChange={(e) => setBabysitterChoice(e.target.value)}
+                                    value={babysitter.userId || ""}
+                                >
+                                    <option value="" disabled>
+                                    Επιλέξτε νταντά
+                                    </option>
+                                    {hiredBabysitters.map((babysitter) => (
+                                    <option key={babysitter.userId} value={babysitter.userId}>
+                                        {babysitter.firstName} {babysitter.lastName}
+                                    </option>
+                                    ))}
+                                </select>
+                                </div>
 
-    {/* Second Box */}
-    <div
-      style={{
-        backgroundColor: "#ece7f2",
-        borderRadius: "2%",
-        padding: "2%",
-        height: "20vh",
-        marginBottom: "20px",
-      }}
-    >
-      <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-        <b>Ημέρες και ώρες</b>
-      </h2>
-      <FormControlLabel
-        control={<Checkbox checked={weekdays} onChange={handleWeekdaysChange} />}
-        label="Καθημερινές"
-      />
-      <FormControlLabel
-        control={<Checkbox checked={weekends} onChange={handleWeekendsChange} />}
-        label="Σαββατοκύριακο"
-      />
-    </div>
+                                {/* Second Box */}
+                                <div
+                                style={{
+                                    backgroundColor: "#ece7f2",
+                                    borderRadius: "2%",
+                                    padding: "2%",
+                                    height: "20vh",
+                                    marginBottom: "20px",
+                                }}
+                                >
+                                <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+                                    <b>Ημέρες και ώρες</b>
+                                </h2>
+                                <FormControlLabel
+                                    control={<Checkbox checked={weekdays} onChange={handleWeekdaysChange} />}
+                                    label="Καθημερινές"
+                                />
+                                <FormControlLabel
+                                    control={<Checkbox checked={weekends} onChange={handleWeekendsChange} />}
+                                    label="Σαββατοκύριακο"
+                                />
+                                </div>
 
-    {/* Third Box */}
-    
+                                {/* Third Box */}
+                                
 
-    {/* Fourth Box */}
-    <div
-      style={{
-        backgroundColor: "#ece7f2",
-        borderRadius: "2%",
-        padding: "2%",
-        height: "20vh",
-        marginBottom: "20px",
-      }}
-    >
-      <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-        <b>Φιλοξενία</b>
-      </h2>
-      <FormControl>
-        <FormLabel id="demo-radio-buttons-group-label"></FormLabel>
-        <RadioGroup
-          aria-labelledby="demo-radio-buttons-group-label"
-          value={stepTwoData.hostingPreference}
-          onChange={handleHostingPreferenceChange}
-          name="radio-buttons-group"
-          style={{ textAlign: "left" }}
-        >
-          <FormControlLabel
-            value="Στον χώρο του κηδεμόνα"
-            control={<Radio />}
-            label="Στον χώρο του κηδεμόνα"
-          />
-          <FormControlLabel
-            value="Στον χώρο του επαγγελματία"
-            control={<Radio />}
-            label="Στον χώρο του επαγγελματία"
-          />
-        </RadioGroup>
-      </FormControl>
-    </div>
+                                {/* Fourth Box */}
+                                <div
+                                style={{
+                                    backgroundColor: "#ece7f2",
+                                    borderRadius: "2%",
+                                    padding: "2%",
+                                    height: "20vh",
+                                    marginBottom: "20px",
+                                }}
+                                >
+                                <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+                                    <b>Φιλοξενία</b>
+                                </h2>
+                                <FormControl>
+                                    <FormLabel id="demo-radio-buttons-group-label"></FormLabel>
+                                    <RadioGroup
+                                    aria-labelledby="demo-radio-buttons-group-label"
+                                    value={stepTwoData.hostingPreference}
+                                    onChange={handleHostingPreferenceChange}
+                                    name="radio-buttons-group"
+                                    style={{ textAlign: "left" }}
+                                    >
+                                    <FormControlLabel
+                                        value="Στον χώρο του κηδεμόνα"
+                                        control={<Radio />}
+                                        label="Στον χώρο του κηδεμόνα"
+                                    />
+                                    <FormControlLabel
+                                        value="Στον χώρο του επαγγελματία"
+                                        control={<Radio />}
+                                        label="Στον χώρο του επαγγελματία"
+                                    />
+                                    </RadioGroup>
+                                </FormControl>
+                                </div>
 
-    {/* Fifth Box */}
-    <div
-      style={{
-        backgroundColor: "#ece7f2",
-        borderRadius: "2%",
-        padding: "2%",
-        height: "20vh",
-        marginBottom:"20px"
-      }}
-    >
-      <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-        <b>Χρόνος απασχόλησης</b>
-      </h2>
-      <FormControl>
-        <RadioGroup
-          value={stepTwoData.employmentTime}
-          onChange={handleEmploymentTimeChange}
-        >
-          <FormControlLabel value="Μερική" control={<Radio />} label="Μερική" />
-          <FormControlLabel value="Πλήρης" control={<Radio />} label="Πλήρης" />
-        </RadioGroup>
-      </FormControl>
-    </div>
+                                {/* Fifth Box */}
+                                <div
+                                style={{
+                                    backgroundColor: "#ece7f2",
+                                    borderRadius: "2%",
+                                    padding: "2%",
+                                    height: "20vh",
+                                    marginBottom:"20px"
+                                }}
+                                >
+                                <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+                                    <b>Χρόνος απασχόλησης</b>
+                                </h2>
+                                <FormControl>
+                                    <RadioGroup
+                                    value={stepTwoData.employmentTime}
+                                    onChange={handleEmploymentTimeChange}
+                                    >
+                                    <FormControlLabel value="Μερική" control={<Radio />} label="Μερική" />
+                                    <FormControlLabel value="Πλήρης" control={<Radio />} label="Πλήρης" />
+                                    </RadioGroup>
+                                </FormControl>
+                                </div>
 
-    <div
-      style={{
-        backgroundColor: "#ece7f2",
-        borderRadius: "2%",
-        padding: "2%",
-        height: "60vh",
-        marginBottom: "20px",
-      }}
-    >
-      <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-        <b>Διάρκεια απασχόλησης</b>
-      </h2>
-      <DateRange
-        editableDateInputs={true}
-        onChange={handleDateRangeChange}
-        moveRangeOnFirstSelection={false}
-        ranges={stepTwoData.dateRange}
-      />
-    </div>
-  </div>
-</div>
-
-
-                    );
-                
+                                <div
+                                style={{
+                                    backgroundColor: "#ece7f2",
+                                    borderRadius: "2%",
+                                    padding: "2%",
+                                    height: "60vh",
+                                    marginBottom: "20px",
+                                }}
+                                >
+                                <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+                                    <b>Διάρκεια απασχόλησης</b>
+                                </h2>
+                                <DateRange
+                                    editableDateInputs={true}
+                                    onChange={handleDateRangeChange}
+                                    moveRangeOnFirstSelection={false}
+                                    ranges={stepTwoData.dateRange}
+                                />
+                                </div>
+                            </div>
+                            </div>
+        );  
             case 3:
                 return (
                     <div style={{ textAlign: "center" }}>
@@ -595,134 +615,6 @@ function DimiourgiaSymbolaiou(props) {
             )}
         </div>
                 );
-            case 5:
-                return (
-                    <div style={{ textAlign: "center" }}>
-                        <div style={{ textAlign: "center" }}>
-                            <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
-                                <span>Το συμβόλαιό σας με κωδικό #XXXXXX εγκρίθηκε από τον/την επαγγελματία.
-                                Η συνεργασία σας με τον/την επαγγελματία είναι σε ισχύ. </span>
-                            </div>
-                        </div>
-                        <h3>ή</h3>
-                        <div style={{ textAlign: "center" }}>
-                        <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
-                            <span>Το συμβόλαιό σας με κωδικό #XXXXXX απορρίφθηκε από τον/την επαγγελματία. </span>
-                        </div>
-                        </div>
-                        <div style={{ textAlign: "center" }}>
-                        <div style={{display: "flex",flexDirection: "column",marginTop: "2%",backgroundColor: "#ece7f2",borderRadius: "2%",width: "60%",justifyContent: "center",marginLeft: "20%",padding: "2%",}}>
-                            <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                                <b>Προσωπικά στοιχεία κηδεμόνα</b>
-                            </h2>
-                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Όνομα:</b> {khdemonas?.name || "N/A"}
-                            </h4>
-                            <hr />
-                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Επίθετο:</b> {khdemonas?.surname || "N/A"}
-                            </h4>
-                            <hr />
-                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Ημερομηνία γέννησης:</b> {khdemonas?.birthDate || "N/A"}
-                            </h4>
-                            <hr />
-                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Email:</b> {khdemonas?.email || "N/A"}
-                            </h4>
-                            <hr />
-                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Τηλέφωνο:</b> {khdemonas?.phone || "N/A"}
-                            </h4>
-                        </div>
-                    </div>
-                    <div style={{ textAlign: "center" }}>
-                        <div style={{display: "flex",flexDirection: "column",marginTop: "2%",backgroundColor: "#ece7f2",borderRadius: "2%",width: "60%",justifyContent: "center",marginLeft: "20%",padding: "2%",}}>
-                            <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                                <b>Προσωπικά στοιχεία παιδιού</b>
-                            </h2>
-                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Όνομα:</b> {khdemonas?.childName || "N/A"}
-                            </h4>
-                            <hr />
-                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Επίθετο:</b> {khdemonas?.childSurname || "N/A"}
-                            </h4>
-                            <hr />
-                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Ημερομηνία γέννησης:</b> {khdemonas?.childBirthDate || "N/A"}
-                            </h4>
-                            <hr />
-                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>ΑΜΚΑ:</b> {khdemonas?.amka || "N/A"}
-                            </h4>
-                        </div>
-                    </div>
-                    <div style={{ textAlign: "center" }}>
-                        <div style={{display: "flex",flexDirection: "column",marginTop: "2%",backgroundColor: "#ece7f2",borderRadius: "2%",width: "60%",justifyContent: "center",marginLeft: "20%",padding: "2%",}}>
-                            <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                                <b>Στοιχεία επαγγελματία για ταυτοποίηση</b>
-                            </h2>
-                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Όνομα:</b> {professionalData?.firstName}
-                            </h4>
-                            <hr />
-                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Επίθετο:</b> {professionalData?.lastName }
-                            </h4>
-                            <hr />
-                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>ΑΦΜ:</b> {professionalData?.afm}
-                            </h4>
-                        </div>
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
-                        <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                            <b>Ημέρες και ώρες</b>
-                        </h2>
-                        {Object.keys(stepTwoData.availability)
-                            .filter(day => stepTwoData.availability[day].from && stepTwoData.availability[day].to) // Only include days with both from and to times
-                            .map((day) => {
-                                // Greek day mapping
-                                const dayInGreek = {
-                                    Monday: "Δευτέρα",
-                                    Tuesday: "Τρίτη",
-                                    Wednesday: "Τετάρτη",
-                                    Thursday: "Πέμπτη",
-                                    Friday: "Παρασκευή",
-                                    Saturday: "Σάββατο",
-                                    Sunday: "Κυριακή"
-                                };
-
-                                return (
-                                    <div key={day} style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", gap: "10px" }}>
-                                        <h4>{dayInGreek[day]}</h4>
-                                        <p><b>Από:</b> {stepTwoData.availability[day].from.format("HH:mm")} <b>Έως:</b> {stepTwoData.availability[day].to.format("HH:mm")}</p>
-                                    </div>
-                                );
-                            })}
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
-                        <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                            <b>Φιλοξενία</b>
-                        </h2>
-                        <p>{stepTwoData.hostingPreference === "guardian" ? "Στον χώρο του κηδεμόνα" : "Στον χώρο του επαγγελματία"}</p>
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
-                        <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                            <b>Χρόνος απασχόλησης</b>
-                        </h2>
-                        <p>{stepTwoData.employmentTime === "part-time" ? "Μερική" : "Πλήρης"}</p>
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
-                        <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                            <b>Ημερομηνίες</b>
-                        </h2>
-                        <p><b>Από:</b> {stepTwoData.dateRange[0].startDate.toLocaleDateString()}</p>
-                        <p><b>Έως:</b> {stepTwoData.dateRange[0].endDate.toLocaleDateString()}</p>
-                    </div>
-                    </div>
-                );
             default:
                 return <div>Invalid Step</div>;
         }
@@ -730,132 +622,111 @@ function DimiourgiaSymbolaiou(props) {
 
     return (
         <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-        <Header />
-        <div style={{ flex: 1 }}>
-            <ProgressTracker steps={steps} activeStep={currentStep} />
+            <Header />
+            <div style={{ flex: 1 }}>
+                <ProgressTracker steps={steps} activeStep={currentStep} />
     
-            {renderStepContent()}
+                {renderStepContent()}
     
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginTop: "2%",
-                    gap: "50%",
-                    marginBottom: "10px",
-                }}
-            >
-                {/* Show 'Προηγούμενο' button only if not at step 0 */}
-                {currentStep !== 0 && (
-                    <button
-                        style={{
-                            height: "3%",
-                            backgroundColor: "#2b8cbe",
-                            color: "white",
-                            borderRadius: "5px",
-                            marginTop: "2%",
-                            width: "12%",
-                        }}
-                        onClick={goToPreviousStep}
-                        disabled={currentStep === 0}
-                    >
-                        Προηγούμενο
-                    </button>
-                )}
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginTop: "2%",
+                        gap: "50%",
+                        marginBottom: "10px",
+                    }}
+                >
+                    {/* Show 'Προηγούμενο' button only if not at step 0 */}
+                    {currentStep !== 0 && (
+                        <button
+                            style={{
+                                height: "3%",
+                                backgroundColor: "#2b8cbe",
+                                color: "white",
+                                borderRadius: "5px",
+                                marginTop: "2%",
+                                width: "12%",
+                            }}
+                            onClick={goToPreviousStep}
+                            disabled={currentStep === 0}
+                        >
+                            Προηγούμενο
+                        </button>
+                    )}
     
-                {/* Show 'Επόμενο' button for steps 0, 1, 2 */}
-                {currentStep < 3 && (
-                    <button
-                        style={{
-                            height: "3%",
-                            backgroundColor: "#2b8cbe",
-                            color: "white",
-                            borderRadius: "5px",
-                            marginTop: "2%",
-                            width: "12%",
-                        }}
-                        onClick={() => {
-                            if (currentStep === 2) {
-                                if (!validateStepTwo()) {
-                                    alert("Συμπληρώστε όλα τα πεδία πριν προχωρήσετε.");
-                                    return;
+                    {/* Show 'Επόμενο' button for steps 0, 1, 2 */}
+                    {currentStep < 3 && (
+                        <button
+                            style={{
+                                height: "3%",
+                                backgroundColor: "#2b8cbe",
+                                color: "white",
+                                borderRadius: "5px",
+                                marginTop: "2%",
+                                width: "12%",
+                            }}
+                            onClick={() => {
+                                if (currentStep === 2) {
+                                    if (!validateStepTwo()) {
+                                        alert("Συμπληρώστε όλα τα πεδία πριν προχωρήσετε.");
+                                        return;
+                                    }
                                 }
-                            }
-                            goToNextStep();
-                        }}
-                    >
-                        Επόμενο
-                    </button>
-                )}
-    
-                {/* Show 'Υποβολή' button on step 3 */}
-                {currentStep === 3 && (
-                    <button
-                        style={{
-                            height: "3%",
-                            backgroundColor: "#2b8cbe",
-                            color: "white",
-                            borderRadius: "5px",
-                            marginTop: "2%",
-                            width: "12%",
-                        }}
-                        onClick={() => {
-                            // Handle submission action here
-                           submitContract()
-                           goToNextStep();
-                        }}
-                    >
-                        Υποβολή
-                    </button>
-                )}
-    
-                {currentStep === 4 && (
-                    <>
-                      {contracts.some(contract => contract.status === 'Σε αναμονή') ? (
-                        <button
-                          style={{
-                            height: "3%",
-                            backgroundColor: "#2b8cbe",
-                            color: "white",
-                            borderRadius: "5px",
-                            marginTop: "2%",
-                            width: "12%",
-                          }}
-                          onClick={() => {
-                            // Handle return action here
-                            alert("Επιστροφή");
-                          }}
+                                goToNextStep();
+                            }}
                         >
-                          Επιστροφή
+                            Επόμενο
                         </button>
-                      ) : (
+                    )}
+    
+                    {/* Show 'Υποβολή' button on step 3 */}
+                    {currentStep === 3 && (
                         <button
-                          style={{
-                            height: "3%",
-                            backgroundColor: "#2b8cbe",
-                            color: "white",
-                            borderRadius: "5px",
-                            marginTop: "2%",
-                            width: "12%",
-                          }}
-                          onClick={() => {
-                            // Handle next action here
-                            alert("Επόμενο");
-                          }}
+                            style={{
+                                height: "3%",
+                                backgroundColor: "#2b8cbe",
+                                color: "white",
+                                borderRadius: "5px",
+                                marginTop: "2%",
+                                width: "12%",
+                            }}
+                            onClick={() => {
+                                // Handle submission action here
+                                submitContract();
+                                goToNextStep();
+                            }}
                         >
-                          Επόμενο
+                            Υποβολή
                         </button>
-                      )}
-                    </>
-                  )}
+                    )}
+    
+                    {/* Show 'Επιστροφή' button on step 4 */}
+                    {currentStep === 4 && (
+                        <button
+                            style={{
+                                height: "3%",
+                                backgroundColor: "#2b8cbe",
+                                color: "white",
+                                borderRadius: "5px",
+                                marginTop: "2%",
+                                width: "12%",
+                            }}
+                            onClick={() => {
+                                // Handle return action here
+                                alert("Επιστροφή");
+                            }}
+                        >
+                            Επιστροφή
+                        </button>
+                    )}
+                </div>
             </div>
+    
+            <Footer />
         </div>
-    
-        <Footer />
-    </div>
-    
-    );
+    );    
     
     
 }

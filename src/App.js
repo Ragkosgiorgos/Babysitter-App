@@ -27,6 +27,7 @@ import GoneisProfile from "./Pages/Goneis/GoneisProfile";
 import CreateRating from "./Pages/Goneis/Ratings/CreateRating";
 import MainSymbolaiaGoneisPGU from "./Pages/Goneis/MainSymbolaiaGoneis";
 import ErrorPage from "./Components/ErrorPage";
+import ProvoliSymbolaiou from "./Pages/Goneis/ProvoliSymbolaiou";
 
 function App() {
   return (
@@ -69,6 +70,7 @@ function App() {
           <Route path="goneis/ratings" element={<GonRatingMain />} />
           <Route path="goneis/ratings/add" element={<CreateRating />} />
           <Route path="goneis/symbolaia" element={<MainSymbolaiaGoneisPGU />} />
+          <Route path="/goneis/symbolaia/provoli/:contractId" element={<ProvoliSymbolaiou/>} />
 
           <Route path="epaggelmaties/ratings" element={<EpaggRatingMain />} />
 

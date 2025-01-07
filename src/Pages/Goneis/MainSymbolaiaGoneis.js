@@ -76,6 +76,10 @@ function MainSymbolaiaGoneisPGU() {
     navigate('/neo-symbolaio');
   };
 
+  const handleRedirect = (contractId) => {
+    navigate(`provoli/${contractId}`); 
+  };
+
   return (
     <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
       <div>
@@ -91,7 +95,7 @@ function MainSymbolaiaGoneisPGU() {
               <h2 style={{ fontWeight: "bold", textAlign: "center", marginTop: "3%" }}>Τα συμβόλαια μου</h2>
               <Tooltip title={
                 <div style={{ display: "flex", justifyContent: "center", gap: "5%", flexDirection: "column" }}>
-                  <div><VisibilityIcon style={{ cursor: "pointer" }} />: προβολή συμβολαίου</div>
+                  <div><VisibilityIcon style={{ cursor: "pointer" }} onClick={()=> handleRedirect(contracts.id)} />: προβολή συμβολαίου</div>
                   <div><DeleteForeverIcon style={{ cursor: "pointer",color:"black" }} />: διαγραφή συμβολαίου</div>
                   <div><ReplayIcon
                         style={{ cursor: "pointer", marginLeft: "10px" }}/>:Ανανέωση συμβολαίου</div>
@@ -131,7 +135,7 @@ function MainSymbolaiaGoneisPGU() {
                             <td>Προβολή</td>
                             <DeleteForeverIcon style={{ cursor: "pointer", marginLeft: "10px", color: "black" }}/>
                             <ReplayIcon style={{ cursor: "pointer", marginLeft: "10px"}} />
-                            <VisibilityIcon style={{ cursor: "pointer",marginLeft:"10px" }}/>
+                            <VisibilityIcon style={{ cursor: "pointer",marginLeft:"10px" }} onClick={() => handleRedirect(contract.id)}/>
                         </tr>
                     ))}
                 </tbody>
