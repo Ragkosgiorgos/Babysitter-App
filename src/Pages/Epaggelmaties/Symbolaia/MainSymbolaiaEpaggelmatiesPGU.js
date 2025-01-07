@@ -13,12 +13,45 @@ import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
 
-
 function MainSymbolaiaEpaggelmatiesPGU() {
   const navigate = useNavigate();
+  
+  const [contracts, setContracts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleRedirect = () => {
-    navigate('/apodoxi-symbolaiou'); 
+  useEffect(() => {
+    const fetchContracts = async () => {
+      try {
+        setLoading(true);
+
+        // Get the current user
+        onAuthStateChanged(FIREBASE_AUTH, async (user) => {
+          if (user) {
+            // Fetch contracts related to the logged-in babysitter
+            const contractsRef = collection(FIREBASE_DB, 'contracts');
+            const q = query(contractsRef, where("id_b", "==", user.uid)); // Filter contracts by babysitter's user ID
+            const querySnapshot = await getDocs(q);
+
+            const fetchedContracts = querySnapshot.docs.map(doc => ({
+              id: doc.id,
+              ...doc.data()
+            }));
+
+            setContracts(fetchedContracts); // Update state with the fetched contracts
+          }
+        });
+      } catch (error) {
+        console.error("Error fetching contracts: ", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchContracts();
+  }, []);
+
+  const handleRedirect = (contractId) => {
+    navigate(`apantisi/${contractId}`); 
   };
 
   return (
@@ -46,31 +79,38 @@ function MainSymbolaiaEpaggelmatiesPGU() {
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
 
-              <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius: "10px" }}>
-                <thead style={{ lineHeight: "2em" }}>
-                  <tr style={{ borderBottom: "2px solid #333" }}>
-                    <th>Κωδικός συμβολαίου</th>
-                    <th>Ονοματεπώνυμο κηδεμόνα</th>
-                    <th>Κατάσταση συμβολαίου</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>Hliana</td>
-                    <td>
-                      pending 
-                      <VisibilityIcon
-                        style={{ cursor: "pointer",marginLeft:"50px" }} 
-                        onClick={handleRedirect} 
-                      />
-                      : 
-                      <VisibilityIcon style={{ height: "0px" }} />
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-
+              {loading ? (
+                <p>Loading contracts...</p> // Loading indicator
+              ) : (
+                <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius: "10px" }}>
+                  <thead style={{ lineHeight: "2em" }}>
+                    <tr style={{ borderBottom: "2px solid #333" }}>
+                      <th>Κωδικός συμβολαίου</th>
+                      <th>Ονοματεπώνυμο κηδεμόνα</th>
+                      <th>Κατάσταση συμβολαίου</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {contracts.length === 0 ? (
+                      <tr><td colSpan="3">Δεν υπάρχουν συμβόλαια.</td></tr>
+                    ) : (
+                      contracts.map((contract) => (
+                        <tr key={contract.id}>
+                          <td>{contract.id}</td>
+                          <td>{contract.id_p}</td> {/* Assuming "id_p" is the guardian's name */}
+                          <td>
+                            {contract.status} 
+                            <VisibilityIcon
+                              style={{ cursor: "pointer", marginLeft: "50px" }} 
+                              onClick={() => handleRedirect(contract.id)} 
+                            />
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              )}
             </div>
 
           </div>

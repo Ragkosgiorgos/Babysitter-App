@@ -54,13 +54,14 @@ function App() {
           <Route path="view-post" element={<ViewJobPost />} />
 
           <Route path="neo-symbolaio" element={<DimiourgiaSymbolaiou />} />
-          <Route path="apodoxi-symbolaiou" element={<ApodoxiSymbolaiou />} />
+         
           
           <Route path="epaggelmaties/rantevou" element={<MainRantevouPGU />} />
           <Route path="epaggelmaties/rantevou/available" element={<AvailableRantevouPGU />} />
           <Route path="epaggelmaties/rantevou/available/add" element={<AddRantevouPGU />} />
           <Route path="epaggelmaties/rantevou/proepiskopisi" element={<ProepiskopisiRantevouPGU />} />
           <Route path="epaggelmaties/rantevou/available/edit" element={<EditRantevouPGU />} />
+          <Route path="/epaggelmaties/symbolaia/apantisi/:contractId" element={<ApodoxiSymbolaiou/>} />
 
           <Route path="epaggelmaties/symbolaia" element={<MainSymbolaiaEpaggelmatiesPGU />} />
 
