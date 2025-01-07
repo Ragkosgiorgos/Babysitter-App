@@ -75,6 +75,7 @@ function MainSymbolaiaEpaggelmatiesPGU() {
                 <div style={{ display: "flex", justifyContent: "center", gap: "5%", flexDirection: "column" }}>
                   <div><VisibilityIcon style={{ cursor: "pointer" }} />: προβολή συμβολαίου</div>
                   <div><DeleteForeverIcon style={{ cursor: "pointer" }} />: διαγραφή συμβολαίου</div>
+                  <div><ArrowForwardIcon style={{cursor: "pointer" }}/>Απάντηση συμβολαίου</div>
                 </div>
               } placement="top" style={{ marginTop: "3%" }}>
                 <Button> <InfoIcon /> </Button>
@@ -92,6 +93,7 @@ function MainSymbolaiaEpaggelmatiesPGU() {
                       <th>Κωδικός συμβολαίου</th>
                       <th>Ονοματεπώνυμο κηδεμόνα</th>
                       <th>Κατάσταση συμβολαίου</th>
+                      <></>
                     </tr>
                   </thead>
                   <tbody>
@@ -104,10 +106,19 @@ function MainSymbolaiaEpaggelmatiesPGU() {
                           <td>{contract.id_p}</td> {/* Assuming "id_p" is the guardian's name */}
                           <td>
                             {contract.status} 
-                            <VisibilityIcon
-                              style={{ cursor: "pointer", marginLeft: "50px" }} 
-                              onClick={() => handleRedirect(contract.id)} 
-                            />
+                            {
+                              contract.status === "Σε αναμονή" ? (
+                                <ArrowForwardIcon
+                                  style={{ cursor: "pointer", marginLeft: "50px" }} 
+                                  onClick={() => handleRedirect(contract.id)} 
+                                />
+                              ) : (
+                                <VisibilityIcon
+                                  style={{ cursor: "pointer", marginLeft: "50px" }} 
+                                  onClick={() => handleRedirect(contract.id)} 
+                                />
+                              )
+                            }
                           </td>
                         </tr>
                       ))
