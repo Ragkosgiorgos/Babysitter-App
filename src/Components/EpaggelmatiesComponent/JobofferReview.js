@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Loader from "./../Loader";
 import { TruncatedText, capitalizeWords } from "../../Utils/Methods/index";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { FIREBASE_DB } from "../../config/firebase";
@@ -8,27 +9,35 @@ function JobofferReview(props) {
     const navigate = useNavigate();
     const job_id = props.id;
 
+    const [loading, setLoading] = useState(true);
     const [aggelia, setAggelia] = useState({});
-    const fetchPosts = async () => {
-        try {
-            const q = query(collection(FIREBASE_DB, 'aggelies'), where('id', '==', job_id));
-            const querySnapshot = await getDocs(q);
-            const posts = querySnapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            }));
-            setAggelia(posts[0]);
-        } catch (error) {
-            console.error('Error fetching posts:', error);
-        } finally {
-            
-        }
-    };
-    fetchPosts();
+    useEffect(() => {
+        const fetchPosts = async () => {
+            try {
+                setLoading(true);
+                const q = query(collection(FIREBASE_DB, 'aggelies'), where('id', '==', job_id));
+                const querySnapshot = await getDocs(q);
+                const posts = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                setAggelia(posts[0]);
+            } catch (error) {
+                console.error('Error fetching posts:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchPosts();
+    } , [job_id]);
 
     const handleSearchRedirect = () => {
         navigate(`/view-post?id=${job_id}`);
     };
+
+    if (loading) {
+        return <Loader />;
+    }
 
     if (!aggelia) {
         navigate("/404");

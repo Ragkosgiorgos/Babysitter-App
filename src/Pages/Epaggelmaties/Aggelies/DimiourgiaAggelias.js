@@ -1,4 +1,4 @@
-import React , { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
@@ -7,6 +7,7 @@ import ProgressTracker from "../../../Components/ProgressTracker";
 import { capitalizeWords, convertDateFormat } from "../../../Utils/Methods/index";
 import { MenuItem, Select, FormControl, RadioGroup, FormControlLabel, Radio } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
+import Loader from "../../../Components/Loader";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, addDoc, setDoc, doc } from 'firebase/firestore';
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../../config/firebase";
@@ -29,21 +30,31 @@ function DimiourgiaAggelias() {
         return () => unsubscribe();
     }, []);
     
+    const [loading, setLoading] = useState(true);
     const [user, setUser] = useState({});
-    const fetchUserData = async () => {
-        try {
-            const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
-            const querySnapshot = await getDocs(q);
-            const users = querySnapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            }));
-            setUser(users[0]);
-        } catch (error) {
-            console.error('Error fetching user data:', error);
+
+    // Fetch user data when uuid is available
+    useEffect(() => {
+        if (uuid) {
+            const fetchUserData = async () => {
+                try {
+                    setLoading(true);
+                    const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
+                    const querySnapshot = await getDocs(q);
+                    const users = querySnapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }));
+                    setUser(users[0]);
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchUserData();
         }
-    };
-    fetchUserData();
+    }, [uuid]);
 
     const [newData, setnewData] = useState({
         id: post_id,
@@ -68,6 +79,7 @@ function DimiourgiaAggelias() {
         const fetchPostData = async () => {
             if (post_id !== "") {
                 try {
+                    setLoading(true);
                     const q = query(collection(FIREBASE_DB, 'aggelies'), where('id', '==', post_id));
                     const querySnapshot = await getDocs(q);
                     const posts = querySnapshot.docs.map((doc) => ({
@@ -77,6 +89,8 @@ function DimiourgiaAggelias() {
                     setnewData(posts[0]);
                 } catch (error) {
                     console.error('Error fetching post data:', error);
+                } finally {
+                    setLoading(false);
                 }
             }
         };
@@ -128,6 +142,7 @@ function DimiourgiaAggelias() {
             newData.uid = uuid;
             newData.status = "Σε προσωρινή αποθήκευση";
             try{
+                setLoading(true);
                 const aggeliesRef = collection(FIREBASE_DB, 'aggelies');
 
                 const docRef = await addDoc(aggeliesRef, newData);
@@ -142,9 +157,12 @@ function DimiourgiaAggelias() {
 
             } finally {
                 setCurrentStep(3);
+                setLoading(false);
             }
+
         } else { // Otherwise we are editing an existing post
             try {
+                setLoading(true);
                 const postRef = doc(FIREBASE_DB, 'aggelies', post_id);
                 await setDoc(postRef, newData, { merge: true });
 
@@ -153,6 +171,7 @@ function DimiourgiaAggelias() {
 
             } finally {
                 setCurrentStep(3);
+                setLoading(false);
             }
         }
     };
@@ -163,6 +182,7 @@ function DimiourgiaAggelias() {
             newData.uid = uuid;
             newData.status = "Δημοσιευμένη";
             try{
+                setLoading(true);
                 const aggeliesRef = collection(FIREBASE_DB, 'aggelies');
 
                 const docRef = await addDoc(aggeliesRef, newData);
@@ -177,10 +197,13 @@ function DimiourgiaAggelias() {
 
             } finally {
                 setCurrentStep(3);
+                setLoading(false);
             }
+
         } else { // Otherwise we are editing an existing post
             newData.status = "Δημοσιευμένη";
             try {
+                setLoading(true);
                 const q = query(collection(FIREBASE_DB, 'aggelies'), where('id', '==', post_id), where('uid', '==', uuid));
                 const querySnapshot = await getDocs(q);
                 const posts = querySnapshot.docs.map((doc) => ({
@@ -195,6 +218,7 @@ function DimiourgiaAggelias() {
 
             } finally {
                 setCurrentStep(3);
+                setLoading(false);
             }
         }
     };
@@ -237,11 +261,14 @@ function DimiourgiaAggelias() {
         2.5,
     ];
 
+    if (loading) {
+        return <Loader />;
+    }
 
     if (!user) {
         navigate("/404");
     }
-
+    
     const renderStepContent = () => {
         switch (currentStep) {
             case 0:

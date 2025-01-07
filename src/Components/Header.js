@@ -2,6 +2,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import Loader from './Loader';
 import { signOut } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -60,20 +61,25 @@ function Header(props) {
     
     const handleUnsubscribe = () => {
         const handleLogout = async () => {
-                try {
-                    await signOut(FIREBASE_AUTH);
-                    navigate('/');
-                } catch (error) {
-                    console.error('Error logging out:', error);
-                }
-            };
+            try {
+                setLoading(true);
+                await signOut(FIREBASE_AUTH);
+                navigate('/');
+            } catch (error) {
+                console.error('Error logging out:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
         handleLogout();
         navigate('/');
         window.location.reload();
     };
 
-    
+    if (loading) {
+        return <Loader />;
+    }
 
     if (user && user.property === 'babysitter') {
         return (

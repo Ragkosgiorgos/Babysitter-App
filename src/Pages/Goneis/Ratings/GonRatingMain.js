@@ -8,6 +8,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
+import Loader from "../../../Components/Loader";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
@@ -26,6 +27,7 @@ function GonRatingMain() {
     return () => unsubscribe();
   }, []);
   
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState({});
   const fetchUserData = async () => {
     try {
@@ -38,6 +40,8 @@ function GonRatingMain() {
       setUser(users[0]);
     } catch (error) {
       console.error('Error fetching user data:', error);
+    } finally {
+      setLoading(false);
     }
   };
   fetchUserData();
@@ -46,6 +50,7 @@ function GonRatingMain() {
   const [filteredPosts, setFilteredPosts] = useState([]);
   const fetchPosts = async () => {
     try {
+        setLoading(true);
         const q = query(collection(FIREBASE_DB, 'ratings'), where('id_p', '==', uuid));
         const querySnapshot = await getDocs(q);
         const posts = querySnapshot.docs.map((doc) => ({
@@ -55,6 +60,8 @@ function GonRatingMain() {
         setFilteredPosts(posts);
     } catch (error) {
         console.error('Error fetching posts:', error);
+    } finally {
+        setLoading(false);
     }
   };
   fetchPosts();
@@ -63,6 +70,7 @@ function GonRatingMain() {
   const [babysitters, setBabysitters] = useState([]);
   const fetchBabysitters = async () => {
     try {
+      setLoading(true);
       const q = query(collection(FIREBASE_DB, 'user'), where('property', '==', 'babysitter'));
       const querySnapshot = await getDocs(q);
       const babysitters = querySnapshot.docs.map((doc) => ({
@@ -72,6 +80,8 @@ function GonRatingMain() {
       setBabysitters(babysitters);
     } catch (error) {
       console.error('Error fetching babysitters:', error);
+    } finally {
+      setLoading(false);
     }
   };
   fetchBabysitters();
@@ -99,6 +109,10 @@ function GonRatingMain() {
   const handleNewRating = () => {
     navigate("/goneis/ratings/add");
   };
+
+  if (loading) {
+    return <Loader />;
+  }
 
   if (!user) {
     navigate("/404");

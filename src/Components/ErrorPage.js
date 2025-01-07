@@ -14,7 +14,8 @@ function ErrorPage() {
         <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
             <Header />
 
-            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", backgroundColor: "#F8D7DA", flex: 1, padding: "20px" }}>
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", backgroundColor: "#F8D7DA", 
+                        flex: 1, padding: "20px", marginBottom: "-4vh" }}>
                 
                 <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "30px" }}>
                     <img 
@@ -27,7 +28,6 @@ function ErrorPage() {
                     />
                 </div>
 
-                {/* Text below the image */}
                 <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
                     <div style={{ textAlign: "center" }}>
                         <h1 style={{ fontSize: "3em", color: "#721C24", fontWeight: "bold" }}>Ουπς! Κάτι πήγε στραβά...</h1>

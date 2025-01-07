@@ -6,6 +6,7 @@ import { collection, query, where, getDocs, doc, updateDoc } from "firebase/fire
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { convertDateFormat } from "../../Utils/Methods";
+import Loader from "../../Components/Loader";
 import { useNavigate } from "react-router-dom";
 
 function GoneisProfile() {
@@ -39,10 +40,12 @@ function GoneisProfile() {
       return () => unsubscribe();
   }, []);
 
+  const [loading, setLoading] = useState(true);
   const [babysitter, setbabysitter] = useState({});
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        setLoading(true);
         const q = query(collection(FIREBASE_DB, "user"), where("userId", "==", uuid));
         const querySnapshot = await getDocs(q);
         const profiles = querySnapshot.docs.map((doc) => ({
@@ -53,6 +56,8 @@ function GoneisProfile() {
         setbabysitter(profiles[0]);
       } catch (error) {
         console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -113,6 +118,10 @@ function GoneisProfile() {
       console.error("Error updating document:", error);
     }
   };
+
+  if (loading) {
+    return <Loader />;
+  }
 
   if (!babysitter) {
     navigate("/404");
