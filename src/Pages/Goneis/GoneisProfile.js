@@ -12,7 +12,6 @@ function GoneisProfile() {
   const navigate = useNavigate();
 
   const [editedData, setEditedData] = useState({});
-
   const [isEditing, setIsEditing] = useState({
     firstName: false,
     lastName: false,
@@ -31,7 +30,6 @@ function GoneisProfile() {
     img: false,
   });
 
-  // Fetch the user's data from the database (khdemonas)
   const [uuid, setUuid] = useState(null);
   useEffect(() => {
       const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
@@ -42,7 +40,8 @@ function GoneisProfile() {
       return () => unsubscribe();
   }, []);
 
-  const [khdemonas, setKhdemonas] = useState({});
+  const [khdemonas, setKhdemonas] = useState(null); // Set initial state to null
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -57,10 +56,17 @@ function GoneisProfile() {
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
-    }
+    };
 
-    fetchUserData();
+    if (uuid) {
+      fetchUserData();
+    }
   }, [uuid]);
+
+  // Ensure that khdemonas is loaded before rendering
+  if (!khdemonas) {
+    return <div>Loading...</div>; // Show a loading state while khdemonas is null
+  }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -72,7 +78,6 @@ function GoneisProfile() {
     setEditedData({ ...editedData, [field]: khdemonas?.[field] || "" });
   };
 
-  // Save changes to the database
   const handleSaveChanges = (field) => {
     setIsEditing({ ...isEditing, [field]: false });
     setKhdemonas({ ...khdemonas, [field]: editedData[field] });
@@ -87,7 +92,6 @@ function GoneisProfile() {
     }
   };
 
-  // Handle image selection from file input
   const handleImageChange = (e) => {
     setEditedData({ ...editedData, img: true });
     setKhdemonas({ ...khdemonas, img: true });
@@ -102,7 +106,6 @@ function GoneisProfile() {
     }
   };
 
-  // Delete the image from the database
   const handleDeleteImage = () => {
     setEditedData({ ...editedData, img: false });
     setKhdemonas({ ...khdemonas, img: false });
@@ -116,10 +119,6 @@ function GoneisProfile() {
       console.error("Error updating document:", error);
     }
   };
-
-  if (!khdemonas) {
-    navigate("/404");
-  }
 
   return (
     <div>
@@ -230,39 +229,27 @@ function GoneisProfile() {
                             onChange={handleInputChange}
                           />
                         ) : (
-                          field === "childBirthDate" ? convertDateFormat(khdemonas[field]) : (khdemonas?.[field] || "N/A")
+                          khdemonas?.[field] || "N/A"
                         )}
                       </div>
-
                       {isEditing[field] && (
-                        <button
-                          style={{ marginRight: "10px", fontSize: "12px", padding: "5px 10px", borderRadius: "5px", cursor: "pointer", border: "1px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", color: "white", backgroundColor: "green" }}
+                        <button style={{ marginRight: "10px", fontSize: "12px", padding: "5px 10px", borderRadius: "5px", cursor: "pointer", border: "1px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", color: "white", backgroundColor: "green" }}
                           onClick={() => handleSaveChanges(field)}>
                           Αποθήκευση
                         </button>
                       )}
-
                       <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick(field)}/>
-
                     </div>
                   </h4>
-
                   <hr />
                 </div>
-
               ))}
             </div>
-
           </div>
-
         </div>
-
       </div>
-
-      <Footer />
-
+      <Footer/>
     </div>
-
   );
 }
 

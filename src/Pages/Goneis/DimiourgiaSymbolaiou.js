@@ -20,11 +20,13 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 import { FIREBASE_DB, FIREBASE_AUTH } from '../../config/firebase.js'
 import { doc, updateDoc } from 'firebase/firestore';
 import { addDoc, setDoc } from 'firebase/firestore';
+import { useNavigate } from "react-router-dom";
 dayjs.locale("el"); // Set the locale to Greek
 
 
 
 function DimiourgiaSymbolaiou(props) {
+    const navigate = useNavigate();
     const [weekdays, setWeekdays] = useState(false);
     const [weekends, setWeekends] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -280,6 +282,13 @@ function DimiourgiaSymbolaiou(props) {
         return <div>Loading...</div>;
     }
 
+  
+
+  const handleEditClick = (field) => {
+    // Replace with your desired route
+    navigate(`/goneis/profile`);
+  };
+
     const renderStepContent = () => {
         switch (currentStep) {
             case 0:
@@ -290,7 +299,12 @@ function DimiourgiaSymbolaiou(props) {
                                 <b>Επιβεβαιώστε τα προσωπικά σας στοιχεία</b>
                             </h2>
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                                <div>
                                 <b>Όνομα:</b> {khdemonas?.firstName || "N/A"}
+                                </div>
+                                <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick()} />
+                            </div>
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
