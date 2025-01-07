@@ -300,27 +300,47 @@ function DimiourgiaSymbolaiou(props) {
                             </h2>
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
                                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
-                                <div>
-                                <b>Όνομα:</b> {khdemonas?.firstName || "N/A"}
+                                    <div>
+                                    <b>Όνομα:</b> {khdemonas?.firstName || "N/A"}
+                                    </div>
+                                    <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick()} />
                                 </div>
-                                <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick()} />
-                            </div>
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Επίθετο:</b> {khdemonas?.lastName || "N/A"}
+                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                                    <div>
+                                        <b>Επίθετο:</b> {khdemonas?.lastName || "N/A"}
+                                    </div>
+                                    <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick()} />
+                                 </div>
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                            <div>
                                 <b>Ημερομηνία γέννησης:</b> {khdemonas?.birthDate || "N/A"}
+                            </div>
+                            <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick()} />
+                         </div>
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Email:</b> {khdemonas?.email || "N/A"}
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                            <div>
+                                <b>Εmail:</b> {khdemonas?.email || "N/A"}
+                            </div>
+                            <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick()} />
+                         </div>
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                            <div>
                                 <b>Τηλέφωνο:</b> {khdemonas?.phone || "N/A"}
+                            </div>
+                            <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick()} />
+                         </div>
                             </h4>
                         </div>
                     </div>
@@ -333,19 +353,39 @@ function DimiourgiaSymbolaiou(props) {
                                 <b>Επιβεβαιώστε τα στοιχεία του παιδιού</b>
                             </h2>
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                            <div>
                                 <b>Όνομα:</b> {khdemonas?.childFirstName || "N/A"}
+                            </div>
+                            <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick()} />
+                         </div>
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                            <div>
                                 <b>Επίθετο:</b> {khdemonas?.childLastName || "N/A"}
+                            </div>
+                            <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick()} />
+                         </div>
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                            <div>
                                 <b>Ημερομηνία γέννησης:</b> {khdemonas?.childBirthDate || "N/A"}
+                            </div>
+                            <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick()} />
+                         </div>
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                            <div>
                                 <b>ΑΜΚΑ:</b> {khdemonas?.childAmka || "N/A"}
+                            </div>
+                            <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick()} />
+                         </div>
                             </h4>
                         </div>
                     </div>
@@ -364,6 +404,7 @@ function DimiourgiaSymbolaiou(props) {
                             >
                             <div style={{ width: "80%" }}>
                                 {/* First Box */}
+                                
                                 <div
                                 style={{
                                     backgroundColor: "#ece7f2",
