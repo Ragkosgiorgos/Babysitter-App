@@ -145,7 +145,7 @@ fetchParentData();
             const contractRef = doc(FIREBASE_DB, 'contracts', contractId); // Adjust collection name if necessary
     
             // Determine the new status based on the action
-            const newStatus = action === "accept" ? "Σε ισχύει" : "Απορρίφθηκε";
+            const newStatus = action === "accept" ? "Σε ισχύ" : "Απορρίφθηκε";
     
             // Update the contract status in Firestore
             await updateDoc(contractRef, {
@@ -258,7 +258,12 @@ fetchParentData();
                                 <b>Επιβεβαίωση στοιχείων συμβολαίου</b>
                             </h2>
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Ημέρες εργασίας:</b> {workingDaysFormatted}
+                            <b>Ημέρες εργασίας:</b> 
+                            {
+                                contract.weekdays && contract.weekends ? "Καθημερινές και Σαββατοκύριακα" :
+                                contract.weekdays ? "Καθημερινές" :
+                                contract.weekends ? "Σαββατοκύριακα" : ""
+                            }
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
@@ -270,11 +275,11 @@ fetchParentData();
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Έναρξη συμβολαίου:</b> {startDateFormatted}
+                                <b>Έναρξη συμβολαίου:</b> {contract.startDate}
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Λήξη συμβολαίου:</b> {endDateFormatted}
+                                <b>Λήξη συμβολαίου:</b> {contract.endDate}
                             </h4>
                         </div>
                     </div>
@@ -285,7 +290,7 @@ fetchParentData();
     return (
         <div style={{ textAlign: "center", marginTop: "20px" }}>
             
-        {contract.status === "pending" ? (
+        {contract.status === "Σε αναμονή" ? (
                 <>
                     <h2 style={{ textAlign: "center", textDecoration: "underline", marginBottom: "20px" }}>
                         <b>Αποδοχή ή απόρριψη του συμβολαίου</b>
@@ -331,7 +336,7 @@ fetchParentData();
                 </>
             ):
 
-            contract.status === "Σε ισχύει" && (
+            contract.status === "Σε ισχύ" && (
                 <div style={{ textAlign: "center" }}>
                     <div style={{
                         display: "flex",
@@ -432,7 +437,12 @@ fetchParentData();
                             <b>Στοιχεία συμβολαίου</b>
                         </h2>
                         <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                            <b>Ημέρες εργασίας:</b> {workingDaysFormatted}
+                            <b>Ημέρες εργασίας:</b> 
+                            {
+                                contract.weekdays && contract.weekends ? "Καθημερινές και Σαββατοκύριακα" :
+                                contract.weekdays ? "Καθημερινές" :
+                                contract.weekends ? "Σαββατοκύριακα" : ""
+                            }
                         </h4>
                         <hr />
                         <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
@@ -444,11 +454,11 @@ fetchParentData();
                         </h4>
                         <hr />
                         <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                            <b>Έναρξη συμβολαίου:</b> {startDateFormatted}
+                            <b>Έναρξη συμβολαίου:</b> {contract.startDate}
                         </h4>
                         <hr />
                         <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                            <b>Λήξη συμβολαίου:</b> {endDateFormatted}
+                            <b>Λήξη συμβολαίου:</b> {contract.endDate}
                         </h4>
                     </div>
                 </div>

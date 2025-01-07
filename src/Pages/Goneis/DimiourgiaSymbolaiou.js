@@ -20,17 +20,52 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 import { FIREBASE_DB, FIREBASE_AUTH } from '../../config/firebase.js'
 import { doc, updateDoc } from 'firebase/firestore';
 import { addDoc, setDoc } from 'firebase/firestore';
-import { format } from 'date-fns';
-import { el } from 'date-fns/locale';
+dayjs.locale("el"); // Set the locale to Greek
 
 
 
 function DimiourgiaSymbolaiou(props) {
     const [weekdays, setWeekdays] = useState(false);
     const [weekends, setWeekends] = useState(false);
-    
-    // Check if user is logged in, get the user's UUID and fetch user data
+    const [loading, setLoading] = useState(false);
     const [uuid, setUuid] = useState(null);
+    const [profiles, setProfiles] = useState([]);
+    const [contracts, setContracts] = useState([]);
+    const [khdemonas, setKhdemonas] = useState({});
+    const [stepTwoData, setStepTwoData] = useState({
+        id: '',
+        id_p: '',
+        id_b: '',
+        time: '', 
+        date: new Date().toLocaleDateString(),
+        workingDays: '',
+        dateRange: [
+            {
+                startDate: new Date(),
+                endDate: new Date(),
+                key: "selection",
+            },
+        ],
+        status: 'Σε αναμονή'
+    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [babysitter, setBabysitter] = useState({});
+    const [contractId, setContractId] = useState(null);
+    const [validationMessage, setValidationMessage] = useState("");
+
+    const [currentStep, setCurrentStep] = useState(0);
+
+     // Define isLoading state
+     const [isLoading, setIsLoading] = useState(false); // Added isLoading state
+
+     // Define professionalData state
+     const [professionalData, setProfessionalData] = useState({
+         firstName: "",
+         lastName: "",
+         afm: "",
+     }); // Added professionalData state
+
+    // Check if user is logged in and get UUID
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
             if (user) {
@@ -39,47 +74,56 @@ function DimiourgiaSymbolaiou(props) {
         });
         return () => unsubscribe();
     }, []);
-    const [profiles, setProfiles] = useState([]);
-    const fetchUserData = async () => {
-        try {
-            const q1 = query(collection(FIREBASE_DB, 'user'), where('property', '==', 'babysitter'));
-            const querySnapshot1 = await getDocs(q1);
-            const users1 = querySnapshot1.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            }));
-            setProfiles(users1);
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-        }
-    };
-    fetchUserData();
-  
-    // Fetch all the babysitters that the user had an appointment
-    const [contracts, setContracts] = useState([]);
-    const fetchContracts = async () => {
-      try {
-          const q = query(collection(FIREBASE_DB, 'rantevou'), where('id_p', '==', uuid));
-          const querySnapshot = await getDocs(q);
-          const contracts = querySnapshot.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-          }));
-          setContracts(contracts);
-      } catch (error) {
-          console.error('Error fetching contracts:', error);
-      }
-    };
-    fetchContracts();
-  
-    const hiredBabysitters = profiles.filter((profile) => {
-      return contracts.some((contract) => contract.id_b === profile.userId);
-    });
-  
 
-    const [khdemonas, setKhdemonas] = useState({});
+    // Fetch all babysitters
     useEffect(() => {
+        if (!uuid) return; // Don't fetch if UUID is not set (user not logged in)
         const fetchUserData = async () => {
+            setLoading(true);
+            try {
+                const q1 = query(collection(FIREBASE_DB, 'user'), where('property', '==', 'babysitter'));
+                const querySnapshot1 = await getDocs(q1);
+                const users1 = querySnapshot1.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                setProfiles(users1);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchUserData();
+    }, [uuid]);
+
+    // Fetch all contracts based on user UUID
+    useEffect(() => {
+        if (!uuid) return; // Don't fetch if UUID is not set
+        const fetchContracts = async () => {
+            setLoading(true);
+            try {
+                const q = query(collection(FIREBASE_DB, 'rantevou'), where('id_p', '==', uuid));
+                const querySnapshot = await getDocs(q);
+                const contracts = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                setContracts(contracts);
+            } catch (error) {
+                console.error('Error fetching contracts:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchContracts();
+    }, [uuid]);
+
+    // Fetch user data for Khdemonas
+    useEffect(() => {
+        if (!uuid) return; // Don't fetch if UUID is not set
+        const fetchUserData = async () => {
+            setLoading(true);
             try {
                 const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
                 const querySnapshot = await getDocs(q);
@@ -90,10 +134,36 @@ function DimiourgiaSymbolaiou(props) {
                 setKhdemonas(users[0]);
             } catch (error) {
                 console.error('Error fetching user data:', error);
+            } finally {
+                setLoading(false);
             }
         };
         fetchUserData();
     }, [uuid]);
+
+    // Filter hired babysitters based on contracts
+    const hiredBabysitters = profiles.filter((profile) => {
+        return contracts.some((contract) => contract.id_b === profile.userId);
+    });
+
+    // Validate Step Two
+    const validateStepTwo = () => {
+        return (
+            (weekdays || weekends) && // At least one checkbox selected
+            stepTwoData.hostingPreference?.trim() !== "" &&
+            stepTwoData.employmentTime?.trim() !== "" &&
+            stepTwoData.dateRange.length > 0 // Ensure date range is selected
+        );
+    };
+
+    const handleNextStep = () => {
+        if (!validateStepTwo()) {
+            setValidationMessage("Παρακαλώ συμπληρώστε όλα τα πεδία πριν προχωρήσετε.");
+            return;
+        }
+        setValidationMessage(""); // Clear message if validation passes
+        goToNextStep();
+    };
 
     const handleWeekdaysChange = (event) => {
         setWeekdays(event.target.checked);
@@ -103,93 +173,30 @@ function DimiourgiaSymbolaiou(props) {
         setWeekends(event.target.checked);
     };
 
-    const validateStepTwo = () => {
-        return (
-            (weekdays || weekends) && // At least one checkbox selected
-            stepTwoData.hostingPreference.trim() !== "" &&
-            stepTwoData.employmentTime.trim() !== "" &&
-            stepTwoData.dateRange.length > 0 // Ensure date range is selected
-        );
-    };
-
-    const [validationMessage, setValidationMessage] = useState("");
-
-    const handleNextStep = () => {
-        if (!validateStepTwo()) {
-            setValidationMessage("Παρακαλώ συμπληρώστε όλα τα πεδία πριν προχωρήσετε.");
-            return;
-        }
-        setValidationMessage(""); // Clear the message if validation passes
-        goToNextStep();
-    };
-
-    const location = useLocation();
-    const [stepTwoData, setStepTwoData] = useState({
-        id: '',
-        id_p: '',
-        id_b: '',
-        time:'', // Απασχόληση
-        date: new Date().toLocaleDateString(),
-        workingDays:'',
-        dateRange: [
-            {
-                startDate: new Date(),
-                endDate: new Date(),
-                key: "selection",
-            },
-        ],
-        status: 'pending'
-    });
-
-    // Update hosting preference
     const handleHostingPreferenceChange = (event) => {
-        setStepTwoData((prevData) => {
-            const updatedData = {
-                ...prevData,
-                hostingPreference: event.target.value,
-            };
-            console.log("Updated Step Two Data (hostingPreference):", updatedData);
-            return updatedData;
-        });
+        setStepTwoData((prevData) => ({
+            ...prevData,
+            hostingPreference: event.target.value,
+        }));
     };
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [isMatched, setIsMatched] = useState(false);
-    const [babysitter, setBabysitter] = useState({});
-    const findContact = async (contractId) => {
-        try {
-            // Query Firestore to find contract by ID
-            const q = query(
-                collection(FIREBASE_DB, 'contracts'),
-                where('id', '==', contractId)  // Use the contract ID passed to the function
-            );
-            const querySnapshot = await getDocs(q);
-    
-            if (querySnapshot.empty) {
-                console.log('No contract found.');
-                setIsMatched(false);  // No match found
-                return;
-            }
-    
-            const contract = querySnapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            }))[0];  // Assuming there's only one document returned
-    
-            setBabysitter(contract);  // Assuming `babysitter` state should hold the contract data
-    
-        } catch (error) {
-            console.error('Error fetching contract:', error);
-            setIsMatched(false);  // If there's an error, set isMatched to false
-        } finally {
-            if (!babysitter) {
-                setIsMatched(true);
-            }
-        }
+
+    const handleEmploymentTimeChange = (event) => {
+        setStepTwoData((prevData) => ({
+            ...prevData,
+            employmentTime: event.target.value,
+        }));
     };
-    const [contractId, setContractId] = useState(null);
-    const [isLoading, setIsLoading] = useState(false); // To manage loading state
+
+    const handleDateRangeChange = (item) => {
+        setStepTwoData((prevData) => ({
+            ...prevData,
+            dateRange: [item.selection],
+        }));
+    };
+
+    // Submit contract
     const submitContract = async () => {
-        setIsLoading(true); // Start loading
+        setIsSubmitting(true);
         try {
             const contractData = {
                 id_p: uuid,
@@ -197,55 +204,28 @@ function DimiourgiaSymbolaiou(props) {
                 time: stepTwoData.employmentTime,
                 hosting: stepTwoData.hostingPreference,
                 date: stepTwoData.date,
-                startDate: stepTwoData.dateRange[0].startDate.toString(), // Force conversion to string
-                endDate: stepTwoData.dateRange[0].endDate.toString(),     // Force conversion to string
+                startDate: dayjs(stepTwoData.dateRange[0].startDate).format('dddd D MMMM YYYY'),
+                endDate: dayjs(stepTwoData.dateRange[0].endDate).format('dddd D MMMM YYYY'),
                 status: stepTwoData.status,
                 weekdays: weekdays,
                 weekends: weekends,
             };
-    
+
             const ratingsRef = collection(FIREBASE_DB, 'contracts');
             const docRef = await addDoc(ratingsRef, contractData);
-    
+
             const documentId = docRef.id;
             await setDoc(docRef, { id: documentId }, { merge: true });
-    
-            setContractId(documentId); // Set the contract ID state
-            console.log('Contract submitted successfully:', documentId);
+
+            setContractId(documentId); // Save contract ID
         } catch (error) {
             console.error('Error adding document:', error);
         } finally {
-            setIsLoading(false); // End loading
+            setIsSubmitting(false);
         }
     };
-    
-    
-    
 
-    // Update employment time
-    const handleEmploymentTimeChange = (event) => {
-        setStepTwoData((prevData) => {
-            const updatedData = {
-                ...prevData,
-                employmentTime: event.target.value,
-            };
-            console.log("Updated Step Two Data (employmentTime):", updatedData);
-            return updatedData;
-        });
-    };
-
-    // Update date range
-    const handleDateRangeChange = (item) => {
-        setStepTwoData((prevData) => {
-            const updatedData = {
-                ...prevData,
-                dateRange: [item.selection],
-            };
-            console.log("Updated Step Two Data (dateRange):", updatedData);
-            return updatedData;
-        });
-    };
-
+    // Steps for the form navigation
     const steps = [
         "Επιβεβαίωση προσωπικών στοιχείων",
         "Επιβεβαίωση στοιχείων παιδιού",
@@ -254,23 +234,6 @@ function DimiourgiaSymbolaiou(props) {
         "Αναμονή για υπογραφή από επαγγελματία",
         "Αποδοχή ή απόρριψη συμβολαίου",
     ];
-
-    const [range, setRange] = useState([
-        {
-          startDate: new Date(),
-          endDate: new Date(),
-          key: "selection",
-        },
-      ]);
-
-    const [currentStep, setCurrentStep] = useState(0);
-    const [value, setValue] = useState(dayjs());;
-
-    const [professionalData, setProfessionalData] = useState({
-        firstName: "",
-        lastName: "",
-        afm: "",
-    });
 
     const goToNextStep = () => {
         if (currentStep < steps.length - 1) {
@@ -284,19 +247,16 @@ function DimiourgiaSymbolaiou(props) {
         }
     };
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setProfessionalData((prevData) => {
-            const updatedData = { ...prevData, [name]: value };
-            console.log("Updated Professional Data:", updatedData); // Log the updated state values
-            return updatedData;
-        });
+    const setBabysitterChoice = (babysitter_id) => {
+        const selectedBabysitter = profiles.find((profile) => profile.userId === babysitter_id);
+        setBabysitter(selectedBabysitter);
     };
 
-    const setBabysitterChoice = (babysitter_id) => {
-        const babysitter = profiles.filter((profile) => profile.userId === babysitter_id);
-        setBabysitter(babysitter[0]);
-      };
+    // Handle loading state
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
     const renderStepContent = () => {
         switch (currentStep) {
             case 0:
@@ -356,91 +316,158 @@ function DimiourgiaSymbolaiou(props) {
             
                 case 2:
                     return (
-                        <div style={{ textAlign: "center" }}>
-                            <div>
-                            <div style={{display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", justifyContent: "center", marginLeft: "5%", padding: "2%", height: "30vh" }}>
-                            <h3 style={{ marginTop: "3%", textAlign: "center" }}>Επιλέξτε τον επαγγελματία που θέλετε να κάνετε συμβόλαιο</h3>
-                            {isSubmitting && !babysitter.userId && ( <p style={{ color: "red", marginLeft: "25%" }}>Παρακαλώ επιλέξτε νταντά</p> )}
-                            <select
-              style={{ width: "50%", height: "30px", marginLeft: "25%" }}
-              onChange={(e) => setBabysitterChoice(e.target.value)}
-              value={babysitter.userId || ""}
-            >
-              <option value="" disabled> Επιλέξτε νταντά </option>
-              {hiredBabysitters.map((babysitter) => (
-                <option key={babysitter.userId} value={babysitter.userId}>
-                  {babysitter.firstName} {babysitter.lastName}
-                </option>
-              ))}
+                        <div
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: "120vh",  // Ensures the content takes up full viewport height
+    padding: "0 10%",
+  }}
+>
+  <div style={{ width: "80%" }}>
+    {/* First Box */}
+    <div
+      style={{
+        backgroundColor: "#ece7f2",
+        borderRadius: "2%",
+        padding: "2%",
+        height: "20vh",
+        textAlign: "center",
+        marginBottom: "20px",
+      }}
+    >
+      <h3 style={{ marginTop: "3%" }}>
+        Επιλέξτε τον επαγγελματία που θέλετε να κάνετε συμβόλαιο
+      </h3>
+      {isSubmitting && !babysitter.userId && (
+        <p style={{ color: "red", marginLeft: "25%" }}>Παρακαλώ επιλέξτε νταντά</p>
+      )}
+      <select
+        style={{ width: "50%", height: "30px" }}
+        onChange={(e) => setBabysitterChoice(e.target.value)}
+        value={babysitter.userId || ""}
+      >
+        <option value="" disabled>
+          Επιλέξτε νταντά
+        </option>
+        {hiredBabysitters.map((babysitter) => (
+          <option key={babysitter.userId} value={babysitter.userId}>
+            {babysitter.firstName} {babysitter.lastName}
+          </option>
+        ))}
+      </select>
+    </div>
 
-            </select>
-                          </div>
-                                <div style={{ display: "flex", flexDirection: "row" }}>
-                                    <div style={{ display: "flex", flexDirection: "column", width: "50%" }}>
-                                        <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", justifyContent: "center", marginLeft: "5%", padding: "2%", height: "30vh" }}>
-                                            <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                                                <b>Ημέρες και ώρες</b>
-                                            </h2>
-                                                <FormControlLabel
-                                                    control={<Checkbox checked={weekdays} onChange={handleWeekdaysChange} />}
-                                                    label="Καθημερινές"
-                                                />
-                                                <FormControlLabel
-                                                    control={<Checkbox checked={weekends} onChange={handleWeekendsChange} />}
-                                                    label="Σαββατοκύριακο"
-                                                />
-                                        </div >
-                                            <div style={{ display: "flex", flexDirection: "column", marginTop: "100px", backgroundColor: "#ece7f2", borderRadius: "2%", justifyContent: "center", marginLeft: "5%", padding: "2%", height: "30vh" }}>
-                                            <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                                            <b>Διάρκεια απασχόλησης</b>
-                                            </h2>
-                                            
-                                                <DateRange
-                                                    editableDateInputs={true}
-                                                    onChange={handleDateRangeChange}
-                                                    moveRangeOnFirstSelection={false}
-                                                    ranges={stepTwoData.dateRange}
-                                                />
-                                            </div>
-                                    </div>
-                                    
-                                    <div style={{ display: "flex", flexDirection: "column", width: "50%" }}>
-                                        <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", justifyContent: "center", marginLeft: "5%", padding: "2%", height: "30vh" }}>
-                                            <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                                                <b>Φιλοξενία</b>
-                                            </h2>
-                                            <FormControl>
-                                                <FormLabel id="demo-radio-buttons-group-label"></FormLabel>
-                                                <RadioGroup
-                                                    aria-labelledby="demo-radio-buttons-group-label"
-                                                    value={stepTwoData.hostingPreference}
-                                                    onChange={handleHostingPreferenceChange}
-                                                    name="radio-buttons-group"
-                                                    style={{ textAlign: "left", textDecoration: "underline" }}
-                                                >
-                                                    <FormControlLabel value="Στον χώρο του κηδεμόνα" control={<Radio />} label="Στον χώρο του κηδεμόνα" />
-                                                    <FormControlLabel value="Στον χώρο του επαγγελματία" control={<Radio />} label="Στον χώρο του επαγγελματία" />
-                                                </RadioGroup>
-                                            </FormControl>
-                                        </div>
-                                        <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", justifyContent: "center", marginLeft: "5%", padding: "2%", height: "30vh" }}>
-                                            <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                                                <b>Χρόνος απασχόλησης</b>
-                                            </h2>
-                                            <FormControl>
-                                            <RadioGroup
-                                                value={stepTwoData.employmentTime}
-                                                onChange={handleEmploymentTimeChange}
-                                            >
-                                                <FormControlLabel value="Μερική" control={<Radio />} label="Μερική" />
-                                                <FormControlLabel value="Πλήρης" control={<Radio />} label="Πλήρης" />
-                                            </RadioGroup>
-                                        </FormControl>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+    {/* Second Box */}
+    <div
+      style={{
+        backgroundColor: "#ece7f2",
+        borderRadius: "2%",
+        padding: "2%",
+        height: "20vh",
+        marginBottom: "20px",
+      }}
+    >
+      <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+        <b>Ημέρες και ώρες</b>
+      </h2>
+      <FormControlLabel
+        control={<Checkbox checked={weekdays} onChange={handleWeekdaysChange} />}
+        label="Καθημερινές"
+      />
+      <FormControlLabel
+        control={<Checkbox checked={weekends} onChange={handleWeekendsChange} />}
+        label="Σαββατοκύριακο"
+      />
+    </div>
+
+    {/* Third Box */}
+    
+
+    {/* Fourth Box */}
+    <div
+      style={{
+        backgroundColor: "#ece7f2",
+        borderRadius: "2%",
+        padding: "2%",
+        height: "20vh",
+        marginBottom: "20px",
+      }}
+    >
+      <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+        <b>Φιλοξενία</b>
+      </h2>
+      <FormControl>
+        <FormLabel id="demo-radio-buttons-group-label"></FormLabel>
+        <RadioGroup
+          aria-labelledby="demo-radio-buttons-group-label"
+          value={stepTwoData.hostingPreference}
+          onChange={handleHostingPreferenceChange}
+          name="radio-buttons-group"
+          style={{ textAlign: "left" }}
+        >
+          <FormControlLabel
+            value="Στον χώρο του κηδεμόνα"
+            control={<Radio />}
+            label="Στον χώρο του κηδεμόνα"
+          />
+          <FormControlLabel
+            value="Στον χώρο του επαγγελματία"
+            control={<Radio />}
+            label="Στον χώρο του επαγγελματία"
+          />
+        </RadioGroup>
+      </FormControl>
+    </div>
+
+    {/* Fifth Box */}
+    <div
+      style={{
+        backgroundColor: "#ece7f2",
+        borderRadius: "2%",
+        padding: "2%",
+        height: "20vh",
+        marginBottom:"20px"
+      }}
+    >
+      <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+        <b>Χρόνος απασχόλησης</b>
+      </h2>
+      <FormControl>
+        <RadioGroup
+          value={stepTwoData.employmentTime}
+          onChange={handleEmploymentTimeChange}
+        >
+          <FormControlLabel value="Μερική" control={<Radio />} label="Μερική" />
+          <FormControlLabel value="Πλήρης" control={<Radio />} label="Πλήρης" />
+        </RadioGroup>
+      </FormControl>
+    </div>
+
+    <div
+      style={{
+        backgroundColor: "#ece7f2",
+        borderRadius: "2%",
+        padding: "2%",
+        height: "60vh",
+        marginBottom: "20px",
+      }}
+    >
+      <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+        <b>Διάρκεια απασχόλησης</b>
+      </h2>
+      <DateRange
+        editableDateInputs={true}
+        onChange={handleDateRangeChange}
+        moveRangeOnFirstSelection={false}
+        ranges={stepTwoData.dateRange}
+      />
+    </div>
+  </div>
+</div>
+
+
                     );
                 
             case 3:
@@ -783,25 +810,45 @@ function DimiourgiaSymbolaiou(props) {
                     </button>
                 )}
     
-                {/* Show 'Επιστροφή' button on step 4 */}
                 {currentStep === 4 && (
-                    <button
-                        style={{
+                    <>
+                      {contracts.some(contract => contract.status === 'Σε αναμονή') ? (
+                        <button
+                          style={{
                             height: "3%",
                             backgroundColor: "#2b8cbe",
                             color: "white",
                             borderRadius: "5px",
                             marginTop: "2%",
                             width: "12%",
-                        }}
-                        onClick={() => {
+                          }}
+                          onClick={() => {
                             // Handle return action here
                             alert("Επιστροφή");
-                        }}
-                    >
-                        Επιστροφή
-                    </button>
-                )}
+                          }}
+                        >
+                          Επιστροφή
+                        </button>
+                      ) : (
+                        <button
+                          style={{
+                            height: "3%",
+                            backgroundColor: "#2b8cbe",
+                            color: "white",
+                            borderRadius: "5px",
+                            marginTop: "2%",
+                            width: "12%",
+                          }}
+                          onClick={() => {
+                            // Handle next action here
+                            alert("Επόμενο");
+                          }}
+                        >
+                          Επόμενο
+                        </button>
+                      )}
+                    </>
+                  )}
             </div>
         </div>
     

@@ -19,6 +19,7 @@ function MainSymbolaiaGoneisPGU() {
 
   // Check if user is logged in, get the user's UUID and fetch user data
   const [uuid, setUuid] = useState(null);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
       const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
           if (user) {
@@ -48,6 +49,7 @@ function MainSymbolaiaGoneisPGU() {
     const [contracts, setContracts] = useState([]);
     const fetchPosts = async () => {
     try {
+        setLoading(true);
         const q = query(collection(FIREBASE_DB, 'contracts'), where('id_p', '==', uuid));
         const querySnapshot = await getDocs(q);
         const posts = querySnapshot.docs.map((doc) => ({
@@ -58,8 +60,17 @@ function MainSymbolaiaGoneisPGU() {
     } catch (error) {
         console.error('Error fetching posts:', error);
     }
+    finally {
+      setLoading(false);
+    }
     };
-    fetchPosts();
+    useEffect(() => {
+      fetchPosts(); // Fetch posts when component mounts
+    }, [uuid]); // Runs when UUID changes
+
+    if (loading) {
+      return <div>Loading...</div>; // Show loading message or spinner
+    }
 
   const handleNewContract = () => {
     navigate('/neo-symbolaio');

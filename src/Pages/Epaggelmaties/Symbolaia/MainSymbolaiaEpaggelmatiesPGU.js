@@ -50,6 +50,10 @@ function MainSymbolaiaEpaggelmatiesPGU() {
     fetchContracts();
   }, []);
 
+  if (loading) {
+    return <div>Loading...</div>; 
+  }
+
   const handleRedirect = (contractId) => {
     navigate(`apantisi/${contractId}`); 
   };
