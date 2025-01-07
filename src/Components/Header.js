@@ -106,7 +106,7 @@ function Header(props) {
                             marginRight: '5%',
                         }}
                     >
-                        <ul className="navbar-nav" style={{ display: 'flex', flexDirection: 'row', listStyleType: 'none' }}>
+                        <ul className="navbar-nav" style={{ display: 'flex', flexDirection: 'row', listStyleType: 'none', gap: "50px" }}>
                             <li className="nav-item">
                                 <Link
                                     className={props.act !== 'goneis' ? 'nav-link' : 'nav-link active'}
@@ -230,7 +230,7 @@ function Header(props) {
                             marginRight: '5%',
                         }}
                     >
-                        <ul className="navbar-nav" style={{ display: 'flex', flexDirection: 'row', listStyleType: 'none' }}>
+                        <ul className="navbar-nav" style={{ display: 'flex', flexDirection: 'row', listStyleType: 'none', gap: "50px" }}>
                             <li className="nav-item">
                                 <Link
                                     className={props.act !== 'goneis' ? 'nav-link' : 'nav-link active'}
