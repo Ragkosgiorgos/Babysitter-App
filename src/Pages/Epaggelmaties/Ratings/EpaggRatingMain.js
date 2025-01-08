@@ -132,9 +132,9 @@ function EpaggRatingMain() {
                 <tbody>
                   {filteredPosts
                     .filter((post) => post.id_b === uuid)
-                    .map((post) => (
+                    .map((post, index) => (
                       <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
-                        <td>{post.id}</td>
+                        <td>{index + 1}</td>
                         <td>
                           {parents
                             .filter((parent) => parent.userId === post.id_p)

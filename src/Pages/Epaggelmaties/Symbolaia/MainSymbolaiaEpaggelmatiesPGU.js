@@ -18,6 +18,7 @@ function MainSymbolaiaEpaggelmatiesPGU() {
   const navigate = useNavigate();
   
   const [contracts, setContracts] = useState([]);
+  const [parents, setParents] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -47,9 +48,31 @@ function MainSymbolaiaEpaggelmatiesPGU() {
         setLoading(false);
       }
     };
-
     fetchContracts();
+
+    const fetchParents = async () => {
+      try {
+        setLoading(true);
+        const parentsRef = collection(FIREBASE_DB, 'user');
+        const querySnapshot = await getDocs(parentsRef, where("property", "==", "parent"));
+        const fetchedParents = querySnapshot.docs.map(doc => ({
+          userId: doc.id,
+          ...doc.data()
+        }));
+        setParents(fetchedParents);
+      } catch (error) {
+        console.error("Error fetching parents: ", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchParents();
   }, []);
+
+  const findParentName = (parentId) => {
+    const parent = parents.find(parent => parent.userId === parentId);
+    return parent ? parent.firstName + " " + parent.lastName : "Άγνωστο";
+  };
 
   const handleRedirect = (contractId) => {
     navigate(`apantisi/${contractId}`); 
@@ -70,7 +93,7 @@ function MainSymbolaiaEpaggelmatiesPGU() {
 
             <Breadcrumbs />
 
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
               <h2 style={{ fontWeight: "bold", textAlign: "center", marginTop: "3%" }}>Τα συμβόλαια μου</h2>
               <Tooltip title={
                 <div style={{ display: "flex", justifyContent: "center", gap: "5%", flexDirection: "column" }}>
@@ -86,7 +109,7 @@ function MainSymbolaiaEpaggelmatiesPGU() {
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
 
               {loading ? (
-                <p>Loading contracts...</p> // Loading indicator
+                <Loader />
               ) : (
                 <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius: "10px" }}>
                   <thead style={{ lineHeight: "2em" }}>
@@ -94,6 +117,7 @@ function MainSymbolaiaEpaggelmatiesPGU() {
                       <th>Κωδικός συμβολαίου</th>
                       <th>Ονοματεπώνυμο κηδεμόνα</th>
                       <th>Κατάσταση συμβολαίου</th>
+                      <th>Ενέργειες</th>
                       <></>
                     </tr>
                   </thead>
@@ -101,25 +125,14 @@ function MainSymbolaiaEpaggelmatiesPGU() {
                     {contracts.length === 0 ? (
                       <tr><td colSpan="3">Δεν υπάρχουν συμβόλαια.</td></tr>
                     ) : (
-                      contracts.map((contract) => (
+                      contracts.map((contract, index) => (
                         <tr key={contract.id}>
-                          <td>{contract.id}</td>
-                          <td>{contract.id_p}</td> {/* Assuming "id_p" is the guardian's name */}
-                          <td>
-                            {contract.status} 
-                            {
-                              contract.status === "Σε αναμονή" ? (
-                                <ArrowForwardIcon
-                                  style={{ cursor: "pointer", marginLeft: "50px" }} 
-                                  onClick={() => handleRedirect(contract.id)} 
-                                />
-                              ) : (
-                                <VisibilityIcon
-                                  style={{ cursor: "pointer", marginLeft: "50px" }} 
-                                  onClick={() => handleRedirect(contract.id)} 
-                                />
-                              )
-                            }
+                          <td>{index + 1}</td>
+                          <td>{findParentName(contract.id_p)}</td>
+                          <td>{contract.status}</td>
+                          <td style={{ display: "flex", justifyContent: "center", alignItems:"center", marginTop:"0.5em", gap:"10px" }}>
+                            {contract.status === "Σε αναμονή" ? <ArrowForwardIcon style={{ cursor: "pointer", marginLeft: "50px" }} onClick={() => handleRedirect(contract.id)}/> : <ArrowForwardIcon style={{ height: "0px" }}/>}
+                            {contract.status !== "Σε αναμονή" ?   <VisibilityIcon style={{ cursor: "pointer", marginLeft: "50px" }} onClick={() => handleRedirect(contract.id)}/> : <VisibilityIcon style={{ height: "0px" }}/>}
                           </td>
                         </tr>
                       ))

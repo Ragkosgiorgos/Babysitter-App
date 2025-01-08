@@ -26,39 +26,28 @@ function Header(props) {
     }, []);
     
     const [user, setUser] = useState({});
-    const fetchUserData = async () => {
-        setLoading(true);
-        try {
-            const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
-            const querySnapshot = await getDocs(q);
-            const users = querySnapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            }));
-            setUser(users[0]);
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-        }
-        finally {
-            setLoading(false);
-        }
-    };
     useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                setLoading(true);
+                const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
+                const querySnapshot = await getDocs(q);
+                const users = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                setUser(users[0]);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+            finally {
+                setLoading(false);
+            }
+        };
+    
         fetchUserData();
     }, [uuid]);
 
-    const handleGoneisRedirect = () => {
-        if (location.pathname !== '/goneis') {
-            navigate('/goneis');  
-        }
-    };
-
-    const handleEpaggelmatiesRedirect = () => {
-        if (location.pathname !== '/epaggelmaties') {
-            navigate('/epaggelmaties');  
-        }
-    };
-    
     const handleUnsubscribe = () => {
         const handleLogout = async () => {
             try {
@@ -75,6 +64,18 @@ function Header(props) {
         handleLogout();
         navigate('/');
         window.location.reload();
+    };
+
+    const handleGoneisRedirect = () => {
+        if (location.pathname !== '/goneis') {
+            navigate('/goneis');  
+        }
+    };
+
+    const handleEpaggelmatiesRedirect = () => {
+        if (location.pathname !== '/epaggelmaties') {
+            navigate('/epaggelmaties');  
+        }
     };
 
     if (loading) {

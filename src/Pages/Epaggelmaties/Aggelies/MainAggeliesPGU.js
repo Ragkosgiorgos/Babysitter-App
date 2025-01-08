@@ -132,9 +132,9 @@ function MainAggeliesPGU() {
                     </tr>
                   </thead>
                   <tbody>
-                    {posts.map((post) => (
+                    {posts.map((post, index) => (
                       <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
-                        <td>{post.id}</td>
+                        <td>{index + 1}</td>
                         <td>{/*//? Decide if to put Aitiseis Endiaferontos count */}</td>
                         <td>{post.status}</td>
                         <td style={{ display: "flex", justifyContent: "center", alignItems:"center", marginTop:"0.5em", gap:"10px" }}>
