@@ -10,6 +10,7 @@ import updateLocale from 'dayjs/plugin/updateLocale';
 import 'dayjs/locale/el'; 
 import Footer from "../../Components/Footer";
 import Header from "../../Components/Header";
+import Loader from "../../Components/Loader.js";
 import { useLocation } from "react-router-dom";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css"; 
@@ -22,8 +23,6 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { addDoc, setDoc } from 'firebase/firestore';
 import { useNavigate } from "react-router-dom";
 dayjs.locale("el"); // Set the locale to Greek
-
-
 
 function DimiourgiaSymbolaiou(props) {
     const navigate = useNavigate();
@@ -58,15 +57,15 @@ function DimiourgiaSymbolaiou(props) {
 
     const [currentStep, setCurrentStep] = useState(0);
 
-     // Define isLoading state
-     const [isLoading, setIsLoading] = useState(false); // Added isLoading state
+    // Define isLoading state
+    const [isLoading, setIsLoading] = useState(false); // Added isLoading state
 
-     // Define professionalData state
-     const [professionalData, setProfessionalData] = useState({
-         firstName: "",
-         lastName: "",
-         afm: "",
-     }); // Added professionalData state
+    // Define professionalData state
+    const [professionalData, setProfessionalData] = useState({
+        firstName: "",
+        lastName: "",
+        afm: "",
+    }); // Added professionalData state
 
     // Check if user is logged in and get UUID
     useEffect(() => {
@@ -80,91 +79,95 @@ function DimiourgiaSymbolaiou(props) {
 
     // Fetch all babysitters
     useEffect(() => {
-        if (!uuid) return; // Don't fetch if UUID is not set (user not logged in)
-        const fetchUserData = async () => {
-            setLoading(true);
-            try {
-                const q1 = query(collection(FIREBASE_DB, 'user'), where('property', '==', 'babysitter'));
-                const querySnapshot1 = await getDocs(q1);
-                const users1 = querySnapshot1.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
-                setProfiles(users1);
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchUserData();
+        if (uuid) { // Don't fetch if UUID is not set (user not logged in)
+            const fetchUserData = async () => {
+                setLoading(true);
+                try {
+                    const q1 = query(collection(FIREBASE_DB, 'user'), where('property', '==', 'babysitter'));
+                    const querySnapshot1 = await getDocs(q1);
+                    const users1 = querySnapshot1.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }));
+                    setProfiles(users1);
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchUserData();
+        }
     }, [uuid]);
 
     // Fetch all contracts based on user UUID
     useEffect(() => {
-        if (!uuid) return; // Don't fetch if UUID is not set
-        const fetchContracts = async () => {
-            setLoading(true);
-            try {
-                const q = query(collection(FIREBASE_DB, 'rantevou'), where('id_p', '==', uuid));
-                const querySnapshot = await getDocs(q);
-                const contracts = querySnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
-                setContracts(contracts);
-            } catch (error) {
-                console.error('Error fetching contracts:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchContracts();
+        if (uuid) { // Don't fetch if UUID is not set
+            const fetchContracts = async () => {
+                setLoading(true);
+                try {
+                    const q = query(collection(FIREBASE_DB, 'rantevou'), where('id_p', '==', uuid));
+                    const querySnapshot = await getDocs(q);
+                    const contracts = querySnapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }));
+                    setContracts(contracts);
+                } catch (error) {
+                    console.error('Error fetching contracts:', error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchContracts();
+        }
     }, [uuid]);
 
 
     // Fetch all contracts based on user UUID
     useEffect(() => {
-        if (!contractId) return; // Don't fetch if UUID is not set
-        const fetchContracts = async () => {
-            setLoading(true);
-            try {
-                const q = query(collection(FIREBASE_DB, 'contracts'), where('id', '==', contractId));
-                const querySnapshot = await getDocs(q);
-                const contract = querySnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
-                setContract(contract);
-            } catch (error) {
-                console.error('Error fetching contracts:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchContracts();
+        if (contractId) { // Don't fetch if UUID is not set
+            const fetchContracts = async () => {
+                setLoading(true);
+                try {
+                    const q = query(collection(FIREBASE_DB, 'contracts'), where('id', '==', contractId));
+                    const querySnapshot = await getDocs(q);
+                    const contract = querySnapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }));
+                    setContract(contract);
+                } catch (error) {
+                    console.error('Error fetching contracts:', error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchContracts();
+        }
     }, [uuid]);
 
     // Fetch user data for Khdemonas
     useEffect(() => {
-        if (!uuid) return; // Don't fetch if UUID is not set
-        const fetchUserData = async () => {
-            setLoading(true);
-            try {
-                const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
-                const querySnapshot = await getDocs(q);
-                const users = querySnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
-                setKhdemonas(users[0]);
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchUserData();
+        if (uuid) { // Don't fetch if UUID is not set
+            const fetchUserData = async () => {
+                setLoading(true);
+                try {
+                    const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
+                    const querySnapshot = await getDocs(q);
+                    const users = querySnapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }));
+                    setKhdemonas(users[0]);
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchUserData();
+        }
     }, [uuid]);
 
     // Filter hired babysitters based on contracts
@@ -224,6 +227,7 @@ function DimiourgiaSymbolaiou(props) {
     const submitContract = async () => {
         setIsSubmitting(true);
         try {
+            setIsLoading(true);
             const contractData = {
                 id_p: uuid,
                 id_b: babysitter.userId,
@@ -248,6 +252,7 @@ function DimiourgiaSymbolaiou(props) {
             console.error('Error adding document:', error);
         } finally {
             setIsSubmitting(false);
+            setIsLoading(false);
         }
     };
 
@@ -277,17 +282,15 @@ function DimiourgiaSymbolaiou(props) {
         setBabysitter(selectedBabysitter);
     };
 
+    const handleEditClick = (field) => {
+        // Replace with your desired route
+        navigate(`/goneis/profile`);
+    };
+
     // Handle loading state
     if (loading) {
-        return <div>Loading...</div>;
+        return <Loader />;
     }
-
-  
-
-  const handleEditClick = (field) => {
-    // Replace with your desired route
-    navigate(`/goneis/profile`);
-  };
 
     const renderStepContent = () => {
         switch (currentStep) {
@@ -657,7 +660,7 @@ function DimiourgiaSymbolaiou(props) {
                     <div style={{ textAlign: "center" }}>
            
             {isLoading ? (
-                <p>Submitting contract...</p> // Loading state
+                <Loader />
             ) : contractId ? (
                 <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
                     <span>Το συμβόλαιο με κωδικό #{contractId} βρίσκεται υπό αναμονή απάντησης από τον/την επαγγελματία. 
@@ -770,7 +773,7 @@ function DimiourgiaSymbolaiou(props) {
                             }}
                             onClick={() => {
                                 // Handle return action here
-                                alert("Επιστροφή");
+                                window.history.back();
                             }}
                         >
                             Επιστροφή

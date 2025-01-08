@@ -6,6 +6,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import Button from '@mui/material/Button';
+import Loader from "../../../Components/Loader";
 import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
 import { useNavigate } from "react-router-dom";
@@ -50,13 +51,13 @@ function MainSymbolaiaEpaggelmatiesPGU() {
     fetchContracts();
   }, []);
 
-  if (loading) {
-    return <div>Loading...</div>; 
-  }
-
   const handleRedirect = (contractId) => {
     navigate(`apantisi/${contractId}`); 
   };
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>

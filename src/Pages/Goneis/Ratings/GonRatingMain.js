@@ -16,106 +16,96 @@ import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
 function GonRatingMain() {
   const navigate = useNavigate();
 
-  // Check if user is logged in, get the user's UUID and fetch user data
   const [uuid, setUuid] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [filteredPosts, setFilteredPosts] = useState([]);
+  const [babysitters, setBabysitters] = useState([]);
+
+  // Check if user is logged in and get the UUID
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
-        if (user) {
-            setUuid(user.uid);
-        }
+      if (user) {
+        setUuid(user.uid);
+      }
     });
     return () => unsubscribe();
   }, []);
-  
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState({});
-  const fetchUserData = async () => {
-    try {
-      const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
-      const querySnapshot = await getDocs(q);
-      const users = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-      }));
-      setUser(users[0]);
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-  fetchUserData();
 
-  // Fetch user's ratings from the database
-  const [filteredPosts, setFilteredPosts] = useState([]);
-  const fetchPosts = async () => {
-    try {
-        setLoading(true);
-        const q = query(collection(FIREBASE_DB, 'ratings'), where('id_p', '==', uuid));
-        const querySnapshot = await getDocs(q);
-        const posts = querySnapshot.docs.map((doc) => ({
+  // Fetch user's ratings
+  useEffect(() => {
+    if (uuid) {
+      const fetchPosts = async () => {
+        try {
+          setLoading(true);
+          const q = query(collection(FIREBASE_DB, 'ratings'), where('id_p', '==', uuid));
+          const querySnapshot = await getDocs(q);
+          const posts = querySnapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
-        }));
-        setFilteredPosts(posts);
-    } catch (error) {
-        console.error('Error fetching posts:', error);
-    } finally {
-        setLoading(false);
+          }));
+          setFilteredPosts(posts);
+        } catch (error) {
+          console.error('Error fetching posts:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchPosts();
     }
-  };
-  fetchPosts();
+  }, [uuid]);
 
-  // Find the babysitters
-  const [babysitters, setBabysitters] = useState([]);
-  const fetchBabysitters = async () => {
-    try {
-      setLoading(true);
-      const q = query(collection(FIREBASE_DB, 'user'), where('property', '==', 'babysitter'));
-      const querySnapshot = await getDocs(q);
-      const babysitters = querySnapshot.docs.map((doc) => ({
+  // Fetch babysitters
+  useEffect(() => {
+    const fetchBabysitters = async () => {
+      try {
+        setLoading(true);
+        const q = query(collection(FIREBASE_DB, 'user'), where('property', '==', 'babysitter'));
+        const querySnapshot = await getDocs(q);
+        const babysitters = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-      }));
-      setBabysitters(babysitters);
-    } catch (error) {
-      console.error('Error fetching babysitters:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-  fetchBabysitters();
+        }));
+        setBabysitters(babysitters);
+      } catch (error) {
+        console.error('Error fetching babysitters:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBabysitters();
+  }, []);
 
-  // Find the babysitter's name to display in the table
+  // Find babysitter's name
   const findBabysitter = (id) => {
     const babysitter = babysitters.find(babysitter => babysitter.userId === id);
     return babysitter ? babysitter.firstName + " " + babysitter.lastName : "Δεν βρέθηκε";
   };
 
-  // Delete a post from the database
-  const handleDelete = (id) => {
-    const updatedPosts = filteredPosts.filter(post => post.id !== id);
-    setFilteredPosts(updatedPosts);
+  // Delete a post
+  const handleDelete = async (id) => {
+    try {
+      const updatedPosts = filteredPosts.filter(post => post.id !== id);
+      setFilteredPosts(updatedPosts);
 
-    // Delete the post from the database
-    const postRef = doc(FIREBASE_DB, 'ratings', id);
-    deleteDoc(postRef);
+      const postRef = doc(FIREBASE_DB, 'ratings', id);
+      await deleteDoc(postRef);
+    } catch (error) {
+      console.error('Error deleting post:', error);
+    }
   };
 
+  // Navigate to preview
   const previewRating = (id) => {
     navigate(`/epaggelmaties/ratings/preview-aksiologisis?id=${id}`);
   };
 
+  // Navigate to add new rating
   const handleNewRating = () => {
     navigate("/goneis/ratings/add");
   };
 
   if (loading) {
     return <Loader />;
-  }
-
-  if (!user) {
-    navigate("/404");
   }
 
   return (

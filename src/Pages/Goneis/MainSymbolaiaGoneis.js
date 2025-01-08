@@ -4,6 +4,7 @@ import Footer from "../../Components/Footer";
 import Breadcrumbs from "../../Components/Breadcrump";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import Loader from "../../Components/Loader.js";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
@@ -21,56 +22,38 @@ function MainSymbolaiaGoneisPGU() {
   const [uuid, setUuid] = useState(null);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-      const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
-          if (user) {
-              setUuid(user.uid);
-          }
-      });
-      return () => unsubscribe();
+    const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+      if (user) {
+        setUuid(user.uid);
+      }
+    });
+    return () => unsubscribe();
   }, []);
 
-  const [user, setUser] = useState({});
-  const fetchUserData = async () => {
-      try {
-          const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
-          const querySnapshot = await getDocs(q);
-          const users = querySnapshot.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-          }));
-          setUser(users[0]);
-      } catch (error) {
-          console.error('Error fetching user data:', error);
-      }
-  };
-  fetchUserData();
-
-    // Fetch the job posts' data
-    const [contracts, setContracts] = useState([]);
-    const fetchPosts = async () => {
-    try {
-        setLoading(true);
-        const q = query(collection(FIREBASE_DB, 'contracts'), where('id_p', '==', uuid));
-        const querySnapshot = await getDocs(q);
-        const posts = querySnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-        }));
-        setContracts(posts);
-    } catch (error) {
-        console.error('Error fetching posts:', error);
-    }
-    finally {
-      setLoading(false);
-    }
-    };
-    useEffect(() => {
+  // Fetch the job posts' data
+  const [contracts, setContracts] = useState([]);
+  useEffect(() => {
+    if (uuid) {
+      const fetchPosts = async () => {
+        try {
+            setLoading(true);
+            const q = query(collection(FIREBASE_DB, 'contracts'), where('id_p', '==', uuid));
+            const querySnapshot = await getDocs(q);
+            const posts = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setContracts(posts);
+        } catch (error) {
+            console.error('Error fetching posts:', error);
+        }
+        finally {
+          setLoading(false);
+        }
+      };
       fetchPosts(); // Fetch posts when component mounts
-    }, [uuid]); // Runs when UUID changes
-
-    if (loading) {
-      return <div>Loading...</div>; // Show loading message or spinner
     }
+  }, [uuid]); // Runs when UUID changes
 
   const handleNewContract = () => {
     navigate('/neo-symbolaio');
@@ -79,6 +62,10 @@ function MainSymbolaiaGoneisPGU() {
   const handleRedirect = (contractId) => {
     navigate(`provoli/${contractId}`); 
   };
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
