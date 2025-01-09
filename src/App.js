@@ -26,7 +26,9 @@ import EpaggelmatiasProfile from "./Pages/Epaggelmaties/EpaggelmatiesProfile";
 import GoneisProfile from "./Pages/Goneis/GoneisProfile";
 import CreateRating from "./Pages/Goneis/Ratings/CreateRating";
 import MainSymbolaiaGoneisPGU from "./Pages/Goneis/MainSymbolaiaGoneis";
-
+import MainAitiseisEndiaferontosPGU from "./Pages/Goneis/AitiseisEndiaferontos/MainAitiseisEndiaferontosPGU";
+import EditAitiseisEndiaferontosPGU from "./Pages/Goneis/AitiseisEndiaferontos/EditAitiseisEndiaferontosPGU";
+import PreviewAitiseisEndiaferontosPGU from "./Pages/Goneis/AitiseisEndiaferontos/PreviewAitiseisEndiaferontos";
 function App() {
   return (
     <div className="App">
@@ -72,6 +74,10 @@ function App() {
 
           <Route path="epaggelmaties/ratings/preview-aksiologisis" element={<ViewRating />} />
 
+          <Route path="/goneis/profile/aitiseis-endiaferontos" element={<MainAitiseisEndiaferontosPGU />} />
+          <Route path="/goneis/profile/aitiseis-endiaferontos/edit" element={<EditAitiseisEndiaferontosPGU />} />
+          <Route path="/goneis/profile/aitiseis-endiaferontos/preview" element={<PreviewAitiseisEndiaferontosPGU />} />
+          
           <Route path="*" element={<h1>404 - Not Found</h1>} />
 
         </Routes>

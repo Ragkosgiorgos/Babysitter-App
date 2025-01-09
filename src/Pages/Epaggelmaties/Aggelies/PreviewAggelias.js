@@ -108,7 +108,7 @@ function PreviewAggelias() {
                         <div style={{ display: "flex", flexDirection: "column", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", 
                                     justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
 
-                        <h2 style={{ textAlign: "center", textDecoration: "underline" }}><b>Συμπληρώστε τα στοιχεία της αγγελίας</b></h2>
+                        <h2 style={{ textAlign: "center", textDecoration: "underline" }}><b>Τα στοιχεία της αγγελίας</b></h2>
                         
                         <h5 style={{ fontWeight: "bold", marginTop: "3%" }}> Περιγραφή </h5>
                         <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>

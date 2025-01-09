@@ -280,6 +280,11 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
+                                <a className="dropdown-item" href="/goneis/profile/aitiseis-endiaferontos">
+                                    Οι Αιτήσεις ενδιαφέροντός μου
+                                </a>
+                            </li>
+                            <li>
                                 <a className="dropdown-item" href="/#" style={{ color: 'red', borderTop: "2px solid #333" }} onClick={handleUnsubscribe}>
                                     Αποσύνδεση
                                 </a>

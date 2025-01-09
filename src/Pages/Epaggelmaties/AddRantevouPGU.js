@@ -46,14 +46,6 @@ function AddRantevouPGU() {
                   <Button> <InfoIcon /> </Button>
                 </Tooltip>
             </div>
-            {/* <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%", marginLeft: "70%" }}>
-              
-              <button style={{  height: "3%", backgroundColor: "#2b8cbe", color: "white", border: "none", 
-                                borderRadius: "5px", cursor: "pointer", border: "3px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)" }}>
-                Προσθήκη διαθέσιμου ραντεβού
-              </button>
-              
-            </div> */}
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
 
