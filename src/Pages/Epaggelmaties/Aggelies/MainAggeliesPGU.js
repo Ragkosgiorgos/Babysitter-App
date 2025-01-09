@@ -9,84 +9,70 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
 import { useNavigate } from "react-router-dom";
+import Loader from "../../../Components/Loader";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
 
 function MainAggeliesPGU() {
     const navigate = useNavigate();
-
-    // Check if user is logged in, get the user's UUID and fetch user data
     const [uuid, setUuid] = useState(null);
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
-            if (user) {
-                setUuid(user.uid);
-            }
-        });
-        return () => unsubscribe();
-    }, []);
-
-    const [user, setUser] = useState({});
-    const fetchUserData = async () => {
-        try {
-            const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
-            const querySnapshot = await getDocs(q);
-            const users = querySnapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            }));
-            setUser(users[0]);
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-        }
-    };
-    fetchUserData();
-
-    // Fetch the job posts' data
+    const [loading, setLoading] = useState(true);
     const [posts, setPosts] = useState([]);
-    const fetchPosts = async () => {
-      try {
-          const q = query(collection(FIREBASE_DB, 'aggelies'), where('uid', '==', uuid));
-          const querySnapshot = await getDocs(q);
-          const posts = querySnapshot.docs.map((doc) => ({
+
+    // Check if user is logged in, get the user's UUID
+    useEffect(() => {
+      const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+        if (user) {
+          setUuid(user.uid);
+        } else {
+          navigate("/404");
+        }
+      });
+      return () => unsubscribe();
+    }, [navigate]);
+
+    // Fetch the job posts' data from the database
+    useEffect(() => {
+      if (uuid) {
+        const fetchPosts = async () => {
+          try {
+            setLoading(true);
+            const q = query(collection(FIREBASE_DB, 'aggelies'), where('uid', '==', uuid));
+            const querySnapshot = await getDocs(q);
+            const posts = querySnapshot.docs.map((doc) => ({
               id: doc.id,
               ...doc.data(),
-          }));
-          setPosts(posts);
+            }));
+            setPosts(posts);
+          } catch (error) {
+            console.error('Error fetching posts:', error);
+          } finally {
+            setLoading(false);
+          }
+        };
+        fetchPosts();
+      }
+    }, [uuid]);
+
+    const handleDelete = async (id) => {
+      try {
+        const updatedPosts = posts.filter(post => post.id !== id);
+        setPosts(updatedPosts);
+        const postRef = doc(FIREBASE_DB, 'aggelies', id);
+        await deleteDoc(postRef);
       } catch (error) {
-          console.error('Error fetching posts:', error);
+        console.error('Error deleting post:', error);
       }
     };
-    fetchPosts();
 
-    // Delete a job post from the database
-    const handleDelete = (id) => {
-      const updatedPosts = posts.filter(post => post.id !== id);
-      setPosts(updatedPosts);
+    // Redirects
+    const handleNewPost = () => navigate("/nea-aggelia");
+    const previewAggeliaRender = (aggelia_id) => navigate(`/preview-aggelias?aggelia_id=${aggelia_id}`);
+    const handleTempView = (post_id) => navigate(`/nea-aggelia?step=2&post_id=${post_id}`);
 
-      const postRef = doc(FIREBASE_DB, 'aggelies', id);
-      deleteDoc(postRef);
-    };
-
-    // Redirect to the new job post page
-    const handleNewPost = () => {
-      navigate("/nea-aggelia");
-    };
-
-    // Redirect to the job post preview page
-    const previewAggeliaRender = (aggelia_id) => {
-      navigate(`/preview-aggelias?aggelia_id=${aggelia_id}`);
-    };
-
-    // Redirect to the temporary job post view page
-    const handleTempView = (post_id) => {
-      navigate(`/nea-aggelia?step=2&post_id=${post_id}`);
-    };
-
-    //? Error handling
-    if (!user) {
-      return <div>Error fetching user data</div>;
+    if (loading) {
+      return <Loader />;
     }
 
     return (
@@ -146,9 +132,9 @@ function MainAggeliesPGU() {
                     </tr>
                   </thead>
                   <tbody>
-                    {posts.map((post) => (
+                    {posts.map((post, index) => (
                       <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
-                        <td>{post.id}</td>
+                        <td>{index + 1}</td>
                         <td>{/*//? Decide if to put Aitiseis Endiaferontos count */}</td>
                         <td>{post.status}</td>
                         <td style={{ display: "flex", justifyContent: "center", alignItems:"center", marginTop:"0.5em", gap:"10px" }}>

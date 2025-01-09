@@ -1,74 +1,160 @@
 import React, { useState, useEffect } from "react";
-
-import { FormControl, FormControlLabel, Radio, RadioGroup, FormLabel } from "@mui/material";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import Checkbox from '@mui/material/Checkbox';
-import dayjs from 'dayjs';
-import localizedFormat from 'dayjs/plugin/localizedFormat';
-import updateLocale from 'dayjs/plugin/updateLocale';
-import 'dayjs/locale/el'; // Greek locale
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
+import "dayjs/locale/el"; // Greek locale
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
-import { useLocation } from "react-router-dom";
-import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css"; // Main style file
 import "react-date-range/dist/theme/default.css"; // Theme CSS file
 import ProgressTracker from "../../../Components/ProgressTracker";
+import Loader from "../../../Components/Loader";
+import { useParams } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
+import { query, collection, where, getDocs } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
-function ApodoxiSymbolaiou(){
+function ApodoxiSymbolaiou() {
+    const navigate = useNavigate();
+    const { contractId } = useParams();
+    const [loading, setLoading] = useState(true);
+    const [contract, setContract] = useState(null);
+    const [uuid, setUuid] = useState(null);
+    const [user, setUser] = useState({});
+    const [parent, setParent] = useState({});
+    const [currentStep, setCurrentStep] = useState(0);
 
     const steps = [
         "Eπιβεβαίωση στοιχείων κηδεμόνα και παιδιού",
-        "Επιβεβαίωση στοιχείων επαγγελματία",
-        "Επιβεβαίωση στοιχείων επαγγελματία",
+        "Eπιβεβαίωση στοιχείων επαγγελματία",
+        "Eπιβεβαίωση στοιχείων συμβολαίου",
         "Υπογραφή συμβολαίου",
     ];
-    const [currentStep, setCurrentStep] = useState(0);
 
+    // Fetch current user UUID
     useEffect(() => {
-        fetch("/data/sumbolaia.json")
-            .then((response) => {
-                console.log("Response:", response);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then((data) => {
-                console.log("Fetched data:", data);
-                setSymbolaio(data);
-            })
-            .catch((error) => {
-                console.error("Error fetching JSON:", error);
-            });
+        const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+        if (user) {
+            setUuid(user.uid);
+        }
+        });
+        return () => unsubscribe();
     }, []);
+
+    // Fetch contract data
+    useEffect(() => {
+        if (contractId) {
+            const fetchContract = async () => {
+            setLoading(true);
+            try {
+                const contractRef = doc(FIREBASE_DB, "contracts", contractId);
+                const contractSnapshot = await getDoc(contractRef);
+
+                if (contractSnapshot.exists()) {
+                setContract(contractSnapshot.data());
+                console.log("Contract fetched: ", contractSnapshot.data());
+                } else {
+                console.log("No such contract!");
+                }
+            } catch (error) {
+                console.error("Error fetching contract: ", error);
+            } finally {
+                setLoading(false);
+            }
+            };
+
+            fetchContract();
+        }
+    }, [contractId]);
+
+    // Fetch user data
+    useEffect(() => {
+        if (uuid) {
+            const fetchUserData = async () => {
+            try {
+                setLoading(true);
+                const q = query(collection(FIREBASE_DB, "user"), where("userId", "==", uuid));
+                const querySnapshot = await getDocs(q);
+                const users = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+                }));
+                setUser(users[0]);
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            } finally {
+                setLoading(false);
+            }
+            };
+
+            fetchUserData();
+        }
+    }, [uuid]);
+
+    // Fetch parent data
+    useEffect(() => {
+        if (contract && contract.id_p) {
+            const fetchParentData = async () => {
+            try {
+                setLoading(true);
+                const q = query(collection(FIREBASE_DB, "user"), where("userId", "==", contract.id_p));
+                const querySnapshot = await getDocs(q);
+                const users = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+                }));
+                setParent(users[0]);
+            } catch (error) {
+                console.error("Error fetching parent data:", error);
+            } finally {
+                setLoading(false);
+            }
+            };
+
+            fetchParentData();
+        }
+    }, [contract]);
+
+    const handleAction = async (action) => {
+        try {
+        setLoading(true);
+        const contractRef = doc(FIREBASE_DB, "contracts", contractId);
+        const newStatus = action === "accept" ? "Σε ισχύ" : "Απορρίφθηκε";
+
+        await updateDoc(contractRef, {
+            status: newStatus,
+        });
+
+        setContract((prevContract) => ({
+            ...prevContract,
+            status: newStatus,
+        }));
+        } catch (error) {
+        console.error("Error updating contract status:", error);
+        } finally {
+        setLoading(false);
+        }
+    };
 
     const goToNextStep = () => {
         if (currentStep < steps.length - 1) {
-            setCurrentStep(currentStep + 1);
+        setCurrentStep(currentStep + 1);
         }
     };
 
     const goToPreviousStep = () => {
         if (currentStep > 0) {
-            setCurrentStep(currentStep - 1);
+        setCurrentStep(currentStep - 1);
         }
     };
-    const [symbolaio, setSymbolaio] = useState([]);
 
-    const data = symbolaio.find((item) => item.id_symbolaiou === 1);
-    const [actionTaken, setActionTaken] = useState(null);
-    const handleAction = (action) => {
-        setActionTaken(action);
+    const handleRedirect = () => {
+        navigate("/epaggelmaties/symbolaia");
     };
+
+    if (loading) {
+        return <Loader />;
+    }
     
-
-
-    
-
-
     const renderStepContent = () => {
         switch (currentStep) {
             case 0:
@@ -79,23 +165,23 @@ function ApodoxiSymbolaiou(){
                                 <b>Προσωπικά στοιχεία κηδεμόνα </b>
                             </h2>
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Όνομα:</b> {data?.parentname || "N/A"}
+                                <b>Όνομα:</b> {parent.firstName}
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Επίθετο:</b> {data?.parentsurname || "N/A"}
+                                <b>Επίθετο:</b> {parent.lastName}
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Ημερομηνία γέννησης:</b> {data?.parentbirthDate || "N/A"}
+                                <b>Ημερομηνία γέννησης:</b> {parent.birthDate}
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Email:</b> {data?.parentemail || "N/A"}
+                                <b>Email:</b> {parent.email}
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Τηλέφωνο:</b> {data?.parentphone || "N/A"}
+                                <b>Τηλέφωνο:</b> {parent.phone}
                             </h4>
                         </div>
 
@@ -104,19 +190,19 @@ function ApodoxiSymbolaiou(){
                                 <b>Προσωπικα στοιχεία παιδιού</b>
                             </h2>
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Όνομα:</b> {data?.childName || "N/A"}
+                                <b>Όνομα:</b> {parent.childFirstName || "N/A"}
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Επίθετο:</b> {data?.childSurname || "N/A"}
+                                <b>Επίθετο:</b> {parent.childLastName }
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Ημερομηνία γέννησης:</b> {data?.childBirthDate || "N/A"}
+                                <b>Ημερομηνία γέννησης:</b> {parent.childBirthDate}
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>ΑΜΚΑ:</b> {data?.amka || "N/A"}
+                                <b>ΑΜΚΑ:</b> {parent.childAmka}
                             </h4>
                         </div>
                     </div>
@@ -129,23 +215,23 @@ function ApodoxiSymbolaiou(){
                                 <b>Επιβεβαίωση στοιχείων επαγγελματία</b>
                             </h2>
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Όνομα:</b> {data?.babysittername || "N/A"}
+                                <b>Όνομα:</b>{user.firstName}
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Επίθετο:</b> {data?.babysittersurname || "N/A"}
+                                <b>Επίθετο:</b> {user.lastName}
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Ημερομηνία γέννησης:</b> {data?.babysitterbirthDate || "N/A"}
+                                <b>Ημερομηνία γέννησης:</b> { user.birthDate}
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Email:</b> {data?.babysitteremail || "N/A"}
+                                <b>Email:</b> {user.email}
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Τηλέφωνο:</b> {data?.babysitterphone || "N/A"}
+                                <b>Τηλέφωνο:</b> {user.phone}
                             </h4>
                         </div>
                     </div>
@@ -159,278 +245,354 @@ function ApodoxiSymbolaiou(){
                                 <b>Επιβεβαίωση στοιχείων συμβολαίου</b>
                             </h2>
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Ημέρες εργασίας</b> {data?.workdays || "N/A"}
+                            <b>Ημέρες εργασίας:</b> 
+                            {
+                                contract.weekdays && contract.weekends ? "Καθημερινές και Σαββατοκύριακα" :
+                                contract.weekdays ? "Καθημερινές" :
+                                contract.weekends ? "Σαββατοκύριακα" : ""
+                            }
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Χρόνος απασχόλησης:</b> {data?.workTime || "N/A"}
+                                <b>Χρόνος απασχόλησης:</b> {contract.time}
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Φιλοξενία:</b> {data?.hospitality || "N/A"}
+                                <b>Φιλοξενία:</b> {contract.hosting}
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Έναρξη συμβολαίου:</b> {data?.workStart || "N/A"}
+                                <b>Έναρξη συμβολαίου:</b> {contract.startDate}
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Λήξη συμβολαίου:</b> {data?.workEnd || "N/A"}
+                                <b>Λήξη συμβολαίου:</b> {contract.endDate}
                             </h4>
                         </div>
                     </div>
                     );
-                
+
+                case 3:
+                    return (
+                        <div style={{ textAlign: "center", marginTop: "20px" }}>
+                            
+                        {contract.status === "Σε αναμονή" ? (
+                                <>
+                                    <h2 style={{ textAlign: "center", textDecoration: "underline", marginBottom: "20px" }}>
+                                        <b>Αποδοχή ή απόρριψη του συμβολαίου</b>
+                                    </h2>
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            justifyContent: "center",
+                                            gap: "200px", // Space between buttons
+                                        }}
+                                    >
+                                        <button
+                                            style={{
+                                                padding: "10px 20px",
+                                                cursor: "pointer",
+                                                fontSize: "16px",
+                                                border: "1px solid #ccc",
+                                                borderRadius: "5px",
+                                                backgroundColor: "#4CAF50",
+                                                color: "white",
+                                            }}
+                                            onClick={() => handleAction("accept")}
+                                        >
+                                            Αποδοχή
+                                        </button>
+
+                                        <button
+                                            style={{
+                                                padding: "10px 20px",
+                                                cursor: "pointer",
+                                                fontSize: "16px",
+                                                border: "1px solid #ccc",
+                                                borderRadius: "5px",
+                                                backgroundColor: "#F44336",
+                                                color: "white",
+                                            }}
+                                            onClick={() => handleAction("decline")}
+                                        >
+                                            Απόρριψη
+                                        </button>
+                                    </div>
+                                </>
+                            ):
+
+                            contract.status === "Σε ισχύ" && (
+                                <div style={{ textAlign: "center" }}>
+                                    <div style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        marginTop: "2%",
+                                        backgroundColor: "#ece7f2",
+                                        borderRadius: "2%",
+                                        width: "60%",
+                                        justifyContent: "center",
+                                        marginLeft: "20%",
+                                        padding: "2%",
+                                    }}> <h3>Το συμβόλαιό σας με κωδικό #{contract.id} υπογράφτηκε με επιτυχία. 
+                                    Μπορείτε να το δείτε στη λίστα συμβολαίων</h3> </div>
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            marginTop: "2%",
+                                            backgroundColor: "#ece7f2",
+                                            borderRadius: "2%",
+                                            width: "60%",
+                                            justifyContent: "center",
+                                            marginLeft: "20%",
+                                            padding: "2%",
+                                        }}
+                                    >
+                                        <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+                                            <b>Προσωπικά στοιχεία κηδεμόνα </b>
+                                        </h2>
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Όνομα:</b> {parent.firstName}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Επίθετο:</b> {parent.lastName}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Ημερομηνία γέννησης:</b> {parent.birthDate}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Email:</b> {parent.email}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Τηλέφωνο:</b> {parent.phone}
+                                        </h4>
+                                    </div>
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            marginTop: "2%",
+                                            backgroundColor: "#ece7f2",
+                                            borderRadius: "2%",
+                                            width: "60%",
+                                            justifyContent: "center",
+                                            marginLeft: "20%",
+                                            padding: "2%",
+                                        }}
+                                    >
+                                        <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+                                            <b>Προσωπικά στοιχεία παιδιού</b>
+                                        </h2>
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Όνομα:</b> {parent.childFirstName}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Επίθετο:</b> {parent.lastName}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Ημερομηνία γέννησης:</b> {parent.birthDate}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>ΑΜΚΑ:</b> {parent.childAmka}
+                                        </h4>
+                                    </div>
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            marginTop: "2%",
+                                            backgroundColor: "#ece7f2",
+                                            borderRadius: "2%",
+                                            width: "60%",
+                                            justifyContent: "center",
+                                            marginLeft: "20%",
+                                            padding: "2%",
+                                        }}
+                                    >
+                                        <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+                                            <b>Στοιχεία συμβολαίου</b>
+                                        </h2>
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Ημέρες εργασίας:</b> 
+                                            {
+                                                contract.weekdays && contract.weekends ? "Καθημερινές και Σαββατοκύριακα" :
+                                                contract.weekdays ? "Καθημερινές" :
+                                                contract.weekends ? "Σαββατοκύριακα" : ""
+                                            }
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Χρόνος απασχόλησης:</b> {contract.time}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Φιλοξενία:</b> {contract.hosting}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Έναρξη συμβολαίου:</b> {contract.startDate}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Λήξη συμβολαίου:</b> {contract.endDate}
+                                        </h4>
+                                    </div>
+                                </div>
+                            )}
+
+                            {contract.status === "Απορρίφθηκε" && (
+                                <div style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    marginTop: "2%",
+                                    backgroundColor: "#ece7f2",
+                                    borderRadius: "2%",
+                                    width: "60%",
+                                    justifyContent: "center",
+                                    marginLeft: "20%",
+                                    padding: "2%",
+                                }}>
+                                <h3>Το συμβόλαιο με κωδικό #{contract.id} έχει απορριφθεί.</h3>
+                                </div>
+                            )}
+                        </div>
+                    );
                     
-                    case 3:
-    return (
-        <div style={{ textAlign: "center", marginTop: "20px" }}>
-            {!actionTaken && (
-                <>
-                    <h2 style={{ textAlign: "center", textDecoration: "underline", marginBottom: "20px" }}>
-                        <b>Αποδοχή ή απόρριψη συμβολαίου</b>
-                    </h2>
-                    <div
-                        style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            justifyContent: "center",
-                            gap: "200px", // Space between buttons
-                        }}
-                    >
-                        <button
-                            style={{
-                                padding: "10px 20px",
-                                cursor: "pointer",
-                                fontSize: "16px",
-                                border: "1px solid #ccc",
-                                borderRadius: "5px",
-                                backgroundColor: "#4CAF50",
-                                color: "white",
-                            }}
-                            onClick={() => handleAction("accept")}
-                        >
-                            Αποδοχή
-                        </button>
-
-                        <button
-                            style={{
-                                padding: "10px 20px",
-                                cursor: "pointer",
-                                fontSize: "16px",
-                                border: "1px solid #ccc",
-                                borderRadius: "5px",
-                                backgroundColor: "#F44336",
-                                color: "white",
-                            }}
-                            onClick={() => handleAction("decline")}
-                        >
-                            Απόρριψη
-                        </button>
-                    </div>
-                </>
-            )}
-
-            {actionTaken === "accept" && (
-                <div style={{ textAlign: "center" }}>
-                    <div style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        marginTop: "2%",
-                        backgroundColor: "#ece7f2",
-                        borderRadius: "2%",
-                        width: "60%",
-                        justifyContent: "center",
-                        marginLeft: "20%",
-                        padding: "2%",
-                    }}> <h3>Το συμβόλαιό σας με κωδικό #1 υπογράφτηκε με επιτυχία. 
-                    Μπορείτε να το δείτε στη λίστα συμβολαίων</h3> </div>
-                    <div
-                        style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            marginTop: "2%",
-                            backgroundColor: "#ece7f2",
-                            borderRadius: "2%",
-                            width: "60%",
-                            justifyContent: "center",
-                            marginLeft: "20%",
-                            padding: "2%",
-                        }}
-                    >
-                        <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                            <b>Προσωπικά στοιχεία κηδεμόνα </b>
-                        </h2>
-                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                            <b>Όνομα:</b> {data?.parentname || "N/A"}
-                        </h4>
-                        <hr />
-                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                            <b>Επίθετο:</b> {data?.parentsurname || "N/A"}
-                        </h4>
-                        <hr />
-                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                            <b>Ημερομηνία γέννησης:</b> {data?.parentbirthDate || "N/A"}
-                        </h4>
-                        <hr />
-                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                            <b>Email:</b> {data?.parentemail || "N/A"}
-                        </h4>
-                        <hr />
-                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                            <b>Τηλέφωνο:</b> {data?.parentphone || "N/A"}
-                        </h4>
-                    </div>
-
-                    <div
-                        style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            marginTop: "2%",
-                            backgroundColor: "#ece7f2",
-                            borderRadius: "2%",
-                            width: "60%",
-                            justifyContent: "center",
-                            marginLeft: "20%",
-                            padding: "2%",
-                        }}
-                    >
-                        <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                            <b>Προσωπικά στοιχεία παιδιού</b>
-                        </h2>
-                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                            <b>Όνομα:</b> {data?.childName || "N/A"}
-                        </h4>
-                        <hr />
-                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                            <b>Επίθετο:</b> {data?.childSurname || "N/A"}
-                        </h4>
-                        <hr />
-                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                            <b>Ημερομηνία γέννησης:</b> {data?.childBirthDate || "N/A"}
-                        </h4>
-                        <hr />
-                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                            <b>ΑΜΚΑ:</b> {data?.amka || "N/A"}
-                        </h4>
-                    </div>
-
-                    <div
-                        style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            marginTop: "2%",
-                            backgroundColor: "#ece7f2",
-                            borderRadius: "2%",
-                            width: "60%",
-                            justifyContent: "center",
-                            marginLeft: "20%",
-                            padding: "2%",
-                        }}
-                    >
-                        <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                            <b>Στοιχεία συμβολαίου</b>
-                        </h2>
-                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                            <b>Ημέρες εργασίας:</b> {data?.workdays || "N/A"}
-                        </h4>
-                        <hr />
-                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                            <b>Χρόνος απασχόλησης:</b> {data?.workTime || "N/A"}
-                        </h4>
-                        <hr />
-                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                            <b>Φιλοξενία:</b> {data?.hospitality || "N/A"}
-                        </h4>
-                        <hr />
-                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                            <b>Έναρξη συμβολαίου:</b> {data?.workStart || "N/A"}
-                        </h4>
-                        <hr />
-                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                            <b>Λήξη συμβολαίου:</b> {data?.workEnd || "N/A"}
-                        </h4>
-                    </div>
-                    <button
-                        style={{
-                            padding: "10px 20px",
-                            cursor: "pointer",
-                            fontSize: "16px",
-                            border: "1px solid #ccc",
-                            borderRadius: "5px",
-                            backgroundColor: "#2b8cbe",
-                            color: "white",
-                            marginTop: "20px",
-                        }}
-                        onClick={() => window.location.href = "/home"}  // Redirect to the desired page
-                    >
-                        Πήγαινε στην Αρχική
-                    </button>
-                </div>
-            )}
-
-            {actionTaken === "decline" && (
-                <p>Το συμβόλαιο έχει απορριφθεί.</p>
-            )}
-        </div>
-    );
-      
         }
     };
-    return(
+
+    return (
         <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
             <Header />
             <div style={{ flex: 1 }}>
                 <ProgressTracker steps={steps} activeStep={currentStep} />
-    
+        
                 {renderStepContent()}
-    
+        
                 <div
                     style={{
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
                         marginTop: "2%",
-                        gap: "50%",
+                        gap:"50%", 
                         marginBottom: "10px",
                     }}
                 >
-                    <button
-                        style={{
-                            height: "3%",
-                            backgroundColor: "#2b8cbe",
-                            color: "white",
-                            borderRadius: "5px",
-                            marginTop: "2%",
-                            width: "12%",
-                        }}
-                        onClick={goToPreviousStep}
-                        disabled={currentStep === 0}
-                    >
-                        Προηγούμενο
-                    </button>
+                    {currentStep === 0 ? (
+                        <>
+                        
+                        <button
+                            style={{
+                                height: "3%",
+                                backgroundColor: "#2b8cbe",
+                                color: "white",
+                                borderRadius: "5px",
+                                marginTop: "2%",
+                                width: "12%",
+                            }}
+                            onClick={handleRedirect}
+                        >
+                            Προηγούμενο
+                        </button>
+                        
+                        
+                        <button
+                            style={{
+                                height: "3%",
+                                backgroundColor: "#2b8cbe",
+                                color: "white",
+                                borderRadius: "5px",
+                                marginTop: "2%",
+                                width: "12%",
+                            }}
+                            onClick={goToNextStep}
+                        >
+                            Επόμενο
+                        </button>
+
+                    </>
+                    ) : currentStep === 3 ? (
+                        <>
+                        <button
+                            style={{
+                                height: "3%",
+                                backgroundColor: "#2b8cbe",
+                                color: "white",
+                                borderRadius: "5px",
+                                marginTop: "2%",
+                                width: "12%",
+                            }}
+                            onClick={goToPreviousStep}
+                            disabled={currentStep === 2}
+                        >
+                            Προηγούμενο
+                        </button>
     
-                    <button
-                        style={{
-                            height: "3%",
-                            backgroundColor: "#2b8cbe",
-                            color: "white",
-                            borderRadius: "5px",
-                            marginTop: "2%",
-                            width: "12%",
-                        }}
-                        onClick={() => {
-                            goToNextStep();
-                        }}
-                    >
-                        Επόμενο
-                    </button>
+                        <button
+                            style={{
+                                height: "3%",
+                                backgroundColor: "#2b8cbe",
+                                color: "white",
+                                borderRadius: "5px",
+                                marginTop: "2%",
+                                width: "12%",
+                            }}
+                            onClick={handleRedirect}
+                        >
+                            Επιστροφή
+                        </button>
+                    </>
+                    ) : (
+                        // Show both "Προηγούμενο" and "Επόμενο" buttons in step 1 and 2
+                        <>
+                            <button
+                                style={{
+                                    height: "3%",
+                                    backgroundColor: "#2b8cbe",
+                                    color: "white",
+                                    borderRadius: "5px",
+                                    marginTop: "2%",
+                                    width: "12%",
+                                }}
+                                onClick={goToPreviousStep}
+                                disabled={currentStep === 0}
+                            >
+                                Προηγούμενο
+                            </button>
+        
+                            <button
+                                style={{
+                                    height: "3%",
+                                    backgroundColor: "#2b8cbe",
+                                    color: "white",
+                                    borderRadius: "5px",
+                                    marginTop: "2%",
+                                    width: "12%",
+                                }}
+                                onClick={goToNextStep}
+                            >
+                                Επόμενο
+                            </button>
+                        </>
+                    )}
                 </div>
             </div>
-    
+        
             <Footer />
         </div>
     );
+    
 }
 
 export default ApodoxiSymbolaiou;

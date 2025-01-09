@@ -10,6 +10,7 @@ import PlaceIcon from '@mui/icons-material/Place';
 import SchoolIcon from '@mui/icons-material/School';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import EventIcon from '@mui/icons-material/Event';
+import Loader from '../../Components/Loader';
 import { calculateAge, capitalizeWords, TruncatedText } from "../../Utils/Methods/index";
 import { FIREBASE_DB } from "../../config/firebase";
 import { collection, query, where, getDocs } from 'firebase/firestore';
@@ -24,10 +25,13 @@ function ViewJobPost() {
     const [profile, setProfile] = useState(null);
     const [filteredRatings, setFilteredRatings] = useState([]);
     const [filteredEpistoles, setFilteredEpistoles] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
+                setLoading(true);
+
                 // Fetch post data
                 const postQuery = query(collection(FIREBASE_DB, 'aggelies'), where('id', '==', id));
                 const postQuerySnapshot = await getDocs(postQuery);
@@ -71,6 +75,8 @@ function ViewJobPost() {
                 setFilteredEpistoles(epistoles);
             } catch (error) {
                 console.error('Error fetching data:', error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -89,8 +95,12 @@ function ViewJobPost() {
         navigate(`/epaggelmaties/ratings/preview-aksiologisis?id=${r_id}`);
     };
 
-    if (!profile || !post) {//? Error frame
-        return <div>Error</div>;
+    if (loading) {
+        return <Loader />;
+    }
+
+    if (!profile || !post) {
+        navigate('/404');
     }
 
     return (
@@ -110,12 +120,12 @@ function ViewJobPost() {
                             <h3><b>{profile.firstName} {profile.lastName}</b> ({calculateAge(profile.birthDate)} ετών)</h3>
                         </div>
 
-                        <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", width: "60%", marginTop: "2vh", marginBottom: "2vh" }}>
                             <h6> <b style={{ textDecoration: "underline" }}>Περιγραφή:</b> {post.description} </h6>
                         </div>
 
                         <Link to={`/epaggelmaties/aitisi-endiaferontos?ntanta=${profile.userId}`}>
-                            <button className="btn btn-primary" style={{ width: "20vw", marginTop: "2vh" }}>
+                            <button className="btn btn-primary" style={{ width: "20vw", marginTop: "2vh", marginBottom: "2vh" }}>
                                 Επικοινωνία
                             </button>
                         </Link>

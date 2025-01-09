@@ -1,12 +1,13 @@
-import React , { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrump";
 import ProgressTracker from "../../../Components/ProgressTracker";
-import { capitalizeWords } from "../../../Utils/Methods/index";
+import { capitalizeWords, convertDateFormat } from "../../../Utils/Methods/index";
 import { MenuItem, Select, FormControl, RadioGroup, FormControlLabel, Radio } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
+import Loader from "../../../Components/Loader";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, addDoc, setDoc, doc } from 'firebase/firestore';
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../../config/firebase";
@@ -29,21 +30,31 @@ function DimiourgiaAggelias() {
         return () => unsubscribe();
     }, []);
     
+    const [loading, setLoading] = useState(true);
     const [user, setUser] = useState({});
-    const fetchUserData = async () => {
-        try {
-            const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
-            const querySnapshot = await getDocs(q);
-            const users = querySnapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            }));
-            setUser(users[0]);
-        } catch (error) {
-            console.error('Error fetching user data:', error);
+
+    // Fetch user data when uuid is available
+    useEffect(() => {
+        if (uuid) {
+            const fetchUserData = async () => {
+                try {
+                    setLoading(true);
+                    const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
+                    const querySnapshot = await getDocs(q);
+                    const users = querySnapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }));
+                    setUser(users[0]);
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchUserData();
         }
-    };
-    fetchUserData();
+    }, [uuid]);
 
     const [newData, setnewData] = useState({
         id: post_id,
@@ -68,6 +79,7 @@ function DimiourgiaAggelias() {
         const fetchPostData = async () => {
             if (post_id !== "") {
                 try {
+                    setLoading(true);
                     const q = query(collection(FIREBASE_DB, 'aggelies'), where('id', '==', post_id));
                     const querySnapshot = await getDocs(q);
                     const posts = querySnapshot.docs.map((doc) => ({
@@ -77,6 +89,8 @@ function DimiourgiaAggelias() {
                     setnewData(posts[0]);
                 } catch (error) {
                     console.error('Error fetching post data:', error);
+                } finally {
+                    setLoading(false);
                 }
             }
         };
@@ -128,6 +142,7 @@ function DimiourgiaAggelias() {
             newData.uid = uuid;
             newData.status = "Σε προσωρινή αποθήκευση";
             try{
+                setLoading(true);
                 const aggeliesRef = collection(FIREBASE_DB, 'aggelies');
 
                 const docRef = await addDoc(aggeliesRef, newData);
@@ -142,9 +157,12 @@ function DimiourgiaAggelias() {
 
             } finally {
                 setCurrentStep(3);
+                setLoading(false);
             }
+
         } else { // Otherwise we are editing an existing post
             try {
+                setLoading(true);
                 const postRef = doc(FIREBASE_DB, 'aggelies', post_id);
                 await setDoc(postRef, newData, { merge: true });
 
@@ -153,6 +171,7 @@ function DimiourgiaAggelias() {
 
             } finally {
                 setCurrentStep(3);
+                setLoading(false);
             }
         }
     };
@@ -163,6 +182,7 @@ function DimiourgiaAggelias() {
             newData.uid = uuid;
             newData.status = "Δημοσιευμένη";
             try{
+                setLoading(true);
                 const aggeliesRef = collection(FIREBASE_DB, 'aggelies');
 
                 const docRef = await addDoc(aggeliesRef, newData);
@@ -177,10 +197,13 @@ function DimiourgiaAggelias() {
 
             } finally {
                 setCurrentStep(3);
+                setLoading(false);
             }
+
         } else { // Otherwise we are editing an existing post
             newData.status = "Δημοσιευμένη";
             try {
+                setLoading(true);
                 const q = query(collection(FIREBASE_DB, 'aggelies'), where('id', '==', post_id), where('uid', '==', uuid));
                 const querySnapshot = await getDocs(q);
                 const posts = querySnapshot.docs.map((doc) => ({
@@ -195,6 +218,7 @@ function DimiourgiaAggelias() {
 
             } finally {
                 setCurrentStep(3);
+                setLoading(false);
             }
         }
     };
@@ -237,11 +261,14 @@ function DimiourgiaAggelias() {
         2.5,
     ];
 
-    //? If the user is not found, return an error message
-    if (!user) {
-        return <div>Δεν βρέθηκε ο χρήστης</div>;
+    if (loading) {
+        return <Loader />;
     }
 
+    if (!user) {
+        navigate("/404");
+    }
+    
     const renderStepContent = () => {
         switch (currentStep) {
             case 0:
@@ -261,7 +288,7 @@ function DimiourgiaAggelias() {
                             </div>
                             <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginTop: "3%" }}>
-                                <h4 style={{ textAlign: "left" }}><b>Ημερομηνία γέννησης:</b> {user.birthDate}</h4>
+                                <h4 style={{ textAlign: "left" }}><b>Ημερομηνία γέννησης:</b> {convertDateFormat(user.birthDate)}</h4>
                                 <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate("/edit-profile")} />
                             </div>
                             <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
@@ -421,7 +448,7 @@ function DimiourgiaAggelias() {
                                     <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
                                     <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Επίθετο:</b> {user.surname}</h4>
                                     <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
-                                    <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Ημερομηνία γέννησης:</b> {user.birthDate}</h4>
+                                    <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Ημερομηνία γέννησης:</b> {convertDateFormat(user.birthDate)}</h4>
                                     <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
                                     <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Πόλη:</b> {user.area}</h4>
                                     <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>

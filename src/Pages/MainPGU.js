@@ -1,17 +1,71 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import Accordion from 'react-bootstrap/Accordion';
 import JobofferReview from "../Components/EpaggelmatiesComponent/JobofferReview";
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { Carousel } from 'react-bootstrap';
+import { FIREBASE_DB } from "../config/firebase";
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
-function MainPGU(props) {
+function MainPGU() {
   const navigate = useNavigate();
 
+  const [age, setAge] = useState("");
+  const [area, setArea] = useState("");
+  const [accomodation, setAccomodation] = useState("");
+  const [day, setDay] = useState("");
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const q = query(collection(FIREBASE_DB, "aggelies"), where("status", "==", "Δημοσιευμένη"));
+        const postQuerySnapshot = await getDocs(q);
+        const posts = postQuerySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setPosts(posts);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      } 
+    }
+    fetchPosts();
+  }, []);
+
+  const areasOfGreece = [
+    "Αθήνα",
+    "Θεσσαλονίκη",
+    "Πάτρα",
+    "Ηράκλειο",
+    "Λάρισα",
+    "Βόλος",
+    "Ιωάννινα",
+    "Καβάλα",
+    "Χανιά",
+    "Ρόδος",
+  ];
+
+  const ages = [
+    "0.5",
+    "1",
+    "1.5",
+    "2",
+    "2.5",
+  ];
+
+  const days = [
+    "Καθημερινές",
+    "Σαββατοκύριακο",
+    "Και τα δύο",
+  ]
+
   const handleSearchRedirect = () => {
-    navigate('/anazitisi');
+    navigate('/anazitisi', { state: { area: area, age: age, accomodation: accomodation, day: day } });
   };
   
   return (
@@ -25,30 +79,96 @@ function MainPGU(props) {
           <img style={{ position: "relative", zIndex: 1 }} src="/hero1.avif" width="100%" height="500vh" alt="" />
         </div>
 
-        <div style={{ backgroundColor: "white", position: "relative", zIndex: 2, display: "flex", width: "50%", justifyContent: "center", margin: "0 auto",
-                     flexDirection: "column", border: "1px solid black", borderRadius: "15px", height: "20vh", marginTop: "-10vh" }}>
+        <div style={{ backgroundColor: "white", position: "relative", zIndex: 2, display: "flex", width: "80%", justifyContent: "center", margin: "0 auto",
+                     flexDirection: "row", border: "1px solid black", borderRadius: "15px", height: "20vh", marginTop: "-10vh" }}>
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "20%", marginLeft: "2vh" }}>
+            <h6> Επιλογή περιοχής </h6>
+            <FormControl fullWidth style={{ marginTop: "1vh", fontSize:"5%" }}>
+              <InputLabel id="area-select-label"></InputLabel>
+              <Select
+                labelId="area-select-label"
+                value={area}
+                onChange={(e) => setArea(e.target.value)}
+                style={{ width: "80%" }}
+                displayEmpty
+              >
+                {<MenuItem value="">Επιλέξτε Περιοχή</MenuItem>}
+                {areasOfGreece.map((area) => (
+                  <MenuItem key={area} value={area.toLowerCase()}>
+                    {area}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
 
-          <h6 style={{ textAlign: "center" }}>Βρείτε τον/την επαγγελματία που σας ταιριάζει!</h6>
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "20%" }}>
+            <h6> Επιλογή ηλικίας παιδιού </h6>
+            <FormControl fullWidth style={{ marginTop: "1vh" }}>
+              <InputLabel id="age-select-label"></InputLabel>
+              <Select
+                labelId="age-select-label"
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
+                style={{ width: "80%" }}
+                displayEmpty
+              >
+                {<MenuItem value="">Επιλέξτε Ηλικία</MenuItem>}
+                {ages.map((item) => (
+                  <MenuItem key={item} value={item}>
+                    {item} ετών
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
 
-          <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginTop: "3%" }}>
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "20%" }}>
+            <h6> Χώρος φιλοξενίας </h6>
+            <FormControl fullWidth style={{ marginTop: "1vh" }}>
+              <InputLabel id="accomodation-select-label"></InputLabel>
+              <Select
+                labelId="accomodation-select-label"
+                value={accomodation}
+                onChange={(e) => setAccomodation(e.target.value)}
+                style={{ width: "80%" }}
+                displayEmpty
+              >
+                {<MenuItem value="">Επιλέξτε Χώρο Φιλοξενίας</MenuItem>}
+                {["Στον χώρο μου", "Στον χώρο του επαγγελματία"].map((item) => (
+                  <MenuItem key={item} value={item.toLowerCase()}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
 
-            <div style={{ display: "flex", width: "30%", outline: "1px solid black", marginLeft: "10%", borderRadius: "15px", height: "5vh" }}>
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "20%" }}>
+            <h6> Ημέρες </h6>
+            <FormControl fullWidth style={{ marginTop: "1vh" }}>
+              <InputLabel id="day-select-label"></InputLabel>
+              <Select
+                labelId="day-select-label"
+                value={day}
+                onChange={(e) => setDay(e.target.value)}
+                style={{ width: "80%" }}
+                displayEmpty
+              >
+                {<MenuItem value="">Επιλέξτε Ημέρα</MenuItem>}
+                {days.map((item) => (
+                  <MenuItem key={item} value={item.toLowerCase()}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
 
-              <Link to="/anazitisi" className="nav-link" style={{ background: "none", border: "none", padding: 0, cursor: "pointer", width: "100%", display: "flex", 
-                                          alignItems: "center", justifyContent: "space-between", textDecoration: "none" }} onClick={handleSearchRedirect} >
-                <span style={{ fontWeight: 100, marginLeft: "3%"}}>
-                  Βρείτε αυτό που ψάχνετε
-                </span>
-
-                <img src="/search (1).svg" alt="Search" style={{ width: "24px", height: "24px", marginRight: "3%" }} />
-              </Link>
-
-            </div>
-
-            <Link to="/epaggelmaties" className="nav-link" style={{background: "none",border: "none",padding: 0,cursor: "pointer",width: "30%",display: "flex",alignItems: "center",justifyContent: "space-between", textDecoration: "none" }}>
-              <span style={{ marginRight: "10%", textDecoration: "underline" }}>Βρείτε εργασία</span>
-            </Link>
-            
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "20%" }}>
+            <button style={{ backgroundColor: "#2b8cbe", color: "white", border: "none", borderRadius: "5px", width: "60%", height: "30%", marginTop: "2vh" }} onClick={handleSearchRedirect}>
+              <h6 style={{ marginLeft: "10px", marginTop: "1vh", textDecoration:"underline" }}>Αναζήτηση</h6>
+            </button>
           </div>
 
         </div>
@@ -57,13 +177,30 @@ function MainPGU(props) {
           <img style={{ height: "25vh" }} src="/progressParents.png" alt="" />
         </div>
 
-        <div style={{ marginLeft: "2vh" }}><h6>Δείτε ενδεικτικές αγγελίες για εργασία:</h6></div>
+        <div style={{ textAlign: "center", marginTop: "5vh" }}><h3><b>Δείτε ενδεικτικές αγγελίες για εργασία:</b></h3></div>
 
         <div style={{ marginTop: "20px", marginLeft: "20px", display: "flex", gap: "5vh", justifyContent: "center" }}>
-          {/*//? Correct ids*/}
-          <JobofferReview id={1}/>
-          <JobofferReview id={4}/>
-          <JobofferReview id={5}/>
+          <Carousel
+            data-bs-theme="dark"
+            style={{ width: "90%", height: "40vh", margin: "auto", justifyContent: "center" }}
+          >
+            {/* Group posts into sets of 3 */}
+            {posts.reduce((acc, post, index) => {
+              if (index % 3 === 0) {
+                acc.push(posts.slice(index, index + 3));
+              }
+              return acc;
+            }
+            , []).map((postSet, index) => (
+              <Carousel.Item key={index}>
+                <div style={{ display: "flex", justifyContent: "center", gap: "5vh" }}>
+                  {postSet.map((post) => (
+                    <JobofferReview key={post.id} id={post.id} />
+                  ))}
+                </div>
+              </Carousel.Item>
+            ))}
+          </Carousel>
         </div>
 
       <div>

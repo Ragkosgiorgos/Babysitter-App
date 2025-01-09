@@ -4,20 +4,25 @@ import Footer from "../../../Components/Footer";
 import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
 import Typography from '@mui/material/Typography';
+import { useNavigate } from "react-router-dom";
+import Loader from "../../../Components/Loader";
 import { calculateAge } from "../../../Utils/Methods/index";
 import { FIREBASE_DB } from '../../../config/firebase';
 import { collection, query, getDocs, where } from 'firebase/firestore';
 
 function ViewRating() {
+  const navigate = useNavigate();
+
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id') || -1;
 
   const [rating, setRating] = useState({});
   const [profile, setProfile] = useState({});
-
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const q1 = query(collection(FIREBASE_DB, 'ratings'), where('id', '==', id));
         const querySnapshot1 = await getDocs(q1);
         const ratings = querySnapshot1.docs.map((doc) => ({
@@ -39,7 +44,7 @@ function ViewRating() {
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
-        
+        setLoading(false);
       }
     };
   
@@ -50,8 +55,12 @@ function ViewRating() {
     window.history.back();
   };
 
-  if (!rating || !profile) {//? Error handling
-    return <div>Error loading rating {id}</div>;
+  if (loading) {
+    return <Loader />;
+  }
+
+  if (!rating || !profile) {
+    navigate("/404");
   }
 
   return (

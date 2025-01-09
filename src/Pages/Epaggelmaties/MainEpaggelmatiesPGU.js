@@ -1,7 +1,6 @@
 import React from "react";
 import Header from "../../Components/Header";
 import Breadcrumbs from "../../Components/Breadcrump";
-import JobofferReview from "../../Components/EpaggelmatiesComponent/JobofferReview";
 import Accordion from 'react-bootstrap/Accordion';
 import Footer from "../../Components/Footer";
 
@@ -13,9 +12,7 @@ function MainEpaggelmatiesPGU(props){
             <Breadcrumbs />
             <div style={{ marginLeft: "2vh",marginTop:"6vh" }}><h6>Δείτε αγγελίες άλλων babysitter:</h6></div>
             <div style={{ marginTop: "20px", marginLeft: "20px", display: "flex", gap: "5vh", justifyContent: "center" }}>
-                <JobofferReview id={1}/>
-                <JobofferReview id={2}/>
-                <JobofferReview id={3}/>
+                
             </div>
             <div style={{ display: "flex", justifyContent: "center", marginTop: "25px" }}>
                 <img style={{ height: "33vh" }} src="/progressBabysitter.png" alt="" />

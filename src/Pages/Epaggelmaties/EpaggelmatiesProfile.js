@@ -5,8 +5,13 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import { convertDateFormat } from "../../Utils/Methods";
+import Loader from "../../Components/Loader";
+import { useNavigate } from "react-router-dom";
 
 function GoneisProfile() {
+  const navigate = useNavigate();
+
   const [editedData, setEditedData] = useState({});
 
   const [isEditing, setIsEditing] = useState({
@@ -35,10 +40,12 @@ function GoneisProfile() {
       return () => unsubscribe();
   }, []);
 
+  const [loading, setLoading] = useState(true);
   const [babysitter, setbabysitter] = useState({});
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        setLoading(true);
         const q = query(collection(FIREBASE_DB, "user"), where("userId", "==", uuid));
         const querySnapshot = await getDocs(q);
         const profiles = querySnapshot.docs.map((doc) => ({
@@ -49,6 +56,8 @@ function GoneisProfile() {
         setbabysitter(profiles[0]);
       } catch (error) {
         console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -110,12 +119,16 @@ function GoneisProfile() {
     }
   };
 
-  if (!babysitter) { //? Error handling
-    return <div>Loading...</div>;
+  if (loading) {
+    return <Loader />;
+  }
+
+  if (!babysitter) {
+    navigate("/404");
   }
 
   return (
-    <div>
+    <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
       <Header />
 
       <h1 style={{ textAlign: "center", marginTop: "25px", textDecoration: "underline" }}> <b>Το προφίλ μου</b> </h1>
@@ -162,8 +175,8 @@ function GoneisProfile() {
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <div style={{ width: "80%" }}>
                         <b>
-                          {field === "name" ? "Όνομα"
-                            : field === "surname" ? "Επίθετο"
+                          {field === "firstName" ? "Όνομα"
+                            : field === "lastName" ? "Επίθετο"
                             : field === "birthDate" ? "Ημερομηνία γέννησης"
                             : field === "afm" ? "ΑΦΜ"
                             : field === "email" ? "Email"
@@ -177,7 +190,7 @@ function GoneisProfile() {
                             onChange={handleInputChange}
                           />
                         ) : (
-                          babysitter?.[field] || "N/A"
+                          field === "birthDate" ? convertDateFormat(babysitter[field]) : (babysitter[field] || "N/A")
                         )}
                       </div>
                       {isEditing[field] && (

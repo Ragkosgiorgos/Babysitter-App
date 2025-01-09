@@ -29,6 +29,9 @@ import MainSymbolaiaGoneisPGU from "./Pages/Goneis/MainSymbolaiaGoneis";
 import MainAitiseisEndiaferontosPGU from "./Pages/Goneis/AitiseisEndiaferontos/MainAitiseisEndiaferontosPGU";
 import EditAitiseisEndiaferontosPGU from "./Pages/Goneis/AitiseisEndiaferontos/EditAitiseisEndiaferontosPGU";
 import PreviewAitiseisEndiaferontosPGU from "./Pages/Goneis/AitiseisEndiaferontos/PreviewAitiseisEndiaferontos";
+import ErrorPage from "./Components/ErrorPage";
+import ProvoliSymbolaiou from "./Pages/Goneis/ProvoliSymbolaiou";
+
 function App() {
   return (
     <div className="App">
@@ -56,19 +59,21 @@ function App() {
           <Route path="view-post" element={<ViewJobPost />} />
 
           <Route path="neo-symbolaio" element={<DimiourgiaSymbolaiou />} />
-          <Route path="apodoxi-symbolaiou" element={<ApodoxiSymbolaiou />} />
+         
           
           <Route path="epaggelmaties/rantevou" element={<MainRantevouPGU />} />
           <Route path="epaggelmaties/rantevou/available" element={<AvailableRantevouPGU />} />
           <Route path="epaggelmaties/rantevou/available/add" element={<AddRantevouPGU />} />
           <Route path="epaggelmaties/rantevou/proepiskopisi" element={<ProepiskopisiRantevouPGU />} />
           <Route path="epaggelmaties/rantevou/available/edit" element={<EditRantevouPGU />} />
+          <Route path="/epaggelmaties/symbolaia/apantisi/:contractId" element={<ApodoxiSymbolaiou/>} />
 
           <Route path="epaggelmaties/symbolaia" element={<MainSymbolaiaEpaggelmatiesPGU />} />
 
           <Route path="goneis/ratings" element={<GonRatingMain />} />
           <Route path="goneis/ratings/add" element={<CreateRating />} />
           <Route path="goneis/symbolaia" element={<MainSymbolaiaGoneisPGU />} />
+          <Route path="/goneis/symbolaia/provoli/:contractId" element={<ProvoliSymbolaiou/>} />
 
           <Route path="epaggelmaties/ratings" element={<EpaggRatingMain />} />
 
@@ -79,6 +84,8 @@ function App() {
           <Route path="/goneis/profile/aitiseis-endiaferontos/preview" element={<PreviewAitiseisEndiaferontosPGU />} />
           
           <Route path="*" element={<h1>404 - Not Found</h1>} />
+
+          <Route path="*" element={<ErrorPage />} />
 
         </Routes>
 

@@ -23,7 +23,7 @@ export function calculateAge(birthdate) {
 
 // Returns the first 150 characters of a text and appends "..." at the end
 export function TruncatedText (text) {
-    return text.length > 150 ? text.substring(0, 150) + "..." : text;
+    return text.length > 250 ? text.substring(0, 250) + "..." : text;
 };
 
 // Decapitalize the first letter of each word
@@ -48,4 +48,15 @@ export function capitalizeWords(str) {
         .split(" ")
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(" ");
+}
+
+export function convertDateFormat(dateStr) {
+    if (dateStr === undefined || dateStr === null) {
+        return '';
+    }
+    // Split the input string into parts
+    const [year, month, day] = dateStr.split("-");
+
+    // Return the date in DD/MM/YYYY format
+    return `${day}/${month}/${year}`;
 }

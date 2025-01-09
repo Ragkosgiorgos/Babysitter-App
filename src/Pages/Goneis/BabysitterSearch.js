@@ -9,8 +9,12 @@ import Stack from '@mui/material/Stack';
 import { capitalizeWords } from "../../Utils/Methods/index";
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { FIREBASE_DB } from "../../config/firebase";
+import { useLocation } from "react-router-dom";
 
 function BabysitterSearch() {
+  const location = useLocation();
+  const { area, age, accomodation, day } = location.state;
+
   const [profiles, setProfiles] = useState([]);
   const [matchedPosts, setMatchedPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
@@ -58,7 +62,7 @@ function BabysitterSearch() {
   });
 
   // Apply filters to the posts
-  const applyFilters = (fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, hasCar, weekdays, weekends) => {
+  const applyFilters = (fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, hasCar, weekdays, weekends, accomodationS) => {
     let filtered = matchedPosts;
 
     if (fullTimeChecked || partTimeChecked) {
@@ -98,6 +102,10 @@ function BabysitterSearch() {
       filtered = filtered.filter(post => post.dates === "Σαββατοκύριακο" || post.dates === "Και τα δύο");
     } else if (weekdays && weekends) {
       filtered = filtered.filter(post => post.dates === "Και τα δύο");
+    }
+
+    if (accomodationS) {
+      filtered = filtered.filter(post => post.accomodation === accomodationS);
     }
 
     setFilteredPosts(filtered);
@@ -152,7 +160,7 @@ function BabysitterSearch() {
         <Breadcrumbs />
 
         <div style={{ display: "flex", flex: 1 }}>
-          <BabysitterFilters applyFilters={applyFilters} resetFilters={resetFilters} />
+          <BabysitterFilters applyFilters={applyFilters} resetFilters={resetFilters} ageR={age} areaR={area} accomodationR={accomodation} dayR={day} />
 
           <div style={{ flex: 1, padding: "1em" }}>
             {rowsPerPageSelection()}
