@@ -16,8 +16,6 @@ function MainPGU() {
 
   const [age, setAge] = useState("");
   const [area, setArea] = useState("");
-  const [accomodation, setAccomodation] = useState("");
-  const [day, setDay] = useState("");
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
@@ -51,21 +49,13 @@ function MainPGU() {
   ];
 
   const ages = [
-    "0.5",
-    "1",
-    "1.5",
-    "2",
-    "2.5",
+    "από 6 μηνών έως και 1 έτους",
+    "από 1 έτους έως και 2 ετών",
+    "από 2 ετών έως και 2.5 ετών",
   ];
 
-  const days = [
-    "Καθημερινές",
-    "Σαββατοκύριακο",
-    "Και τα δύο",
-  ]
-
   const handleSearchRedirect = () => {
-    navigate('/anazitisi', { state: { area: area, age: age, accomodation: accomodation, day: day } });
+    navigate('/anazitisi', { state: { area: area, age: age } });
   };
   
   return (
@@ -79,9 +69,10 @@ function MainPGU() {
           <img style={{ position: "relative", zIndex: 1 }} src="/hero1.avif" width="100%" height="500vh" alt="" />
         </div>
 
-        <div style={{ backgroundColor: "white", position: "relative", zIndex: 2, display: "flex", width: "80%", justifyContent: "center", margin: "0 auto",
+        <div style={{ backgroundColor: "white", position: "relative", zIndex: 2, display: "flex", width: "60%", justifyContent: "center", margin: "0 auto",
                      flexDirection: "row", border: "1px solid black", borderRadius: "15px", height: "20vh", marginTop: "-10vh" }}>
-          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "20%", marginLeft: "2vh" }}>
+
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "30%", marginLeft: "2vh" }}>
             <h6> Επιλογή περιοχής </h6>
             <FormControl fullWidth style={{ marginTop: "1vh", fontSize:"5%" }}>
               <InputLabel id="area-select-label"></InputLabel>
@@ -102,7 +93,7 @@ function MainPGU() {
             </FormControl>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "20%" }}>
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "30%" }}>
             <h6> Επιλογή ηλικίας παιδιού </h6>
             <FormControl fullWidth style={{ marginTop: "1vh" }}>
               <InputLabel id="age-select-label"></InputLabel>
@@ -116,27 +107,6 @@ function MainPGU() {
                 {<MenuItem value="">Επιλέξτε Ηλικία</MenuItem>}
                 {ages.map((item) => (
                   <MenuItem key={item} value={item}>
-                    {item} ετών
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "20%" }}>
-            <h6> Χώρος φιλοξενίας </h6>
-            <FormControl fullWidth style={{ marginTop: "1vh" }}>
-              <InputLabel id="accomodation-select-label"></InputLabel>
-              <Select
-                labelId="accomodation-select-label"
-                value={accomodation}
-                onChange={(e) => setAccomodation(e.target.value)}
-                style={{ width: "80%" }}
-                displayEmpty
-              >
-                {<MenuItem value="">Επιλέξτε Χώρο Φιλοξενίας</MenuItem>}
-                {["Στον χώρο μου", "Στον χώρο του επαγγελματία"].map((item) => (
-                  <MenuItem key={item} value={item.toLowerCase()}>
                     {item}
                   </MenuItem>
                 ))}
@@ -145,28 +115,7 @@ function MainPGU() {
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "20%" }}>
-            <h6> Ημέρες </h6>
-            <FormControl fullWidth style={{ marginTop: "1vh" }}>
-              <InputLabel id="day-select-label"></InputLabel>
-              <Select
-                labelId="day-select-label"
-                value={day}
-                onChange={(e) => setDay(e.target.value)}
-                style={{ width: "80%" }}
-                displayEmpty
-              >
-                {<MenuItem value="">Επιλέξτε Ημέρα</MenuItem>}
-                {days.map((item) => (
-                  <MenuItem key={item} value={item.toLowerCase()}>
-                    {item}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "20%" }}>
-            <button style={{ backgroundColor: "#2b8cbe", color: "white", border: "none", borderRadius: "5px", width: "60%", height: "30%", marginTop: "2vh" }} onClick={handleSearchRedirect}>
+            <button style={{ backgroundColor: "#2b8cbe", color: "white", border: "none", borderRadius: "5px", width: "80%", height: "30%", marginTop: "2vh" }} onClick={handleSearchRedirect}>
               <h6 style={{ marginLeft: "10px", marginTop: "1vh", textDecoration:"underline" }}>Αναζήτηση</h6>
             </button>
           </div>

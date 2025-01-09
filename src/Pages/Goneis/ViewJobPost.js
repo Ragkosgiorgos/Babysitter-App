@@ -104,13 +104,13 @@ function ViewJobPost() {
     }
 
     return (
-        <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+        <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
             <Header />
     
             <div style={{ flex: 1, display: "flex", flexDirection: "column", overflowY: "auto" }}>
                 <Breadcrumbs />
 
-                <div style={{ display: "flex", flex: 1, flexDirection: "row", justifyContent: "center", marginTop: "4vh" }}>
+                <div style={{ display: "flex", flex: 1, flexDirection: "row", justifyContent: "center", marginTop: "2vh" }}>
 
                     <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center" }}>
                         <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "2vw" }}>
@@ -134,7 +134,7 @@ function ViewJobPost() {
 
                 </div>
 
-                <div style={{ display: "flex", flex: 1, justifyContent: "center", flexDirection: "row", textAlign: "center", marginTop: "4vh" }}>
+                <div style={{ display: "flex", flex: 1, justifyContent: "center", flexDirection: "row", textAlign: "center", marginTop: "1vh" }}>
                     
                     <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center" }}>
                         <span style={{ fontSize: "20px" }}><b style={{textDecoration:"underline"}}>Συστατικές επιστολές</b></span>
@@ -204,7 +204,7 @@ function ViewJobPost() {
                 </div>
                 
                 <button style={{ height: "5%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5%", width: "12%", cursor: "pointer", border: "1px solid #333", 
-                      boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", marginLeft: "4%", marginTop: "2%" }} onClick={handleReturn}>
+                      boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", marginLeft: "4%" }} onClick={handleReturn}>
                     Επιστροφή
                 </button>
 
