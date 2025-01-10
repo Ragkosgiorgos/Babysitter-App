@@ -1,25 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Checkbox, FormControlLabel, Select, MenuItem, InputLabel, FormControl } from "@mui/material";
 import Radio from '@mui/material/Radio';
-import { capitalizeWords } from "../../Utils/Methods";
 
-function BabysitterFilters({ applyFilters, resetFilters, ageR, areaR, accomodationR, dayR }) {
+function BabysitterFilters({ applyFilters, resetFilters, ageR, areaR }) {
   const [selectedLocation, setSelectedLocation] = useState(areaR || "");
   const [selectedAge, setSelectedAge] = useState(ageR || "");
   const [selectedEducation, setSelectedEducation] = useState("");
-  const [selectedAccomodation, setSelectedAccomodation] = useState(() =>
-    accomodationR === "στον χώρο μου"
-      ? "Όχι"
-      : accomodationR === "στον χώρο του επαγγελματία"
-      ? "Ναι"
-      : ""
-  );  
+  const [selectedAccomodation, setSelectedAccomodation] = useState("");
 
   const [fullTimeChecked, setFullTimeChecked] = useState(false);
   const [partTimeChecked, setPartTimeChecked] = useState(false);
 
-  const [weekdays, setWeekdays] = useState(capitalizeWords(dayR) === "Καθημερινές" || dayR === "και τα δύο");
-  const [weekends, setWeekends] = useState(capitalizeWords(dayR) === "Σαββατοκύριακο" || dayR === "και τα δύο");
+  const [weekdays, setWeekdays] = useState(false);
+  const [weekends, setWeekends] = useState(false);
 
   const [hasCar, setHasCar] = useState(false);
 
@@ -37,11 +30,9 @@ function BabysitterFilters({ applyFilters, resetFilters, ageR, areaR, accomodati
   ];
 
   const age = [
-    "0.5",
-    "1",
-    "1.5",
-    "2",
-    "2.5",
+    "από 6 μηνών έως και 1 έτους",
+    "από 1 έτους έως και 2 ετών",
+    "από 2 ετών έως και 2.5 ετών",
   ];
 
   const education = [
@@ -178,7 +169,7 @@ function BabysitterFilters({ applyFilters, resetFilters, ageR, areaR, accomodati
                 {<MenuItem value="">Επιλέξτε Ηλικία</MenuItem>}
                 {age.map((item) => (
                   <MenuItem key={item} value={item.toLowerCase()}>
-                    {item} ετών
+                    {item}
                   </MenuItem>
                 ))}
               </Select>

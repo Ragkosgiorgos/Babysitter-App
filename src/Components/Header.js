@@ -128,7 +128,7 @@ function Header(props) {
                                     style={{ color: 'white' }}
                                     onClick={handleGoneisRedirect}  
                                 >
-                                    Βρείτε babysitter
+                                    Κηδεμόνες
                                 </Link>
                             </li>
                             <li className="nav-item">
@@ -138,7 +138,7 @@ function Header(props) {
                                     style={{ color: 'white' }}
                                     onClick={handleEpaggelmatiesRedirect}  
                                 >
-                                    Βρείτε εργασία
+                                    Babysitters
                                 </Link>
                             </li>
                         </ul>
@@ -252,7 +252,7 @@ function Header(props) {
                                     style={{ color: 'white' }}
                                     onClick={handleGoneisRedirect}  
                                 >
-                                    Βρείτε babysitter
+                                    Κηδεμόνες
                                 </Link>
                             </li>
                             <li className="nav-item">
@@ -262,7 +262,7 @@ function Header(props) {
                                     style={{ color: 'white' }}
                                     onClick={handleEpaggelmatiesRedirect}  
                                 >
-                                    Βρείτε εργασία
+                                    Babysitters
                                 </Link>
                             </li>
                         </ul>
@@ -388,7 +388,7 @@ function Header(props) {
                                     style={{ color: 'white' }}
                                     onClick={handleGoneisRedirect}
                                 >
-                                    Βρείτε babysitter
+                                    Κηδεμόνες
                                 </Link>
                             </li>
                             <li className="nav-item">
@@ -398,7 +398,7 @@ function Header(props) {
                                     style={{ color: 'white' }}
                                     onClick={handleEpaggelmatiesRedirect}
                                 >
-                                    Βρείτε εργασία
+                                    Babysitters
                                 </Link>
                             </li>
                         </ul>

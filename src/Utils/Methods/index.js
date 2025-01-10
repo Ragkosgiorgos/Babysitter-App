@@ -60,3 +60,7 @@ export function convertDateFormat(dateStr) {
     // Return the date in DD/MM/YYYY format
     return `${day}/${month}/${year}`;
 }
+
+export function handleScrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};

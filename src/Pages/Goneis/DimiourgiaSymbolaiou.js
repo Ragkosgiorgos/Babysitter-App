@@ -22,6 +22,7 @@ import { FIREBASE_DB, FIREBASE_AUTH } from '../../config/firebase.js'
 import { doc, updateDoc } from 'firebase/firestore';
 import { addDoc, setDoc } from 'firebase/firestore';
 import { useNavigate } from "react-router-dom";
+import { handleScrollToTop } from "../../Utils/Methods/index.js";
 dayjs.locale("el"); // Set the locale to Greek
 
 function DimiourgiaSymbolaiou(props) {
@@ -207,13 +208,6 @@ function DimiourgiaSymbolaiou(props) {
             ...prevData,
             dateRange: [item.selection],
         }));
-    };
-
-    const handleScrollToTop = () => {
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth',
-        });
     };
 
     // Submit contract
