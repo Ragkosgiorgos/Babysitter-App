@@ -12,9 +12,13 @@ import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
+import Loader from "../../../Components/Loader";
 
 function MainAitiseisEndiaferontosPGU() {
   const navigate = useNavigate(); 
+  const [uuid, setUuid] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState([]);
   const routeChangeEdit = (id_aitisis) =>{ 
     navigate(`edit?id=${id_aitisis}`);
   };
@@ -23,51 +27,60 @@ function MainAitiseisEndiaferontosPGU() {
     navigate(`preview?id=${id_aitisis}`);
   };
 
-  const [uuid, setUuid] = useState(null);
+  // Check if user is logged in, get the user's UUID
   useEffect(() => {
-      const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
-          if (user) {
-              setUuid(user.uid);
-          }
-      });
-      return () => unsubscribe();
-  }, []);
+    const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+      if (user) {
+        setUuid(user.uid);
+      } else {
+        navigate("/404");
+      }
+    });
+    return () => unsubscribe();
+  }, [navigate]);
 
   const [user, setUser] = useState({});
-  const fetchUserData = async () => {
-      try {
-          const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
-          const querySnapshot = await getDocs(q);
-          const users = querySnapshot.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-          }));
-          setUser(users[0]);
-      } catch (error) {
-          console.error('Error fetching user data:', error);
-      }
-  };
-  fetchUserData();
+  // const fetchUserData = async () => {
+  //     try {
+  //         const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
+  //         const querySnapshot = await getDocs(q);
+  //         const users = querySnapshot.docs.map((doc) => ({
+  //             id: doc.id,
+  //             ...doc.data(),
+  //         }));
+  //         setUser(users[0]);
+  //     } catch (error) {
+  //         console.error('Error fetching user data:', error);
+  //     }
+  // };
+  // fetchUserData();
 
-  const [posts, setPosts] = useState([]);
-    const fetchPosts = async () => {
-      try {
-          const q = query(collection(FIREBASE_DB, 'aitiseis_endiaferontos'), where('UserId', '==', uuid));
-          const querySnapshot = await getDocs(q);
-          const posts = querySnapshot.docs.map((doc) => ({
+    // Fetch the job posts' data from the database
+    useEffect(() => {
+      if (uuid) {
+        const fetchPosts = async () => {
+          try {
+            setLoading(true);
+            const q = query(collection(FIREBASE_DB, 'aitiseis_endiaferontos'), where('UserId', '==', uuid));
+            const querySnapshot = await getDocs(q);
+            const posts = querySnapshot.docs.map((doc) => ({
               id: doc.id,
               ...doc.data(),
-          }));
-          setPosts(posts);
-      } catch (error) {
-          console.error('Error fetching posts:', error);
+            }));
+            setPosts(posts);
+          } catch (error) {
+            console.error('Error fetching posts:', error);
+          } finally {
+            setLoading(false);
+          }
+        };
+        fetchPosts();
       }
-  };
-  fetchPosts();
+    }, [uuid]);
 
   //? Error handling
-  if (!user) {
-    return <div>Error fetching user data</div>;
+  if (loading) {
+    return <Loader />;
   }
 
   return (

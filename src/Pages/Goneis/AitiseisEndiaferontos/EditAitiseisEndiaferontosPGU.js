@@ -17,11 +17,14 @@ import TextField from '@mui/material/TextField';
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, addDoc, setDoc, doc } from 'firebase/firestore';
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../../config/firebase";
+import Loader from "../../../Components/Loader";
 
 function SubmitAitiseisEndiaferontosPGU(props) {
   const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
-  const id = parseInt(params.get("id")) || "";
+  const id = params.get("id") || "";
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState({});
 
   const [uuid, setUuid] = useState(null);
     useEffect(() => {
@@ -33,21 +36,29 @@ function SubmitAitiseisEndiaferontosPGU(props) {
         return () => unsubscribe();
     }, []);
 
-  const [user, setUser] = useState({});
-  const fetchUserData = async () => {
-      try {
-          const q = query(collection(FIREBASE_DB, 'user'),where( 'userId' , '==' , uuid));
-          const querySnapshot = await getDocs(q);
-          const users = querySnapshot.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-          }));
-          setUser(users[0]);
-      } catch (error) {
-          console.error('Error fetching user data:', error);
-      }
-  };
-  fetchUserData();
+  
+      // Fetch user data when uuid is available
+      useEffect(() => {
+        if (uuid) {
+            const fetchUserData = async () => {
+                try {
+                    setLoading(true);
+                    const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
+                    const querySnapshot = await getDocs(q);
+                    const users = querySnapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }));
+                    setUser(users[0]);
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchUserData();
+        }
+    }, [uuid]);
 
   const [newData, setnewData] = useState({
     id: id,
@@ -60,40 +71,29 @@ function SubmitAitiseisEndiaferontosPGU(props) {
     date_of_birth: "",
     gender: "",
   });
-  // If post_id === -1 then we are creating a new post, otherwise we are editing an existing one
-  const [aitisi, setAitisi] = useState({});
-  //   const fetchAitiseisData = async () => {
-  //       try {
-  //           const q = query(collection(FIREBASE_DB, 'aitiseis_endiaferontos'), where('id', '==', id), where('UserId', '==', uuid));
-  //           const querySnapshot = await getDocs(q);
-  //           const aitiseis = querySnapshot.docs.map((doc) => ({
-  //               id: doc.id,
-  //               ...doc.data(),
-  //           }));
-  //           setAitisi(aitiseis[0]);
-  //       } catch (error) {
-  //           console.error('Error fetching job data:', error);
-  //       }
-  //   };
-  // fetchAitiseisData();
 
+  const [aitisi, setAitisi] = useState({});
   // If post_id === -1 then we are creating a new post, otherwise we are editing an existing one
   useEffect(() => {
     const fetchAitiseisData = async () => {
         if (id !== "") {
-            try {
-                const q = query(collection(FIREBASE_DB, 'aitiseis_endiaferontos'), where('id', '==', id));
-                const querySnapshot = await getDocs(q);
-                const posts = querySnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
-                setnewData(posts[0]);
-            } catch (error) {
-                console.error('Error fetching post data:', error);
+                try {
+                    setLoading(true);
+                    const q = query(collection(FIREBASE_DB, 'aitiseis_endiaferontos'), where('id', '==', id));
+                    const querySnapshot = await getDocs(q);
+                    const posts = querySnapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }));
+                    console.log(posts[0]);
+                    setnewData(posts[0]);
+                } catch (error) {
+                    console.error('Error fetching post data:', error);
+                } finally {
+                    setLoading(false);
+                }
             }
-        }
-    };
+        };
 
     fetchAitiseisData();
   }, [id]);
@@ -185,8 +185,11 @@ function SubmitAitiseisEndiaferontosPGU(props) {
   const isInPast = (date) => (date.get('year') < dayjs().get('year')) || (date.get('year') === dayjs().get('year') && date.get('month') < dayjs().get('month')) || (date.get('year') === dayjs().get('year') && date.get('month') === dayjs().get('month') && date.get('date') < dayjs().get('date'));
   const isNotPast = (date) => (date.get('year') > dayjs().get('year')) || (date.get('year') === dayjs().get('year') && date.get('month') > dayjs().get('month')) || (date.get('year') === dayjs().get('year') && date.get('month') === dayjs().get('month') && date.get('date') >= dayjs().get('date'));
 
+  if (loading) {
+    return <Loader />;
+  }
   
-  if (!user || !aitisi) {
+  if (!user) {
     return <div>Δεν βρέθηκε ο χρήστης</div>;
   }
 
@@ -221,11 +224,11 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                         </label> 
 
                         <label style={{ padding: "20px" }}>
-                            Τηλέφωνο <tr> <input defaultValue={user.phone} onChange={handleInputChange}/> </tr>
+                            Τηλέφωνο <tr> <input value={user.phone} onChange={handleInputChange}/> </tr>
                         </label> 
                          
                         <label>
-                            Email <tr> <input defaultValue={user.email} onChange={handleInputChange}/> </tr>
+                            Email <tr> <input value={user.email} onChange={handleInputChange}/> </tr>
                         </label> 
                     </div>
                   </div>
@@ -241,7 +244,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                   <h5 style={{ fontWeight: "bold"}}> Στοιχεία παιδιού </h5>
                   <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
                     <th>Φύλο</th>
-                    <RadioGroup defaultValue={newData.gender} onChange={handleInputChange} style={{ padding: "5px", borderRadius: "4px" }}>
+                    <RadioGroup value={newData.gender } onClick={handleInputChange} style={{ padding: "5px", borderRadius: "4px" }}>
                         <FormControlLabel value="Αγόρι" control={<Radio />} label="Αγόρι" />
                         <FormControlLabel value="Κορίτσι" control={<Radio />} label="Κορίτσι" />
                     </RadioGroup>
@@ -268,7 +271,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                   <tbody>
                   <h5 style={{ marginLeft: "5%" ,textAlign: "left" ,fontWeight: "bold"}}> Επιθυμητός τρόπος επικοινωνίας </h5>
                   <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
-                    <RadioGroup defaultValue={newData.tropos_synantisis} onChange={handleInputChange} style={{ padding: "5px", borderRadius: "4px" }}>
+                    <RadioGroup value={newData.tropos_synantisis} onChange={handleInputChange} style={{ padding: "5px", borderRadius: "4px" }}>
                         <FormControlLabel value="Δια ζώσης" control={<Radio />} label="Δια ζώσης" />
                         <FormControlLabel value="Διαδικτυακά" control={<Radio />} label="Διαδικτυακά" />
                     </RadioGroup>
