@@ -31,6 +31,8 @@ import EditAitiseisEndiaferontosPGU from "./Pages/Goneis/AitiseisEndiaferontos/E
 import PreviewAitiseisEndiaferontosPGU from "./Pages/Goneis/AitiseisEndiaferontos/PreviewAitiseisEndiaferontos";
 import ErrorPage from "./Components/ErrorPage";
 import ProvoliSymbolaiou from "./Pages/Goneis/ProvoliSymbolaiou";
+import MainPliromesGoneis from "./Pages/Goneis/Pliromes/MainPliromesGoneis";
+import PliromiEpaggelmatia from "./Pages/Goneis/Pliromes/PliromiEpaggelmatia";
 
 function App() {
   return (
@@ -74,6 +76,8 @@ function App() {
           <Route path="goneis/ratings/add" element={<CreateRating />} />
           <Route path="goneis/symbolaia" element={<MainSymbolaiaGoneisPGU />} />
           <Route path="/goneis/symbolaia/provoli/:contractId" element={<ProvoliSymbolaiou/>} />
+          <Route path="/goneis/symbolaia/pliromes" element={<MainPliromesGoneis/>} />
+          <Route path="/goneis/symbolaia/pliromes/nea-pliromi" element={<PliromiEpaggelmatia/>} />
 
           <Route path="epaggelmaties/ratings" element={<EpaggRatingMain />} />
 
