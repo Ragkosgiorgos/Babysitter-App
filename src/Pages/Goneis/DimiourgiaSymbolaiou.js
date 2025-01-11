@@ -221,8 +221,8 @@ function DimiourgiaSymbolaiou(props) {
                 time: stepTwoData.employmentTime,
                 hosting: stepTwoData.hostingPreference,
                 date: stepTwoData.date,
-                startDate: dayjs(stepTwoData.dateRange[0].startDate).format('dddd D MMMM YYYY'),
-                endDate: dayjs(stepTwoData.dateRange[0].endDate).format('dddd D MMMM YYYY'),
+                startDate: dayjs(stepTwoData.dateRange[0].startDate).format('DD/MM/YYYY'),
+                endDate: dayjs(stepTwoData.dateRange[0].endDate).format('DD/MM/YYYY'),
                 status: stepTwoData.status,
                 weekdays: weekdays,
                 weekends: weekends,
@@ -572,6 +572,7 @@ function DimiourgiaSymbolaiou(props) {
                 onChange={handleDateRangeChange}
                 moveRangeOnFirstSelection={false}
                 ranges={stepTwoData.dateRange}
+                minDate={new Date()}
             />
             {isSubmitting && !stepTwoData.dateRange[0]?.startDate && (
                 <p style={{ color: "red", marginLeft: "25%" }}>
