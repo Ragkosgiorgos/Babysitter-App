@@ -149,6 +149,7 @@ function PliromiEpaggelmatia() {
             const contractData = {
                 id_p: uuid,
                 id_b: selectedContract.id_b,
+                id_c: selectedContract.id,
                 date: new Date().toLocaleDateString(),
             };
 

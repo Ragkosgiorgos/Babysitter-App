@@ -182,7 +182,7 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/#">
+                                <a className="dropdown-item" href="/epaggelmaties/pliromes">
                                     Οι Πληρωμές μου
                                 </a>
                             </li>

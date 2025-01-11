@@ -33,6 +33,7 @@ import ErrorPage from "./Components/ErrorPage";
 import ProvoliSymbolaiou from "./Pages/Goneis/ProvoliSymbolaiou";
 import MainPliromesGoneis from "./Pages/Goneis/Pliromes/MainPliromesGoneis";
 import PliromiEpaggelmatia from "./Pages/Goneis/Pliromes/PliromiEpaggelmatia";
+import MainPliromesEpaggelmaties from "./Pages/Epaggelmaties/Pliromes/MainPliromesEpaggelmaties";
 
 function App() {
   return (
@@ -71,6 +72,7 @@ function App() {
           <Route path="/epaggelmaties/symbolaia/apantisi/:contractId" element={<ApodoxiSymbolaiou/>} />
 
           <Route path="epaggelmaties/symbolaia" element={<MainSymbolaiaEpaggelmatiesPGU />} />
+          <Route path="epaggelmaties/pliromes" element={<MainPliromesEpaggelmaties/>} />
 
           <Route path="goneis/ratings" element={<GonRatingMain />} />
           <Route path="goneis/ratings/add" element={<CreateRating />} />
