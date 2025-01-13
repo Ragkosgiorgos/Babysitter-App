@@ -47,6 +47,8 @@ function Header(props) {
             };
         
             fetchUserData();
+        } else {
+            setUser(null);
         }
     }, [uuid]);
 
@@ -164,7 +166,7 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/#">
+                                <a className="dropdown-item" href="/epaggelmaties/viografiko">
                                     Το Βιογραφικό μου
                                 </a>
                             </li>
@@ -411,7 +413,6 @@ function Header(props) {
                                 style={{
                                     backgroundColor: '#007bff',
                                     color: 'white',
-                                    border: 'none',
                                     borderRadius: '5px',
                                     padding: '8px 16px',
                                     cursor: 'pointer',
@@ -426,7 +427,6 @@ function Header(props) {
                                 style={{
                                     backgroundColor: '#28a745',
                                     color: 'white',
-                                    border: 'none',
                                     borderRadius: '5px',
                                     padding: '8px 16px',
                                     cursor: 'pointer',

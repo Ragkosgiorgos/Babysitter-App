@@ -96,7 +96,7 @@ function GonRatingMain() {
 
   // Navigate to preview
   const previewRating = (id) => {
-    navigate(`/epaggelmaties/ratings/preview-aksiologisis?id=${id}`);
+    navigate(`/epaggelmaties/ratings/previewAksiologisi?id=${id}`);
   };
 
   // Navigate to add new rating

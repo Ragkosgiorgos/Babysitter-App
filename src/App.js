@@ -34,6 +34,7 @@ import ProvoliSymbolaiou from "./Pages/Goneis/ProvoliSymbolaiou";
 import MainPliromesGoneis from "./Pages/Goneis/Pliromes/MainPliromesGoneis";
 import PliromiEpaggelmatia from "./Pages/Goneis/Pliromes/PliromiEpaggelmatia";
 import MainPliromesEpaggelmaties from "./Pages/Epaggelmaties/Pliromes/MainPliromesEpaggelmaties";
+import Viografiko from "./Pages/Epaggelmaties/Viografiko";
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
 
           <Route path="/epaggelmaties/profile" element={<EpaggelmatiasProfile />} />
           <Route path="/goneis/profile" element={<GoneisProfile />} />
+          <Route path="/epaggelmaties/viografiko" element={<Viografiko />} />
 
           <Route path="anazitisi" element={<BabysitterSearch />} />
 
@@ -59,7 +61,7 @@ function App() {
           
           <Route path="nea-aggelia" element={<DimiourgiaAggelias />} />
           <Route path="preview-aggelias" element={<PreviewAggelias />} />
-          <Route path="view-post" element={<ViewJobPost />} />
+          <Route path="viewPost" element={<ViewJobPost />} />
 
           <Route path="neo-symbolaio" element={<DimiourgiaSymbolaiou />} />
          
@@ -83,13 +85,11 @@ function App() {
 
           <Route path="epaggelmaties/ratings" element={<EpaggRatingMain />} />
 
-          <Route path="epaggelmaties/ratings/preview-aksiologisis" element={<ViewRating />} />
+          <Route path="epaggelmaties/ratings/previewAksiologisi" element={<ViewRating />} />
 
           <Route path="/goneis/profile/aitiseis-endiaferontos" element={<MainAitiseisEndiaferontosPGU />} />
           <Route path="/goneis/profile/aitiseis-endiaferontos/edit" element={<EditAitiseisEndiaferontosPGU />} />
           <Route path="/goneis/profile/aitiseis-endiaferontos/preview" element={<PreviewAitiseisEndiaferontosPGU />} />
-          
-          <Route path="*" element={<h1>404 - Not Found</h1>} />
 
           <Route path="*" element={<ErrorPage />} />
 

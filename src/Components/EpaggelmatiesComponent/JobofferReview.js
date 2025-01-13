@@ -32,7 +32,7 @@ function JobofferReview(props) {
     } , [job_id]);
 
     const handleSearchRedirect = () => {
-        navigate(`/view-post?id=${job_id}`);
+        navigate(`/viewPost?id=${job_id}`);
     };
 
     if (loading) {

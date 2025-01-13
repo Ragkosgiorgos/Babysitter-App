@@ -10,6 +10,7 @@ import PlaceIcon from '@mui/icons-material/Place';
 import SchoolIcon from '@mui/icons-material/School';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import EventIcon from '@mui/icons-material/Event';
+import { FaBirthdayCake } from 'react-icons/fa';
 import Loader from '../../Components/Loader';
 import { calculateAge, capitalizeWords, TruncatedText } from "../../Utils/Methods/index";
 import { FIREBASE_DB } from "../../config/firebase";
@@ -92,7 +93,7 @@ function ViewJobPost() {
     };
 
     const handleViewRating = (r_id) => {
-        navigate(`/epaggelmaties/ratings/preview-aksiologisis?id=${r_id}`);
+        navigate(`/epaggelmaties/ratings/previewAksiologisi?id=${r_id}`);
     };
 
     if (loading) {
@@ -115,7 +116,10 @@ function ViewJobPost() {
                     <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center" }}>
                         <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "2vw" }}>
                             <h6 style={{ backgroundColor: "#D9EAFD", borderRadius: "50%", width: "80px", height: "80px", display: "flex", justifyContent: "center", alignItems: "center", border: "2px solid black" }}>
-                                {profile.img ? "Photo" : "No photo"}
+                            {profile.img ? 
+                            (profile.gender === "Άντρας" ? <img src="/images/men_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} /> : 
+                            <img src="/images/women_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />)
+                            : <img src="/images/default_profile.png" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />}
                             </h6>
                             <h3><b>{profile.firstName} {profile.lastName}</b> ({calculateAge(profile.birthDate)} ετών)</h3>
                         </div>
@@ -125,7 +129,7 @@ function ViewJobPost() {
                         </div>
 
                         <Link to={`/epaggelmaties/aitisi-endiaferontos?ntanta=${profile.userId}`}>
-                            <button className="btn btn-primary" style={{ width: "20vw", marginTop: "2vh", marginBottom: "2vh" }}>
+                            <button className="btn btn-primary" style={{ width: "20vw", marginTop: "2vh", marginBottom: "2vh", backgroundColor: "#16C47F", border: "1px solid #333" }}>
                                 Επικοινωνία
                             </button>
                         </Link>
@@ -153,29 +157,34 @@ function ViewJobPost() {
                     <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center" }}>
                         <span style={{ fontSize: "20px" }}><b style={{textDecoration:"underline"}}>Πληροφορίες</b></span>
                         <div style={{ display: "flex", flexDirection: "column", marginTop: "2%" }}>
-                            <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "2%" }}>
+                            <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "3%" }}>
                                 <HomeIcon style={{ width: "2.5vw", height: "2.5vh" }} />
                                 Ο επαγγελματίας {post.accomodation ? "παρέχει" : "δεν παρέχει"} το σπίτι του για φιλοξενία
                             </div>
-                            <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "2%" }}>
+                            <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "3%" }}>
                                 <AccessTimeIcon style={{ width: "2.5vw", height: "2.5vh" }} />
                                 {post.time} απασχόληση
                             </div>
-                            <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "2%" }}>
+                            <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "3%" }}>
                                 <PlaceIcon style={{ width: "2.5vw", height: "2.5vh" }} />
                                 {capitalizeWords(post.area)}
                             </div>
-                            <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "2%" }}>
+                            <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "3%" }}>
                                 <SchoolIcon style={{ width: "2.5vw", height: "2.5vh" }} />
                                 {profile.education}
                             </div>
-                            <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "2%" }}>
+                            <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "3%" }}>
                                 <DirectionsCarIcon style={{ width: "2.5vw", height: "2.5vh" }} />
                                 {post.car === "Ναι" ? "Διαθέτει" : "Δεν διαθέτει"} μεταφορικό μέσο
                             </div>
-                            <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "2%" }}>
+                            <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "3%" }}>
                                 <EventIcon style={{ width: "2.5vw", height: "2.5vh" }} />
-                                {post.dates}
+                                Διαθέτει χρόνο {post.dates === "Καθημερινές" ? "τις καθημερινές" : post.dates === "Σαββατοκύριακο" ? "τα Σαββατοκύριακα" : "όλη την εβδομάδα"}
+                            </div>
+                            <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "3%" }}>
+                                <FaBirthdayCake style={{ width: "2.5vw", height: "2.5vh" }} />
+                                Αναλαμβάνει παιδιά από: {post.ageFrom === post.ageTo ? (post.ageFrom === 0.5 ? "6 μηνών" : `${post.ageFrom} ετών`)
+                                : `${post.ageFrom} έως ${post.ageTo} ετών`}
                             </div>
                         </div>
                     </div>
@@ -198,7 +207,6 @@ function ViewJobPost() {
                                 
                             ))}
                         </Carousel>}
-
                     </div>
 
                 </div>

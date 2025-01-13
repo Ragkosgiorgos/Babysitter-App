@@ -12,6 +12,10 @@ const translations = {
   goneis: "Γονείς",
   Home: "Αρχική",
   anazitisi: "Αναζήτηση",
+  viewPost: "Προβολή αγγελίας",
+  previewAksiologisi: "Προβολή αξιολόγησης",
+  epaggelmaties: "Επαγγελματίες",
+  viografiko: "Βιογραφικό",
 };
 
 function Breadcrumbs() {

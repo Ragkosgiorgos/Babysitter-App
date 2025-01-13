@@ -9,7 +9,7 @@ import { convertDateFormat } from "../../Utils/Methods";
 import Loader from "../../Components/Loader";
 import { useNavigate } from "react-router-dom";
 
-function GoneisProfile() {
+function EpaggelmatiasProfile() {
   const navigate = useNavigate();
 
   const [editedData, setEditedData] = useState({});
@@ -140,7 +140,10 @@ function GoneisProfile() {
 
             <h3 style={{ textAlign: "center", textDecoration: "underline" }}> <b> Φωτογραφία </b> </h3>
             <h6 style={{ marginTop: "3%" , backgroundColor: "#D9EAFD", borderRadius: "50%", width: "80px", height: "80px", display: "flex", justifyContent: "center", alignItems: "center", border: "2px solid black" }}>
-              {babysitter.img ? "Photo" : "No photo"}
+              {babysitter.img ? 
+              (babysitter.gender === "Άντρας" ? <img src="/images/men_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} /> : 
+              <img src="/images/women_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />)
+              : <img src="/images/default_profile.png" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />}
             </h6> <hr style={{ width: "100%" }} />
 
             <button style={{ marginTop: "10px", backgroundColor: "green", color: "white", borderRadius: "5px", cursor: "pointer", border: "1px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", width: "50%" }}
@@ -162,7 +165,6 @@ function GoneisProfile() {
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", width: "70%" }}>
-            {/* Parent's Details */}
             <div style={{ backgroundColor: "#ece7f2", borderRadius: "2%", padding: "2%", display: "flex", flexDirection: "column", marginTop: "10px" }}>
 
               <h3 style={{ textAlign: "left", textDecoration: "underline" }}>
@@ -220,4 +222,4 @@ function GoneisProfile() {
   );
 }
 
-export default GoneisProfile;
+export default EpaggelmatiasProfile;

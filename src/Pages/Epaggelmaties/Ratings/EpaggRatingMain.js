@@ -80,7 +80,7 @@ function EpaggRatingMain() {
 
   // Preview rating
   const previewRating = (rating_id) => {
-    navigate(`preview-aksiologisis?id=${rating_id}`);
+    navigate(`previewAksiologisi?id=${rating_id}`);
   };
 
   if (loading) {
