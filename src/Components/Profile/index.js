@@ -293,10 +293,10 @@ export default function Profile() {
                             >
                                 <option value="">Επιλέξτε</option>
                                 <option value="none">Καμία</option>
-                                <option value="primary-school">Δημοτικό</option>
-                                <option value="middle-school">Γυμνάσιο</option>
-                                <option value="high-school">Λύκειο</option>
-                                <option value="university">Πανεπιστήμιο</option>
+                                <option value="Δημοτικό">Δημοτικό</option>
+                                <option value="Γυμνάσιο">Γυμνάσιο</option>
+                                <option value="Λύκειο">Λύκειο</option>
+                                <option value="Πανεπιστήμιο">Πανεπιστήμιο</option>
                             </select>
                         </div>
                         <div className="form-row">

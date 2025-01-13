@@ -248,7 +248,6 @@ function DimiourgiaAggelias() {
     const ages = [
         0.5,
         1,
-        1.5,
         2,
         2.5,
     ];
@@ -360,7 +359,7 @@ function DimiourgiaAggelias() {
                                                     </MenuItem>
                                                     {ages.map((age) => (
                                                         <MenuItem key={age} value={age}>
-                                                            {age} ετών
+                                                            {age !== 0.5 ? age + " ετών" : "6 μηνών"}
                                                         </MenuItem>
                                                     ))}
                                                 </Select>

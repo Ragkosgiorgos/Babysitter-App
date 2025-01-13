@@ -11,6 +11,7 @@ const translations = {
   profile: "Προφίλ",
   goneis: "Γονείς",
   Home: "Αρχική",
+  anazitisi: "Αναζήτηση",
 };
 
 function Breadcrumbs() {
