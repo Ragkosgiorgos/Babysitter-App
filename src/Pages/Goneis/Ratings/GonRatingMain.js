@@ -160,6 +160,11 @@ function GonRatingMain() {
                       </td>
                     </tr>
                   ))}
+                  {filteredPosts.length === 0 && (
+                    <tr>
+                      <td colSpan={4}>Δεν υπάρχουν αγγελίες</td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
 

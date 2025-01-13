@@ -101,7 +101,7 @@ function MainAggeliesPGU() {
               <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%", marginLeft: "70%" }}>  
                 <Tooltip title={
                                 <div style={{ display: "flex", justifyContent: "center", gap: "5%", flexDirection:"column", fontSize:"1.2em", textAlign:"left" }}>
-                                  Για την δημιουργία αγγελίας χρειάζονται τα εξής:
+                                  Για την δημιουργία αγγελίας χρειάζονται:
                                   <ul> 
                                     <li>Τίτλος αγγελίας</li>
                                     <li>Περιγραφή αγγελίας</li>
@@ -144,6 +144,11 @@ function MainAggeliesPGU() {
                         </td>
                       </tr>
                     ))}
+                    {posts.length === 0 && (
+                      <tr>
+                        <td colSpan={4}>Δεν υπάρχουν αγγελίες</td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
 

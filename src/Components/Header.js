@@ -27,25 +27,27 @@ function Header(props) {
     
     const [user, setUser] = useState({});
     useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                setLoading(true);
-                const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
-                const querySnapshot = await getDocs(q);
-                const users = querySnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
-                setUser(users[0]);
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-            }
-            finally {
-                setLoading(false);
-            }
-        };
-    
-        fetchUserData();
+        if (uuid) {
+            const fetchUserData = async () => {
+                try {
+                    setLoading(true);
+                    const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
+                    const querySnapshot = await getDocs(q);
+                    const users = querySnapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }));
+                    setUser(users[0]);
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                }
+                finally {
+                    setLoading(false);
+                }
+            };
+        
+            fetchUserData();
+        }
     }, [uuid]);
 
     const handleUnsubscribe = () => {

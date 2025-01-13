@@ -204,16 +204,16 @@ export default function Profile() {
                         required
                     >
                         <option value="">Επιλέξτε</option>
-                        <option value="athens">Αθήνα</option>
-                        <option value="thessaloniki">Θεσσαλονίκη</option>
-                        <option value="patra">Πάτρα</option>
-                        <option value="heraklion">Ηράκλειο</option>
-                        <option value="larissa">Λάρισα</option>
-                        <option value="volos">Βόλος</option>
-                        <option value="ioannina">Ιωάννινα</option>
-                        <option value="kavala">Καβάλα</option>
-                        <option value="chania">Χανιά</option>
-                        <option value="rhodes">Ρόδος</option>
+                        <option value="Αθήνα">Αθήνα</option>
+                        <option value="Θεσσαλονίκη">Θεσσαλονίκη</option>
+                        <option value="Πάτρα">Πάτρα</option>
+                        <option value="Ηράκλειο">Ηράκλειο</option>
+                        <option value="Λάρισα">Λάρισα</option>
+                        <option value="Βόλος">Βόλος</option>
+                        <option value="Ιωάννινα">Ιωάννινα</option>
+                        <option value="Καβάλα">Καβάλα</option>
+                        <option value="Χανιά">Χανιά</option>
+                        <option value="Ρόδος">Ρόδος</option>
                     </select>
                 </div>
                 <div className="form-row">
