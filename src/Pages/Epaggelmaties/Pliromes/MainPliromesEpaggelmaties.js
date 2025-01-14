@@ -123,7 +123,7 @@ function MainPliromesEpaggelmaties() {
             >
               <table
                 style={{
-                  width: '60%',
+                  width: '55%',
                   backgroundColor: '#D9EAFD',
                   textAlign: 'center',
                   borderRadius: '10px',
@@ -146,7 +146,7 @@ function MainPliromesEpaggelmaties() {
                   ))}
                   {contracts.length === 0 && (
                       <tr>
-                        <td colSpan={3}>Δεν υπάρχουν συμβόλαια</td>
+                        <td colSpan={3}>Δεν υπάρχουν πληρωμές</td>
                       </tr>
                     )}
                 </tbody>
