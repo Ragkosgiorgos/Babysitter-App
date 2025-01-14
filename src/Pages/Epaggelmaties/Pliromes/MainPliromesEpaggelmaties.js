@@ -6,6 +6,7 @@ import { FIREBASE_AUTH, FIREBASE_DB } from '../../../config/firebase';
 import Header from '../../../Components/Header';
 import Footer from '../../../Components/Footer';
 import Loader from '../../../Components/Loader';
+import Breadcrumbs from '../../../Components/Breadcrump';
 
 function MainPliromesEpaggelmaties() {
   const navigate = useNavigate();
@@ -97,7 +98,7 @@ function MainPliromesEpaggelmaties() {
 
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <div style={{ flex: 1 }}>
-            {"breadcrambs"}
+            <Breadcrumbs/>
 
             <div
               style={{
@@ -132,8 +133,7 @@ function MainPliromesEpaggelmaties() {
                   <tr style={{ borderBottom: '2px solid #333' }}>
                     <th>Κηδεμόνας</th>
                     <th>Κωδικός Voucher</th>
-                    <th > Περίοδος πληρωμής</th>
-                    <th></th>
+                    <th >Περίοδος πληρωμής</th>
                   </tr>
                 </thead>
                 <tbody>
