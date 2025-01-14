@@ -25,6 +25,8 @@ function DimiourgiaAggelias() {
         const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
             if (user) {
                 setUuid(user.uid);
+            } else {
+                navigate("/login");
             }
         });
         return () => unsubscribe();
@@ -101,7 +103,7 @@ function DimiourgiaAggelias() {
     // ageFrom <= ageTo
     function checkAge() {
         if (newData.ageFrom > newData.ageTo) {
-            setCorrectAge(false);
+            setCorrectAge(false);console.log(newData.ageFrom, newData.ageTo, correctAge);
             return false;
         }
         setCorrectAge(true);
@@ -121,8 +123,7 @@ function DimiourgiaAggelias() {
     const goToNextStep = (e) => {
         if (currentStep === 1) { // Check if the form is submitted correctly
             setIsSubmitted(true);
-            checkAge();
-            if (!newData.description || !newData.area || !newData.ageFrom || !newData.ageTo || !newData.time || !newData.accomodation || !correctAge) {
+            if (!newData.description || !newData.area || !newData.ageFrom || !newData.ageTo || !newData.time || !newData.accomodation || !checkAge()) {
                 handleScrollToTop();
                 return;
             }
@@ -248,7 +249,6 @@ function DimiourgiaAggelias() {
     const ages = [
         0.5,
         1,
-        1.5,
         2,
         2.5,
     ];
@@ -307,8 +307,9 @@ function DimiourgiaAggelias() {
                                       justifyContent: "center", marginLeft: "20%", padding: "2%", marginTop: "2%" }}>
 
                             <h2 style={{ textAlign: "center", textDecoration: "underline" }}><b>Συμπληρώστε τα στοιχεία της αγγελίας</b></h2>
+                            <h6 style={{ textAlign: "center", textDecoration: "underline", color: "#ff5252" }}>*Όλα τα πεδία είναι υποχρεωτικά</h6>
                                 {isSubmitted && (!newData.description || !newData.area || !newData.ageFrom || !newData.ageTo || !newData.time || !newData.accomodation || !correctAge)
-                                             ? <h4 style={{ color: "red", textAlign: "center" }}> Παρακαλώ συμπληρωστε σωστά όλα τα πεδία </h4> : ""}
+                                             ? <h4 style={{ color: "red", textAlign: "center" }}> Παρακαλώ συμπληρώστε σωστά όλα τα πεδία </h4> : ""}
                                              
                             <h5 style={{ display: "flex", flexDirection: "row", fontWeight: "bold", marginTop: "3%" }}> Περιγραφή </h5> 
                             <textarea name="description" placeholder="Περιγραφή αγγελίας." value={newData.description} onChange={handleInputChange}
@@ -360,7 +361,7 @@ function DimiourgiaAggelias() {
                                                     </MenuItem>
                                                     {ages.map((age) => (
                                                         <MenuItem key={age} value={age}>
-                                                            {age} ετών
+                                                            {age !== 0.5 ? age + " ετών" : "6 μηνών"}
                                                         </MenuItem>
                                                     ))}
                                                 </Select>
@@ -383,7 +384,7 @@ function DimiourgiaAggelias() {
                                                     </MenuItem>
                                                     {ages.map((age) => (
                                                         <MenuItem key={age} value={age}>
-                                                            {age} ετών
+                                                            {age !== 0.5 ? age + " ετών" : "6 μηνών"}
                                                         </MenuItem>
                                                     ))}
                                                 </Select>
@@ -505,12 +506,12 @@ function DimiourgiaAggelias() {
                 );
             case 3:
                 return (
-                    <div style={{ textAlign: "center", marginTop: "4%", marginBottom: "27%" }}>
+                    <div style={{ textAlign: "center", marginTop: "4%" }}>
                         {newData.status}
                         {newData.status === "Δημοσιευμένη" && <h2>Η αγγελία σας με κωδικό {newData.id} δημοσιεύτηκε με επιτυχία!</h2>}
                         {newData.status === "Σε προσωρινή αποθήκευση" && <h2>Η αγγελία σας με κωδικό {newData.id} αποθηκεύτηκε με επιτυχία!<br/>
                                                                              Μπορείτε να την επεξεργαστείτε και να την οριστικοποιήσετε αργότερα.</h2>}
-                        <h4>Μπορείτε να δείτε την αγγελία σας στην κατηγορία "Οι Αγγελίες μου".</h4>
+                        <h4>Μπορείτε να δείτε την αγγελία σας στην κατηγορία <a href="/aggelies"> "Οι αγγελίες μου"</a>.</h4>
                     </div>
                 );
             case 4:

@@ -70,56 +70,60 @@ function MainPGU() {
         </div>
 
         <div style={{ backgroundColor: "white", position: "relative", zIndex: 2, display: "flex", width: "60%", justifyContent: "center", margin: "0 auto",
-                     flexDirection: "row", border: "1px solid black", borderRadius: "15px", height: "20vh", marginTop: "-10vh" }}>
+                     flexDirection: "column", border: "1px solid black", borderRadius: "15px", height: "20vh", marginTop: "-10vh" }}>
 
-          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "30%", marginLeft: "2vh" }}>
-            <h6> Επιλογή περιοχής </h6>
-            <FormControl fullWidth style={{ marginTop: "1vh", fontSize:"5%" }}>
-              <InputLabel id="area-select-label"></InputLabel>
-              <Select
-                labelId="area-select-label"
-                value={area}
-                onChange={(e) => setArea(e.target.value)}
-                style={{ width: "80%" }}
-                displayEmpty
-              >
-                {<MenuItem value="">Επιλέξτε Περιοχή</MenuItem>}
-                {areasOfGreece.map((area) => (
-                  <MenuItem key={area} value={area.toLowerCase()}>
-                    {area}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+          <div style={{ textAlign: "center", fontSize: "1.5em", fontWeight: "bold", textDecoration: "underline" }}>
+              Βρείτε τον/την babysitter που σας ταιριάζει!
           </div>
+          <div style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: "1vh"}}>
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "30%", marginLeft: "2vh" }}>
+              <h6> Επιλογή περιοχής </h6>
+              <FormControl fullWidth style={{ marginTop: "1vh", fontSize:"5%" }}>
+                <InputLabel id="area-select-label"></InputLabel>
+                <Select
+                  labelId="area-select-label"
+                  value={area}
+                  onChange={(e) => setArea(e.target.value)}
+                  style={{ width: "80%" }}
+                  displayEmpty
+                >
+                  {<MenuItem value="">Επιλέξτε Περιοχή</MenuItem>}
+                  {areasOfGreece.map((area) => (
+                    <MenuItem key={area} value={area.toLowerCase()}>
+                      {area}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
 
-          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "30%" }}>
-            <h6> Επιλογή ηλικίας παιδιού </h6>
-            <FormControl fullWidth style={{ marginTop: "1vh" }}>
-              <InputLabel id="age-select-label"></InputLabel>
-              <Select
-                labelId="age-select-label"
-                value={age}
-                onChange={(e) => setAge(e.target.value)}
-                style={{ width: "80%" }}
-                displayEmpty
-              >
-                {<MenuItem value="">Επιλέξτε Ηλικία</MenuItem>}
-                {ages.map((item) => (
-                  <MenuItem key={item} value={item}>
-                    {item}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "30%" }}>
+              <h6> Επιλογή ηλικίας παιδιού </h6>
+              <FormControl fullWidth style={{ marginTop: "1vh" }}>
+                <InputLabel id="age-select-label"></InputLabel>
+                <Select
+                  labelId="age-select-label"
+                  value={age}
+                  onChange={(e) => setAge(e.target.value)}
+                  style={{ width: "80%" }}
+                  displayEmpty
+                >
+                  {<MenuItem value="">Επιλέξτε Ηλικία</MenuItem>}
+                  {ages.map((item) => (
+                    <MenuItem key={item} value={item}>
+                      {item}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "20%" }}>
+              <button style={{ backgroundColor: "#2b8cbe", color: "white", border: "none", borderRadius: "5px", width: "80%", height: "30%", marginTop: "2vh" }} onClick={handleSearchRedirect}>
+                <h6 style={{ marginLeft: "10px", marginTop: "1vh", textDecoration:"underline" }}>Αναζήτηση</h6>
+              </button>
+            </div>
           </div>
-
-          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "20%" }}>
-            <button style={{ backgroundColor: "#2b8cbe", color: "white", border: "none", borderRadius: "5px", width: "80%", height: "30%", marginTop: "2vh" }} onClick={handleSearchRedirect}>
-              <h6 style={{ marginLeft: "10px", marginTop: "1vh", textDecoration:"underline" }}>Αναζήτηση</h6>
-            </button>
-          </div>
-
         </div>
 
         <div style={{ display: "flex", justifyContent: "center", marginTop: "25px" }}>

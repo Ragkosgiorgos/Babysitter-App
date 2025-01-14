@@ -64,3 +64,17 @@ export function convertDateFormat(dateStr) {
 export function handleScrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
+
+export function FixedLengthText({ text, length }) {
+    // Ensure the text is exactly `length` characters
+    const paddedText =
+      text.length < length
+        ? text.padEnd(length, " ") // Add spaces to fill the gap
+        : text.slice(0, length);  // Truncate if it's too long
+  
+    return (
+      <div style={{ whiteSpace: "pre", textAlign: "center" }}>
+        {paddedText}
+      </div>
+    );
+  };

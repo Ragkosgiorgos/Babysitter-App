@@ -80,7 +80,7 @@ function EpaggRatingMain() {
 
   // Preview rating
   const previewRating = (rating_id) => {
-    navigate(`preview-aksiologisis?id=${rating_id}`);
+    navigate(`previewAksiologisi?id=${rating_id}`);
   };
 
   if (loading) {
@@ -145,7 +145,13 @@ function EpaggRatingMain() {
                           <VisibilityIcon style={{ cursor: "pointer" }} onClick={() => previewRating(post.id)} />
                         </td>
                       </tr>
-                    ))}
+                    ))
+                  }
+                  {filteredPosts.length === 0 && (
+                    <tr>
+                      <td colSpan={4}>Δεν υπάρχουν αγγελίες</td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

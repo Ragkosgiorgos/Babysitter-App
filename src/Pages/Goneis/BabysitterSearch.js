@@ -17,7 +17,6 @@ function BabysitterSearch() {
   const { area, age } = location.state;
 
   const [loading, setLoading] = useState(true);
-  const [profiles, setProfiles] = useState([]);
   const [matchedPosts, setMatchedPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [startFrom, setStartFrom] = useState(0);
@@ -39,7 +38,6 @@ function BabysitterSearch() {
           profile: profiles.find(profile => profile.userId === doc.data().uid),
         }));
 
-        setProfiles(profiles);
         setMatchedPosts(posts);
         setFilteredPosts(posts);
       } catch (error) {
@@ -61,7 +59,9 @@ function BabysitterSearch() {
       if (selectedAge) {
         const minAge = parseFloat(post.ageFrom);
         const maxAge = parseFloat(post.ageTo);
-        if (!(selectedAge >= minAge && selectedAge <= maxAge)) return false;
+        if (selectedAge === "από 6 μηνών έως και 1 έτους" && (!(minAge === 0.5 && maxAge >= 1))) return false
+        if (selectedAge === "από 1 έτους έως και 2 ετών" && (!(minAge <= 1 && maxAge >= 2))) return false;
+        if (selectedAge === "από 2 ετών έως και 2.5 ετών" && (!(minAge <= 2 && maxAge === 2.5))) return false;
       }
       if (selectedEducation && post.profile?.education !== capitalizeWords(selectedEducation)) return false;
       if (hasCar && post.car !== hasCar) return false;

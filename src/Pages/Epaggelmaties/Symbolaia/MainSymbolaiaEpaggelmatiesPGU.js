@@ -13,6 +13,9 @@ import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
+import dayjs from "dayjs";
+import { doc, updateDoc } from "firebase/firestore";
+
 
 function MainSymbolaiaEpaggelmatiesPGU() {
   const navigate = useNavigate();
@@ -38,6 +41,19 @@ function MainSymbolaiaEpaggelmatiesPGU() {
               id: doc.id,
               ...doc.data()
             }));
+
+          const today = dayjs();
+          for (const contract of fetchedContracts) {
+            const endDate = dayjs(contract.endDate, "MM/DD/YYYY"); 
+            if (endDate.isBefore(today) && contract.status === "Σε ισχύ") {
+              // Update contract status in Firestore
+              const contractDoc = doc(FIREBASE_DB, "contracts", contract.id);
+              await updateDoc(contractDoc, { status: "Ολοκληρώθηκε" });
+
+              // Update the local state
+              contract.status = "Ολοκληρώθηκε";
+            }
+          }
 
             setContracts(fetchedContracts); // Update state with the fetched contracts
           }

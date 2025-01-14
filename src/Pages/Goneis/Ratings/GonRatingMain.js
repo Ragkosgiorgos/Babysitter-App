@@ -96,7 +96,7 @@ function GonRatingMain() {
 
   // Navigate to preview
   const previewRating = (id) => {
-    navigate(`/epaggelmaties/ratings/preview-aksiologisis?id=${id}`);
+    navigate(`/epaggelmaties/ratings/previewAksiologisi?id=${id}`);
   };
 
   // Navigate to add new rating
@@ -160,6 +160,11 @@ function GonRatingMain() {
                       </td>
                     </tr>
                   ))}
+                  {filteredPosts.length === 0 && (
+                    <tr>
+                      <td colSpan={4}>Δεν υπάρχουν αγγελίες</td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
 

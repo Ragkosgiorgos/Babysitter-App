@@ -160,7 +160,11 @@ function CreateRating() {
 
               <div style={{ display: "flex", flexDirection: "row", marginTop: "2%" }}>
                 <h6 style={{ marginTop: "3%" , backgroundColor: "#D9EAFD", borderRadius: "50%", width: "80px", height: "80px", display: "flex", justifyContent: "center", alignItems: "center", border: "2px solid black" }}>
-                  {babysitter.img ? "Photo" : "No photo"}
+                {babysitter.img ? 
+                  (babysitter.gender === "Άντρας" ? <img src="/images/men_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} /> :
+                  <img src="/images/woman_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
+                  )
+                : <img src="/images/default_profile.png" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />}
                 </h6>
               </div>
 

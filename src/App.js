@@ -31,6 +31,10 @@ import EditAitiseisEndiaferontosPGU from "./Pages/Goneis/AitiseisEndiaferontos/E
 import PreviewAitiseisEndiaferontosPGU from "./Pages/Goneis/AitiseisEndiaferontos/PreviewAitiseisEndiaferontos";
 import ErrorPage from "./Components/ErrorPage";
 import ProvoliSymbolaiou from "./Pages/Goneis/ProvoliSymbolaiou";
+import MainPliromesGoneis from "./Pages/Goneis/Pliromes/MainPliromesGoneis";
+import PliromiEpaggelmatia from "./Pages/Goneis/Pliromes/PliromiEpaggelmatia";
+import MainPliromesEpaggelmaties from "./Pages/Epaggelmaties/Pliromes/MainPliromesEpaggelmaties";
+import Viografiko from "./Pages/Epaggelmaties/Viografiko";
 import ViewAvailabilityPGU from "./Pages/Goneis/AitiseisEndiaferontos/ViewAvailabilityPGU";
 
 function App() {
@@ -49,6 +53,7 @@ function App() {
 
           <Route path="/epaggelmaties/profile" element={<EpaggelmatiasProfile />} />
           <Route path="/goneis/profile" element={<GoneisProfile />} />
+          <Route path="/epaggelmaties/viografiko" element={<Viografiko />} />
 
           <Route path="anazitisi" element={<BabysitterSearch />} />
 
@@ -57,7 +62,7 @@ function App() {
           
           <Route path="nea-aggelia" element={<DimiourgiaAggelias />} />
           <Route path="preview-aggelias" element={<PreviewAggelias />} />
-          <Route path="view-post" element={<ViewJobPost />} />
+          <Route path="viewPost" element={<ViewJobPost />} />
 
           <Route path="neo-symbolaio" element={<DimiourgiaSymbolaiou />} />
          
@@ -70,15 +75,18 @@ function App() {
           <Route path="/epaggelmaties/symbolaia/apantisi/:contractId" element={<ApodoxiSymbolaiou/>} />
 
           <Route path="epaggelmaties/symbolaia" element={<MainSymbolaiaEpaggelmatiesPGU />} />
+          <Route path="epaggelmaties/pliromes" element={<MainPliromesEpaggelmaties/>} />
 
           <Route path="goneis/ratings" element={<GonRatingMain />} />
           <Route path="goneis/ratings/add" element={<CreateRating />} />
           <Route path="goneis/symbolaia" element={<MainSymbolaiaGoneisPGU />} />
           <Route path="/goneis/symbolaia/provoli/:contractId" element={<ProvoliSymbolaiou/>} />
+          <Route path="/goneis/symbolaia/pliromes" element={<MainPliromesGoneis/>} />
+          <Route path="/goneis/symbolaia/pliromes/nea-pliromi" element={<PliromiEpaggelmatia/>} />
 
           <Route path="epaggelmaties/ratings" element={<EpaggRatingMain />} />
 
-          <Route path="epaggelmaties/ratings/preview-aksiologisis" element={<ViewRating />} />
+          <Route path="epaggelmaties/ratings/previewAksiologisi" element={<ViewRating />} />
 
           <Route path="/goneis/profile/aitiseis-endiaferontos" element={<MainAitiseisEndiaferontosPGU />} />
           <Route path="/goneis/profile/aitiseis-endiaferontos/edit" element={<EditAitiseisEndiaferontosPGU />} />

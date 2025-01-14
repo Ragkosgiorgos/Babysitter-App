@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
 import { useNavigate } from "react-router-dom";
+import { FixedLengthText } from "../../../Utils/Methods";
 import Loader from "../../../Components/Loader";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
@@ -55,15 +56,36 @@ function MainAggeliesPGU() {
       }
     }, [uuid]);
 
-    const handleDelete = async (id) => {
+    // Delete a job post
+    const [isPopupVisible, setPopupVisible] = useState(false);
+
+    // Cancel deletion
+    const cancelDeletion = () => {
+      setPopupVisible(false);
+    };
+
+    const [deleteId, setDeleteId] = useState(null);
+
+    // Force deletion
+    const confirmDeletion = async () => {
+      setPopupVisible(false);
+
       try {
-        const updatedPosts = posts.filter(post => post.id !== id);
+        setLoading(true);
+        const updatedPosts = posts.filter(post => post.id !== deleteId);
         setPosts(updatedPosts);
-        const postRef = doc(FIREBASE_DB, 'aggelies', id);
+        const postRef = doc(FIREBASE_DB, 'aggelies', deleteId);
         await deleteDoc(postRef);
       } catch (error) {
         console.error('Error deleting post:', error);
+      } finally {
+        setLoading(false);
       }
+    };
+
+    const handleDelete = async (id) => {
+      setDeleteId(id);
+      setPopupVisible(true);
     };
 
     // Redirects
@@ -88,20 +110,20 @@ function MainAggeliesPGU() {
 
               <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
                 <h2 style={{ fontWeight: "bold", textAlign: "center", marginTop: "3%" }}>Οι Αγγελίες μου</h2>
-                <Tooltip title={
+                {/*<Tooltip title={
                                 <div style={{ display: "flex", justifyContent: "center", gap: "5%", flexDirection:"column" }}>
                                   <div><VisibilityIcon style={{ cursor: "pointer" }} />: προβολή αγγελίας</div>
                                   <div><ArrowForwardIcon style={{ cursor: "pointer" }} />: επεξεργασία αγγελίας</div>
                                   <div><DeleteForeverIcon style={{ cursor: "pointer" }}  />: διαγραφή αγγελίας</div>
                                 </div>} placement="top" style={{marginTop:"3%"}}>
                   <Button> <InfoIcon /> </Button>
-                </Tooltip>
+                </Tooltip>*/}
               </div>
 
               <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%", marginLeft: "70%" }}>  
                 <Tooltip title={
                                 <div style={{ display: "flex", justifyContent: "center", gap: "5%", flexDirection:"column", fontSize:"1.2em", textAlign:"left" }}>
-                                  Για την δημιουργία αγγελίας χρειάζονται τα εξής:
+                                  Για την δημιουργία αγγελίας χρειάζονται:
                                   <ul> 
                                     <li>Τίτλος αγγελίας</li>
                                     <li>Περιγραφή αγγελίας</li>
@@ -123,10 +145,9 @@ function MainAggeliesPGU() {
               <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
 
                 <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
-                  <thead style={{ lineHeight: "2em"}}>
+                  <thead style={{ lineHeight: "2em" }}>
                     <tr style={{ borderBottom: "2px solid #333" }}>
                       <th>Κωδικός Αγγελίας</th>
-                      <th>Αιτήσεις ενδιαφέροντος</th>
                       <th>Κατάσταση Αγγελίας</th>
                       <th>Ενέργειες</th>
                     </tr>
@@ -135,15 +156,22 @@ function MainAggeliesPGU() {
                     {posts.map((post, index) => (
                       <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
                         <td>{index + 1}</td>
-                        <td>{/*//? Decide if to put Aitiseis Endiaferontos count */}</td>
-                        <td>{post.status}</td>
-                        <td style={{ display: "flex", justifyContent: "center", alignItems:"center", marginTop:"0.5em", gap:"10px" }}>
-                          { post.status !== "Σε προσωρινή αποθήκευση" ? <VisibilityIcon style={{ cursor: "pointer" }} onClick={() => previewAggeliaRender(post.id)} /> : <VisibilityIcon style={{ height: "0px" }}/> }
-                          { post.status === "Σε προσωρινή αποθήκευση" ? <ArrowForwardIcon style={{ cursor: "pointer" }} onClick={() => handleTempView(post.id)} /> : <ArrowForwardIcon style={{ height: "0px" }}/> }
-                          <DeleteForeverIcon style={{ cursor: "pointer" }} onClick={() => handleDelete(post.id)} />
+                        <td>{post.status === "Δημοσιευμένη" ? <span style={{ color: "green" }}>{post.status}</span> : <span style={{ color: "#F28C28" }}>{post.status}</span>}</td>
+                        <td style={{ display: "flex", justifyContent: "center", alignItems:"center", marginTop: "0.5em", gap: "10px" }}>
+                          {/* post.status !== "Σε προσωρινή αποθήκευση" ? <VisibilityIcon style={{ cursor: "pointer" }} onClick={() => previewAggeliaRender(post.id)} /> : <VisibilityIcon style={{ height: "0px" }}/>*/ }
+                          {/* post.status === "Σε προσωρινή αποθήκευση" ? <ArrowForwardIcon style={{ cursor: "pointer" }} onClick={() => handleTempView(post.id)} /> : <ArrowForwardIcon style={{ height: "0px" }}/> */}
+                          {/*<DeleteForeverIcon style={{ cursor: "pointer" }} onClick={() => handleDelete(post.id)} >*/}
+                          {post.status === "Δημοσιευμένη" ?  <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => previewAggeliaRender(post.id)}>{FixedLengthText({ text: "Προβολή", length: 12 })}</span> : ""}
+                          {post.status !== "Δημοσιευμένη" ?  <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handleTempView(post.id)}>Επεξεργασία</span> : ""}
+                          <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handleDelete(post.id)}>Διαγραφή</span>
                         </td>
                       </tr>
                     ))}
+                    {posts.length === 0 && (
+                      <tr>
+                        <td colSpan={3}>Δεν υπάρχουν αγγελίες</td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
 
@@ -155,6 +183,17 @@ function MainAggeliesPGU() {
 
         </div>
 
+        {isPopupVisible && (
+          <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "rgba(0, 0, 0, 0.5)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1000 }}>
+              <div style={{ backgroundColor: "#fff", padding: "20px", borderRadius: "10px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)", width: "90%", maxWidth: "400px", textAlign: "center" }}>
+                  <h3 style={{ marginBottom: "20px" }}>Είστε σίγουρος/η ότι θέλετε να διαγράψετε την αγγελία;</h3>
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: "10px" }}>
+                      <button onClick={confirmDeletion} style={{ padding: "10px 20px", backgroundColor: "red", color: "white", border: "none", borderRadius: "5px", cursor: "pointer", fontWeight: "bold" }}>Ναι, διαγραφή</button>
+                      <button onClick={cancelDeletion} style={{ padding: "10px 20px", backgroundColor: "gray", color: "white", border: "none", borderRadius: "5px", cursor: "pointer", fontWeight: "bold" }}>Ακύρωση</button>
+                  </div>
+              </div>
+          </div>
+        )}
         <div>
           <Footer />
         </div>
