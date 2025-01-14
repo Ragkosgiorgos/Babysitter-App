@@ -123,7 +123,7 @@ function MainPliromesEpaggelmaties() {
             >
               <table
                 style={{
-                  width: '80%',
+                  width: '60%',
                   backgroundColor: '#D9EAFD',
                   textAlign: 'center',
                   borderRadius: '10px',
@@ -133,17 +133,22 @@ function MainPliromesEpaggelmaties() {
                   <tr style={{ borderBottom: '2px solid #333' }}>
                     <th>Κηδεμόνας</th>
                     <th>Κωδικός Voucher</th>
-                    <th >Περίοδος πληρωμής</th>
+                    <th>Περίοδος πληρωμής</th>
                   </tr>
                 </thead>
                 <tbody>
                   {contracts.map((contract) => (
-                    <tr key={contract.id}>
+                    <tr key={contract.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
                       <td>{findParentName(contract.id_p)}</td>
                       <td>{contract.id}</td>
-                      <td>Από {contract.startPeriod} Έως {contract.endPeriod}</td>
+                      <td>{contract.startPeriod} - {contract.endPeriod}</td>
                     </tr>
                   ))}
+                  {contracts.length === 0 && (
+                      <tr>
+                        <td colSpan={3}>Δεν υπάρχουν συμβόλαια</td>
+                      </tr>
+                    )}
                 </tbody>
               </table>
             </div>

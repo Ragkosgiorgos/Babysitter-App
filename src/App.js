@@ -61,7 +61,7 @@ function App() {
           <Route path="aggelies" element={<MainAggeliesPGU />} />
           
           <Route path="nea-aggelia" element={<DimiourgiaAggelias />} />
-          <Route path="preview-aggelias" element={<PreviewAggelias />} />
+          <Route path="previewAggelias" element={<PreviewAggelias />} />
           <Route path="viewPost" element={<ViewJobPost />} />
 
           <Route path="neo-symbolaio" element={<DimiourgiaSymbolaiou />} />

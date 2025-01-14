@@ -123,6 +123,7 @@ function DimiourgiaAggelias() {
     const goToNextStep = (e) => {
         if (currentStep === 1) { // Check if the form is submitted correctly
             setIsSubmitted(true);
+            checkAge();
             if (!newData.description || !newData.area || !newData.ageFrom || !newData.ageTo || !newData.time || !newData.accomodation || !checkAge()) {
                 handleScrollToTop();
                 return;
@@ -312,11 +313,13 @@ function DimiourgiaAggelias() {
                                              ? <h4 style={{ color: "red", textAlign: "center" }}> Παρακαλώ συμπληρώστε σωστά όλα τα πεδία </h4> : ""}
                                              
                             <h5 style={{ display: "flex", flexDirection: "row", fontWeight: "bold", marginTop: "3%" }}> Περιγραφή </h5> 
+                            <div style={{ marginLeft: "0%" }}>{isSubmitted && !newData.description && <h6 style={{ color: "red" }}> <b>*Συμπληρώστε το πεδίο</b> </h6>}</div>
                             <textarea name="description" placeholder="Περιγραφή αγγελίας." value={newData.description} onChange={handleInputChange}
                                         style={{ marginLeft: "5%", marginBottom: "5%", width: "60%", height: "10vh", border: isSubmitted && !newData.description ? "1px solid red" : "" }}>
                             </textarea>
 
                             <h5 style={{ fontWeight: "bold"}}> Περιοχή </h5>
+                            <div style={{ marginLeft: "0%" }}>{isSubmitted && !newData.area && <h6 style={{ color: "red" }}> <b>*Συμπληρώστε το πεδίο</b> </h6>}</div>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
                                 <FormControl style={{ marginTop: "1vh", fontSize: "2%", width: "25%", border: isSubmitted && !newData.area ? "1px solid red" : "" }}>
                                     <Select
@@ -343,6 +346,7 @@ function DimiourgiaAggelias() {
                                 <div style={{ display: "flex", flexDirection: "column" }}>
                                     <h5 style={{ fontWeight: "bold"}}> Ηλικία παιδιού </h5>
                                     <div style={{ marginLeft: "0%" }}>{!correctAge && <h6 style={{ color: "red" }}> <b>*Η ηλικία "από" πρέπει να είναι μικρότερη ή ίση από την ηλικία "εώς"</b> </h6>}</div>
+                                    <div style={{ marginLeft: "0%" }}>{isSubmitted && (!newData.ageFrom || !newData.ageTo) && <h6 style={{ color: "red" }}> <b>*Συμπληρώστε το πεδίο</b> </h6>}</div>
                                     <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%" }}>
                                         <div style={{ display: "flex", flexDirection: "column" }}>
                                             <h6> από </h6>
@@ -395,6 +399,7 @@ function DimiourgiaAggelias() {
                             </div>
 
                             <h5 style={{ fontWeight: "bold"}}> Απασχόληση </h5>
+                            <div style={{ marginLeft: "0%" }}>{isSubmitted && !newData.time && <h6 style={{ color: "red" }}> <b>*Συμπληρώστε το πεδίο</b> </h6>}</div>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
                                 <RadioGroup row aria-label="time" name="time" value={newData.time} onChange={handleInputChange} style={{ border: isSubmitted && !newData.time ? "1px solid red" : "", padding: "5px", borderRadius: "4px" }}>
                                     <FormControlLabel value="Πλήρης" control={<Radio />} label="Πλήρης" />
@@ -403,6 +408,7 @@ function DimiourgiaAggelias() {
                             </div>
 
                             <h5 style={{ fontWeight: "bold"}}> Διαθέτω το σπίτι μου για φιλοξενία </h5>
+                            <div style={{ marginLeft: "0%" }}>{isSubmitted && !newData.accomodation && <h6 style={{ color: "red" }}> <b>*Συμπληρώστε το πεδίο</b> </h6>}</div>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
                                 <RadioGroup row aria-label="accomodation" name="accomodation" value={newData.accomodation} onChange={handleInputChange} style={{ border: isSubmitted && !newData.accomodation ? "1px solid red" : "", padding: "5px", borderRadius: "4px" }}>
                                     <FormControlLabel value="Ναι" control={<Radio />} label="Ναι" />
@@ -411,6 +417,7 @@ function DimiourgiaAggelias() {
                             </div>
 
                             <h5 style={{ fontWeight: "bold"}}> Διαθέτω μεταφορικό μέσο </h5>
+                            <div style={{ marginLeft: "0%" }}>{isSubmitted && !newData.car && <h6 style={{ color: "red" }}> <b>*Συμπληρώστε το πεδίο</b> </h6>}</div>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
                                 <RadioGroup row aria-label="car" name="car" value={newData.car} onChange={handleInputChange} style={{ border: isSubmitted && !newData.car ? "1px solid red" : "", padding: "5px", borderRadius: "4px" }}>
                                     <FormControlLabel value="Ναι" control={<Radio />} label="Ναι" />
@@ -419,6 +426,7 @@ function DimiourgiaAggelias() {
                             </div>
 
                             <h5 style={{ fontWeight: "bold"}}> Διαθέσιμες ημέρες και ώρες </h5>
+                            <div style={{ marginLeft: "0%" }}>{isSubmitted && !newData.dates && <h6 style={{ color: "red" }}> <b>*Συμπληρώστε το πεδίο</b> </h6>}</div>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%" }}>
                                 <RadioGroup row aria-label="dates" name="dates" value={newData.dates} onChange={handleInputChange} style={{ border: isSubmitted && !newData.dates ? "1px solid red" : "", padding: "5px", borderRadius: "4px" }}>
                                     <FormControlLabel value="Σαββατοκύριακο" control={<Radio />} label="Σαββατοκύριακο" />
@@ -455,7 +463,7 @@ function DimiourgiaAggelias() {
                             <div style={{ display: "flex", flexDirection: "column", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", 
                                       justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
 
-                            <h2 style={{ textAlign: "center", textDecoration: "underline" }}><b>Συμπληρώστε τα στοιχεία της αγγελίας</b></h2>
+                            <h2 style={{ textAlign: "center", textDecoration: "underline" }}><b>Τα στοιχεία της αγγελίας</b></h2>
                             
                             <h5 style={{ fontWeight: "bold", marginTop: "3%" }}> Περιγραφή </h5>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
@@ -507,9 +515,8 @@ function DimiourgiaAggelias() {
             case 3:
                 return (
                     <div style={{ textAlign: "center", marginTop: "4%" }}>
-                        {newData.status}
-                        {newData.status === "Δημοσιευμένη" && <h2>Η αγγελία σας με κωδικό {newData.id} δημοσιεύτηκε με επιτυχία!</h2>}
-                        {newData.status === "Σε προσωρινή αποθήκευση" && <h2>Η αγγελία σας με κωδικό {newData.id} αποθηκεύτηκε με επιτυχία!<br/>
+                        {newData.status === "Δημοσιευμένη" && <h2>Η αγγελία σας δημοσιεύτηκε με επιτυχία!</h2>}
+                        {newData.status === "Σε προσωρινή αποθήκευση" && <h2>Η αγγελία σας αποθηκεύτηκε με επιτυχία!<br/>
                                                                              Μπορείτε να την επεξεργαστείτε και να την οριστικοποιήσετε αργότερα.</h2>}
                         <h4>Μπορείτε να δείτε την αγγελία σας στην κατηγορία <a href="/aggelies"> "Οι αγγελίες μου"</a>.</h4>
                     </div>

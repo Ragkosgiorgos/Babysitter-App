@@ -17,6 +17,7 @@ const translations = {
   epaggelmaties: "Babysitters",
   viografiko: "Βιογραφικό",
   aggelies: "Αγγελίες",
+  previewAggelias: "Προβολή αγγελίας",
 };
 
 function Breadcrumbs() {

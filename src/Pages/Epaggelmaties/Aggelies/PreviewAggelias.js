@@ -110,9 +110,9 @@ function PreviewAggelias() {
                 <Breadcrumbs />
 
                 <ProgressTracker steps={steps} activeStep={5} />
+                
                 <div style={{ textAlign: "center", marginTop: "1%" }}>
-                    <h2>Η αγγελία σας με <b style={{ textDecoration: "underline" }}>κωδικό {aggelia.id}</b> δημοσιεύτηκε με επιτυχία!</h2>
-                    <h4>Μπορείτε να δείτε την αγγελία σας στην κατηγορία "Αγγελίες μου".</h4>
+                    <h2 style={{ fontWeight: "bold", textDecoration: "underline" }}>Η αγγελία σας</h2>
                 </div>
                 <div style={{ display: "flex", flexDirection: "row", marginTop: "2%", marginLeft: "10%", marginRight: "10%" }}>
                     <div style={{ textAlign: "center" }}>
@@ -141,8 +141,6 @@ function PreviewAggelias() {
                     }}>
 
                         <h2 style={{ textAlign: "center", textDecoration: "underline" }}><b>Τα στοιχεία της αγγελίας</b></h2>
-                        
-                        <h2 style={{ textAlign: "center", textDecoration: "underline" }}><b>Συμπληρώστε τα στοιχεία της αγγελίας</b></h2>
 
                         <h5 style={{ fontWeight: "bold", marginTop: "3%" }}> Περιγραφή </h5>
                         <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
@@ -157,13 +155,20 @@ function PreviewAggelias() {
                         <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginBottom: "5%" }}>
                             <div style={{ display: "flex", flexDirection: "column" }}>
                                 <h5 style={{ fontWeight: "bold" }}> Ηλικία παιδιού </h5>
-                                <div style={{ display: "flex", flexDirection: "column", gap: "5%", marginLeft: "15%" }}>
-                                    <div style={{ display: "flex", flexDirection: "column" }}>
-                                        από: {aggelia.ageFrom}
-                                    </div>
-                                    <div style={{ display: "flex", flexDirection: "column" }}>
-                                        εώς: {aggelia.ageTo}
-                                    </div>
+                                <div style={{ display: "flex", flexDirection: "column", gap: "5%", marginLeft: "25%" }}>
+                                    {aggelia.ageFrom !== aggelia.ageTo ? 
+                                        <div style={{ display: "flex", flexDirection: "column" }}>
+                                            <div style={{ display: "flex", flexDirection: "column" }}>
+                                                από: {aggelia.ageFrom === 0.5 ? "6 μηνών" : aggelia.ageFrom + " ετών"}
+                                            </div>
+                                            <div style={{ display: "flex", flexDirection: "column" }}>
+                                                εώς: {aggelia.ageTo} ετών
+                                            </div> 
+                                        </div>
+                                        : <div style={{ display: "flex", flexDirection: "column" }}>
+                                            {aggelia.ageFrom === 0.5 ? "6 μηνών" : aggelia.ageFrom + " ετών"}
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </div>

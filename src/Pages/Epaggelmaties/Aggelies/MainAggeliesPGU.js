@@ -90,7 +90,7 @@ function MainAggeliesPGU() {
 
     // Redirects
     const handleNewPost = () => navigate("/nea-aggelia");
-    const previewAggeliaRender = (aggelia_id) => navigate(`/preview-aggelias?aggelia_id=${aggelia_id}`);
+    const previewAggeliaRender = (aggelia_id) => navigate(`/previewAggelias?aggelia_id=${aggelia_id}`);
     const handleTempView = (post_id) => navigate(`/nea-aggelia?step=2&post_id=${post_id}`);
 
     if (loading) {
