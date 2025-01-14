@@ -66,15 +66,23 @@ export function handleScrollToTop() {
 };
 
 export function FixedLengthText({ text, length }) {
-    // Ensure the text is exactly `length` characters
-    const paddedText =
-      text.length < length
-        ? text.padEnd(length, " ") // Add spaces to fill the gap
-        : text.slice(0, length);  // Truncate if it's too long
+    // Calculate padding for centering
+    const totalPadding = Math.max(length - text.length, 0);
+    const paddingStart = Math.floor(totalPadding / 2); // Left padding
+    const paddingEnd = totalPadding - paddingStart;   // Right padding
+  
+    // Create the padded text
+    const centeredText = " ".repeat(paddingStart) + text + " ".repeat(paddingEnd);
   
     return (
-      <div style={{ whiteSpace: "pre", textAlign: "center" }}>
-        {paddedText}
+      <div
+        style={{
+          whiteSpace: "pre",
+          textAlign: "center", // Align within the container
+        }}
+      >
+        {centeredText}
       </div>
     );
-  };
+};
+  

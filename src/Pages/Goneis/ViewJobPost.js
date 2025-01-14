@@ -159,7 +159,7 @@ function ViewJobPost() {
                         <div style={{ display: "flex", flexDirection: "column", marginTop: "2%" }}>
                             <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "3%" }}>
                                 <HomeIcon style={{ width: "2.5vw", height: "2.5vh" }} />
-                                Ο επαγγελματίας {post.accomodation ? "παρέχει" : "δεν παρέχει"} το σπίτι του για φιλοξενία
+                                Ο/Η babysitter {post.accomodation ? "παρέχει" : "δεν παρέχει"} το σπίτι του για φιλοξενία
                             </div>
                             <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: "3%" }}>
                                 <AccessTimeIcon style={{ width: "2.5vw", height: "2.5vh" }} />

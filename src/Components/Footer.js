@@ -15,8 +15,6 @@ function Footer() {
         </div>
 
         <div style={{ textAlign: 'right', marginRight:"15px", marginTop:"2vh" }}>
-            <p  style={{ textAlign: 'left'}}>Όροι χρήσης Kηδεμόνα</p>
-            <p>Όροι χρήσης Επαγγελματία</p>
         </div>
       </footer>
     );

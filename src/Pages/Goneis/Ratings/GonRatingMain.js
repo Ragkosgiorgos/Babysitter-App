@@ -144,7 +144,7 @@ function GonRatingMain() {
               <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
                 <thead style={{ lineHeight: "2em"}}>
                   <tr style={{ borderBottom: "2px solid #333" }}>
-                    <th>Επαγγελματίας</th>
+                    <th>Babysitter</th>
                     <th>Συνολική βαθμολογία</th>
                     <th>Ενέργειες</th>
                   </tr>
