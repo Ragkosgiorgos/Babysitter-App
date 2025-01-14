@@ -23,6 +23,7 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { addDoc, setDoc } from 'firebase/firestore';
 import { useNavigate } from "react-router-dom";
 import { handleScrollToTop } from "../../Utils/Methods/index.js";
+import { Paid } from "@mui/icons-material";
 dayjs.locale("el"); // Set the locale to Greek
 
 function DimiourgiaSymbolaiou(props) {
@@ -54,6 +55,8 @@ function DimiourgiaSymbolaiou(props) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [babysitter, setBabysitter] = useState({});
     const [contractId, setContractId] = useState(null);
+
+
 
     const [currentStep, setCurrentStep] = useState(0);
 
@@ -211,37 +214,91 @@ function DimiourgiaSymbolaiou(props) {
     };
 
     // Submit contract
-    const submitContract = async () => {
-        setIsSubmitting(true);
-        try {
-            setIsLoading(true);
-            const contractData = {
+const submitContract = async () => {
+    setIsSubmitting(true);
+    try {
+        setIsLoading(true);
+
+        // Create contract data
+        const contractData = {
+            id_p: uuid,
+            id_b: babysitter.userId,
+            time: stepTwoData.employmentTime,
+            hosting: stepTwoData.hostingPreference,
+            date: stepTwoData.date,
+            startDate: dayjs(stepTwoData.dateRange[0].startDate).format('DD/MM/YYYY'),
+            endDate: dayjs(stepTwoData.dateRange[0].endDate).format('DD/MM/YYYY'),
+            status: stepTwoData.status,
+            weekdays: weekdays,
+            weekends: weekends,
+        };
+
+        // Add contract to Firestore
+        const ratingsRef = collection(FIREBASE_DB, 'contracts');
+        const docRef = await addDoc(ratingsRef, contractData);
+
+        // Save the contract ID in the document
+        const documentId = docRef.id;
+        await setDoc(docRef, { id: documentId }, { merge: true });
+
+        setContractId(documentId); // Save contract ID
+
+        // ✅ After successfully submitting the contract, submit the payments
+        await submitPayment(documentId, stepTwoData.dateRange[0].startDate, stepTwoData.dateRange[0].endDate);
+
+    } catch (error) {
+        console.error('Error adding document:', error);
+    } finally {
+        setIsSubmitting(false);
+        setIsLoading(false);
+    }
+};
+
+const submitPayment = async (contractId, startDate, endDate) => {
+    setIsSubmitting(true);
+    try {
+        setLoading(true);
+
+        const paymentsRef = collection(FIREBASE_DB, 'payments');
+        let currentDate = dayjs(startDate);
+
+        while (currentDate.isBefore(endDate) || currentDate.isSame(endDate, 'day')) {
+            // Calculate next payment period's end date
+            const nextDate = currentDate.add(1, 'month');
+
+            // If nextDate exceeds the endDate, adjust the endPeriod to endDate
+            const endPeriod = nextDate.isAfter(endDate) ? dayjs(endDate).format('DD/MM/YYYY') : nextDate.format('DD/MM/YYYY');
+
+            // Create payment data
+            const paymentData = {
                 id_p: uuid,
                 id_b: babysitter.userId,
-                time: stepTwoData.employmentTime,
-                hosting: stepTwoData.hostingPreference,
-                date: stepTwoData.date,
-                startDate: dayjs(stepTwoData.dateRange[0].startDate).format('DD/MM/YYYY'),
-                endDate: dayjs(stepTwoData.dateRange[0].endDate).format('DD/MM/YYYY'),
-                status: stepTwoData.status,
-                weekdays: weekdays,
-                weekends: weekends,
+                id_c: contractId,
+                startPeriod: currentDate.format('DD/MM/YYYY'),
+                endPeriod: endPeriod,
+                date: new Date().toLocaleDateString(),
+                Paid: "False",
             };
 
-            const ratingsRef = collection(FIREBASE_DB, 'contracts');
-            const docRef = await addDoc(ratingsRef, contractData);
+            // Add payment to Firestore
+            const docRef = await addDoc(paymentsRef, paymentData);
 
-            const documentId = docRef.id;
-            await setDoc(docRef, { id: documentId }, { merge: true });
+            // Save the payment ID in the document
+            const documentId1 = docRef.id;
+            await setDoc(docRef, { id: documentId1 }, { merge: true });
 
-            setContractId(documentId); // Save contract ID
-        } catch (error) {
-            console.error('Error adding document:', error);
-        } finally {
-            setIsSubmitting(false);
-            setIsLoading(false);
+            // Move to the next month
+            currentDate = nextDate;
         }
-    };
+    } catch (error) {
+        console.error('Error adding payment document:', error);
+    } finally {
+        setIsSubmitting(false);
+        setLoading(false);
+    }
+};
+
+    
 
     // Steps for the form navigation
     const steps = [

@@ -55,7 +55,7 @@ function MainPliromesEpaggelmaties() {
       const fetchPosts = async () => {
         try {
           setLoading(true);
-          const q = query(collection(FIREBASE_DB, 'payments'), where('id_b', '==', uuid));
+          const q = query(collection(FIREBASE_DB, 'payments'), where('id_b', '==', uuid),where('Paid','==','True'));
           const querySnapshot = await getDocs(q);
           const posts = querySnapshot.docs.map((doc) => ({
             id: doc.id,
@@ -140,9 +140,9 @@ function MainPliromesEpaggelmaties() {
                 <tbody>
                   {contracts.map((contract) => (
                     <tr key={contract.id}>
-                      <td>{contract.id}</td>
-                      <td>{findParentName(contract.id_p)}</td>
                       <td>{contract.id_c}</td>
+                      <td>{findParentName(contract.id_p)}</td>
+                      <td>{contract.id}</td>
                     </tr>
                   ))}
                 </tbody>
