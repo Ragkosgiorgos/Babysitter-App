@@ -5,7 +5,8 @@ import React, { useState, useEffect } from "react";
 import Loader from '../../Components/Loader';
 import { Carousel } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
-import { calculateAge, capitalizeWords, TruncatedText } from "../../Utils/Methods/index";
+import { calculateAge, TruncatedText } from "../../Utils/Methods/index";
+import ClearIcon from '@mui/icons-material/Clear';
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../config/firebase";
 import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from "firebase/auth";
@@ -98,13 +99,60 @@ function Viografiko() {
         let mails = [];
         for (let i = 0; i < profile.systatikes; i++) {
             mails.push(
-                <a key={i} href="/dummy.pdf" target="_blank" rel="noreferrer">
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <a href="/dummy.pdf" target="_blank" rel="noreferrer">
                         Επιστολή {i + 1}
-                </a>
+                    </a>
+                    <button
+                        style={{
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            color: "red",
+                            fontSize: "16px",
+                        }}
+                        onClick={handleDelete}
+                    >
+                        <ClearIcon />
+                    </button>
+                </div>
             );
         }
-
         return mails;
+    };
+    
+    const handleDelete = () => {
+        // Add your logic to handle the deletion of the mail
+        setProfile({ ...profile, systatikes: profile.systatikes - 1 });
+
+        try {
+            setLoading(true);
+            // Update the mails in the database
+            updateDoc(doc(FIREBASE_DB, 'user', profile.id), {
+                systatikes: profile.systatikes - 1,
+            });
+        } catch (error) {
+            console.error('Error updating document:', error);
+        } finally {
+            setLoading(false);
+        }
+    };    
+
+    // Add a new mail to the profile ( +1 to the systatikes )
+    const handleAddMail = async () => {
+        setProfile({ ...profile, systatikes: profile.systatikes + 1 });
+
+        // Update the mails in the database
+        try {
+            setLoading(true);
+            await updateDoc(doc(FIREBASE_DB, 'user', profile.id), {
+                systatikes: profile.systatikes + 1,
+            });
+        } catch (error) {
+            console.error('Error updating document:', error);
+        } finally {
+            setLoading(false);
+        }
     }
 
     const handleViewRating = (r_id) => {
@@ -141,7 +189,8 @@ function Viografiko() {
                                     <textarea style={{ width: "100%", height: "100px", resize: "none", border: "1px solid black", backgroundColor: "#D9EAFD", padding: "10px", borderRadius: "10px" }}
                                     value={description} onChange={handleDescriptionChange} />
                                     <button className="btn btn-primary" 
-                                        style={{ marginTop: "10px", backgroundColor: "#4CAF50", color: "white", border: "none", padding: "10px", cursor: "pointer" }} 
+                                        style={{ marginTop: "10px", backgroundColor: "green", color: "white", cursor: "pointer", 
+                                                border: "1px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", }} 
                                         onClick={saveDescription}>
                                         Αποθήκευση
                                     </button>
@@ -152,10 +201,23 @@ function Viografiko() {
                         </div>
 
                         <div style={{ display: "flex", flex: 1, flexDirection: "row", justifyContent: "center", marginTop: "2vh" }}>
-                            <div style={{ display: "flex", flex: 1, justifyContent: "center", flexDirection: "row", textAlign: "center", marginTop: "1vh" }}>
+                            <div style={{ display: "flex", flex: 1, justifyContent: "center", flexDirection: "column", textAlign: "center", marginTop: "1vh" }}>
                                 <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center" }}>
                                     <span style={{ fontSize: "20px" }}><b style={{textDecoration:"underline"}}>Συστατικές επιστολές</b></span>
                                     {profile.systatikes === 0 ? <h6 style={{marginTop:"2vh"}}>Δεν υπάρχουν επιστολές!</h6> : viewDummyMails()}
+                                </div>
+                                <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center" }}>
+                                    <button style={{ marginTop: "10px", backgroundColor: "green", color: "white", borderRadius: "5px", cursor: "pointer", 
+                                                     border: "1px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", fontSize: "15px" }}
+                                        onClick={() => document.getElementById("fileInput").click()}>
+                                        Επιλογή συστατικής επιστολής
+                                        </button>
+                                        <input
+                                        type="file"
+                                        id="fileInput"
+                                        style={{ display: "none" }}
+                                        onChange={handleAddMail}
+                                    />
                                 </div>
                             </div>
 
@@ -189,6 +251,6 @@ function Viografiko() {
             </div>
         </div>
     );
-    }
+}
 
 export default Viografiko;

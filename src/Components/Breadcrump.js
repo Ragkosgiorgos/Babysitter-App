@@ -16,6 +16,7 @@ const translations = {
   previewAksiologisi: "Προβολή αξιολόγησης",
   epaggelmaties: "Επαγγελματίες",
   viografiko: "Βιογραφικό",
+  aggelies: "Αγγελίες",
 };
 
 function Breadcrumbs() {
