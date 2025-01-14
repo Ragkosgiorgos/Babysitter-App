@@ -127,7 +127,7 @@ function MainSymbolaiaEpaggelmatiesPGU() {
               {loading ? (
                 <Loader />
               ) : (
-                <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius: "10px" }}>
+                <table style={{ width: "80%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius: "10px" }}>
                   <thead style={{ lineHeight: "2em" }}>
                     <tr style={{ borderBottom: "2px solid #333" }}>
                       <th>Κωδικός συμβολαίου</th>
@@ -143,12 +143,26 @@ function MainSymbolaiaEpaggelmatiesPGU() {
                     ) : (
                       contracts.map((contract, index) => (
                         <tr key={contract.id}>
-                          <td>{index + 1}</td>
+                          <td>{contract.id}</td>
                           <td>{findParentName(contract.id_p)}</td>
-                          <td>{contract.status}</td>
-                          <td style={{ display: "flex", justifyContent: "center", alignItems:"center", marginTop:"0.5em", gap:"10px" }}>
-                            {contract.status === "Σε αναμονή" ? <ArrowForwardIcon style={{ cursor: "pointer", marginLeft: "50px" }} onClick={() => handleRedirect(contract.id)}/> : <ArrowForwardIcon style={{ height: "0px" }}/>}
-                            {contract.status !== "Σε αναμονή" ?   <VisibilityIcon style={{ cursor: "pointer", marginLeft: "50px" }} onClick={() => handleRedirect(contract.id)}/> : <VisibilityIcon style={{ height: "0px" }}/>}
+                          <td style={{
+                            color: contract.status === "Σε ισχύ" ? "green" :
+                                   contract.status === "Σε αναμονή" ? "#f28c28" : 
+                                   contract.status === "Απορρίφθηκε" ? "red" : "black"
+                           }}>
+                              {contract.status}
+                          </td>
+                
+                          <td style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "0.5em", gap: "10px" }}>
+                            {contract.status === "Σε αναμονή" ? (
+                              <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handleRedirect(contract.id)}>
+                                Απάντηση
+                              </span>
+                            ) : (
+                              <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handleRedirect(contract.id)}>
+                                Προβολή
+                              </span>
+                            )}
                           </td>
                         </tr>
                       ))

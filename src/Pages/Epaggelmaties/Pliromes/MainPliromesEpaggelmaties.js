@@ -133,7 +133,7 @@ function MainPliromesEpaggelmaties() {
                     <th>Κωδικός συμβολαίου</th>
                     <th>Ονοματεπώνυμο Γονέα</th>
                     <th>Κωδίκος Voucher</th>
-                    <th style={{ width: '150px' }}></th>
+                    <th > Περίοδος πληρωμης</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -143,6 +143,7 @@ function MainPliromesEpaggelmaties() {
                       <td>{contract.id_c}</td>
                       <td>{findParentName(contract.id_p)}</td>
                       <td>{contract.id}</td>
+                      <td>Απο {contract.startPeriod} Εως {contract.endPeriod}</td>
                     </tr>
                   ))}
                 </tbody>

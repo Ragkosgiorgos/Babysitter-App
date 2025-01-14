@@ -19,6 +19,7 @@ function MainPliromesGoneis() {
   // Check if user is logged in, get the user's UUID and fetch user data
   const [uuid, setUuid] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [babysitters, setBabysitters] = useState([]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
@@ -37,7 +38,7 @@ function MainPliromesGoneis() {
       const fetchPosts = async () => {
         try {
           setLoading(true);
-          const q = query(collection(FIREBASE_DB, 'payments'), where('id_p', '==', uuid));
+          const q = query(collection(FIREBASE_DB, 'payments'), where('id_p', '==', uuid),where('Paid','==','True'));
           const querySnapshot = await getDocs(q);
           const posts = querySnapshot.docs.map((doc) => ({
             id: doc.id,
@@ -54,6 +55,29 @@ function MainPliromesGoneis() {
     }
   }, [uuid]); // Runs when UUID changes
 
+  useEffect(() => {
+    const fetchBabysitters = async () => {
+      try {
+        const babysitterRef = collection(FIREBASE_DB, 'user');
+        const querySnapshot = await getDocs(query(babysitterRef, where("property", "==", "babysitter")));
+        const babysitterData = querySnapshot.docs.map(doc => ({
+          userId: doc.id,
+          ...doc.data(),
+        }));
+        setBabysitters(babysitterData);
+      } catch (error) {
+        console.error("Error fetching babysitters:", error);
+      }
+    };
+
+    fetchBabysitters();
+  }, []);
+
+  // Find the babysitter's full name based on their ID
+  const findProfessionalName = (babysitterId) => {
+    const babysitter = babysitters.find(b => b.userId === babysitterId);
+    return babysitter ? `${babysitter.firstName} ${babysitter.lastName}` : "Άγνωστο";
+  };
   const handleNewPayment = () => {
     navigate('/goneis/symbolaia/pliromes/nea-pliromi');
   };
@@ -101,18 +125,20 @@ function MainPliromesGoneis() {
               <table style={{ width: '80%', backgroundColor: '#D9EAFD', textAlign: 'center', borderRadius: '10px' }}>
                 <thead style={{ lineHeight: '2em' }}>
                   <tr style={{ borderBottom: '2px solid #333' }}>
+                    <th>Κωδικός συμβολαίου</th>
                     <th>Κωδικός Πληρωμής</th>
                     <th>Ονοματεπώνυμο επαγγελματία</th>
-                    <th style={{ width: '150px' }}></th>
+                    <th > Περίοδος πληρωμης</th>
                     <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   {contracts.map((contract) => (
                     <tr key={contract.id}>
+                      <td>{contract.id_c}</td>
                       <td>{contract.id}</td>
-                      <td>{/* Fill this with appropriate data */}</td>
-                      <td>{contract.status}</td>
+                      <td>{findProfessionalName(contract.id_b)}</td>
+                      <td>Απο {contract.startPeriod} Εως {contract.endPeriod}</td>
                     </tr>
                   ))}
                 </tbody>

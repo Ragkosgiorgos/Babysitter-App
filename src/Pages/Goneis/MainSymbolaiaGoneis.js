@@ -96,6 +96,33 @@ function MainSymbolaiaGoneisPGU() {
     return babysitter ? `${babysitter.firstName} ${babysitter.lastName}` : "Άγνωστο";
   };
 
+  const findReviewId = async (babysitterId) => {
+    console.log("Fetching rating for:", { uuid, babysitterId }); // Debug log
+  
+    try {
+      const q = query(
+        collection(FIREBASE_DB, 'ratings'),
+        where('id_p', '==', uuid),
+        where('id_b', '==', babysitterId)
+      );
+      const querySnapshot = await getDocs(q);
+  
+      if (!querySnapshot.empty) {
+        const ratingDoc = querySnapshot.docs[0];
+        console.log("Rating found:", ratingDoc.id); // Debug log
+        return ratingDoc.id;
+      }
+  
+      console.log("No rating found");
+      return null;
+    } catch (error) {
+      console.error('Error fetching rating:', error);
+      return null;
+    }
+  };
+  
+
+
   const handleNewContract = () => {
     navigate('/neo-symbolaio');
   };
@@ -147,10 +174,10 @@ function MainSymbolaiaGoneisPGU() {
                 <thead style={{ lineHeight: "2em" }}>
                   <tr style={{ borderBottom: "2px solid #333" }}>
                     <th>Κωδικός συμβολαίου</th>
-                    <th>Ονοματεπώνυμο επαγγελματία</th>
+                    <th>Ονοματεπώνυμο babysitter</th>
                     <th>Κατάσταση συμβολαίου</th>
                     <th>Αξιολόγηση</th>
-                    <th style={{width:"150px"}}></th>
+                    <th>Συμβόλαιο</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -166,8 +193,29 @@ function MainSymbolaiaGoneisPGU() {
                              }}>
                                 {contract.status}
                             </td>
-                            <td>Προβολή</td>
-                            <VisibilityIcon style={{ cursor: "pointer",marginLeft:"10px" }} onClick={() => handleRedirect(contract.id)}/>
+                            <td>
+                              <span 
+                                style={{ cursor: "pointer", textDecoration: "underline" }} 
+                                onClick={async () => {
+                                  const ratingId = await findReviewId(contract.id_b);
+                                  if (ratingId) {
+                                    navigate(`/epaggelmaties/ratings/previewAksiologisi?id=${ratingId}`);
+                                  } else {
+                                    alert("Δεν βρέθηκε αξιολόγηση.");
+                                  }
+                                }}
+                              >
+                                Προβολή
+                              </span>
+                            </td>
+                            <td>
+                              <span 
+                                style={{ cursor: "pointer", textDecoration: "underline"}} 
+                                onClick={() => handleRedirect(contract.id)}
+                              >
+                                Προβολή
+                              </span>
+                            </td>
                         </tr>
                     ))}
                 </tbody>
