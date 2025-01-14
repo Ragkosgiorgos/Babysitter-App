@@ -18,6 +18,7 @@ const translations = {
   viografiko: "Βιογραφικό",
   aggelies: "Αγγελίες",
   previewAggelias: "Προβολή αγγελίας",
+  dashboard: "Dashboard",
 };
 
 function Breadcrumbs() {
