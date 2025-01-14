@@ -157,7 +157,7 @@ export default function Profile() {
                     >
                         <option value="">Select</option>
                         <option value="parent">Κηδεμόνας</option>
-                        <option value="babysitter">Επαγγελματίας</option>
+                        <option value="babysitter">Babysitter</option>
                     </select>
                 </div>
                 <div className="form-row">

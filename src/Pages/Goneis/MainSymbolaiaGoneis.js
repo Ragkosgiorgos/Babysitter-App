@@ -24,6 +24,7 @@ function MainSymbolaiaGoneisPGU() {
   // Check if user is logged in, get the user's UUID and fetch user data
   const [uuid, setUuid] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [babysitters, setBabysitters] = useState([]);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
       if (user) {
@@ -69,6 +70,31 @@ function MainSymbolaiaGoneisPGU() {
       fetchPosts(); // Fetch posts when component mounts
     }
   }, [uuid]); // Runs when UUID changes
+
+  // Fetch babysitter data
+  useEffect(() => {
+    const fetchBabysitters = async () => {
+      try {
+        const babysitterRef = collection(FIREBASE_DB, 'user');
+        const querySnapshot = await getDocs(query(babysitterRef, where("property", "==", "babysitter")));
+        const babysitterData = querySnapshot.docs.map(doc => ({
+          userId: doc.id,
+          ...doc.data(),
+        }));
+        setBabysitters(babysitterData);
+      } catch (error) {
+        console.error("Error fetching babysitters:", error);
+      }
+    };
+
+    fetchBabysitters();
+  }, []);
+
+  // Find the babysitter's full name based on their ID
+  const findProfessionalName = (babysitterId) => {
+    const babysitter = babysitters.find(b => b.userId === babysitterId);
+    return babysitter ? `${babysitter.firstName} ${babysitter.lastName}` : "Άγνωστο";
+  };
 
   const handleNewContract = () => {
     navigate('/neo-symbolaio');
@@ -132,11 +158,15 @@ function MainSymbolaiaGoneisPGU() {
                     { contracts.map((contract) => (
                         <tr>
                             <td>{contract.id}</td>
-                            <td>{/*//? */}</td>
-                            <td>{contract.status}</td>
+                            <td>{findProfessionalName(contract.id_b)}</td>
+                            <td style={{
+                              color: contract.status === "Σε ισχύ" ? "green" :
+                                     contract.status === "Σε αναμονή" ? "#f28c28" : 
+                                     contract.status === "Απορρίφθηκε" ? "red" : "black"
+                             }}>
+                                {contract.status}
+                            </td>
                             <td>Προβολή</td>
-                            <DeleteForeverIcon style={{ cursor: "pointer", marginLeft: "10px", color: "black" }}/>
-                            <ReplayIcon style={{ cursor: "pointer", marginLeft: "10px"}} />
                             <VisibilityIcon style={{ cursor: "pointer",marginLeft:"10px" }} onClick={() => handleRedirect(contract.id)}/>
                         </tr>
                     ))}

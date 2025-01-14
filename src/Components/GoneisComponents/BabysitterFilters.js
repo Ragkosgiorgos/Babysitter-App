@@ -225,7 +225,7 @@ function BabysitterFilters({ applyFilters, resetFilters, ageR, areaR }) {
             />
             <FormControlLabel
               control={<Radio checked={selectedAccomodation === "Ναι"} onChange={handleAccomodationChange} value={"Ναι"} />}
-              label="Στον χώρο του επαγγελματία"
+              label="Στον χώρο του/της babysitter"
             />
         </div>
       </div>

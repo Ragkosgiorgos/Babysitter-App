@@ -78,8 +78,8 @@ function CreateRating() {
   });
 
   const steps = [
-    "Επιλέξτε τον επαγγελματία που θέλετε να αξιολογήσετε",
-    "Αξιολογήστε τον επαγγελματία"
+    "Επιλέξτε τον/την babysitter που θέλετε να αξιολογήσετε",
+    "Αξιολογήστε τον/την babysitter"
   ];
 
   const [activeStep, setActiveStep] = useState(0);
@@ -136,7 +136,7 @@ function CreateRating() {
       case 0:
         return (
           <div style={{ display: "flex", flexDirection: "column", gap: "2%" }}>
-            <h3 style={{ marginTop: "3%", textAlign: "center" }}>Επιλέξτε τον επαγγελματία που θέλετε να αξιολογήσετε</h3>
+            <h3 style={{ marginTop: "3%", textAlign: "center" }}>Επιλέξτε τον/την babysitter που θέλετε να αξιολογήσετε</h3>
             {isSubmitting && !babysitter.userId && ( <p style={{ color: "red", marginLeft: "25%" }}>Παρακαλώ επιλέξτε νταντά</p> )}
             <select
               style={{ width: "50%", height: "30px", marginLeft: "25%" }}

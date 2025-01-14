@@ -14,7 +14,7 @@ const translations = {
   anazitisi: "Αναζήτηση",
   viewPost: "Προβολή αγγελίας",
   previewAksiologisi: "Προβολή αξιολόγησης",
-  epaggelmaties: "Επαγγελματίες",
+  epaggelmaties: "Babysitters",
   viografiko: "Βιογραφικό",
   aggelies: "Αγγελίες",
 };

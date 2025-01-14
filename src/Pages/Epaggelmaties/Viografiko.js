@@ -29,7 +29,7 @@ function Viografiko() {
             }
         });
         return () => unsubscribe();
-    }, []);
+    }, [navigate]);
 
     useEffect(() => {
         if (uuid) {
@@ -73,7 +73,7 @@ function Viografiko() {
             }
             fetchRatings();
         }
-    }, [uuid]);
+    }, [uuid, navigate]);
 
     const handleDescriptionChange = (e) => {
         setDescription(e.target.value);
