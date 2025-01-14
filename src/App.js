@@ -6,10 +6,10 @@ import MainEpaggelmatiesPGU from "./Pages/Epaggelmaties/MainEpaggelmatiesPGU";
 import BabysitterSearch from "./Pages/Goneis/BabysitterSearch";
 import MainAggeliesPGU from "./Pages/Epaggelmaties/Aggelies/MainAggeliesPGU";
 import DimiourgiaAggelias from "./Pages/Epaggelmaties/Aggelies/DimiourgiaAggelias";
-import MainRantevouPGU from "./Pages/Epaggelmaties/MainRantevouPGU"
+import MainRantevouPGU from "./Pages/Epaggelmaties/Rantevou/MainRantevouPGU"
 import AvailableRantevouPGU from "./Pages/Epaggelmaties/Rantevou/AvailableRantevouPGU";
 import AddRantevouPGU from "./Pages/Epaggelmaties/Rantevou/AddRantevouPGU"
-import ProepiskopisiRantevouPGU from "./Pages/Epaggelmaties/ProepiskopisiRantevouPGU";
+import ProepiskopisiRantevouPGU from "./Pages/Epaggelmaties/Rantevou/ProepiskopisiRantevouPGU";
 import EditRantevouPGU from "./Pages/Epaggelmaties/Rantevou/EditRantevouPGU";
 import ViewJobPost from "./Pages/Goneis/ViewJobPost";
 import PreviewAggelias from "./Pages/Epaggelmaties/Aggelies/PreviewAggelias";
