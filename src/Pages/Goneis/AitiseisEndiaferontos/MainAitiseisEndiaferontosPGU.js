@@ -19,11 +19,11 @@ function MainAitiseisEndiaferontosPGU() {
   const [uuid, setUuid] = useState(null);
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
-  const routeChangeEdit = (id_aitisis) =>{ 
-    navigate(`edit?id=${id_aitisis}`);
+  const routeChangeEdit = (ids) =>{ 
+    navigate(`edit?id=${ids[0]}&id_b=${ids[1]}`);
   };
 
-  const routeChangePreview = (id_aitisis) =>{ 
+  const routeChangePreview = (id_aitisis,id_b) =>{ 
     navigate(`preview?id=${id_aitisis}`);
   };
 
@@ -120,7 +120,7 @@ function MainAitiseisEndiaferontosPGU() {
                       <td style={{ display: "flex", justifyContent: "center", gap: "10%" }}>
                       {post.status === "Oριστική υποβολή" && (<VisibilityIcon onClick={() => routeChangePreview(post.id)  }
                       style={{ cursor: "pointer" }}/>)}
-                      {post.status === "Σε προσωρινή αποθήκευση" && (<ArrowForwardIcon onClick={() => routeChangeEdit(post.id)  }
+                      {post.status === "Σε προσωρινή αποθήκευση" && (<ArrowForwardIcon onClick={() => routeChangeEdit([post.id,post.id_b])  }
                       style={{ cursor: "pointer" }}/>)}
                         <DeleteForeverIcon onClick={() => handleDelete(post.id)} style={{ cursor: "pointer" }} />
                       </td>

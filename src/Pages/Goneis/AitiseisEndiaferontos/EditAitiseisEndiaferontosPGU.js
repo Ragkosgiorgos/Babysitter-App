@@ -66,6 +66,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
 
   const [newData, setnewData] = useState({
     id: id,
+    id_b: id_b,
     postid: "",
     UserId: "",
     tropos_synantisis: "",
@@ -94,41 +95,25 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                 } finally {
                     setLoading(false);
                 }
-                if(id_b ===""){
-                  try {
-                    setLoading(true);
-                    const q = query(collection(FIREBASE_DB, 'rantevou'), where('id_p', '==', uuid),where('date', '==', newData.date));
-                    const querySnapshot = await getDocs(q);
-                    const rantevou = querySnapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                    }));
-                    setRantevou(rantevou[0]);
-                  } catch (error) {
-                      console.error('Error fetching post data:', error);
-                  } finally {
-                      setLoading(false);
-                  }
-                }
             }
         };
 
     fetchAitiseisData();
   }, [id]);
 
-      // Fetch the job posts' data from the database
+      // Fetch the posts' data from the database
       useEffect(() => {
         if (id_b) {
           const fetchPosts = async () => {
             try {
               setLoading(true);
-              const q = query(collection(FIREBASE_DB, 'rantevou'), where('id_b', '==', id_b),where('id_p', '==',""));
+              const q = query(collection(FIREBASE_DB, 'rantevou'), where('id_b', '==', id_b),where('date', '==', newData.date));
               const querySnapshot = await getDocs(q);
-              const posts = querySnapshot.docs.map((doc) => ({
+              const post = querySnapshot.docs.map((doc) => ({
                 id: doc.id,
                 ...doc.data(),
               }));
-              setPosts(posts);
+              setRantevou(post);
             } catch (error) {
               console.error('Error fetching posts:', error);
             } finally {
@@ -139,7 +124,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
         }
       }, [id_b]);
   
-  
+  console.log(newData);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -181,7 +166,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
   };
 
   const handleFinalSave = async () => {
-    if(rantevou.id_p == ""){
+    if(rantevou.id_p === ""){
       if (id === "" ) { // If post_id === -1 then we are creating a new post
           newData.UserId = uuid;
           newData.status = "Oριστική υποβολή";
@@ -286,7 +271,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
     return <Loader />;
   }
   
-  if (!user) {
+  if (!user || !rantevou) {
     return <div>Δεν βρέθηκε ο χρήστης</div>;
   }
 
@@ -300,7 +285,10 @@ function SubmitAitiseisEndiaferontosPGU(props) {
             <div style={{ flex: 1, overflowY: "auto" }}>
   
               <Breadcrumbs />
+              {/* {(id !== "" && rantevou.id_p !=="")  
+                    ? <h4 style={{ color: "red", textAlign: "center" }}> Παρακαλώ συμπληρώστε σωστά όλα τα πεδία </h4> : ""} */}
               
+
               <div style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%"}}>
                 <div style={{width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px"}}>
                     <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
