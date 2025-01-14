@@ -21,7 +21,7 @@ import { FIREBASE_AUTH, FIREBASE_DB } from "../../../config/firebase";
 function PreviewAitiseisEndiaferontosPGU(props) {
   const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
-  const id = parseInt(params.get("id")) || "";
+  const id = params.get("id") || "";
 
   const [uuid, setUuid] = useState(null);
     useEffect(() => {
@@ -50,7 +50,7 @@ function PreviewAitiseisEndiaferontosPGU(props) {
   fetchUserData();
 
   const [newData, setnewData] = useState({
-    id: "",
+    id: id,
     postid: "",
     UserId: "",
     tropos_synantisis: "",

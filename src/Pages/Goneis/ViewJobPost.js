@@ -124,8 +124,8 @@ function ViewJobPost() {
                             <h6> <b style={{ textDecoration: "underline" }}>Περιγραφή:</b> {post.description} </h6>
                         </div>
 
-                        <Link to={`/epaggelmaties/aitisi-endiaferontos?ntanta=${profile.userId}`}>
-                            <button className="btn btn-primary" style={{ width: "20vw", marginTop: "2vh", marginBottom: "2vh" }}>
+                        <Link to={`/goneis/profile/aitiseis-endiaferontos/edit?id_b=${profile.userId}`}>
+                            <button  className="btn btn-primary" style={{ width: "20vw", marginTop: "2vh", marginBottom: "2vh" }}>
                                 Επικοινωνία
                             </button>
                         </Link>

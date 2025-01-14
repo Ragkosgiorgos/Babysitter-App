@@ -7,10 +7,10 @@ import BabysitterSearch from "./Pages/Goneis/BabysitterSearch";
 import MainAggeliesPGU from "./Pages/Epaggelmaties/Aggelies/MainAggeliesPGU";
 import DimiourgiaAggelias from "./Pages/Epaggelmaties/Aggelies/DimiourgiaAggelias";
 import MainRantevouPGU from "./Pages/Epaggelmaties/MainRantevouPGU"
-import AvailableRantevouPGU from "./Pages/Epaggelmaties/AvailableRantevouPGU";
-import AddRantevouPGU from "./Pages/Epaggelmaties/AddRantevouPGU"
+import AvailableRantevouPGU from "./Pages/Epaggelmaties/Rantevou/AvailableRantevouPGU";
+import AddRantevouPGU from "./Pages/Epaggelmaties/Rantevou/AddRantevouPGU"
 import ProepiskopisiRantevouPGU from "./Pages/Epaggelmaties/ProepiskopisiRantevouPGU";
-import EditRantevouPGU from "./Pages/Epaggelmaties/EditRantevouPGU";
+import EditRantevouPGU from "./Pages/Epaggelmaties/Rantevou/EditRantevouPGU";
 import ViewJobPost from "./Pages/Goneis/ViewJobPost";
 import PreviewAggelias from "./Pages/Epaggelmaties/Aggelies/PreviewAggelias";
 import GonRatingMain from "./Pages/Goneis/Ratings/GonRatingMain";
@@ -31,6 +31,7 @@ import EditAitiseisEndiaferontosPGU from "./Pages/Goneis/AitiseisEndiaferontos/E
 import PreviewAitiseisEndiaferontosPGU from "./Pages/Goneis/AitiseisEndiaferontos/PreviewAitiseisEndiaferontos";
 import ErrorPage from "./Components/ErrorPage";
 import ProvoliSymbolaiou from "./Pages/Goneis/ProvoliSymbolaiou";
+import ViewAvailabilityPGU from "./Pages/Goneis/AitiseisEndiaferontos/ViewAvailabilityPGU";
 
 function App() {
   return (
@@ -82,7 +83,7 @@ function App() {
           <Route path="/goneis/profile/aitiseis-endiaferontos" element={<MainAitiseisEndiaferontosPGU />} />
           <Route path="/goneis/profile/aitiseis-endiaferontos/edit" element={<EditAitiseisEndiaferontosPGU />} />
           <Route path="/goneis/profile/aitiseis-endiaferontos/preview" element={<PreviewAitiseisEndiaferontosPGU />} />
-          
+          <Route path="/goneis/view-availability" element={<ViewAvailabilityPGU />} />
           <Route path="*" element={<h1>404 - Not Found</h1>} />
 
           <Route path="*" element={<ErrorPage />} />

@@ -172,7 +172,7 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/#">
+                                <a className="dropdown-item" href="/epaggelmaties/rantevou">
                                     Τα Ραντεβού μου
                                 </a>
                             </li>

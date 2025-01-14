@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Header from "../../../Components/Header";
-import Footer from "../../../Components/Footer";
-import Breadcrumbs from "../../../Components/Breadcrump";
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import Header from "../../Components/Header";
+import Footer from "../../Components/Footer";
+import Breadcrumbs from "../../Components/Breadcrump";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import Button from '@mui/material/Button';
@@ -11,20 +10,20 @@ import InfoIcon from '@mui/icons-material/Info';
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
-import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
-import Loader from "../../../Components/Loader";
+import { FIREBASE_DB, FIREBASE_AUTH } from "../../config/firebase";
+import Loader from "../../Components/Loader";
 
-function MainAitiseisEndiaferontosPGU() {
-  const navigate = useNavigate(); 
+function MainRantevouPGU() { 
   const [uuid, setUuid] = useState(null);
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
-  const routeChangeEdit = (id_aitisis) =>{ 
-    navigate(`edit?id=${id_aitisis}`);
+  const navigate = useNavigate(); 
+  const routeChangeAvailable = () =>{ 
+    navigate(`available`);
   };
 
-  const routeChangePreview = (id_aitisis) =>{ 
-    navigate(`preview?id=${id_aitisis}`);
+  const routeChangePreview = (id) =>{ 
+    navigate(`proepiskopisi?id=${id}`);
   };
 
   // Check if user is logged in, get the user's UUID
@@ -39,42 +38,35 @@ function MainAitiseisEndiaferontosPGU() {
     return () => unsubscribe();
   }, [navigate]);
 
-    // Fetch the job posts' data from the database
-    useEffect(() => {
-      if (uuid) {
-        const fetchPosts = async () => {
-          try {
-            setLoading(true);
-            const q = query(collection(FIREBASE_DB, 'aitiseis_endiaferontos'), where('UserId', '==', uuid));
-            const querySnapshot = await getDocs(q);
-            const posts = querySnapshot.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-            }));
-            setPosts(posts);
-          } catch (error) {
-            console.error('Error fetching posts:', error);
-          } finally {
-            setLoading(false);
-          }
-        };
-        fetchPosts();
-      }
-    }, [uuid]);
-
-  const handleDelete = async (id) => {
-    try {
-      const updatedPosts = posts.filter(post => post.id !== id);
-      setPosts(updatedPosts);
-      const postRef = doc(FIREBASE_DB, 'aitiseis_endiaferontos', id);
-      await deleteDoc(postRef);
-    } catch (error) {
-      console.error('Error deleting post:', error);
+  // Fetch the job posts' data from the database
+  useEffect(() => {
+    if (uuid) {
+      const fetchPosts = async () => {
+        try {
+          setLoading(true);
+          const q = query(collection(FIREBASE_DB, 'rantevou'), where('id_b', '==', uuid));
+          const querySnapshot = await getDocs(q);
+          const posts = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setPosts(posts);
+        } catch (error) {
+          console.error('Error fetching posts:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchPosts();
     }
-  };
+  }, [uuid]);
+
   //? Error handling
   if (loading) {
     return <Loader />;
+  }
+  function isbooked(dates){
+    return dates.id_p !== "";
   }
 
   return (
@@ -89,15 +81,23 @@ function MainAitiseisEndiaferontosPGU() {
             <Breadcrumbs />
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
-              <h2 style={{ fontWeight: "bold", textAlign: "center", marginTop: "3%" }}>Οι αιτήσεις ενδιαφέροντός μου</h2>
+              <h2 style={{ fontWeight: "bold", textAlign: "center", marginTop: "3%" }}>Τα ραντεβού μου</h2>
               <Tooltip title={
                               <div style={{ display: "flex", justifyContent: "center", gap: "5%", flexDirection:"column" }}>
                                 <div><VisibilityIcon   style={{ cursor: "pointer" }} />: στοιχεία ραντεβού</div>
                                 <div><DeleteForeverIcon style={{ cursor: "pointer" }}  />: διαγραφή ραντεβού</div>
-                                <div><ArrowForwardIcon style={{ cursor: "pointer" }} />: επεξεργασία αίτησης</div>
                               </div>} placement="top" style={{marginTop:"3%"}}>
                   <Button> <InfoIcon /> </Button>
                 </Tooltip>
+            </div>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%", marginLeft: "70%" }}>
+              
+              <button  onClick={routeChangeAvailable} style={{  height: "3%", backgroundColor: "#2b8cbe", color: "white", 
+                                borderRadius: "5px", cursor: "pointer", border: "3px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)" }}>
+                Επεξεργασία διαθέσιμων ραντεβού
+              </button>
+              
+              
             </div>
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
@@ -107,22 +107,21 @@ function MainAitiseisEndiaferontosPGU() {
                   <tr style={{ borderBottom: "2px solid #333" }}>
                     <th>Κωδικός αίτησης</th>
                     <th>Αγγελία</th>
-                    <th>Κατάσταση</th>
+                    <th>Ημερομηνία</th>
+                    <th>Τρόπος</th>
                     <th>Ενέργειες</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {posts.map((post) => (
+                  {posts.filter(isbooked).map((post) => (
                     <tr key={post.id} style={{ borderTop: "0.2px solid #333" }}>
                       <td>{post.id}</td>
-                      <td>{post.postid}</td>
-                      <td>{post.status}</td>
+                      <td>{post.id_aggelias}</td>
+                      <td>{post.date}</td>
+                      <td>{post.tropos_synantisis}</td>
                       <td style={{ display: "flex", justifyContent: "center", gap: "10%" }}>
-                      {post.status === "Oριστική υποβολή" && (<VisibilityIcon onClick={() => routeChangePreview(post.id)  }
-                      style={{ cursor: "pointer" }}/>)}
-                      {post.status === "Σε προσωρινή αποθήκευση" && (<ArrowForwardIcon onClick={() => routeChangeEdit(post.id)  }
-                      style={{ cursor: "pointer" }}/>)}
-                        <DeleteForeverIcon onClick={() => handleDelete(post.id)} style={{ cursor: "pointer" }} />
+                        <VisibilityIcon onClick={() => routeChangePreview(post.id)  } style={{ cursor: "pointer" }} />
+                        <DeleteForeverIcon style={{ cursor: "pointer" }} />
                       </td>
                     </tr>
                   ))}
@@ -144,4 +143,4 @@ function MainAitiseisEndiaferontosPGU() {
   );
 }
 
-export default MainAitiseisEndiaferontosPGU;
+export default MainRantevouPGU;

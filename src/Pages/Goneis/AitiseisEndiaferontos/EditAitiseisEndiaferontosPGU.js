@@ -5,7 +5,7 @@ import Breadcrumbs from "../../../Components/Breadcrump";
 import Button from '@mui/material/Button';
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { RadioGroup, FormControlLabel, Radio } from "@mui/material";
+import { RadioGroup, FormControlLabel, Radio, MenuItem, Select, FormControl, InputLabel } from "@mui/material";
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -15,16 +15,20 @@ import dayjs from 'dayjs';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs, addDoc, setDoc, doc } from 'firebase/firestore';
+import { collection, query, where, getDocs, addDoc, setDoc, doc, Timestamp } from 'firebase/firestore';
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../../config/firebase";
 import Loader from "../../../Components/Loader";
+import { set } from "date-fns";
 
 function SubmitAitiseisEndiaferontosPGU(props) {
   const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id") || "";
+  const id_b = params.get("id_b") || "";
+  const [rantevou,setRantevou] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState({});
+  const [posts, setPosts] = useState([]);
 
   const [uuid, setUuid] = useState(null);
     useEffect(() => {
@@ -68,11 +72,10 @@ function SubmitAitiseisEndiaferontosPGU(props) {
     status: "Σε προσωρινή αποθήκευση",
     date: new Date().toLocaleDateString(),
     description: "", 
-    date_of_birth: "",
     gender: "",
   });
 
-  const [aitisi, setAitisi] = useState({});
+
   // If post_id === -1 then we are creating a new post, otherwise we are editing an existing one
   useEffect(() => {
     const fetchAitiseisData = async () => {
@@ -85,18 +88,57 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                         id: doc.id,
                         ...doc.data(),
                     }));
-                    console.log(posts[0]);
                     setnewData(posts[0]);
                 } catch (error) {
                     console.error('Error fetching post data:', error);
                 } finally {
                     setLoading(false);
                 }
+                if(id_b ===""){
+                  try {
+                    setLoading(true);
+                    const q = query(collection(FIREBASE_DB, 'rantevou'), where('id_p', '==', uuid),where('date', '==', newData.date));
+                    const querySnapshot = await getDocs(q);
+                    const rantevou = querySnapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }));
+                    setRantevou(rantevou[0]);
+                  } catch (error) {
+                      console.error('Error fetching post data:', error);
+                  } finally {
+                      setLoading(false);
+                  }
+                }
             }
         };
 
     fetchAitiseisData();
   }, [id]);
+
+      // Fetch the job posts' data from the database
+      useEffect(() => {
+        if (id_b) {
+          const fetchPosts = async () => {
+            try {
+              setLoading(true);
+              const q = query(collection(FIREBASE_DB, 'rantevou'), where('id_b', '==', id_b),where('id_p', '==',""));
+              const querySnapshot = await getDocs(q);
+              const posts = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+              }));
+              setPosts(posts);
+            } catch (error) {
+              console.error('Error fetching posts:', error);
+            } finally {
+              setLoading(false);
+            }
+          };
+          fetchPosts();
+        }
+      }, [id_b]);
+  
   
 
   const handleInputChange = (e) => {
@@ -132,58 +174,113 @@ function SubmitAitiseisEndiaferontosPGU(props) {
         } catch (error) {
             console.error('Error updating document:', error);
 
+        }  finally{
+          navigate(-1);
         }
     }
   };
 
   const handleFinalSave = async () => {
-    if (id === "") { // If post_id === -1 then we are creating a new post
-        newData.UserId = uuid;
-        newData.status = "Oριστική υποβολή";
-        try{
-            const aitiseisRef = collection(FIREBASE_DB, 'aitiseis_endiaferontos');
+    if(rantevou.id_p == ""){
+      if (id === "" ) { // If post_id === -1 then we are creating a new post
+          newData.UserId = uuid;
+          newData.status = "Oριστική υποβολή";
+          rantevou.id_p = uuid;
+          try{
+              const aitiseisRef = collection(FIREBASE_DB, 'aitiseis_endiaferontos');
 
-            const docRef = await addDoc(aitiseisRef, newData);
+              const docRef = await addDoc(aitiseisRef, newData);
 
-            const documentId = docRef.id;
-            newData.id = documentId;
+              const documentId = docRef.id;
+              newData.id = documentId;
 
-            await setDoc(docRef, { id: documentId }, { merge: true });
+              await setDoc(docRef, { id: documentId }, { merge: true });
 
-        } catch (error) {
-            console.error('Error adding document:', error);
-        }  finally{
-          navigate(-1);
-        }
-    } else { // Otherwise we are editing an existing post
-        newData.status = "Oριστική υποβολή";
-        try {
-            const q = query(collection(FIREBASE_DB, 'aitiseis_endiaferontos'),where('id', '==', id));
+          } catch (error) {
+              console.error('Error adding document:', error);
+          }
+          try {
+            const q = query(collection(FIREBASE_DB, 'rantevou'),where('id', '==', rantevou.id));
             const querySnapshot = await getDocs(q);
-            console.log(querySnapshot.id);
-            const posts = querySnapshot.docs.map((doc) => ({
+            const Posts = querySnapshot.docs.map((doc) => ({
                 id: doc.id,
                 ...doc.data(),
             }));
-            console.log("Document ID:", posts);
-            const postRef = doc(FIREBASE_DB, 'aitiseis_endiaferontos', posts[0].id);
-            await setDoc(postRef, newData, { merge: true });
+            const postRef = doc(FIREBASE_DB, 'rantevou', Posts[0].id);
+            await setDoc(postRef, rantevou, { merge: true });
 
         } catch (error) {
             console.error('Error updating document:', error);
 
-        } finally{
+        }  finally{
           navigate(-1);
         }
-    }
+      } else { // Otherwise we are editing an existing post
+          newData.status = "Oριστική υποβολή";
+          try {
+              const q = query(collection(FIREBASE_DB, 'aitiseis_endiaferontos'),where('id', '==', id));
+              const querySnapshot = await getDocs(q);
+              const Posts = querySnapshot.docs.map((doc) => ({
+                  id: doc.id,
+                  ...doc.data(),
+              }));
+              const postRef = doc(FIREBASE_DB, 'aitiseis_endiaferontos', Posts[0].id);
+              await setDoc(postRef, newData, { merge: true });
 
+          } catch (error) {
+              console.error('Error updating document:', error);
+
+          }
+          try {
+            const q = query(collection(FIREBASE_DB, 'rantevou'),where('id', '==', rantevou.id));
+            const querySnapshot = await getDocs(q);
+            const Posts = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            const postRef = doc(FIREBASE_DB, 'rantevou', Posts[0].id);
+            await setDoc(postRef, rantevou, { merge: true });
+
+        } catch (error) {
+            console.error('Error updating document:', error);
+
+        }  finally{
+          navigate(-1);
+        }
+      }
+    }
+    else{
+      console.log("err");
+    }
   };
 
-  const location = useLocation();
-  const today = dayjs();
+  const handleDropdownChange = (post)=>{
+    newData.date = post.date;
+    setRantevou(post);
+  };
 
+  const handleProfileRedirect = () =>{ 
+    navigate(`../goneis/profile`);
+  };
+  
   const isInPast = (date) => (date.get('year') < dayjs().get('year')) || (date.get('year') === dayjs().get('year') && date.get('month') < dayjs().get('month')) || (date.get('year') === dayjs().get('year') && date.get('month') === dayjs().get('month') && date.get('date') < dayjs().get('date'));
   const isNotPast = (date) => (date.get('year') > dayjs().get('year')) || (date.get('year') === dayjs().get('year') && date.get('month') > dayjs().get('month')) || (date.get('year') === dayjs().get('year') && date.get('month') === dayjs().get('month') && date.get('date') >= dayjs().get('date'));
+  
+  const handleDateTimeRangePickerChange = (_value) => {
+    let date = dayjs(_value).format('YYYY-MM-DD HH:mm');
+    setnewData((prevData) => ({
+      ...prevData,
+      ["date"]: date,
+  }));
+  }
+
+  function ftf(posts){
+    return posts.tropos_synantisis === "Δια ζώσης";
+  }
+
+  function remote(posts){
+    return posts.tropos_synantisis === "Διαδικτυακά";
+  }
 
   if (loading) {
     return <Loader />;
@@ -204,56 +301,69 @@ function SubmitAitiseisEndiaferontosPGU(props) {
   
               <Breadcrumbs />
               
-              
-              <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
-        
-                <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
-                  <tbody>
-                  <tr style={{ borderBottom: "2px solid #333" }}>
-                  <th>Στοιχεία επικοινωνίας:</th>
-                  </tr>
-                  <div >
+              <div style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%"}}>
+                <div style={{width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px"}}>
+                    <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
+                        <b>Επιβεβαιώστε τα προσωπικά σας στοιχεία</b>
+                    </h2>
+                    <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "98%" }}>
+                            <div>
+                            <b>Όνομα:</b> {user?.firstName || "N/A"}
+                            </div>
+                            <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleProfileRedirect()} />
+                        </div>
+                    </h4>
+                    <hr />
+                    <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "98%" }}>
+                            <div>
+                                <b>Επίθετο:</b> {user?.lastName || "N/A"}
+                            </div>
+                            <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleProfileRedirect()} />
+                          </div>
+                    </h4>
+                    <hr />
+                    <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "98%" }}>
                     <div>
-                        <label style={{ padding: "20px" }}>
-
-                            Ονοματεπώνυμο <tr> <input type="text" 
-                              value={user.firstName + " " + user.lastName}
-                              onChange={handleInputChange}
-                              // onChange={handleChange} 
-                              /> </tr>
-                        </label> 
-
-                        <label style={{ padding: "20px" }}>
-                            Τηλέφωνο <tr> <input value={user.phone} onChange={handleInputChange}/> </tr>
-                        </label> 
-                         
-                        <label>
-                            Email <tr> <input value={user.email} onChange={handleInputChange}/> </tr>
-                        </label> 
+                        <b>Εmail:</b> {user.email || "N/A"}
                     </div>
+                    <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleProfileRedirect()} />
                   </div>
-                  </tbody>
-                </table>
+                    </h4>
+                    <hr />
+                    <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "98%" }}>
+                    <div>
+                        <b>Τηλέφωνο:</b> {user.phone || "N/A"}
+                    </div>
+                    <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleProfileRedirect()} />
+                  </div>
+                    </h4>
+                </div>
               </div>
-
               <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
                 <table style={{ width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
                   <tbody>
                   
             
-                  <h5 style={{ fontWeight: "bold"}}> Στοιχεία παιδιού </h5>
+                  <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
+                    <b>Στοιχεία παιδιού</b>
+                  </h2>
                   <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
                     <th>Φύλο</th>
-                    <RadioGroup value={newData.gender } onClick={handleInputChange} style={{ padding: "5px", borderRadius: "4px" }}>
+                    <RadioGroup name="gender" value={newData.gender } onClick={handleInputChange} style={{ padding: "5px", borderRadius: "4px" }}>
                         <FormControlLabel value="Αγόρι" control={<Radio />} label="Αγόρι" />
                         <FormControlLabel value="Κορίτσι" control={<Radio />} label="Κορίτσι" />
                     </RadioGroup>
                   </div>
                   <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
                     <th>Ημερομηνία γέννησης</th>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DemoContainer components={['DatePicker']}>
+                    <LocalizationProvider  dateAdapter={AdapterDayjs}>
+                        <DemoContainer  components={['DatePicker']}>
                             <DatePicker 
+                              name="childBirthDate"
                               shouldDisableYear={isNotPast}
                               onChange={handleInputChange}
                               value={dayjs(user.childBirthDate)}
@@ -269,12 +379,54 @@ function SubmitAitiseisEndiaferontosPGU(props) {
               <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
                 <table style={{ width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
                   <tbody>
-                  <h5 style={{ marginLeft: "5%" ,textAlign: "left" ,fontWeight: "bold"}}> Επιθυμητός τρόπος επικοινωνίας </h5>
-                  <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
-                    <RadioGroup value={newData.tropos_synantisis} onChange={handleInputChange} style={{ padding: "5px", borderRadius: "4px" }}>
+                    <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
+                      <b>Επιθυμητός τρόπος επικοινωνίας</b>
+                    </h2>                  
+                    <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
+                    <RadioGroup name="tropos_synantisis" value={newData.tropos_synantisis} onChange={handleInputChange} style={{ padding: "5px", borderRadius: "4px" }}>
                         <FormControlLabel value="Δια ζώσης" control={<Radio />} label="Δια ζώσης" />
                         <FormControlLabel value="Διαδικτυακά" control={<Radio />} label="Διαδικτυακά" />
                     </RadioGroup>
+
+                    {newData.tropos_synantisis === 'Διαδικτυακά' && (
+                      <FormControl fullWidth style={{ marginTop: '20px' }}>
+                        <InputLabel>Επιλέξτε ημερομηνία και ώρα</InputLabel>
+                        <Select
+                          value={posts.date}
+                          label="Επιλέξτε ημερομηνία και ώρα"
+                        >
+                          {loading ? (
+                            <MenuItem disabled>Loading...</MenuItem>
+                          ) : (
+                            posts.filter(remote).map((post) => (
+                              <MenuItem onClick={()=>handleDropdownChange(post)} key={post.id} value={post.id}>
+                                {post.date}
+                              </MenuItem>
+                            ))
+                          )}
+                        </Select>
+                      </FormControl>
+                      )}
+                      {newData.tropos_synantisis === 'Δια ζώσης' && (
+                      <FormControl fullWidth style={{ marginTop: '20px' }}>
+                        <InputLabel>Επιλέξτε ημερομηνία και ώρα</InputLabel>
+                        <Select
+                          value={posts.date}
+                          // onChange={handleDropdownChange}
+                          label="Επιλέξτε ημερομηνία και ώρα"
+                        >
+                          {loading ? (
+                            <MenuItem disabled>Loading...</MenuItem>
+                          ) : (
+                            posts.filter(ftf).map((post) => (
+                              <MenuItem key={post.id} value={post.id}>
+                                {post.date}
+                              </MenuItem>
+                            ))
+                          )}
+                        </Select>
+                      </FormControl>
+                      )}
                   </div>
                   </tbody>
                 </table>
@@ -283,13 +435,14 @@ function SubmitAitiseisEndiaferontosPGU(props) {
               <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
                 <table style={{ width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
                   <tbody>
-                  <h5 style={{ marginLeft: "5%" ,textAlign: "left" ,fontWeight: "bold"}}> Επιλογή ημερομηνίας </h5>
+                  <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
+                    <b>Επιλογή ημερομηνίας</b>
+                  </h2>  
                   <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DemoContainer onChange={handleInputChange} components={['Ημερομηνία και ώρα']}>
-                        <DemoItem label="Ημερομηνία και ώρα">
-                        
-                        <DateTimePicker  value={dayjs(newData.date)} shouldDisableYear={isInPast} />
+                    <DemoContainer  components={['Ημερομηνία και ώρα']}>
+                        <DemoItem  label="Ημερομηνία και ώρα">
+                        <DateTimePicker  name={"date"}  onChange={handleDateTimeRangePickerChange} value={dayjs(newData.date)} shouldDisableYear={isInPast} />
                         </DemoItem>
                     </DemoContainer>
                   </LocalizationProvider>
@@ -301,7 +454,9 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
                 <table style={{ width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
                   <tbody>
-                  <h5 style={{ marginLeft: "5%" ,textAlign: "left" ,fontWeight: "bold"}}> Μήνυμα </h5>
+                  <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
+                    <b>Μήνυμα</b>
+                  </h2>                  
                   <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
                   <Box
                     
@@ -313,6 +468,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                     <div>
                     
                         <TextField
+                        name="description"
                         onChange={handleInputChange}
                         id="outlined-multiline-flexible"
                         value={newData.description}
