@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import Header from "../../Components/Header";
-import Footer from "../../Components/Footer";
-import Breadcrumbs from "../../Components/Breadcrump";
+import Header from "../../../Components/Header";
+import Footer from "../../../Components/Footer";
+import Breadcrumbs from "../../../Components/Breadcrump";
 import Button from '@mui/material/Button';
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, addDoc, setDoc, doc } from 'firebase/firestore';
-import { FIREBASE_AUTH, FIREBASE_DB } from "../../config/firebase";
+import { FIREBASE_AUTH, FIREBASE_DB } from "../../../config/firebase";
 
 
 function ProepiskopisiRantevouPGU(props) {

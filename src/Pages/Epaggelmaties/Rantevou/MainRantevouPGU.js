@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Header from "../../Components/Header";
-import Footer from "../../Components/Footer";
-import Breadcrumbs from "../../Components/Breadcrump";
+import Header from "../../../Components/Header";
+import Footer from "../../../Components/Footer";
+import Breadcrumbs from "../../../Components/Breadcrump";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import Button from '@mui/material/Button';
@@ -10,8 +10,8 @@ import InfoIcon from '@mui/icons-material/Info';
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
-import { FIREBASE_DB, FIREBASE_AUTH } from "../../config/firebase";
-import Loader from "../../Components/Loader";
+import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
+import Loader from "../../../Components/Loader";
 
 function MainRantevouPGU() { 
   const [uuid, setUuid] = useState(null);
