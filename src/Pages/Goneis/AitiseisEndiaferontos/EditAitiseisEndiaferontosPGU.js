@@ -18,17 +18,17 @@ import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, addDoc, setDoc, doc, Timestamp } from 'firebase/firestore';
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../../config/firebase";
 import Loader from "../../../Components/Loader";
-import { set } from "date-fns";
 
 function SubmitAitiseisEndiaferontosPGU(props) {
   const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id") || "";
-  const id_b = params.get("id_b") || "";
+  const Id_b = params.get("b_id") || "";
   const [rantevou,setRantevou] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState({});
   const [posts, setPosts] = useState([]);
+  console.log(Id_b,"/",id);
 
   const [uuid, setUuid] = useState(null);
     useEffect(() => {
@@ -66,7 +66,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
 
   const [newData, setnewData] = useState({
     id: id,
-    id_b: id_b,
+    id_b: Id_b,
     postid: "",
     UserId: "",
     tropos_synantisis: "",
@@ -90,6 +90,13 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                         ...doc.data(),
                     }));
                     setnewData(posts[0]);
+                    const q2 = query(collection(FIREBASE_DB, 'rantevou'), where('id_b', '==', Id_b), where('date', '==', newData.date));
+                    const querySnapshot2 = await getDocs(q);
+                    const posts2 = querySnapshot.docs.map((doc) => ({
+                      id: doc.id,
+                      ...doc.data(),
+                  }));
+                  setRantevou(posts2[0]);
                 } catch (error) {
                     console.error('Error fetching post data:', error);
                 } finally {
@@ -103,17 +110,17 @@ function SubmitAitiseisEndiaferontosPGU(props) {
 
       // Fetch the posts' data from the database
       useEffect(() => {
-        if (id_b) {
+        if (Id_b) {
           const fetchPosts = async () => {
             try {
               setLoading(true);
-              const q = query(collection(FIREBASE_DB, 'rantevou'), where('id_b', '==', id_b),where('date', '==', newData.date));
+              const q = query(collection(FIREBASE_DB, 'rantevou'), where('id_b', '==', Id_b));
               const querySnapshot = await getDocs(q);
               const post = querySnapshot.docs.map((doc) => ({
                 id: doc.id,
                 ...doc.data(),
               }));
-              setRantevou(post);
+              setPosts(post);
             } catch (error) {
               console.error('Error fetching posts:', error);
             } finally {
@@ -122,9 +129,8 @@ function SubmitAitiseisEndiaferontosPGU(props) {
           };
           fetchPosts();
         }
-      }, [id_b]);
-  
-  console.log(newData);
+      }, [Id_b]);
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -241,7 +247,6 @@ function SubmitAitiseisEndiaferontosPGU(props) {
 
   const handleDropdownChange = (post)=>{
     newData.date = post.date;
-    setRantevou(post);
   };
 
   const handleProfileRedirect = () =>{ 
@@ -271,10 +276,10 @@ function SubmitAitiseisEndiaferontosPGU(props) {
     return <Loader />;
   }
   
-  if (!user || !rantevou) {
+  if (!user) {
     return <div>Δεν βρέθηκε ο χρήστης</div>;
   }
-
+  console.log(rantevou.id_p);
   return (
       <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
         <div>
@@ -283,10 +288,10 @@ function SubmitAitiseisEndiaferontosPGU(props) {
           <div style={{ display: "flex", flexDirection: "column", overflow: "auto" }}>
   
             <div style={{ flex: 1, overflowY: "auto" }}>
-  
+              
               <Breadcrumbs />
-              {/* {(id !== "" && rantevou.id_p !=="")  
-                    ? <h4 style={{ color: "red", textAlign: "center" }}> Παρακαλώ συμπληρώστε σωστά όλα τα πεδία </h4> : ""} */}
+              {(id !== "" && rantevou.id_p !== undefined)  
+                    ? <h4 style={{ color: "red", textAlign: "center" }}> Παρακαλώ συμπληρώστε σωστά όλα τα πεδία </h4> : ""}
               
 
               <div style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%"}}>

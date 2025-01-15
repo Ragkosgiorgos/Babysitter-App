@@ -20,7 +20,7 @@ function MainAitiseisEndiaferontosPGU() {
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
   const routeChangeEdit = (ids) =>{ 
-    navigate(`edit?id=${ids[0]}&id_b=${ids[1]}`);
+    navigate(`edit?id=${ids[0]}&b_id=${ids[1]}`);
   };
 
   const routeChangePreview = (id_aitisis,id_b) =>{ 
