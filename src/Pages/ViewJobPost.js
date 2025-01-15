@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Header from "../../Components/Header";
-import Footer from "../../Components/Footer";
-import Breadcrumbs from "../../Components/Breadcrumbs";
+import Header from "../Components/Header";
+import Footer from "../Components/Footer";
+import Breadcrumbs from "../Components/Breadcrumbs";
 import { Carousel } from 'react-bootstrap';
 import HomeIcon from '@mui/icons-material/Home';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -11,9 +11,9 @@ import SchoolIcon from '@mui/icons-material/School';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import EventIcon from '@mui/icons-material/Event';
 import { FaBirthdayCake } from 'react-icons/fa';
-import Loader from '../../Components/Loader';
-import { calculateAge, capitalizeWords, TruncatedText } from "../../Utils/Methods/index";
-import { FIREBASE_DB } from "../../config/firebase";
+import Loader from '../Components/Loader';
+import { calculateAge, capitalizeWords, TruncatedText } from "../Utils/Methods/index";
+import { FIREBASE_DB } from "../config/firebase";
 import { collection, query, where, getDocs } from 'firebase/firestore';
 
 function ViewJobPost() {

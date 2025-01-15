@@ -1,29 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { FormControl, FormControlLabel, Radio, RadioGroup, FormLabel } from "@mui/material";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Checkbox from '@mui/material/Checkbox';
 import dayjs from 'dayjs';
-import localizedFormat from 'dayjs/plugin/localizedFormat';
-import updateLocale from 'dayjs/plugin/updateLocale';
 import 'dayjs/locale/el'; 
-import Footer from "../../Components/Footer";
-import Header from "../../Components/Header";
-import Loader from "../../Components/Loader.js";
-import { useLocation } from "react-router-dom";
+import Footer from "../../../Components/Footer";
+import Header from "../../../Components/Header";
+import Loader from "../../../Components/Loader.js";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css"; 
 import "react-date-range/dist/theme/default.css"; 
-import ProgressTracker from "../../Components/ProgressTracker";
+import ProgressTracker from "../../../Components/ProgressTracker";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { FIREBASE_DB, FIREBASE_AUTH } from '../../config/firebase.js'
-import { doc, updateDoc } from 'firebase/firestore';
+import { FIREBASE_DB, FIREBASE_AUTH } from '../../../config/firebase.js';
 import { addDoc, setDoc } from 'firebase/firestore';
 import { useNavigate } from "react-router-dom";
-import { handleScrollToTop } from "../../Utils/Methods/index.js";
-import { Paid } from "@mui/icons-material";
+import { handleScrollToTop } from "../../../Utils/Methods/index.js";
 dayjs.locale("el"); // Set the locale to Greek
 
 function DimiourgiaSymbolaiou(props) {

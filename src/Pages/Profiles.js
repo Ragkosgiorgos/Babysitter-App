@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import EpaggelmatiesProfile from './Epaggelmaties/EpaggelmatiesProfile';
-import GoneisProfile from './Goneis/GoneisProfile';
+import EpaggelmatiesProfile from './Epaggelmaties/Profile/EpaggelmatiesProfile';
+import GoneisProfile from './Goneis/Profile/GoneisProfile';
 import Loader from '../Components/Loader';
 import { useNavigate } from 'react-router-dom';
 import { FIREBASE_DB, FIREBASE_AUTH } from '../config/firebase';

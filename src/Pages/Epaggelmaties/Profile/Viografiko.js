@@ -1,13 +1,13 @@
-import Header from "../../Components/Header";
-import Footer from "../../Components/Footer";
-import Breadcrumbs from "../../Components/Breadcrumbs";
 import React, { useState, useEffect } from "react";
-import Loader from '../../Components/Loader';
+import Header from "../../../Components/Header";
+import Footer from "../../../Components/Footer";
+import Breadcrumbs from "../../../Components/Breadcrumbs";
+import Loader from '../../../Components/Loader';
 import { Carousel } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
-import { calculateAge, TruncatedText } from "../../Utils/Methods/index";
+import { calculateAge, TruncatedText } from "../../../Utils/Methods/index";
 import ClearIcon from '@mui/icons-material/Clear';
-import { FIREBASE_DB, FIREBASE_AUTH } from "../../config/firebase";
+import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
 import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from "firebase/auth";
 

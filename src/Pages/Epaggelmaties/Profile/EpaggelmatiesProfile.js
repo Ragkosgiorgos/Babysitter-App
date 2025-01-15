@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import Header from "../../Components/Header";
-import Footer from "../../Components/Footer";
-import Breadcrumbs from "../../Components/Breadcrumbs";
-import Loader from "../../Components/Loader";
-import { convertDateFormat } from "../../Utils/Methods";
+import Header from "../../../Components/Header";
+import Footer from "../../../Components/Footer";
+import Breadcrumbs from "../../../Components/Breadcrumbs";
+import Loader from "../../../Components/Loader";
+import { convertDateFormat } from "../../../Utils/Methods";
 import ClearIcon from '@mui/icons-material/Clear';
 import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
-import { FIREBASE_DB, FIREBASE_AUTH } from "../../config/firebase";
+import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
 import { useNavigate } from "react-router-dom";
