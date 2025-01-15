@@ -245,7 +245,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
   };
 
   const handleProfileRedirect = () =>{ 
-    navigate(`../goneis/profile`);
+    navigate("/dashboard/rofiles");
   };
   
   const isInPast = (date) => (date.get('year') < dayjs().get('year')) || (date.get('year') === dayjs().get('year') && date.get('month') < dayjs().get('month')) || (date.get('year') === dayjs().get('year') && date.get('month') === dayjs().get('month') && date.get('date') < dayjs().get('date'));

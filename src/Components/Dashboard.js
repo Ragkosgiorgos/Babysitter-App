@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import Breadcrumbs from './Breadcrump';
 import Loader from './Loader';
-import { useState, useEffect } from 'react';
+import PageCard from './PageCard';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { FIREBASE_AUTH, FIREBASE_DB } from '../config/firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
@@ -14,16 +14,16 @@ const Dashboard = () => {
     
     // Not allow entry to not logged in users/ redirect to login page
     const [uuid, setUuid] = useState(null);
-        const [loading, setLoading] = useState(false);
-        useEffect(() => {
-            const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
-                if (user) {
-                    setUuid(user.uid);
-                } else {
-                    navigate('/login');
-                }
-            });
-            return () => unsubscribe();
+    const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+            if (user) {
+                setUuid(user.uid);
+            } else {
+                navigate('/login');
+            }
+        });
+        return () => unsubscribe();
     }, []);
     
     const [user, setUser] = useState({});
@@ -85,6 +85,44 @@ const Dashboard = () => {
                     <div style={{ flex: 1}}>
 
                         <Breadcrumbs />
+
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "20px", marginTop: "7vh" }}>
+                            <span style={{ fontSize: "2rem", fontWeight: "bold" }}> {user?.firstName} {user?.lastName} </span>
+                        </div>
+
+                        <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginTop: "10vh" }}>
+                            <PageCard title="Προφίλ" url="/dashboard/profiles" />
+
+                            { user?.property === 'babysitter' ?
+                                <div>
+                                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: "3vh" }}>
+                                        <PageCard title="Το Βιογραφικό μου" url="/dashboard/viografiko" />
+                                        <PageCard title="Οι Αγγελίες μου" url="/dashboard/aggelies" />
+                                        <PageCard title="Τα Ραντεβού μου" url="/epaggelmaties/rantevou" />
+                                    </div>
+
+                                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: "3vh"}}>
+                                        <PageCard title="Τα Συμφωνητικά μου" url="/epaggelmaties/symbolaia" />
+                                        <PageCard title="Οι Αξιολογήσεις μου" url="/epaggelmaties/ratings" />
+                                        <PageCard title="Οι Πληρωμές μου" url="/epaggelmaties/pliromes" />
+                                    </div>
+                                </div>
+
+                                : 
+                                <div>
+                                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: "3vh" }}>
+                                        <PageCard title="Τα Ραντεβού μου" url="/epaggelmaties/rantevou" />
+                                        <PageCard title="Τα Συμφωνητικά μου" url="/goneis/symbolaia" />
+                                    </div>
+
+                                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: "3vh"}}>
+                                        <PageCard title="Οι Πληρωμές μου" url="/goneis/symbolaia/pliromes" />
+                                        <PageCard title="Οι Αξιολογήσεις μου" url="/goneis/ratings" />
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
                     </div>
                 </div>
             </div>

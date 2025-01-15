@@ -173,17 +173,17 @@ function Header(props) {
                         </button>
                         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                             <li>
-                                <a className="dropdown-item" href="/epaggelmaties/profile">
+                                <a className="dropdown-item" href="/dashboard/profiles">
                                     Το Προφίλ μου
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/epaggelmaties/viografiko">
+                                <a className="dropdown-item" href="/dashboard/viografiko">
                                     Το Βιογραφικό μου
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/aggelies">
+                                <a className="dropdown-item" href="/dashboard/aggelies">
                                     Οι Αγγελίες μου
                                 </a>
                             </li>
@@ -302,7 +302,7 @@ function Header(props) {
                         </button>
                         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                             <li>
-                                <a className="dropdown-item" href="/goneis/profile">
+                                <a className="dropdown-item" href="/dashboard/profiles">
                                     Το Προφίλ μου
                                 </a>
                             </li>

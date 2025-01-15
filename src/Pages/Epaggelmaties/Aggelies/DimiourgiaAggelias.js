@@ -226,7 +226,7 @@ function DimiourgiaAggelias() {
     };
 
     const goToMainAggelies = () => {
-        navigate("/aggelies");
+        navigate("/dashboard/aggelies");
     };
 
     const steps = [
@@ -259,6 +259,10 @@ function DimiourgiaAggelias() {
     }
 
     if (!user) {
+        navigate("/404");
+    }
+
+    if (user?.property !== "babysitter") {
         navigate("/404");
     }
     

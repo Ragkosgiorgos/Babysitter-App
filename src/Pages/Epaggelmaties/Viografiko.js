@@ -171,8 +171,11 @@ function Viografiko() {
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     <div style={{ flex: 1 }}>
                         <Breadcrumbs />
-                        <div style={{ display: "flex", flex: 1, flexDirection: "row", justifyContent: "center", marginTop: "2vh" }}>
 
+                        <h1 style={{ textAlign: "center", fontWeight: "bold", textDecoration: "underline" }}>Το Βιογραφικό μου</h1>
+
+                        <div style={{ display: "flex", flex: 1, flexDirection: "row", justifyContent: "center", marginTop: "4vh" }}>
+                            
                             <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center" }}>
                                 <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "2vw" }}>
                                     <h6 style={{ backgroundColor: "#D9EAFD", borderRadius: "50%", width: "80px", height: "80px", display: "flex", justifyContent: "center", alignItems: "center", border: "2px solid black" }}>

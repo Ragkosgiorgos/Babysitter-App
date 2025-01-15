@@ -8,7 +8,7 @@ const translations = {
   posts: "Αγγελίες",
   login: "Σύνδεση",
   register: "Εγγραφή",
-  profile: "Προφίλ",
+  profiles: "Προφίλ",
   goneis: "Γονείς",
   Home: "Αρχική",
   anazitisi: "Αναζήτηση",

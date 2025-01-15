@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
+import Breadcrumbs from "../../Components/Breadcrump";
 import ClearIcon from '@mui/icons-material/Clear';
 import Loader from "../../Components/Loader";
 import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
@@ -121,6 +122,8 @@ function GoneisProfile() {
   return (
     <div>
       <Header />
+
+      <Breadcrumbs />
 
       <h1 style={{ textAlign: "center", marginTop: "25px", textDecoration: "underline" }}>
         <b>Το προφίλ μου</b>

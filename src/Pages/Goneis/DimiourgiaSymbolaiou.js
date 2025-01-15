@@ -353,7 +353,7 @@ const submitPayment = async (contractId, startDate, endDate) => {
 
     const handleEditClick = (field) => {
         // Replace with your desired route
-        navigate(`/goneis/profile`);
+        navigate(`/dashboard/profiles`);
     };
 
     // Handle loading state

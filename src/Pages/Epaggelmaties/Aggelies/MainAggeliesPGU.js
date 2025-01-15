@@ -89,9 +89,9 @@ function MainAggeliesPGU() {
     };
 
     // Redirects
-    const handleNewPost = () => navigate("/nea-aggelia");
+    const handleNewPost = () => navigate("/neaAggelia");
     const previewAggeliaRender = (aggelia_id) => navigate(`/previewAggelias?aggelia_id=${aggelia_id}`);
-    const handleTempView = (post_id) => navigate(`/nea-aggelia?step=2&post_id=${post_id}`);
+    const handleTempView = (post_id) => navigate(`/neaAggelia?step=2&post_id=${post_id}`);
 
     if (loading) {
       return <Loader />;

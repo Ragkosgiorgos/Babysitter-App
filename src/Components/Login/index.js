@@ -20,8 +20,7 @@ export default function Login() {
 
         try {
             const userCredential = await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
-            console.log("User logged in:", userCredential.user);
-            window.history.back();// Navigate to the page where user had been before
+            navigate('/dashboard'); // Navigate to the dashboard page
         } catch (error) {
             setError(error.message); // Display the error message
         } finally {
@@ -32,7 +31,7 @@ export default function Login() {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (currentUser) => {
             if (currentUser) {
-                window.history.back(); // Navigate to the page where user had been before
+                navigate('/dashboard'); // Redirect to dashboard if user is already logged in
             }
         });
 
