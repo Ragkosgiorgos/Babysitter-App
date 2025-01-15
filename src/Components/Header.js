@@ -2,6 +2,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import HomeIcon from '@mui/icons-material/Home';
 import Loader from './Loader';
 import { signOut } from 'firebase/auth';
 import { useEffect, useState } from 'react';
@@ -82,6 +83,12 @@ function Header(props) {
         }
     };
 
+    const handleDashboardRedirect = () => {
+        if (location.pathname !== '/dashboard') {
+            navigate('/dashboard');
+        }
+    };
+
     if (loading) {
         return <Loader />;
     }
@@ -89,7 +96,7 @@ function Header(props) {
     if (user && user.property === 'babysitter') {
         return (
             <nav className="navbar navbar-expand-lg" style={{ backgroundColor: '#2E86AB' }}>
-                <div className="container-fluid" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div className="container-fluid" style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
                     <div>
                         <img
                             style={{ marginRight: '8px' }}
@@ -119,9 +126,8 @@ function Header(props) {
                         id="navbarNavDropdown"
                         style={{
                             display: 'flex',
-                            justifyContent: 'flex-end',
                             alignItems: 'center',
-                            marginRight: '5%',
+                            justifyContent: 'center'
                         }}
                     >
                         <ul className="navbar-nav" style={{ display: 'flex', flexDirection: 'row', listStyleType: 'none', gap: "50px" }}>
@@ -147,6 +153,12 @@ function Header(props) {
                             </li>
                         </ul>
                     </div>
+                    <div style={{ gap: '5px', display: 'flex', alignItems: 'center', marginRight: '3vh' }}>
+                        <HomeIcon style={{ color: 'white', cursor: 'pointer' }} onClick={handleDashboardRedirect} />
+                        <span className="navbar-text" style={{ color: 'white', cursor: 'pointer' }} onClick={handleDashboardRedirect}>
+                            Dashboard
+                        </span>
+                    </div>
                     <div className="dropdown ms-3">
                         <button
                             className="btn btn-secondary dropdown-toggle"
@@ -161,17 +173,17 @@ function Header(props) {
                         </button>
                         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                             <li>
-                                <a className="dropdown-item" href="/epaggelmaties/profile">
+                                <a className="dropdown-item" href="/dashboard/profiles">
                                     Το Προφίλ μου
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/epaggelmaties/viografiko">
+                                <a className="dropdown-item" href="/dashboard/viografiko">
                                     Το Βιογραφικό μου
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/aggelies">
+                                <a className="dropdown-item" href="/dashboard/aggelies">
                                     Οι Αγγελίες μου
                                 </a>
                             </li>
@@ -191,7 +203,7 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/epaggelmaties/ratings">
+                                <a className="dropdown-item" href="/ratings">
                                     Οι Αξιολογήσεις μου
                                 </a>
                             </li>
@@ -213,7 +225,7 @@ function Header(props) {
     } else if (user && user.property === 'parent') {
         return (
             <nav className="navbar navbar-expand-lg" style={{ backgroundColor: '#2E86AB' }}>
-                <div className="container-fluid" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div className="container-fluid" style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
                     <div>
                         <img
                             style={{ marginRight: '8px' }}
@@ -243,9 +255,8 @@ function Header(props) {
                         id="navbarNavDropdown"
                         style={{
                             display: 'flex',
-                            justifyContent: 'flex-end',
                             alignItems: 'center',
-                            marginRight: '5%',
+                            justifyContent: 'center'
                         }}
                     >
                         <ul className="navbar-nav" style={{ display: 'flex', flexDirection: 'row', listStyleType: 'none', gap: "50px" }}>
@@ -271,6 +282,12 @@ function Header(props) {
                             </li>
                         </ul>
                     </div>
+                    <div style={{ gap: '5px', display: 'flex', alignItems: 'center', marginRight: '3vh' }}>
+                        <HomeIcon style={{ color: 'white', cursor: 'pointer' }} onClick={handleDashboardRedirect} />
+                        <span className="navbar-text" style={{ color: 'white', cursor: 'pointer' }} onClick={handleDashboardRedirect}>
+                            Dashboard
+                        </span>
+                    </div>
                     <div className="dropdown ms-3">
                         <button
                             className="btn btn-secondary dropdown-toggle"
@@ -285,7 +302,7 @@ function Header(props) {
                         </button>
                         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                             <li>
-                                <a className="dropdown-item" href="/goneis/profile">
+                                <a className="dropdown-item" href="/dashboard/profiles">
                                     Το Προφίλ μου
                                 </a>
                             </li>
@@ -300,7 +317,7 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/goneis/ratings">
+                                <a className="dropdown-item" href="/ratings">
                                     Οι Αξιολογήσεις μου
                                 </a>
                             </li>
@@ -333,9 +350,9 @@ function Header(props) {
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
+                        fontWeight: 'bold',
                     }}
                 >
-                    {/* Logo and Brand Name */}
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         <img
                             style={{ marginRight: '8px' }}
@@ -373,24 +390,16 @@ function Header(props) {
                             gap: '140px',
                         }}
                     >
-                        {/* Navbar Links */}
-                        <ul
-                            className="navbar-nav"
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                listStyleType: 'none',
-                                margin: 0,
-                                padding: 0,
-                                gap: '30px',
-                            }}
-                        >
+                    <div className="collapse navbar-collapse ms-auto" id="navbarNavDropdown"
+                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+                    >
+                        <ul className="navbar-nav" style={{ display: 'flex', flexDirection: 'row', listStyleType: 'none', gap: "50px" }}>
                             <li className="nav-item">
                                 <Link
                                     className={props.act !== 'goneis' ? 'nav-link' : 'nav-link active'}
                                     to="/goneis"
                                     style={{ color: 'white' }}
-                                    onClick={handleGoneisRedirect}
+                                    onClick={handleGoneisRedirect}  
                                 >
                                     Κηδεμόνες
                                 </Link>
@@ -400,12 +409,13 @@ function Header(props) {
                                     className={props.act !== 'job' ? 'nav-link' : 'nav-link active'}
                                     to="/epaggelmaties"
                                     style={{ color: 'white' }}
-                                    onClick={handleEpaggelmatiesRedirect}
+                                    onClick={handleEpaggelmatiesRedirect}  
                                 >
                                     Babysitters
                                 </Link>
                             </li>
                         </ul>
+                    </div>
 
                         {/* Login and Register Buttons */}
                         <div style={{ display: 'flex', gap: '10px' }}>

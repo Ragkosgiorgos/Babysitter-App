@@ -7,11 +7,8 @@ import Header from '../../../Components/Header';
 import Footer from '../../../Components/Footer';
 
 import Loader from '../../../Components/Loader';
-import { Button, Tooltip } from '@mui/material';
-import InfoIcon from '@mui/icons-material/Info';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import ReplayIcon from '@mui/icons-material/Replay';
+import Breadcrumbs from '../../../Components/Breadcrumbs';
+
 
 function MainPliromesGoneis() {
   const navigate = useNavigate();
@@ -97,7 +94,7 @@ function MainPliromesGoneis() {
 
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <div style={{ flex: 1 }}>
-            {"breadcrambs"}
+            <Breadcrumbs/>
 
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '2%' }}>
                 <h2 style={{ fontWeight: 'bold', textAlign: 'center', marginTop: '3%' }}>Οι πληρωμές μου</h2>
@@ -122,25 +119,27 @@ function MainPliromesGoneis() {
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '2%' }}>
-              <table style={{ width: '80%', backgroundColor: '#D9EAFD', textAlign: 'center', borderRadius: '10px' }}>
+              <table style={{ width: '55%', backgroundColor: '#D9EAFD', textAlign: 'center', borderRadius: '10px' }}>
                 <thead style={{ lineHeight: '2em' }}>
                   <tr style={{ borderBottom: '2px solid #333' }}>
-                    <th>Κωδικός συμβολαίου</th>
+                    <th>Babysitter</th>
                     <th>Κωδικός Πληρωμής</th>
-                    <th>Ονοματεπώνυμο επαγγελματία</th>
-                    <th > Περίοδος πληρωμης</th>
-                    <th></th>
+                    <th>Περίοδος πληρωμης</th>
                   </tr>
                 </thead>
                 <tbody>
                   {contracts.map((contract) => (
-                    <tr key={contract.id}>
-                      <td>{contract.id_c}</td>
-                      <td>{contract.id}</td>
+                    <tr key={contract.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
                       <td>{findProfessionalName(contract.id_b)}</td>
-                      <td>Απο {contract.startPeriod} Εως {contract.endPeriod}</td>
+                      <td>{contract.id}</td>
+                      <td>{contract.startPeriod} - {contract.endPeriod}</td>
                     </tr>
                   ))}
+                  {contracts.length === 0 && (
+                      <tr>
+                        <td colSpan={3}>Δεν υπάρχουν πληρωμές</td>
+                      </tr>
+                    )}
                 </tbody>
               </table>
             </div>

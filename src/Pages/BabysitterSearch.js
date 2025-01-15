@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useMemo } from "react";
-import Header from "../../Components/Header";
-import Footer from "../../Components/Footer";
-import Breadcrumbs from "../../Components/Breadcrump";
-import BabysitterFilters from "../../Components/GoneisComponents/BabysitterFilters";
-import JobPosting from "../../Components/EpaggelmatiesComponent/JobPosting";
+import Header from "../Components/Header";
+import Footer from "../Components/Footer";
+import Breadcrumbs from "../Components/Breadcrumbs";
+import Loader from "../Components/Loader";
+import BabysitterFilters from "../Components/GoneisComponents/BabysitterFilters";
+import JobPosting from "../Components/EpaggelmatiesComponent/JobPosting";
+import { useLocation } from "react-router-dom";
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
-import { capitalizeWords, handleScrollToTop } from "../../Utils/Methods/index";
+import { capitalizeWords, handleScrollToTop } from "../Utils/Methods/index";
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { FIREBASE_DB } from "../../config/firebase";
-import { useLocation } from "react-router-dom";
-import Loader from "../../Components/Loader";
+import { FIREBASE_DB } from "../config/firebase";
 
 function BabysitterSearch() {
   const location = useLocation();

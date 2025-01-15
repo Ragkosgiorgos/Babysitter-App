@@ -1,13 +1,13 @@
-import Header from "../../Components/Header";
-import Footer from "../../Components/Footer";
-import Breadcrumbs from "../../Components/Breadcrump";
 import React, { useState, useEffect } from "react";
-import Loader from '../../Components/Loader';
+import Header from "../../../Components/Header";
+import Footer from "../../../Components/Footer";
+import Breadcrumbs from "../../../Components/Breadcrumbs";
+import Loader from '../../../Components/Loader';
 import { Carousel } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
-import { calculateAge, TruncatedText } from "../../Utils/Methods/index";
+import { calculateAge, TruncatedText } from "../../../Utils/Methods/index";
 import ClearIcon from '@mui/icons-material/Clear';
-import { FIREBASE_DB, FIREBASE_AUTH } from "../../config/firebase";
+import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
 import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -156,7 +156,7 @@ function Viografiko() {
     }
 
     const handleViewRating = (r_id) => {
-        navigate(`/epaggelmaties/ratings/previewAksiologisi?id=${r_id}`);
+        navigate(`/ratings/previewAksiologisi?id=${r_id}`);
     };
 
     if (loading) {
@@ -171,8 +171,11 @@ function Viografiko() {
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     <div style={{ flex: 1 }}>
                         <Breadcrumbs />
-                        <div style={{ display: "flex", flex: 1, flexDirection: "row", justifyContent: "center", marginTop: "2vh" }}>
 
+                        <h1 style={{ textAlign: "center", fontWeight: "bold", textDecoration: "underline" }}>Το Βιογραφικό μου</h1>
+
+                        <div style={{ display: "flex", flex: 1, flexDirection: "row", justifyContent: "center", marginTop: "4vh" }}>
+                            
                             <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center" }}>
                                 <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "2vw" }}>
                                     <h6 style={{ backgroundColor: "#D9EAFD", borderRadius: "50%", width: "80px", height: "80px", display: "flex", justifyContent: "center", alignItems: "center", border: "2px solid black" }}>

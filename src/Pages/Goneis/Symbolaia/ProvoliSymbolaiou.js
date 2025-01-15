@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { doc, getDoc,updateDoc } from 'firebase/firestore';
-import {FIREBASE_DB } from "../../config/firebase";
+import {FIREBASE_DB } from "../../../config/firebase";
 import 'dayjs/locale/el'; // Greek locale
-import Header from "../../Components/Header";
-import Footer from "../../Components/Footer";
+import Header from "../../../Components/Header";
+import Footer from "../../../Components/Footer";
 import "react-date-range/dist/styles.css"; // Main style file
 import "react-date-range/dist/theme/default.css"; // Theme CSS file
 import { useParams } from 'react-router-dom'; // Import useParams
-import ProgressTracker from "../../Components/ProgressTracker";
+import ProgressTracker from "../../../Components/ProgressTracker";
 import { query, collection, where, getDocs } from 'firebase/firestore';
 import { useNavigate } from "react-router-dom";
 

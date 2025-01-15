@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import Header from "../../Components/Header";
-import Footer from "../../Components/Footer";
-import Breadcrumbs from "../../Components/Breadcrump";
+import Header from "../../../Components/Header";
+import Footer from "../../../Components/Footer";
+import Breadcrumbs from "../../../Components/Breadcrumbs.js";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import Loader from "../../Components/Loader.js";
+import Loader from "../../../Components/Loader.js";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
@@ -13,10 +12,9 @@ import { useNavigate } from "react-router-dom";
 import ReplayIcon from '@mui/icons-material/Replay';
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { FIREBASE_DB, FIREBASE_AUTH } from '../../config/firebase.js'
+import { FIREBASE_DB, FIREBASE_AUTH } from '../../../config/firebase.js'
 import dayjs from "dayjs";
 import { doc, updateDoc } from "firebase/firestore";
-
 
 function MainSymbolaiaGoneisPGU() {
   const navigate = useNavigate();
@@ -199,7 +197,7 @@ function MainSymbolaiaGoneisPGU() {
                                 onClick={async () => {
                                   const ratingId = await findReviewId(contract.id_b);
                                   if (ratingId) {
-                                    navigate(`/epaggelmaties/ratings/previewAksiologisi?id=${ratingId}`);
+                                    navigate(`/ratings/previewAksiologisi?id=${ratingId}`);
                                   } else {
                                     alert("Δεν βρέθηκε αξιολόγηση.");
                                   }

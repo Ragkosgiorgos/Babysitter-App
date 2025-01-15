@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
-import Breadcrumbs from "../../../Components/Breadcrump";
+import Breadcrumbs from "../../../Components/Breadcrumbs";
 import Button from '@mui/material/Button';
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -250,7 +250,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
   };
 
   const handleProfileRedirect = () =>{ 
-    navigate(`../goneis/profile`);
+    navigate("/dashboard/rofiles");
   };
   
   const isInPast = (date) => (date.get('year') < dayjs().get('year')) || (date.get('year') === dayjs().get('year') && date.get('month') < dayjs().get('month')) || (date.get('year') === dayjs().get('year') && date.get('month') === dayjs().get('month') && date.get('date') < dayjs().get('date'));

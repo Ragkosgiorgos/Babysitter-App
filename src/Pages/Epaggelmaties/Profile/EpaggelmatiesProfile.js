@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
-import Header from "../../Components/Header";
-import Footer from "../../Components/Footer";
+import Header from "../../../Components/Header";
+import Footer from "../../../Components/Footer";
+import Breadcrumbs from "../../../Components/Breadcrumbs";
+import Loader from "../../../Components/Loader";
+import { convertDateFormat } from "../../../Utils/Methods";
 import ClearIcon from '@mui/icons-material/Clear';
 import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
-import { FIREBASE_DB, FIREBASE_AUTH } from "../../config/firebase";
+import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { convertDateFormat } from "../../Utils/Methods";
-import Loader from "../../Components/Loader";
+
 import { useNavigate } from "react-router-dom";
 
-function EpaggelmatiasProfile() {
+function EpaggelmatiesProfile() {
   const navigate = useNavigate();
 
   const [editedData, setEditedData] = useState({});
@@ -131,6 +133,8 @@ function EpaggelmatiasProfile() {
     <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
       <Header />
 
+      <Breadcrumbs />
+
       <h1 style={{ textAlign: "center", marginTop: "25px", textDecoration: "underline" }}> <b>Το προφίλ μου</b> </h1>
       <div style={{ textAlign: "center", display: "flex", justifyContent: "center", marginTop: "25px" }}>
 
@@ -222,4 +226,4 @@ function EpaggelmatiasProfile() {
   );
 }
 
-export default EpaggelmatiasProfile;
+export default EpaggelmatiesProfile;

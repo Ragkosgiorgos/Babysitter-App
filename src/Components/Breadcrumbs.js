@@ -8,7 +8,7 @@ const translations = {
   posts: "Αγγελίες",
   login: "Σύνδεση",
   register: "Εγγραφή",
-  profile: "Προφίλ",
+  profiles: "Προφίλ",
   goneis: "Γονείς",
   Home: "Αρχική",
   anazitisi: "Αναζήτηση",
@@ -17,6 +17,8 @@ const translations = {
   epaggelmaties: "Babysitters",
   viografiko: "Βιογραφικό",
   aggelies: "Αγγελίες",
+  previewAggelias: "Προβολή αγγελίας",
+  dashboard: "Dashboard",
 };
 
 function Breadcrumbs() {

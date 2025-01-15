@@ -75,7 +75,7 @@ function MainPGU() {
           <div style={{ textAlign: "center", fontSize: "1.5em", fontWeight: "bold", textDecoration: "underline" }}>
               Βρείτε τον/την babysitter που σας ταιριάζει!
           </div>
-          <div style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: "1vh"}}>
+          <div style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2.5vh"}}>
             <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "30%", marginLeft: "2vh" }}>
               <h6> Επιλογή περιοχής </h6>
               <FormControl fullWidth style={{ marginTop: "1vh", fontSize:"5%" }}>

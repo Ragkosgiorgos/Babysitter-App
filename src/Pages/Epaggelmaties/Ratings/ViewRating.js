@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
+import Breadcrumbs from "../../../Components/Breadcrumbs";
+import Loader from "../../../Components/Loader";
 import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
 import Typography from '@mui/material/Typography';
 import { useNavigate } from "react-router-dom";
-import Loader from "../../../Components/Loader";
 import { calculateAge } from "../../../Utils/Methods/index";
 import { FIREBASE_DB } from '../../../config/firebase';
 import { collection, query, getDocs, where } from 'firebase/firestore';
@@ -67,6 +68,8 @@ function ViewRating() {
     <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
       <div>
         <Header />
+
+        <Breadcrumbs />
 
         <div style={{ display: "flex", flexDirection: "column", marginTop: "3%" }}>
 
