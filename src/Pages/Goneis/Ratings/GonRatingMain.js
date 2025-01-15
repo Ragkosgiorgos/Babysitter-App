@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
-import Breadcrumbs from "../../../Components/Breadcrump";
+import Breadcrumbs from "../../../Components/Breadcrumbs";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import Button from '@mui/material/Button';
@@ -96,7 +96,7 @@ function GonRatingMain() {
 
   // Navigate to preview
   const previewRating = (id) => {
-    navigate(`/epaggelmaties/ratings/previewAksiologisi?id=${id}`);
+    navigate(`/ratings/previewAksiologisi?id=${id}`);
   };
 
   // Navigate to add new rating

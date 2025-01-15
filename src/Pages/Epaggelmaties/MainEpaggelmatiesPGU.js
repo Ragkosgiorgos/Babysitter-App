@@ -1,6 +1,6 @@
 import React from "react";
 import Header from "../../Components/Header";
-import Breadcrumbs from "../../Components/Breadcrump";
+import Breadcrumbs from "../../Components/Breadcrumbs";
 import Accordion from 'react-bootstrap/Accordion';
 import Footer from "../../Components/Footer";
 

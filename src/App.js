@@ -78,13 +78,11 @@ function App() {
           <Route path="epaggelmaties/rantevou/available/edit" element={<EditRantevouPGU />} />
 
           {/* Khdemones Ratings */}
-          <Route path="goneis/ratings" element={<GonRatingMain />} />
+          <Route path="/ratings" element={<Ratings />} />
           <Route path="goneis/ratings/add" element={<CreateRating />} />
 
           {/* Babysitter Ratings */}
-          <Route path="/ratings" element={<Ratings />} />
-          <Route path="/epaggelmaties/ratings" element={<EpaggRatingMain />} />
-          <Route path="/epaggelmaties/ratings/previewAksiologisi" element={<ViewRating />} />
+          <Route path="/ratings/previewAksiologisi" element={<ViewRating />} />
 
           {/* Khdemones Symbolaia */}
           <Route path="/goneis/symbolaia" element={<MainSymbolaiaGoneisPGU />} />

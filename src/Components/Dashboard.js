@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from './Header';
 import Footer from './Footer';
-import Breadcrumbs from './Breadcrump';
+import Breadcrumbs from './Breadcrumbs';
 import Loader from './Loader';
 import PageCard from './PageCard';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
@@ -103,7 +103,7 @@ const Dashboard = () => {
 
                                     <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: "3vh"}}>
                                         <PageCard title="Τα Συμφωνητικά μου" url="/epaggelmaties/symbolaia" />
-                                        <PageCard title="Οι Αξιολογήσεις μου" url="/epaggelmaties/ratings" />
+                                        <PageCard title="Οι Αξιολογήσεις μου" url="/ratings" />
                                         <PageCard title="Οι Πληρωμές μου" url="/epaggelmaties/pliromes" />
                                     </div>
                                 </div>
@@ -117,7 +117,7 @@ const Dashboard = () => {
 
                                     <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: "3vh"}}>
                                         <PageCard title="Οι Πληρωμές μου" url="/goneis/symbolaia/pliromes" />
-                                        <PageCard title="Οι Αξιολογήσεις μου" url="/goneis/ratings" />
+                                        <PageCard title="Οι Αξιολογήσεις μου" url="/ratings" />
                                     </div>
                                 </div>
                             }

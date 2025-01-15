@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
-import Breadcrumbs from "../../Components/Breadcrump";
+import Breadcrumbs from "../../Components/Breadcrumbs.js";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Loader from "../../Components/Loader.js";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import Button from '@mui/material/Button';
@@ -199,7 +198,7 @@ function MainSymbolaiaGoneisPGU() {
                                 onClick={async () => {
                                   const ratingId = await findReviewId(contract.id_b);
                                   if (ratingId) {
-                                    navigate(`/epaggelmaties/ratings/previewAksiologisi?id=${ratingId}`);
+                                    navigate(`/ratings/previewAksiologisi?id=${ratingId}`);
                                   } else {
                                     alert("Δεν βρέθηκε αξιολόγηση.");
                                   }

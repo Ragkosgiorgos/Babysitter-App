@@ -203,7 +203,7 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/epaggelmaties/ratings">
+                                <a className="dropdown-item" href="/ratings">
                                     Οι Αξιολογήσεις μου
                                 </a>
                             </li>
@@ -317,7 +317,7 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/goneis/ratings">
+                                <a className="dropdown-item" href="/ratings">
                                     Οι Αξιολογήσεις μου
                                 </a>
                             </li>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
-import Breadcrumbs from "../../../Components/Breadcrump";
+import Breadcrumbs from "../../../Components/Breadcrumbs";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';

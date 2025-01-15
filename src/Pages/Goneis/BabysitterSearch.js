@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
-import Breadcrumbs from "../../Components/Breadcrump";
+import Breadcrumbs from "../../Components/Breadcrumbs";
 import BabysitterFilters from "../../Components/GoneisComponents/BabysitterFilters";
 import JobPosting from "../../Components/EpaggelmatiesComponent/JobPosting";
 import Pagination from '@mui/material/Pagination';

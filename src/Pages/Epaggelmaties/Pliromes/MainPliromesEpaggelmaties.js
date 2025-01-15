@@ -6,7 +6,7 @@ import { FIREBASE_AUTH, FIREBASE_DB } from '../../../config/firebase';
 import Header from '../../../Components/Header';
 import Footer from '../../../Components/Footer';
 import Loader from '../../../Components/Loader';
-import Breadcrumbs from '../../../Components/Breadcrump';
+import Breadcrumbs from '../../../Components/Breadcrumbs';
 
 function MainPliromesEpaggelmaties() {
   const navigate = useNavigate();

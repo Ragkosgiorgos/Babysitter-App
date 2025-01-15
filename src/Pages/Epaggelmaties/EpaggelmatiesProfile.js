@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
-import Breadcrumbs from "../../Components/Breadcrump";
+import Breadcrumbs from "../../Components/Breadcrumbs";
 import Loader from "../../Components/Loader";
 import { convertDateFormat } from "../../Utils/Methods";
 import ClearIcon from '@mui/icons-material/Clear';

@@ -7,7 +7,7 @@ import Header from '../../../Components/Header';
 import Footer from '../../../Components/Footer';
 
 import Loader from '../../../Components/Loader';
-import Breadcrumbs from '../../../Components/Breadcrump';
+import Breadcrumbs from '../../../Components/Breadcrumbs';
 
 
 function MainPliromesGoneis() {

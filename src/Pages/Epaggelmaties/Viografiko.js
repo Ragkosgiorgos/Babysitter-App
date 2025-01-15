@@ -1,6 +1,6 @@
 import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
-import Breadcrumbs from "../../Components/Breadcrump";
+import Breadcrumbs from "../../Components/Breadcrumbs";
 import React, { useState, useEffect } from "react";
 import Loader from '../../Components/Loader';
 import { Carousel } from 'react-bootstrap';
@@ -156,7 +156,7 @@ function Viografiko() {
     }
 
     const handleViewRating = (r_id) => {
-        navigate(`/epaggelmaties/ratings/previewAksiologisi?id=${r_id}`);
+        navigate(`/ratings/previewAksiologisi?id=${r_id}`);
     };
 
     if (loading) {

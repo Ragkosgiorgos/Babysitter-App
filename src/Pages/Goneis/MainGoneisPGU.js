@@ -2,7 +2,7 @@ import React from "react";
 import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
 import Accordion from 'react-bootstrap/Accordion';
-import Breadcrumbs from "../../Components/Breadcrump";
+import Breadcrumbs from "../../Components/Breadcrumbs";
 import { Link, useNavigate } from 'react-router-dom';  
 
 function MainGoneisPGU(props){

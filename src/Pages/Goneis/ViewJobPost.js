@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
-import Breadcrumbs from "../../Components/Breadcrump";
+import Breadcrumbs from "../../Components/Breadcrumbs";
 import { Carousel } from 'react-bootstrap';
 import HomeIcon from '@mui/icons-material/Home';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -93,7 +93,7 @@ function ViewJobPost() {
     };
 
     const handleViewRating = (r_id) => {
-        navigate(`/epaggelmaties/ratings/previewAksiologisi?id=${r_id}`);
+        navigate(`/ratings/previewAksiologisi?id=${r_id}`);
     };
 
     if (loading) {

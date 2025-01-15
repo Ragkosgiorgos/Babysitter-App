@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
-import Breadcrumbs from "../../../Components/Breadcrump";
+import Breadcrumbs from "../../../Components/Breadcrumbs";
 import Button from '@mui/material/Button';
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
