@@ -14,17 +14,11 @@ import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
 import Loader from "../../../Components/Loader";
 
 function MainRantevouPGU() { 
-  const [uuid, setUuid] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [posts, setPosts] = useState([]);
-  const navigate = useNavigate(); 
-  const routeChangeAvailable = () =>{ 
-    navigate(`available`);
-  };
+  const navigate = useNavigate();
 
-  const routeChangePreview = (id) =>{ 
-    navigate(`proepiskopisi?id=${id}`);
-  };
+  const [uuid, setUuid] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // Check if user is logged in, get the user's UUID
   useEffect(() => {
@@ -38,7 +32,7 @@ function MainRantevouPGU() {
     return () => unsubscribe();
   }, [navigate]);
 
-  // Fetch the job posts' data from the database
+  // Fetch user's rantevou data from the database
   useEffect(() => {
     if (uuid) {
       const fetchPosts = async () => {
@@ -61,12 +55,24 @@ function MainRantevouPGU() {
     }
   }, [uuid]);
 
-  //? Error handling
+  function isbooked(dates){
+    return dates.id_p !== "";
+  }
+
+  const routeChangeAvailable = () => { 
+    navigate(`available`);
+  };
+
+  const routeChangePreview = (id) => { 
+    navigate(`proepiskopisi?id=${id}`);
+  };
+
   if (loading) {
     return <Loader />;
   }
-  function isbooked(dates){
-    return dates.id_p !== "";
+  
+  if (!uuid) {
+    navigate("/404");
   }
 
   return (

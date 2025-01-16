@@ -117,9 +117,9 @@ export default function Login() {
                             : 'Σύνδεση'
                         }
                     </button>
-
+                    <hr />
                     <p style={{ marginTop: '15px', fontSize: '14px', color: '#333' }}>
-                        Δεν έχετε λογαριασμό; <a href="/register" style={{ color: '#2E86AB', textDecoration: 'none', fontWeight: 'bold' }}>Εγγραφή</a>
+                        Δεν έχετε λογαριασμό; <a href="/register" style={{ color: '#2E86AB', textDecoration: 'underline', fontWeight: 'bold' }}>Εγγραφή</a>
                     </p>
 
                 </form>
