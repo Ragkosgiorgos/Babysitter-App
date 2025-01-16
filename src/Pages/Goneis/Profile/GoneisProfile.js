@@ -7,7 +7,6 @@ import Loader from "../../../Components/Loader";
 import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { convertDateFormat } from "../../../Utils/Methods";
 
 function GoneisProfile() {
   const [editedData, setEditedData] = useState({});
@@ -184,7 +183,7 @@ function GoneisProfile() {
                             onChange={handleInputChange}
                           />
                         ) : (
-                          field === "birthDate" ? convertDateFormat(khdemonas[field]) : (khdemonas?.[field] || "N/A")
+                          field === "birthDate" ? khdemonas[field] : (khdemonas?.[field] || "N/A")
                         )}
                       </div>
                       {isEditing[field] && (
@@ -227,7 +226,7 @@ function GoneisProfile() {
                             onChange={handleInputChange}
                           />
                         ) : (
-                          field === "childBirthDate" ? convertDateFormat(khdemonas[field]) : (khdemonas?.[field] || "N/A")
+                          field === "childBirthDate" ? khdemonas[field] : (khdemonas?.[field] || "N/A")
                         )}
                       </div>
                       {isEditing[field] && (

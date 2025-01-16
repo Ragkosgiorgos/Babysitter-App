@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import Header from '../Header';
 import Footer from '../Footer';
 import Breadcrumbs from '../Breadcrumbs';
@@ -10,11 +10,12 @@ import { useNavigate } from 'react-router-dom';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { el } from 'date-fns/locale'; // Greek locale
-import { FIREBASE_AUTH, FIREBASE_DB } from '../../config/firebase';
+import { FIREBASE_DB } from '../../config/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { addDoc, collection } from 'firebase/firestore';
 import { getAuth } from "firebase/auth";
 import { getDocs, query, where } from 'firebase/firestore';
+import dayjs from 'dayjs';
 
 // Register Greek locale
 registerLocale('el', el);
@@ -25,7 +26,6 @@ export default function Register() {
     // Form steps
     const [step, setStep] = useState(1);
     const [error, setError] = useState({});
-    const [submit, setSubmit] = useState(false);
     const [loading, setLoading] = useState(false);
 
     // Step 1
@@ -39,11 +39,19 @@ export default function Register() {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [birthDate, setBirthDate] = useState('');
+    const [gender, setGender] = useState('');
     const [afm, setAfm] = useState('');
     const [area, setArea] = useState('');
-    const [address, setAddress] = useState('');
     const [phone, setPhone] = useState('');
     const [property, setProperty] = useState('');
+
+    // Step 3
+    const [education, setEducation] = useState('');
+
+    const [childFirstName, setChildFirstName] = useState('');
+    const [childLastName, setChildLastName] = useState('');
+    const [childBirthDate, setChildBirthDate] = useState('');
+    const [childGender, setChildGender] = useState('');
 
     const areasOfGreece = [
         "Αθήνα",
@@ -58,6 +66,14 @@ export default function Register() {
         "Ρόδος",
     ];
 
+    const educationOpt = [
+        "Κανένα",
+        "Δημοτικό",
+        "Γυμνάσιο",
+        "Λύκειο",
+        "Πανεπιστήμιο",
+    ];
+
     //? Restrictions for the form fields
     // - Email: Required, valid email, email not already in use
     // - Password: Required, at least 6 characters
@@ -67,7 +83,6 @@ export default function Register() {
     // - Birth Date: Required, user > 18 years old and not allow dates in the future
     // - AFM: Required, 9 digits
     // - Area: Required
-    // - Address: Required
     // - Phone: Required, 10 digits
     // - Property: Required
 
@@ -92,7 +107,6 @@ export default function Register() {
 
     const validateForm = async () => {
         const newErrors = {};
-        setSubmit(true);
     
         if (step === 1) {
             if (!email) {
@@ -121,7 +135,77 @@ export default function Register() {
         }
     
         if (step === 2) {
-            // Other step 2 validations here...
+            if (!firstName) {
+                newErrors.firstName = 'Το όνομα είναι υποχρεωτικό.';
+            } else if (!/^[a-zA-Zα-ωΑ-ΩάέήίόύώΆΈΉΊΌΎΏϊϋΐΰ]+$/.test(firstName)) {
+                newErrors.firstName = 'Το όνομα πρέπει να περιέχει μόνο γράμματα.';
+            }
+
+            if (!lastName) {
+                newErrors.lastName = 'Το επώνυμο είναι υποχρεωτικό.';
+            } else if (!/^[a-zA-Zα-ωΑ-ΩάέήίόύώΆΈΉΊΌΎΏϊϋΐΰ]+$/.test(firstName)) {
+                newErrors.lastName = 'Το επώνυμο πρέπει να περιέχει μόνο γράμματα.';
+            }
+
+            if (!birthDate) {
+                newErrors.birthDate = 'Η ημερομηνία γέννησης είναι υποχρεωτική.';
+            } else {
+                const age = new Date().getFullYear() - new Date(birthDate).getFullYear();
+                if (age < 18) {
+                    newErrors.birthDate = 'Πρέπει να είστε άνω των 18 ετών.';
+                }
+            }
+
+            if (!afm) {
+                newErrors.afm = 'Το ΑΦΜ είναι υποχρεωτικό.';
+            } else if (!/^\d{9}$/.test(afm)) {
+                newErrors.afm = 'Το ΑΦΜ πρέπει να αποτελείται από 9 ψηφία.';
+            }
+
+            if (!area) {
+                newErrors.area = 'Η περιοχή είναι υποχρεωτική.';
+            }
+
+            if (!phone) {
+                newErrors.phone = 'Το τηλέφωνο είναι υποχρεωτικό.';
+            } else if (!/^\d{10}$/.test(phone)) {
+                newErrors.phone = 'Το τηλέφωνο πρέπει να αποτελείται από 10 ψηφία.';
+            }
+
+            if (!property) {
+                newErrors.property = 'Η ιδιότητα είναι υποχρεωτική.';
+            }
+        } else if (step === 3) {
+            if (property === 'babysitter') {
+                if (!education) {
+                    newErrors.education = 'Η εκπαίδευση είναι υποχρεωτική.';
+                }
+            } else if (property === 'parent') {
+                if (!childFirstName) {
+                    newErrors.childFirstName = 'Το όνομα του παιδιού είναι υποχρεωτικό.';
+                } else if (!/^[a-zA-Zα-ωΑ-ΩάέήίόύώΆΈΉΊΌΎΏϊϋΐΰ]+$/.test(childFirstName)) {
+                    newErrors.childFirstName = 'Το όνομα του παιδιού πρέπει να περιέχει μόνο γράμματα.';
+                }
+
+                if (!childLastName) {
+                    newErrors.childLastName = 'Το επώνυμο του παιδιού είναι υποχρεωτικό.';
+                } else if (!/^[a-zA-Zα-ωΑ-ΩάέήίόύώΆΈΉΊΌΎΏϊϋΐΰ]+$/.test(childLastName)) {
+                    newErrors.childLastName = 'Το επώνυμο του παιδιού πρέπει να περιέχει μόνο γράμματα.';
+                }
+
+                if (!childBirthDate) {
+                    newErrors.childBirthDate = 'Η ημερομηνία γέννησης του παιδιού είναι υποχρεωτική.';
+                } else  {
+                    const age = new Date().getFullYear() - new Date(childBirthDate).getFullYear();
+                    if (age < 0.5 || age > 2.5) {
+                        newErrors.childBirthDate = 'Το παιδί πρέπει να είναι από 6 μηνών έως 2.5 ετών.';
+                    }
+                }
+
+                if (!childGender) {
+                    newErrors.childGender = 'Το φύλο του παιδιού είναι υποχρεωτικό.';
+                }
+            }
         }
     
         setError(newErrors);
@@ -135,6 +219,10 @@ export default function Register() {
         setError({});
     
         const valid = await validateForm();
+
+        if (step === 4) {
+            navigate('/dashboard');
+        }
     
         if (step === 3 && valid) {
             try {
@@ -147,20 +235,29 @@ export default function Register() {
                     email,
                     firstName,
                     lastName,
-                    birthDate,
+                    birthDate: dayjs(birthDate).format('DD/MM/YYYY'),
                     afm,
                     area,
-                    address,
                     phone,
                     property,
                     gender: '',
                     img: false,
                     createdAt: new Date(),
                     userId: user.uid,
+
+                    // For babysitters
+                    education,
+
+                    // For parents
+                    childFirstName,
+                    childLastName,
+                    childBirthDate: childBirthDate ? dayjs(childBirthDate).format('DD/MM/YYYY') : null,
+                    childGender,
                 });
     
                 setLoading(false);
-                navigate('/login');
+                setError({});
+                setStep(step + 1);
             } catch (error) {
                 console.error('Error registering user:', error);
                 setError({ general: matchError(error.message) });
@@ -177,6 +274,7 @@ export default function Register() {
     const steps = [
         "Στοιχεία Εισόδου",
         "Προσωπικά Στοιχεία",
+        "Στοιχεία Iδιότητας",
         "Ολοκλήρωση Εγγραφής",
     ];
 
@@ -204,7 +302,8 @@ export default function Register() {
                                                         boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)', textAlign: 'center' }}>
                     
                     <h2 style={{ fontSize: '24px', color: '#2E86AB' }}> Δημιουργία Λογαριασμού </h2>
-                    <h5 style={{ fontSize: '12px', marginBottom: '20px', color: '#2E86AB', textDecoration: 'underline' }}> Με * τα υποχρεωτικά πεδία </h5>
+                    { step !== 4 && <p style={{ fontSize: '16px', color: '#333', marginBottom: '20px' }}> Βήμα {step} - {steps[step - 1]} </p> }
+                    { step !== 4 && <h5 style={{ fontSize: '12px', marginBottom: '20px', color: '#2E86AB', textDecoration: 'underline' }}> Με * τα υποχρεωτικά πεδία </h5>}
 
                     {error.general && (
                         <p style={{ 
@@ -371,6 +470,28 @@ export default function Register() {
                             </div>
                         </div>
 
+                        {/* Gender */}
+                        <div style={{ marginBottom: '20px', textAlign: 'left' }}>
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#2E86AB' }}>Φύλο*</label>
+                            <select
+                                value={gender}
+                                onChange={(e) => setGender(e.target.value)}
+                                style={{
+                                    width: '100%',
+                                    padding: '10px',
+                                    border: `1px solid ${error.gender ? 'red' : '#ddd'}`,
+                                    borderRadius: '4px',
+                                    fontSize: '16px',
+                                }}
+                            >
+                                <option value="">Επιλέξτε Φύλο</option>
+                                <option value="Άντρας">Άντρας</option>
+                                <option value="Γυναίκα">Γυναίκα</option>
+                                <option value="Άλλο">Άλλο</option>
+                            </select>
+                            {error.gender && <p style={{ color: 'red', fontSize: '14px' }}>{error.gender}</p>}
+                        </div>
+
                         {/* AFM */}
                         <div style={{ marginBottom: '20px', textAlign: 'left' }}>
                             <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#2E86AB' }}>ΑΦΜ*</label>
@@ -412,25 +533,6 @@ export default function Register() {
                                 ))}
                             </select>
                             {error.area && <p style={{ color: 'red', fontSize: '14px' }}>{error.area}</p>}
-                        </div>
-
-                        {/* Address */}
-                        <div style={{ marginBottom: '20px', textAlign: 'left' }}>
-                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#2E86AB' }}>Διεύθυνση*</label>
-                            <input
-                                type="text"
-                                placeholder="Διεύθυνση"
-                                value={address}
-                                onChange={(e) => setAddress(e.target.value)}
-                                style={{
-                                    width: '100%',
-                                    padding: '10px',
-                                    border: `1px solid ${error.address ? 'red' : '#ddd'}`,
-                                    borderRadius: '4px',
-                                    fontSize: '16px',
-                                }}
-                            />
-                            {error.address && <p style={{ color: 'red', fontSize: '14px' }}>{error.address}</p>}
                         </div>
 
                         {/* Phone */}
@@ -475,23 +577,119 @@ export default function Register() {
                         </>
                     )}
 
-                    {step === 3 && (
-                        <div>
-                            {/* Babysitter specific fields */}
+                    {step === 3 && property === 'babysitter' && (
+                        <>
                             {/* Education */}
-                            {/* Experience */}
-                            {/* Languages */}
-                            {/* Skills */}
-                            {/* Certifications */}
-                            {/* Availability */}
-                            {/* Price */}
-                            {/* Services */}
-                            {/* Parent specific fields */}
-                            {/* Child info */}
-                            {/* Child info */}
-                            {/* Child info */}
-                            {/* Child info */}
-                        </div>
+                            <div style={{ marginBottom: '20px', textAlign: 'left' }}>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#2E86AB' }}>Επίπεδο εκπαίδευσης*</label>
+                                <select
+                                    value={education}
+                                    onChange={(e) => setEducation(e.target.value)}
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px',
+                                        border: `1px solid ${error.education ? 'red' : '#ddd'}`,
+                                        borderRadius: '4px',
+                                        fontSize: '16px',
+                                    }}
+                                >
+                                    <option value="">Επιλέξτε Επίπεδο Εκπαίδευσης</option>
+                                    {educationOpt.map((educationName, index) => (
+                                        <option key={index} value={educationName}>
+                                            {educationName}
+                                        </option>
+                                    ))}
+                                </select>
+                                {error.education && <p style={{ color: 'red', fontSize: '14px' }}>{error.education}</p>}
+                            </div>
+                        </>
+                    )}
+
+                    {step === 3 && property === 'parent' && (
+                        <>
+                            {/* Child First Name */}
+                            <div style={{ marginBottom: '20px', textAlign: 'left' }}>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#2E86AB' }}>Όνομα παιδιού*</label>
+                                <input
+                                    type="text"
+                                    placeholder="Όνομα"
+                                    value={childFirstName}
+                                    onChange={(e) => setChildFirstName(e.target.value)}
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px',
+                                        border: `1px solid ${error.childFirstName ? 'red' : '#ddd'}`,
+                                        borderRadius: '4px',
+                                        fontSize: '16px',
+                                    }}
+                                />
+                                {error.childFirstName && <p style={{ color: 'red', fontSize: '14px' }}>{error.childFirstName}</p>}
+                            </div>
+
+                            {/* Child Last Name */}
+                            <div style={{ marginBottom: '20px', textAlign: 'left' }}>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#2E86AB' }}>Επώνυμο παιδιού*</label>
+                                <input
+                                    type="text"
+                                    placeholder="Επώνυμο"
+                                    value={childLastName}
+                                    onChange={(e) => setChildLastName(e.target.value)}
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px',
+                                        border: `1px solid ${error.childLastName ? 'red' : '#ddd'}`,
+                                        borderRadius: '4px',
+                                        fontSize: '16px',
+                                    }}
+                                />
+                                {error.childLastName && <p style={{ color: 'red', fontSize: '14px' }}>{error.childLastName}</p>}
+                            </div>
+
+                            {/* Child Birth Date */}
+                            <div style={{ marginBottom: '20px', textAlign: 'left' }}>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#2E86AB' }}>
+                                    Ημερομηνία Γέννησης*
+                                </label>
+                                <div style={{ position: 'relative' }}>
+                                    <DatePicker
+                                        selected={childBirthDate}
+                                        onChange={(date) => setChildBirthDate(date)}
+                                        locale="el"
+                                        dateFormat="dd/MM/yyyy"
+                                        placeholderText="Επιλέξτε ημερομηνία"
+                                        maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
+                                    />
+                                    {error.childBirthDate && <p style={{ color: 'red', fontSize: '14px', marginTop: '8px' }}>{error.childBirthDate}</p>}
+                                </div>
+                            </div>
+
+                            {/* Child Gender */}
+                            <div style={{ marginBottom: '20px', textAlign: 'left' }}>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#2E86AB' }}>Φύλο παιδιού*</label>
+                                <select
+                                    value={childGender}
+                                    onChange={(e) => setChildGender(e.target.value)}
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px',
+                                        border: `1px solid ${error.childGender ? 'red' : '#ddd'}`,
+                                        borderRadius: '4px',
+                                        fontSize: '16px',
+                                    }}
+                                >
+                                    <option value="">Επιλέξτε Φύλο</option>
+                                    <option value="Άντρας">Άντρας</option>
+                                    <option value="Γυναίκα">Γυναίκα</option>
+                                </select>
+                                {error.childGender && <p style={{ color: 'red', fontSize: '14px' }}>{error.childGender}</p>}
+                            </div>
+                        </>
+                    )}
+
+                    {step === 4 && (
+                        <>
+                            <h3 style={{ color: 'black', marginBottom: '20px', fontSize: "20px" }}>Η εγγραφή ολοκληρώθηκε με επιτυχία!</h3>
+                        </>
                     )}
 
                     <button
@@ -510,10 +708,13 @@ export default function Register() {
                         onMouseEnter={(e) => {e.target.style.fontSize = "18px"; }}
                         onMouseLeave={(e) => {e.target.style.fontSize = "16px"; }}
                     >
-                        {loading ? (step === 4 ? 'Εγγραφή...' : 'Επόμενο') : 'Επόμενο'}
+                        {loading ? (step === 3 ? 'Εγγραφή...' : 'Επόμενο...') : (step === 3 ? 'Εγγραφή' : (step === 4 ? 'Στην Αρχική σας' : 'Επόμενο'))}
                     </button>
                     <p style={{ marginTop: '15px', fontSize: '14px', color: '#333' }}>
-                        Έχετε ήδη λογαριασμό; <a href="/login" style={{ color: '#2E86AB', textDecoration: 'underline', fontWeight: 'bold' }}>Σύνδεση</a>
+                        {step === 1 ?
+                            <span>Έχετε ήδη λογαριασμό; <a href="/login" style={{ color: '#2E86AB', textDecoration: 'underline', fontWeight: 'bold' }}>Σύνδεση</a></span>
+                            : " "
+                        }
                     </p>
                 </form>
             </div>

@@ -5,7 +5,7 @@ import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import ProgressTracker from "../../../Components/ProgressTracker";
 import Loader from "../../../Components/Loader";
-import { capitalizeWords, convertDateFormat } from "../../../Utils/Methods/index";
+import { capitalizeWords } from "../../../Utils/Methods/index";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
@@ -125,7 +125,7 @@ function PreviewAggelias() {
                             <hr style={{ width: "100%", marginTop: "0%", marginBottom: "0%" }}></hr>
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Επίθετο:</b> {user.lastName}</h4>
                             <hr style={{ width: "100%", marginTop: "0%", marginBottom: "0%" }}></hr>
-                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Ημερομηνία γέννησης:</b> {convertDateFormat(user.birthDate)}</h4>
+                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Ημερομηνία γέννησης:</b> {user.birthDate} </h4>
                             <hr style={{ width: "100%", marginTop: "0%", marginBottom: "0%" }}></hr>
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Πόλη:</b> {user.area}</h4>
                             <hr style={{ width: "100%", marginTop: "0%", marginBottom: "0%" }}></hr>

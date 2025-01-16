@@ -4,7 +4,7 @@ import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import ProgressTracker from "../../../Components/ProgressTracker";
-import { capitalizeWords, convertDateFormat, handleScrollToTop } from "../../../Utils/Methods/index";
+import { capitalizeWords, handleScrollToTop } from "../../../Utils/Methods/index";
 import { MenuItem, Select, FormControl, RadioGroup, FormControlLabel, Radio } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import Loader from "../../../Components/Loader";
@@ -285,7 +285,7 @@ function DimiourgiaAggelias() {
                             </div>
                             <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginTop: "3%" }}>
-                                <h4 style={{ textAlign: "left" }}><b>Ημερομηνία γέννησης:</b> {convertDateFormat(user.birthDate)}</h4>
+                                <h4 style={{ textAlign: "left" }}><b>Ημερομηνία γέννησης:</b> {user.birthDate}</h4>
                                 <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate("/edit-profile")} />
                             </div>
                             <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
@@ -453,7 +453,7 @@ function DimiourgiaAggelias() {
                                     <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
                                     <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Επίθετο:</b> {user.surname}</h4>
                                     <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
-                                    <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Ημερομηνία γέννησης:</b> {convertDateFormat(user.birthDate)}</h4>
+                                    <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Ημερομηνία γέννησης:</b> {user.birthDate}</h4>
                                     <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
                                     <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Πόλη:</b> {user.area}</h4>
                                     <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
