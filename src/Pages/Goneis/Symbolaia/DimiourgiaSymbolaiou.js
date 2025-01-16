@@ -28,6 +28,7 @@ function DimiourgiaSymbolaiou(props) {
     const [contracts, setContracts] = useState([]);
     const [contract, setContract] = useState([]);
     const [khdemonas, setKhdemonas] = useState({});
+    const [isDateRangeOverlapping, setIsDateRangeOverlapping] = useState(false);
     const [stepTwoData, setStepTwoData] = useState({
         id: '',
         id_p: '',
@@ -197,13 +198,39 @@ function DimiourgiaSymbolaiou(props) {
             employmentTime: event.target.value,
         }));
     };
+    const isDateRangeOverlappingWithContracts = (selectedRange) => {
+        const newStartDate = dayjs(selectedRange.startDate, 'YYYY-MM-DD'); // Adjust format as necessary
+        const newEndDate = dayjs(selectedRange.endDate, 'YYYY-MM-DD'); // Adjust format as necessary
+    
+        console.log("Checking overlap with selected range: ", newStartDate.format('DD/MM/YYYY'), newEndDate.format('DD/MM/YYYY'));
+    
+        return contracts.some((contract) => {
+            const existingStartDate = dayjs(contract.startDate, 'DD/MM/YYYY'); // Assuming contract startDate is in 'DD/MM/YYYY' format
+            const existingEndDate = dayjs(contract.endDate, 'DD/MM/YYYY'); // Assuming contract endDate is in 'DD/MM/YYYY' format
+    
+            console.log("Checking contract range: ", existingStartDate.format('DD/MM/YYYY'), existingEndDate.format('DD/MM/YYYY'));
+    
+            // Check if the selected date range overlaps with any contract date range
+            return (
+                (newStartDate.isBefore(existingEndDate) && newEndDate.isAfter(existingStartDate))
+            );
+        });
+    };
+    
+    
 
     const handleDateRangeChange = (item) => {
         setStepTwoData((prevData) => ({
             ...prevData,
             dateRange: [item.selection],
         }));
+    
+        
+        const selectedRange = item.selection;
+        const overlap = isDateRangeOverlappingWithContracts(selectedRange);
+        setIsDateRangeOverlapping(overlap);
     };
+    
 
     // Submit contract
 const submitContract = async () => {
@@ -458,184 +485,189 @@ const submitPayment = async (contractId, startDate, endDate) => {
                 case 2:
                     return (
                         <div
-    style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "120vh",
-        padding: "0 10%",
-        flexDirection: "column",
-    }}
->
-    <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
-        <b>Συμπληρώστε τα στοιχεία της αγγελίας</b>
-    </h2>
+                            style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                minHeight: "120vh",
+                                padding: "0 10%",
+                                flexDirection: "column",
+                            }}
+                        >
+                            <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
+                                <b>Συμπληρώστε τα στοιχεία της αγγελίας</b>
+                            </h2>
 
-    <div style={{ width: "80%" }}>
-        {/* First Box: Babysitter Selection */}
-        <div
-            style={{
-                backgroundColor: "#ece7f2",
-                borderRadius: "2%",
-                padding: "2%",
-                height: "20vh",
-                textAlign: "center",
-                marginBottom: "20px",
-            }}
-        >
-            <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                <b>Επιλέξτε τον επαγγελματία που θέλετε να κάνετε συμβόλαιο</b>
-            </h2>
-            {isSubmitting && !babysitter.userId && (
-                <p style={{ color: "red", marginLeft: "25%" }}>
-                    Παρακαλώ επιλέξτε νταντά
-                </p>
-            )}
-            <select
-              style={{ width: "50%", height: "30px" }}
-              onChange={(e) => setBabysitterChoice(e.target.value)}
-              value={babysitter.userId || ""}
-            >
-              <option value="" disabled> Επιλέξτε νταντά </option>
-              {hiredBabysitters.map((babysitter) => (
-                <option key={babysitter.userId} value={babysitter.userId}>
-                  {babysitter.firstName} {babysitter.lastName}
-                </option>
-              ))}
+                            <div style={{ width: "80%" }}>
+                                {/* First Box: Babysitter Selection */}
+                                <div
+                                    style={{
+                                        backgroundColor: "#ece7f2",
+                                        borderRadius: "2%",
+                                        padding: "2%",
+                                        height: "20vh",
+                                        textAlign: "center",
+                                        marginBottom: "20px",
+                                    }}
+                                >
+                                    <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+                                        <b>Επιλέξτε τον επαγγελματία που θέλετε να κάνετε συμβόλαιο</b>
+                                    </h2>
+                                    {isSubmitting && !babysitter.userId && (
+                                        <p style={{ color: "red", marginLeft: "25%" }}>
+                                            Παρακαλώ επιλέξτε νταντά
+                                        </p>
+                                    )}
+                                    <select
+                                    style={{ width: "50%", height: "30px" }}
+                                    onChange={(e) => setBabysitterChoice(e.target.value)}
+                                    value={babysitter.userId || ""}
+                                    >
+                                    <option value="" disabled> Επιλέξτε νταντά </option>
+                                    {hiredBabysitters.map((babysitter) => (
+                                        <option key={babysitter.userId} value={babysitter.userId}>
+                                        {babysitter.firstName} {babysitter.lastName}
+                                        </option>
+                                    ))}
 
-            </select>
-        </div>
+                                    </select>
+                                </div>
 
-        {/* Second Box: Days Selection */}
-        <div
-            style={{
-                backgroundColor: "#ece7f2",
-                borderRadius: "2%",
-                padding: "2%",
-                height: "20vh",
-                marginBottom: "20px",
-            }}
-        >
-            <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                <b>Ημέρες</b>
-            </h2>
-            <FormControlLabel
-                control={<Checkbox checked={weekdays} onChange={handleWeekdaysChange} />}
-                label="Καθημερινές"
-            />
-            <FormControlLabel
-                control={<Checkbox checked={weekends} onChange={handleWeekendsChange} />}
-                label="Σαββατοκύριακο"
-            />
-            {isSubmitting && !weekdays && !weekends && (
-                <p style={{ color: "red", marginLeft: "25%" }}>
-                    Παρακαλώ επιλέξτε τουλάχιστον μία κατηγορία ημέρας
-                </p>
-            )}
-        </div>
+                                {/* Second Box: Days Selection */}
+                                <div
+                                    style={{
+                                        backgroundColor: "#ece7f2",
+                                        borderRadius: "2%",
+                                        padding: "2%",
+                                        height: "20vh",
+                                        marginBottom: "20px",
+                                    }}
+                                >
+                                    <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+                                        <b>Ημέρες</b>
+                                    </h2>
+                                    <FormControlLabel
+                                        control={<Checkbox checked={weekdays} onChange={handleWeekdaysChange} />}
+                                        label="Καθημερινές"
+                                    />
+                                    <FormControlLabel
+                                        control={<Checkbox checked={weekends} onChange={handleWeekendsChange} />}
+                                        label="Σαββατοκύριακο"
+                                    />
+                                    {isSubmitting && !weekdays && !weekends && (
+                                        <p style={{ color: "red", marginLeft: "25%" }}>
+                                            Παρακαλώ επιλέξτε τουλάχιστον μία κατηγορία ημέρας
+                                        </p>
+                                    )}
+                                </div>
 
-        {/* Third Box: Hosting Preference */}
-        <div
-            style={{
-                backgroundColor: "#ece7f2",
-                borderRadius: "2%",
-                padding: "2%",
-                height: "20vh",
-                marginBottom: "20px",
-            }}
-        >
-            <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                <b>Φιλοξενία</b>
-            </h2>
-            <FormControl>
-                <RadioGroup
-                    aria-labelledby="demo-radio-buttons-group-label"
-                    value={stepTwoData.hostingPreference}
-                    onChange={handleHostingPreferenceChange}
-                    name="radio-buttons-group"
-                    style={{ textAlign: "left" }}
-                >
-                    <FormControlLabel
-                        value="Στον χώρο του κηδεμόνα"
-                        control={<Radio />}
-                        label="Στον χώρο του κηδεμόνα"
-                    />
-                    <FormControlLabel
-                        value="Στον χώρο του επαγγελματία"
-                        control={<Radio />}
-                        label="Στον χώρο του επαγγελματία"
-                    />
-                </RadioGroup>
-            </FormControl>
-            {isSubmitting && !stepTwoData.hostingPreference && (
-                <p style={{ color: "red", marginLeft: "25%" }}>
-                    Παρακαλώ επιλέξτε χώρο Φιλοξενίας
-                </p>
-            )}
-        </div>
+                                {/* Third Box: Hosting Preference */}
+                                <div
+                                    style={{
+                                        backgroundColor: "#ece7f2",
+                                        borderRadius: "2%",
+                                        padding: "2%",
+                                        height: "20vh",
+                                        marginBottom: "20px",
+                                    }}
+                                >
+                                    <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+                                        <b>Φιλοξενία</b>
+                                    </h2>
+                                    <FormControl>
+                                        <RadioGroup
+                                            aria-labelledby="demo-radio-buttons-group-label"
+                                            value={stepTwoData.hostingPreference}
+                                            onChange={handleHostingPreferenceChange}
+                                            name="radio-buttons-group"
+                                            style={{ textAlign: "left" }}
+                                        >
+                                            <FormControlLabel
+                                                value="Στον χώρο του κηδεμόνα"
+                                                control={<Radio />}
+                                                label="Στον χώρο του κηδεμόνα"
+                                            />
+                                            <FormControlLabel
+                                                value="Στον χώρο του επαγγελματία"
+                                                control={<Radio />}
+                                                label="Στον χώρο του επαγγελματία"
+                                            />
+                                        </RadioGroup>
+                                    </FormControl>
+                                    {isSubmitting && !stepTwoData.hostingPreference && (
+                                        <p style={{ color: "red", marginLeft: "25%" }}>
+                                            Παρακαλώ επιλέξτε χώρο Φιλοξενίας
+                                        </p>
+                                    )}
+                                </div>
 
-        {/* Fourth Box: Employment Time */}
-        <div
-            style={{
-                backgroundColor: "#ece7f2",
-                borderRadius: "2%",
-                padding: "2%",
-                height: "20vh",
-                marginBottom: "20px",
-            }}
-        >
-            <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                <b>Χρόνος απασχόλησης</b>
-            </h2>
-            <FormControl>
-                <RadioGroup
-                    value={stepTwoData.employmentTime}
-                    onChange={handleEmploymentTimeChange}
-                >
-                    <FormControlLabel value="Μερική" control={<Radio />} label="Μερική" />
-                    <FormControlLabel value="Πλήρης" control={<Radio />} label="Πλήρης" />
-                </RadioGroup>
-            </FormControl>
-            {isSubmitting && !stepTwoData.employmentTime && (
-                <p style={{ color: "red", marginLeft: "25%" }}>
-                    Παρακαλώ επιλέξτε χρόνο απασχόλησης
-                </p>
-            )}
-        </div>
+                                {/* Fourth Box: Employment Time */}
+                                <div
+                                    style={{
+                                        backgroundColor: "#ece7f2",
+                                        borderRadius: "2%",
+                                        padding: "2%",
+                                        height: "20vh",
+                                        marginBottom: "20px",
+                                    }}
+                                >
+                                    <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+                                        <b>Χρόνος απασχόλησης</b>
+                                    </h2>
+                                    <FormControl>
+                                        <RadioGroup
+                                            value={stepTwoData.employmentTime}
+                                            onChange={handleEmploymentTimeChange}
+                                        >
+                                            <FormControlLabel value="Μερική" control={<Radio />} label="Μερική" />
+                                            <FormControlLabel value="Πλήρης" control={<Radio />} label="Πλήρης" />
+                                        </RadioGroup>
+                                    </FormControl>
+                                    {isSubmitting && !stepTwoData.employmentTime && (
+                                        <p style={{ color: "red", marginLeft: "25%" }}>
+                                            Παρακαλώ επιλέξτε χρόνο απασχόλησης
+                                        </p>
+                                    )}
+                                </div>
 
-        {/* Fifth Box: Date Range */}
-        <div
-            style={{
-                backgroundColor: "#ece7f2",
-                borderRadius: "2%",
-                padding: "2%",
-                height: "60vh",
-                marginBottom: "20px",
-            }}
-        >
-            <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                <b>Διάρκεια απασχόλησης</b>
-            </h2>
-            <DateRange
-                editableDateInputs={true}
-                onChange={handleDateRangeChange}
-                moveRangeOnFirstSelection={false}
-                ranges={stepTwoData.dateRange}
-                minDate={new Date()}
-            />
-            {isSubmitting && !stepTwoData.dateRange[0]?.startDate && (
-                <p style={{ color: "red", marginLeft: "25%" }}>
-                    Παρακαλώ επιλέξτε ημερομηνία έναρξης
-                </p>
-            )}
-            {isSubmitting && !stepTwoData.dateRange[0]?.endDate && (
-                <p style={{ color: "red", marginLeft: "25%" }}>
-                    Παρακαλώ επιλέξτε ημερομηνία λήξης
-                </p>
-            )}
-        </div>
-    </div>
-</div>
+                                {/* Fifth Box: Date Range */}
+                                <div
+                                    style={{
+                                        backgroundColor: "#ece7f2",
+                                        borderRadius: "2%",
+                                        padding: "2%",
+                                        height: "60vh",
+                                        marginBottom: "20px",
+                                    }}
+                                >
+                                    <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+                                        <b>Διάρκεια απασχόλησης</b>
+                                    </h2>
+                                    <DateRange
+                                        editableDateInputs={true}
+                                        onChange={handleDateRangeChange}
+                                        moveRangeOnFirstSelection={false}
+                                        ranges={stepTwoData.dateRange}
+                                        minDate={new Date()}
+                                    />
+                                    {isSubmitting && !stepTwoData.dateRange[0]?.startDate && (
+                                        <p style={{ color: "red", marginLeft: "25%" }}>
+                                            Παρακαλώ επιλέξτε ημερομηνία έναρξης
+                                        </p>
+                                    )}
+                                    {isSubmitting && !stepTwoData.dateRange[0]?.endDate && (
+                                        <p style={{ color: "red", marginLeft: "25%" }}>
+                                            Παρακαλώ επιλέξτε ημερομηνία λήξης
+                                        </p>
+                                    )}
+                                    {isDateRangeOverlapping && (
+                                        <p style={{ color: "red", marginLeft: "25%" }}>
+                                            Η ημερομηνία που επιλέξατε επικαλύπτεται με άλλες συμβάσεις.
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
 
         );  
             case 3:
@@ -712,7 +744,7 @@ const submitPayment = async (contractId, startDate, endDate) => {
                     <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                         <b>Ημέρες και ώρες</b>
                     </h2>
-                    <p>
+                    <h4 style={{textAlign:"left", marginTop: "3%", marginLeft: "6%" }}>
                         {weekdays && weekends
                             ? "Καθημερινές και Σαββατοκύριακο"
                             : weekdays
@@ -720,26 +752,26 @@ const submitPayment = async (contractId, startDate, endDate) => {
                             : weekends
                             ? "Σαββατοκύριακο"
                             : "Δεν έχει επιλεχθεί κάποια επιλογή"}
-                    </p>
+                    </h4>
                 </div>
                     <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
                         <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                             <b>Φιλοξενία</b>
                         </h2>
-                        <p>{stepTwoData.hostingPreference === "guardian" ? "Στον χώρο του κηδεμόνα" : "Στον χώρο του επαγγελματία"}</p>
+                        <h4 style={{textAlign:"left" ,marginTop: "3%", marginLeft: "6%" }}>{stepTwoData.hostingPreference === "guardian" ? "Στον χώρο του κηδεμόνα" : "Στον χώρο του επαγγελματία"}</h4>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
                         <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                             <b>Χρόνος απασχόλησης</b>
                         </h2>
-                        <p>{stepTwoData.employmentTime === "part-time" ? "Μερική" : "Πλήρης"}</p>
+                        <h4 style={{textAlign:"left" ,marginTop: "3%", marginLeft: "6%" }}>{stepTwoData.employmentTime === "part-time" ? "Μερική" : "Πλήρης"}</h4>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
                         <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                             <b>Ημερομηνίες</b>
                         </h2>
-                        <p><b>Από:</b> {stepTwoData.dateRange[0].startDate.toLocaleDateString()}</p>
-                        <p><b>Έως:</b> {stepTwoData.dateRange[0].endDate.toLocaleDateString()}</p>
+                        <h4 style={{textAlign:"left" ,marginTop: "3%", marginLeft: "6%" }}><b>Από:</b> {stepTwoData.dateRange[0].startDate.toLocaleDateString()}</h4>
+                        <h4 style={{textAlign:"left" ,marginTop: "3%", marginLeft: "6%" }}><b>Έως:</b> {stepTwoData.dateRange[0].endDate.toLocaleDateString()}</h4>
                     </div>
 
 
@@ -787,7 +819,7 @@ const submitPayment = async (contractId, startDate, endDate) => {
                     }}
                 >
                     {/* Show 'Προηγούμενο' button only if not at step 0 */}
-                    {currentStep !== 0 && (
+                    {currentStep !== 0 && currentStep !== 4 && (
                         <button
                             style={{
                                 height: "3%",
@@ -804,7 +836,6 @@ const submitPayment = async (contractId, startDate, endDate) => {
                         </button>
                     )}
     
-                    {/* Show 'Επόμενο' button for steps 0, 1, 2 */}
                     {currentStep < 3 && (
                         <button
                             style={{
@@ -816,8 +847,11 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                 width: "12%",
                             }}
                             onClick={() => {
-                                goToNextStep();
+                                if (!isDateRangeOverlapping) {
+                                    goToNextStep();
+                                }
                             }}
+
                         >
                             Επόμενο
                         </button>
@@ -843,8 +877,6 @@ const submitPayment = async (contractId, startDate, endDate) => {
                             Υποβολή
                         </button>
                     )}
-    
-                    {/* Show 'Επιστροφή' button on step 4 */}
                     {currentStep === 4 && (
                         <button
                             style={{
@@ -856,7 +888,6 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                 width: "12%",
                             }}
                             onClick={() => {
-                                // Handle return action here
                                 window.history.back();
                             }}
                         >
