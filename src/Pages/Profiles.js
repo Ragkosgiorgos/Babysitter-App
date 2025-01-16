@@ -48,7 +48,7 @@ function Profiles() {
         return <Loader />;
     }
 
-    if (!profile) {
+    if (!loading && !uuid) {
         navigate('/login'); 
     }
 
