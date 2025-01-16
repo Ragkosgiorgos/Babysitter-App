@@ -192,19 +192,19 @@ function MainSymbolaiaGoneisPGU() {
                                 {contract.status}
                             </td>
                             <td>
+                            {(contract.status === "Σε ισχύ" || contract.status === "Ολοκληρώθηκε") &&
                               <span 
                                 style={{ cursor: "pointer", textDecoration: "underline" }} 
                                 onClick={async () => {
                                   const ratingId = await findReviewId(contract.id_b);
                                   if (ratingId) {
                                     navigate(`/ratings/previewAksiologisi?id=${ratingId}`);
-                                  } else {
-                                    alert("Δεν βρέθηκε αξιολόγηση.");
-                                  }
+                                  } 
                                 }}
                               >
                                 Προβολή
                               </span>
+                            }
                             </td>
                             <td>
                               <span 

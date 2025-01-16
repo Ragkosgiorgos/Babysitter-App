@@ -744,7 +744,7 @@ const submitPayment = async (contractId, startDate, endDate) => {
                     <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                         <b>Ημέρες και ώρες</b>
                     </h2>
-                    <p>
+                    <h4 style={{textAlign:"left", marginTop: "3%", marginLeft: "6%" }}>
                         {weekdays && weekends
                             ? "Καθημερινές και Σαββατοκύριακο"
                             : weekdays
@@ -752,26 +752,26 @@ const submitPayment = async (contractId, startDate, endDate) => {
                             : weekends
                             ? "Σαββατοκύριακο"
                             : "Δεν έχει επιλεχθεί κάποια επιλογή"}
-                    </p>
+                    </h4>
                 </div>
                     <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
                         <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                             <b>Φιλοξενία</b>
                         </h2>
-                        <p>{stepTwoData.hostingPreference === "guardian" ? "Στον χώρο του κηδεμόνα" : "Στον χώρο του επαγγελματία"}</p>
+                        <h4 style={{textAlign:"left" ,marginTop: "3%", marginLeft: "6%" }}>{stepTwoData.hostingPreference === "guardian" ? "Στον χώρο του κηδεμόνα" : "Στον χώρο του επαγγελματία"}</h4>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
                         <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                             <b>Χρόνος απασχόλησης</b>
                         </h2>
-                        <p>{stepTwoData.employmentTime === "part-time" ? "Μερική" : "Πλήρης"}</p>
+                        <h4 style={{textAlign:"left" ,marginTop: "3%", marginLeft: "6%" }}>{stepTwoData.employmentTime === "part-time" ? "Μερική" : "Πλήρης"}</h4>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
                         <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                             <b>Ημερομηνίες</b>
                         </h2>
-                        <p><b>Από:</b> {stepTwoData.dateRange[0].startDate.toLocaleDateString()}</p>
-                        <p><b>Έως:</b> {stepTwoData.dateRange[0].endDate.toLocaleDateString()}</p>
+                        <h4 style={{textAlign:"left" ,marginTop: "3%", marginLeft: "6%" }}><b>Από:</b> {stepTwoData.dateRange[0].startDate.toLocaleDateString()}</h4>
+                        <h4 style={{textAlign:"left" ,marginTop: "3%", marginLeft: "6%" }}><b>Έως:</b> {stepTwoData.dateRange[0].endDate.toLocaleDateString()}</h4>
                     </div>
 
 
@@ -819,7 +819,7 @@ const submitPayment = async (contractId, startDate, endDate) => {
                     }}
                 >
                     {/* Show 'Προηγούμενο' button only if not at step 0 */}
-                    {currentStep !== 0 && (
+                    {currentStep !== 0 && currentStep !== 4 && (
                         <button
                             style={{
                                 height: "3%",
@@ -877,8 +877,6 @@ const submitPayment = async (contractId, startDate, endDate) => {
                             Υποβολή
                         </button>
                     )}
-    
-                    {/* Show 'Επιστροφή' button on step 4 */}
                     {currentStep === 4 && (
                         <button
                             style={{
@@ -890,7 +888,6 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                 width: "12%",
                             }}
                             onClick={() => {
-                                // Handle return action here
                                 window.history.back();
                             }}
                         >

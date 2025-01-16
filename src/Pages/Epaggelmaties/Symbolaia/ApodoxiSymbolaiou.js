@@ -151,6 +151,11 @@ function ApodoxiSymbolaiou() {
         navigate("/epaggelmaties/symbolaia");
     };
 
+    const handleEditClick = (field) => {
+        // Replace with your desired route
+        navigate(`/dashboard/profiles`);
+    };
+
     if (loading) {
         return <Loader />;
     }
@@ -214,25 +219,40 @@ function ApodoxiSymbolaiou() {
                             <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                                 <b>Επιβεβαίωση στοιχείων επαγγελματία</b>
                             </h2>
-                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Όνομα:</b>{user.firstName}
-                            </h4>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                                <h4>
+                                    <b>Όνομα:</b> {user.firstName}
+                                </h4>
+                                <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick()} />
+                            </div>
                             <hr />
-                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Επίθετο:</b> {user.lastName}
-                            </h4>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                                <h4>
+                                    <b>Επίθετο:</b> {user.lastName}
+                                </h4>
+                                <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick()} />
+                            </div>
                             <hr />
-                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Ημερομηνία γέννησης:</b> { user.birthDate}
-                            </h4>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                                <h4>
+                                    <b>Ημερομηνία γέννησης:</b> {user.birthDate}
+                                </h4>
+                                <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick()} />
+                            </div>
                             <hr />
-                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Email:</b> {user.email}
-                            </h4>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                                <h4>
+                                    <b>email:</b> {user.email}
+                                </h4>
+                                <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick()} />
+                            </div>
                             <hr />
-                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Τηλέφωνο:</b> {user.phone}
-                            </h4>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                                <h4>
+                                    <b>Τηλέφωνο:</b> {user.phone}
+                                </h4>
+                                <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick()} />
+                            </div>
                         </div>
                     </div>
                 );
@@ -451,19 +471,138 @@ function ApodoxiSymbolaiou() {
                             )}
 
                             {contract.status === "Απορρίφθηκε" && (
-                                <div style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    marginTop: "2%",
-                                    backgroundColor: "#ece7f2",
-                                    borderRadius: "2%",
-                                    width: "60%",
-                                    justifyContent: "center",
-                                    marginLeft: "20%",
-                                    padding: "2%",
-                                }}>
-                                <h3>Το συμβόλαιο με κωδικό #{contract.id} έχει απορριφθεί.</h3>
-                                </div>
+                                <>
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            marginTop: "2%",
+                                            backgroundColor: "#ece7f2",
+                                            borderRadius: "2%",
+                                            width: "60%",
+                                            justifyContent: "center",
+                                            marginLeft: "20%",
+                                            padding: "2%",
+                                        }}
+                                    >
+                                        <h3>Το συμβόλαιο με κωδικό #{contract.id} έχει απορριφθεί.</h3>
+                                    </div>
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            marginTop: "2%",
+                                            backgroundColor: "#ece7f2",
+                                            borderRadius: "2%",
+                                            width: "60%",
+                                            justifyContent: "center",
+                                            marginLeft: "20%",
+                                            padding: "2%",
+                                        }}
+                                    >
+                                        <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+                                            <b>Προσωπικά στοιχεία κηδεμόνα </b>
+                                        </h2>
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Όνομα:</b> {parent.firstName}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Επίθετο:</b> {parent.lastName}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Ημερομηνία γέννησης:</b> {parent.birthDate}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Email:</b> {parent.email}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Τηλέφωνο:</b> {parent.phone}
+                                        </h4>
+                                    </div>
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            marginTop: "2%",
+                                            backgroundColor: "#ece7f2",
+                                            borderRadius: "2%",
+                                            width: "60%",
+                                            justifyContent: "center",
+                                            marginLeft: "20%",
+                                            padding: "2%",
+                                        }}
+                                    >
+                                        <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+                                            <b>Προσωπικά στοιχεία παιδιού</b>
+                                        </h2>
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Όνομα:</b> {parent.childFirstName}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Επίθετο:</b> {parent.lastName}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Ημερομηνία γέννησης:</b> {parent.birthDate}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>ΑΜΚΑ:</b> {parent.childAmka}
+                                        </h4>
+                                    </div>
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            marginTop: "2%",
+                                            backgroundColor: "#ece7f2",
+                                            borderRadius: "2%",
+                                            width: "60%",
+                                            justifyContent: "center",
+                                            marginLeft: "20%",
+                                            padding: "2%",
+                                        }}
+                                    >
+                                        <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+                                            <b>Στοιχεία συμβολαίου</b>
+                                        </h2>
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Ημέρες εργασίας:</b> 
+                                            {
+                                                contract.weekdays && contract.weekends ? "Καθημερινές και Σαββατοκύριακα" :
+                                                contract.weekdays ? "Καθημερινές" :
+                                                contract.weekends ? "Σαββατοκύριακα" : ""
+                                            }
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Χρόνος απασχόλησης:</b> {contract.time}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Φιλοξενία:</b> {contract.hosting}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Έναρξη συμβολαίου:</b> {contract.startDate}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Λήξη συμβολαίου:</b> {contract.endDate}
+                                        </h4>
+                                    </div>
+
+                                    
+                                </>
+
                             )}
                         </div>
                     );
@@ -524,21 +663,6 @@ function ApodoxiSymbolaiou() {
                     </>
                     ) : currentStep === 3 ? (
                         <>
-                        <button
-                            style={{
-                                height: "3%",
-                                backgroundColor: "#2b8cbe",
-                                color: "white",
-                                borderRadius: "5px",
-                                marginTop: "2%",
-                                width: "12%",
-                            }}
-                            onClick={goToPreviousStep}
-                            disabled={currentStep === 2}
-                        >
-                            Προηγούμενο
-                        </button>
-    
                         <button
                             style={{
                                 height: "3%",
