@@ -67,11 +67,12 @@ function SubmitAitiseisEndiaferontosPGU(props) {
   const [newData, setnewData] = useState({
     id: id,
     id_b: Id_b,
+    id_r: "",
     postid: "",
     UserId: "",
     tropos_synantisis: "",
     status: "Σε προσωρινή αποθήκευση",
-    date: new Date().toLocaleDateString(),
+    date: "",
     description: "", 
     gender: "",
   });
@@ -133,7 +134,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
         const fetchRantevou = async () => {
           try {
             setLoading(true);
-            const qr = query(collection(FIREBASE_DB, 'rantevou'), where('id_b', '==', Id_b), where('date', '==', newData.date));
+            const qr = query(collection(FIREBASE_DB, 'rantevou'), where('id', '==', newData.id_r));
             const querySnapshotr = await getDocs(qr);
             const postsr = querySnapshotr.docs.map((doc) => ({
               id: doc.id,
@@ -148,7 +149,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
           }
         };
         fetchRantevou();
-      }, [newData.id_b]);
+      }, [newData.id_r]);
 
 
   const handleInputChange = (e) => {
@@ -413,11 +414,11 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                     </RadioGroup>
 
                     {newData.tropos_synantisis === 'Διαδικτυακά' && (
-                      <FormControl fullWidth style={{ marginTop: '20px' }}>
+                      <FormControl  fullWidth style={{ marginTop: '20px' }}>
                         <InputLabel>Επιλέξτε ημερομηνία και ώρα</InputLabel>
                         <Select
-                          value={posts.date}
-                          label="Επιλέξτε ημερομηνία και ώρα"
+                          value={rantevou.date}
+                          label="Επιλέξτε ημερηνία και ώρα"
                         >
                           {loading ? (
                             <MenuItem disabled>Loading...</MenuItem>
