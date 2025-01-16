@@ -46,18 +46,35 @@ function MainSymbolaiaGoneisPGU() {
                 ...doc.data(),
             }));
             const today = dayjs();
-          for (const contract of posts) {
-            const endDate = dayjs(contract.endDate, "MM/DD/YYYY"); 
-            if (endDate.isBefore(today) && contract.status === "Σε ισχύ") {
-              // Update contract status in Firestore
-              const contractDoc = doc(FIREBASE_DB, "contracts", contract.id);
-              await updateDoc(contractDoc, { status: "Ολοκληρώθηκε" });
+              for (const contract of posts) {
+                const rawEndDate = contract.endDate.trim();
+                console.log(`Raw end date for contract ${contract.id}:`, rawEndDate);
 
-              // Update the local state
-              contract.status = "Ολοκληρώθηκε";
-            }
-          }
-            setContracts(posts);
+                // Split the date string into day, month, and year
+                const [day, month, year] = rawEndDate.split('/');
+                const dateObj = new Date(`${year}-${month}-${day}`);  // Format it as YYYY-MM-DD for the native Date object
+
+                console.log("Native Date object:", dateObj);
+
+                if (isNaN(dateObj.getTime())) {
+                  console.error(`Invalid end date for contract ${contract.id}: ${rawEndDate}`);
+                  continue;  // Skip this contract if the date is invalid
+                }
+
+                const endDate = dayjs(dateObj);  // Convert back to Day.js object if needed
+                console.log("Parsed end date:", endDate.format("YYYY-MM-DD"));
+
+                if (endDate.isBefore(today) && contract.status === "Σε ισχύ") {
+                  // Update contract status in Firestore
+                  const contractDoc = doc(FIREBASE_DB, "contracts", contract.id);
+                  await updateDoc(contractDoc, { status: "Ολοκληρώθηκε" });
+
+                  // Update the local state
+                  contract.status = "Ολοκληρώθηκε";
+                }
+              }
+              setContracts(posts);
+
         } catch (error) {
             console.error('Error fetching posts:', error);
         }

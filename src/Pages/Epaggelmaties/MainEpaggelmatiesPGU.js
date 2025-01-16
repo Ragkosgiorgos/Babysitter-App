@@ -1,11 +1,57 @@
-import React from "react";
+
 import Header from "../../Components/Header";
 import Breadcrumbs from "../../Components/Breadcrumbs";
 import Accordion from 'react-bootstrap/Accordion';
 import Footer from "../../Components/Footer";
 import { Link } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { onAuthStateChanged } from 'firebase/auth';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+
+import { FIREBASE_AUTH,FIREBASE_DB } from "../../config/firebase";
 
 function MainEpaggelmatiesPGU(props){
+      
+    const [uuid, setUuid] = useState(null);
+    const [babysitter,setBabysitter]=useState([]);
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+          if (user) {
+            setUuid(user.uid);
+            console.log(user);
+          }
+        });
+        return () => unsubscribe();
+      }, []);
+
+      useEffect(() => {
+        const fetchBabysitters = async () => {
+          try {
+            const babysitterRef = collection(FIREBASE_DB, 'user');
+            const querySnapshot = await getDocs(query(babysitterRef, where("property", "==", "babysitter")));
+            const babysitterData = querySnapshot.docs.map(doc => ({
+              userId: doc.id,
+              ...doc.data(),
+            }));
+            setBabysitter(babysitterData);
+          } catch (error) {
+            console.error("Error fetching babysitters:", error);
+          }
+        };
+    
+        fetchBabysitters();
+      }, []);
+
+      const navigate = useNavigate();
+
+        const handleClick = () => {
+            if (babysitter.property === 'babysitter') {
+                navigate('/dashboard/aggelies'); // Redirect to the desired page
+            } else {
+                alert('You are not authorized to access this page'); // Optional alert
+            }
+        };
 
     return(
         <div>

@@ -44,7 +44,18 @@ function MainSymbolaiaEpaggelmatiesPGU() {
 
           const today = dayjs();
           for (const contract of fetchedContracts) {
-            const endDate = dayjs(contract.endDate, "MM/DD/YYYY"); 
+            const rawEndDate = contract.endDate.trim()
+
+            const [day, month, year] = rawEndDate.split('/');
+                const dateObj = new Date(`${year}-${month}-${day}`);
+
+                if (isNaN(dateObj.getTime())) {
+                  console.error(`Invalid end date for contract ${contract.id}: ${rawEndDate}`);
+                  continue;  // Skip this contract if the date is invalid
+                }
+
+                const endDate = dayjs(dateObj);
+
             if (endDate.isBefore(today) && contract.status === "Σε ισχύ") {
               // Update contract status in Firestore
               const contractDoc = doc(FIREBASE_DB, "contracts", contract.id);
@@ -146,7 +157,7 @@ function MainSymbolaiaEpaggelmatiesPGU() {
                       <tr><td colSpan="3">Δεν υπάρχουν συμβόλαια.</td></tr>
                     ) : (
                       contracts.map((contract, index) => (
-                        <tr key={contract.id}>
+                        <tr key={contract.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
                           <td>{contract.startDate} - {contract.endDate}</td>
                           <td>{findParentName(contract.id_p)}</td>
                           <td style={{
