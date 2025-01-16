@@ -3,52 +3,24 @@ import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
 import Accordion from 'react-bootstrap/Accordion';
 import Breadcrumbs from "../../Components/Breadcrumbs";
-import { Link, useNavigate } from 'react-router-dom';  
 
 function MainGoneisPGU(props){
-    const navigate = useNavigate(); 
 
-    const handleSearchRedirect = () => {
-        navigate('/anazitisi');  
-    };
-    
     return(
-        <div style={{ display: 'flex', flexDirection: 'column', height: "100vh" }}>
-            <div style={{marginBottom:"30px"}}>
-                <Header />
-            </div>
-
-            <div style={{marginLeft:"20px"}}>
-                <Breadcrumbs />
-            </div>
+        <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+            
+            <Header />
+            
+            <Breadcrumbs />
 
             <div style={{ flex: 1, overflowY: "auto" }}>
-                <div style={{ backgroundColor: "white", position: "relative", zIndex: 2, marginTop: "-10vh", display: "flex", width: "50%", justifyContent: "center", margin: "0 auto", flexDirection: "column", border: "1px solid black", borderRadius: "15px", height: "20vh" }}>
-                    <h6 style={{ textAlign: "center" }}>Βρείτε τον/την babysitter που σας ταιριάζει!</h6>
-                    <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginTop: "3%" }}>
-                        <div style={{ display: "flex", width: "30%", outline: "1px solid black", marginLeft: "10%", borderRadius: "15px", height: "5vh" }}>
-                            <Link to="/anazitisi" className="nav-link" style={{background: "none",border: "none",padding: 0,cursor: "pointer",width: "100%",display: "flex",alignItems: "center",justifyContent: "space-between",
-                                    textDecoration: "none", }} onClick={handleSearchRedirect} >
-                                <span style={{ fontWeight: 100, marginLeft: "3%" }}>
-                                    Βρείτε αυτό που ψάχνετε
-                                </span>
-                                <img
-                                    src="/search (1).svg"
-                                    alt="Search"
-                                    style={{ width: "24px", height: "24px" }}
-                                />
-                            </Link>
-                        </div>
-                        <span style={{ marginRight: "10%", textDecoration: "underline" }}>Βρείτε εργασία</span>
-                    </div>
-                </div>
                 <div style={{ display: "flex", justifyContent: "center", marginTop: "25px" }}>
-                    <img style={{ height: "25vh" }} src="/progress.png" alt="" />
+                    <img style={{ height: "25vh" }} src="/progressBabysitter.png" alt="" />
                 </div>
                 <div>
-                    <Accordion defaultActiveKey="0" style={{width:"90%", margin:"auto", marginTop:"2.5vh"}}>
+                    <Accordion defaultActiveKey="null" style={{width:"90%", margin:"auto", marginTop:"2.5vh"}}>
                     <Accordion.Item eventKey="0">
-                        <Accordion.Header>ΠΟΙΟΙ ΕΧΟΥΝ ΔΙΚΑΙΩΜΑ ΕΓΓΡΑΦΗΣ ΣΤΟ ΠΡΟΓΡΑΜΜΑ ΩΣ ΚΗΔΕΜΟΝΕΣ;</Accordion.Header>
+                        <Accordion.Header>Ποιοι έχουν δικαίωμα συμμετοχής ως Κηδεμόνες;</Accordion.Header>
                         <Accordion.Body>
                         <span style={{width:"80%"}} >
                             Για να έχετε τη δυνατότητα να συμμετάσχετε στο πρόγραμμα ‘Νταντάδες της Γειτονιάς’, θα πρέπει να πληρείτε τα ακόλουθα κριτήρια:
@@ -66,12 +38,12 @@ function MainGoneisPGU(props){
                     </Accordion>
                 </div>
                 <div>
-                    <Accordion defaultActiveKey="0" style={{width:"90%", margin:"auto", marginTop:"2.5vh"}}>
+                    <Accordion defaultActiveKey="null" style={{width:"90%", margin:"auto", marginTop:"2.5vh"}}>
                     <Accordion.Item eventKey="0">
-                        <Accordion.Header>ΔΙΑΔΙΚΑΣΙΑ ΕΥΡΕΣΗΣ ΕΠΠΑΓΕΛΑΜΤΙΑ</Accordion.Header>
+                        <Accordion.Header>Διαδικασία εύρεσης babysitter</Accordion.Header>
                         <Accordion.Body>
                         <span style={{width:"80%"}} >
-                        Για να βρείτε τον/την babysitter που σας ταιριάζει θα πρέπει να ολοκληρώσετε τα εξής βήματα:
+                            Για να βρείτε τον/την babysitter που σας ταιριάζει θα πρέπει να ολοκληρώσετε τα εξής βήματα:
                             <br />
                             <ul style={{listStyleType:"disc"}}>
                             <li>Βεβαιωθείτε ότι πληρείτε τα κριτήρια επιλεξιμότητας και εγγραφείτε στο πρόγραμμα.</li>
@@ -87,7 +59,7 @@ function MainGoneisPGU(props){
                     </Accordion>
                 </div>
                 <div>
-                    <Accordion defaultActiveKey="0" style={{width:"90%", margin:"auto", marginTop:"2.5vh"}}>
+                    <Accordion defaultActiveKey="null" style={{width:"90%", margin:"auto", marginTop:"2.5vh"}}>
                     <Accordion.Item eventKey="0">
                         <Accordion.Header>FAQ</Accordion.Header>
                         <Accordion.Body>
@@ -119,8 +91,10 @@ function MainGoneisPGU(props){
                     </Accordion.Item>
                     </Accordion>
                 </div>
-                <Footer/>
+                
             </div>
+
+            <Footer/>
         </div>
     );
 }

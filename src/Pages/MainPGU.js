@@ -127,7 +127,7 @@ function MainPGU() {
         </div>
 
         <div style={{ display: "flex", justifyContent: "center", marginTop: "25px" }}>
-          <img style={{ height: "25vh" }} src="/progressParents.png" alt="" />
+          <img style={{ height: "25vh" }} src="/progressBabysitter.png" alt="" />
         </div>
 
         <div style={{ textAlign: "center", marginTop: "5vh" }}><h3><b>Δείτε ενδεικτικές αγγελίες για εργασία:</b></h3></div>

@@ -72,8 +72,8 @@ function Header(props) {
     };
 
     const handleGoneisRedirect = () => {
-        if (location.pathname !== '/goneis') {
-            navigate('/goneis');  
+        if (location.pathname !== '/khdemones') {
+            navigate('/khdemones');  
         }
     };
 
@@ -134,7 +134,7 @@ function Header(props) {
                             <li className="nav-item">
                                 <Link
                                     className={props.act !== 'goneis' ? 'nav-link' : 'nav-link active'}
-                                    to="/goneis"
+                                    to="/khdemones"
                                     style={{ color: 'white' }}
                                     onClick={handleGoneisRedirect}  
                                 >
@@ -263,7 +263,7 @@ function Header(props) {
                             <li className="nav-item">
                                 <Link
                                     className={props.act !== 'goneis' ? 'nav-link' : 'nav-link active'}
-                                    to="/goneis"
+                                    to="/khdemones"
                                     style={{ color: 'white' }}
                                     onClick={handleGoneisRedirect}  
                                 >
@@ -397,7 +397,7 @@ function Header(props) {
                             <li className="nav-item">
                                 <Link
                                     className={props.act !== 'goneis' ? 'nav-link' : 'nav-link active'}
-                                    to="/goneis"
+                                    to="/khdemones"
                                     style={{ color: 'white' }}
                                     onClick={handleGoneisRedirect}  
                                 >

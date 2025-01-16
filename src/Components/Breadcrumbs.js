@@ -10,6 +10,7 @@ const translations = {
   register: "Εγγραφή",
   profiles: "Προφίλ",
   goneis: "Γονείς",
+  khdemones: "Κηδεμόνες",
   Home: "Αρχική",
   anazitisi: "Αναζήτηση",
   viewPost: "Προβολή αγγελίας",
