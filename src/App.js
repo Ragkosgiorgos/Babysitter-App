@@ -16,7 +16,6 @@ import PreviewAggelias from "./Pages/Epaggelmaties/Aggelies/PreviewAggelias";
 import ViewRating from "./Pages/Epaggelmaties/Ratings/ViewRating";
 import Login from "./Components/Login";
 import Register from "./Components/Register";
-import Profile from "./Components/Profile";
 import DimiourgiaSymbolaiou from "./Pages/Goneis/Symbolaia/DimiourgiaSymbolaiou";
 import ApodoxiSymbolaiou from "./Pages/Epaggelmaties/Symbolaia/ApodoxiSymbolaiou";
 import MainSymbolaiaEpaggelmatiesPGU from "./Pages/Epaggelmaties/Symbolaia/MainSymbolaiaEpaggelmatiesPGU";
@@ -47,11 +46,10 @@ function App() {
           <Route path="/" element={<MainPGU />} />
           <Route path="dashboard" element={<Dashboard />} />
 
-          <Route path="profile" element={<Profile/>} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register/>} />
 
-          <Route path="goneis" element={<MainGoneisPGU />} />
+          <Route path="khdemones" element={<MainGoneisPGU />} />
           <Route path="epaggelmaties" element={<MainEpaggelmatiesPGU />} />
 
           {/* Profile Pages & Viografiko */}
