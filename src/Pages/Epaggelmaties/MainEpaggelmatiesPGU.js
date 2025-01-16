@@ -88,16 +88,12 @@ function MainEpaggelmatiesPGU(props){
                 </div>
             </div>
             
-            <div style={{ marginLeft: "2vh",marginTop:"6vh" }}><h6>Δείτε αγγελίες άλλων babysitter:</h6></div>
-            <div style={{ marginTop: "20px", marginLeft: "20px", display: "flex", gap: "5vh", justifyContent: "center" }}>
-                
-            </div>
             <div style={{ display: "flex", justifyContent: "center", marginTop: "25px" }}>
-                <img style={{ height: "33vh" }} src="/progressBabysitter.png" alt="" />
+                <img style={{ height: "25vh" }} src="/progressBabysitter.png" alt="" />
             </div>
             <div>
                 <Accordion defaultActiveKey="0" style={{width:"90%", margin:"auto", marginTop:"1.5vh"}}>
-                <Accordion.Item eventKey="0">
+                <Accordion.Item eventKey="null">
                     <Accordion.Header>Ποιοι έχουν δικαίωμα εγγραφής στο πρόγραμμα ως babysitter;</Accordion.Header>
                     <Accordion.Body>
                     <span>
@@ -115,7 +111,7 @@ function MainEpaggelmatiesPGU(props){
             </div>
             <div>
                 <Accordion defaultActiveKey="0" style={{width:"90%", margin:"auto", marginTop:"1.5vh"}}>
-                <Accordion.Item eventKey="0">
+                <Accordion.Item eventKey="null">
                     <Accordion.Header>Διαδικασία εύρεσης εργασίας</Accordion.Header>
                     <Accordion.Body>
                     <span>

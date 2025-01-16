@@ -819,7 +819,7 @@ const submitPayment = async (contractId, startDate, endDate) => {
                     }}
                 >
                     {/* Show 'Προηγούμενο' button only if not at step 0 */}
-                    {currentStep !== 0 && currentStep !== 4 && (
+                    { currentStep !== 4 && (
                         <button
                             style={{
                                 height: "3%",
@@ -829,8 +829,9 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                 marginTop: "2%",
                                 width: "12%",
                             }}
-                            onClick={goToPreviousStep}
-                            disabled={currentStep === 0}
+                            onClick={() => {
+                                window.history.back();
+                            }}
                         >
                             Προηγούμενο
                         </button>
