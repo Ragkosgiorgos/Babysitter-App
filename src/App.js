@@ -63,7 +63,7 @@ function App() {
           <Route path="dashboard/aggelies" element={<MainAggeliesPGU />} />
           <Route path="neaAggelia" element={<DimiourgiaAggelias />} />
           <Route path="previewAggelias" element={<PreviewAggelias />} />
-          <Route path="viewPost" element={<ViewJobPost />} />
+          <Route path="/anazitisi/viewPost" element={<ViewJobPost />} />
           
           {/* Rantevou */}
           <Route path="epaggelmaties/rantevou" element={<MainRantevouPGU />} />
