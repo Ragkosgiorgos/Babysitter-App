@@ -276,7 +276,7 @@ function PliromiEpaggelmatia() {
                                     })
                                     .map((payment) => (
                                         <option key={payment.id} value={payment.id}>
-                                            Περίοδος: {payment.startPeriod} - {payment.endPeriod} | Κατάσταση: {payment.Paid === "True" ? "Πληρωμένο" : "Απλήρωτο"}
+                                            Περίοδος: {payment.startPeriod} - {payment.endPeriod}
                                         </option>
                                     ))}
                             </select>
@@ -340,25 +340,13 @@ function PliromiEpaggelmatia() {
                 width: '12%',
               }}
               onClick={goToNextStep}
+              disabled={!babysitterChoice}
             >
               Επόμενο
             </button>
+            
           ) : currentStep === steps.length - 1 ? (
             <>
-              <button
-                style={{
-                  height: '3%',
-                  backgroundColor: '#2b8cbe',
-                  color: 'white',
-                  borderRadius: '5px',
-                  marginTop: '2%',
-                  width: '12%',
-                }}
-                onClick={goToPreviousStep}
-              >
-                Προηγούμενο
-              </button>
-
               <button
                 style={{
                   height: '3%',
@@ -406,6 +394,8 @@ function PliromiEpaggelmatia() {
                     handlePayment();
                     goToNextStep();
                 }}
+                disabled={!selectedPayment}
+                
 
               >
                 Πληρωμή

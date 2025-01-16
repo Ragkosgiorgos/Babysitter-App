@@ -123,7 +123,6 @@ function MainPliromesGoneis() {
                 <thead style={{ lineHeight: '2em' }}>
                   <tr style={{ borderBottom: '2px solid #333' }}>
                     <th>Babysitter</th>
-                    <th>Κωδικός Πληρωμής</th>
                     <th>Περίοδος πληρωμης</th>
                   </tr>
                 </thead>
@@ -131,7 +130,6 @@ function MainPliromesGoneis() {
                   {contracts.map((contract) => (
                     <tr key={contract.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
                       <td>{findProfessionalName(contract.id_b)}</td>
-                      <td>{contract.id}</td>
                       <td>{contract.startPeriod} - {contract.endPeriod}</td>
                     </tr>
                   ))}
