@@ -1,26 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
 import Accordion from 'react-bootstrap/Accordion';
 import Breadcrumbs from "../../Components/Breadcrumbs";
-import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 
+function MainGoneisPGU(){
+    const navigate = useNavigate();
 
-function MainGoneisPGU(props){
-
-const navigate = useNavigate();
-
-  const [age, setAge] = useState("");
-  const [area, setArea] = useState("");
-
-  const handleSearchRedirect = () => {
-    navigate('/anazitisi', { state: { area: area, age: age } });
-  };
+    const handleSearchRedirect = () => {
+      navigate('/anazitisi', { state: { area: "", age: "age" } });
+    };
 
     return(
         <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-            
             <Header />
             
             <Breadcrumbs />

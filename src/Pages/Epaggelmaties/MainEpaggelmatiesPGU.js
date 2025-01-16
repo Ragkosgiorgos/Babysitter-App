@@ -3,56 +3,20 @@ import Header from "../../Components/Header";
 import Breadcrumbs from "../../Components/Breadcrumbs";
 import Accordion from 'react-bootstrap/Accordion';
 import Footer from "../../Components/Footer";
-import { Link } from "react-router-dom";
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { onAuthStateChanged } from 'firebase/auth';
-import { collection, query, where, getDocs } from 'firebase/firestore';
 
-import { FIREBASE_AUTH,FIREBASE_DB } from "../../config/firebase";
+function MainEpaggelmatiesPGU(){
+    const navigate = useNavigate();
 
-function MainEpaggelmatiesPGU(props){
-      
-    const [uuid, setUuid] = useState(null);
-    const [babysitter,setBabysitter]=useState([]);
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
-          if (user) {
-            setUuid(user.uid);
-            console.log(user);
-          }
-        });
-        return () => unsubscribe();
-      }, []);
-
-      useEffect(() => {
-        const fetchBabysitters = async () => {
-          try {
-            const babysitterRef = collection(FIREBASE_DB, 'user');
-            const querySnapshot = await getDocs(query(babysitterRef, where("property", "==", "babysitter")));
-            const babysitterData = querySnapshot.docs.map(doc => ({
-              userId: doc.id,
-              ...doc.data(),
-            }));
-            setBabysitter(babysitterData);
-          } catch (error) {
-            console.error("Error fetching babysitters:", error);
-          }
-        };
-    
-        fetchBabysitters();
-      }, []);
-
-      const navigate = useNavigate();
-
-        const handleClick = () => {
-                navigate('/dashboard/aggelies');
-        
-        };
+    const handleClick = () => {
+      navigate('/dashboard/aggelies');
+    };
 
     return(
-        <div>
+        <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
             <Header />
+
             <Breadcrumbs />
 
             <div style={{
@@ -72,7 +36,7 @@ function MainEpaggelmatiesPGU(props){
                 </p>
  
                 <div style={{ marginTop: "25px" }}>
-                <button onClick={handleClick} style={{
+                  <button onClick={handleClick} style={{
                     padding: "12px 25px", 
                     backgroundColor: "#007bff", 
                     color: "#fff", 
@@ -88,10 +52,11 @@ function MainEpaggelmatiesPGU(props){
                 </div>
             </div>
             
-            <div style={{ display: "flex", justifyContent: "center", marginTop: "25px" }}>
+            <div style={{ flex: 1, overflowY: "auto" }}>
+              <div style={{ display: "flex", justifyContent: "center", marginTop: "25px" }}>
                 <img style={{ height: "25vh" }} src="/progressBabysitter.png" alt="" />
-            </div>
-            <div>
+              </div>
+              <div>
                 <Accordion defaultActiveKey="0" style={{width:"90%", margin:"auto", marginTop:"1.5vh"}}>
                 <Accordion.Item eventKey="null">
                     <Accordion.Header>Ποιοι έχουν δικαίωμα εγγραφής στο πρόγραμμα ως babysitter;</Accordion.Header>
@@ -108,8 +73,8 @@ function MainEpaggelmatiesPGU(props){
                     </Accordion.Body>
                 </Accordion.Item>
                 </Accordion>
-            </div>
-            <div>
+              </div>
+              <div>
                 <Accordion defaultActiveKey="0" style={{width:"90%", margin:"auto", marginTop:"1.5vh"}}>
                 <Accordion.Item eventKey="null">
                     <Accordion.Header>Διαδικασία εύρεσης εργασίας</Accordion.Header>
@@ -128,10 +93,12 @@ function MainEpaggelmatiesPGU(props){
                     </Accordion.Body>
                 </Accordion.Item>
                 </Accordion>
+              </div>
             </div>
             <Footer/>
+
         </div>
     );
-
 }
+
 export default MainEpaggelmatiesPGU;
