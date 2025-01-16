@@ -28,7 +28,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState({});
   const [posts, setPosts] = useState([]);
-  console.log(Id_b,"/",id);
+  // console.log(Id_b,"/",id);
 
   const [uuid, setUuid] = useState(null);
     useEffect(() => {
@@ -76,7 +76,6 @@ function SubmitAitiseisEndiaferontosPGU(props) {
     gender: "",
   });
 
-
   // If post_id === -1 then we are creating a new post, otherwise we are editing an existing one
   useEffect(() => {
     const fetchAitiseisData = async () => {
@@ -89,20 +88,16 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                         id: doc.id,
                         ...doc.data(),
                     }));
+                    console.log(posts[0])
                     setnewData(posts[0]);
-                    const q2 = query(collection(FIREBASE_DB, 'rantevou'), where('id_b', '==', Id_b), where('date', '==', newData.date));
-                    const querySnapshot2 = await getDocs(q);
-                    const posts2 = querySnapshot.docs.map((doc) => ({
-                      id: doc.id,
-                      ...doc.data(),
-                  }));
-                  setRantevou(posts2[0]);
                 } catch (error) {
-                    console.error('Error fetching post data:', error);
+                  console.error('Error fetching post data:', error);
                 } finally {
-                    setLoading(false);
+                  setLoading(false);
+                  console.log(newData);
                 }
-            }
+
+          }
         };
 
     fetchAitiseisData();
@@ -120,16 +115,40 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                 id: doc.id,
                 ...doc.data(),
               }));
+              
               setPosts(post);
             } catch (error) {
               console.error('Error fetching posts:', error);
             } finally {
               setLoading(false);
+              console.log(posts,newData.date);
             }
           };
-          fetchPosts();
+          fetchPosts(); 
         }
+          
       }, [Id_b]);
+    
+      useEffect(() => {
+        const fetchRantevou = async () => {
+          try {
+            setLoading(true);
+            const qr = query(collection(FIREBASE_DB, 'rantevou'), where('id_b', '==', Id_b), where('date', '==', newData.date));
+            const querySnapshotr = await getDocs(qr);
+            const postsr = querySnapshotr.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+          }));   
+          setRantevou(postsr);
+          console.log(rantevou.date,1);
+          }catch (error) {
+              console.error('Error fetching post data:', error);
+          } finally {
+              setLoading(false);
+          }
+        };
+        fetchRantevou();
+      }, [newData.id_b]);
 
 
   const handleInputChange = (e) => {
@@ -241,17 +260,26 @@ function SubmitAitiseisEndiaferontosPGU(props) {
       }
     }
     else{
-      console.log("err");
+      // console.log("err");
     }
   };
 
   const handleDropdownChange = (post)=>{
-    newData.date = post.date;
+    setnewData((prevData) => ({
+      ...prevData,
+      ["date"]: post.date,
+    }));
+
+    setRantevou((prevData) => ({
+      ...prevData,
+      ["date"]: post.date,
+    }));
+    console.log(rantevou.date);
   };
 
   const handleProfileRedirect = () =>{ 
     navigate("/dashboard/rofiles");
-  };
+    };
   
   const isInPast = (date) => (date.get('year') < dayjs().get('year')) || (date.get('year') === dayjs().get('year') && date.get('month') < dayjs().get('month')) || (date.get('year') === dayjs().get('year') && date.get('month') === dayjs().get('month') && date.get('date') < dayjs().get('date'));
   const isNotPast = (date) => (date.get('year') > dayjs().get('year')) || (date.get('year') === dayjs().get('year') && date.get('month') > dayjs().get('month')) || (date.get('year') === dayjs().get('year') && date.get('month') === dayjs().get('month') && date.get('date') >= dayjs().get('date'));
@@ -275,11 +303,14 @@ function SubmitAitiseisEndiaferontosPGU(props) {
   if (loading) {
     return <Loader />;
   }
+
+  function isavailable(dates){
+    return dates.id_p === "";
+  }
   
-  if (!user) {
+  if (!user ) {
     return <div>Δεν βρέθηκε ο χρήστης</div>;
   }
-  console.log(rantevou.id_p);
   return (
       <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
         <div>
@@ -290,10 +321,10 @@ function SubmitAitiseisEndiaferontosPGU(props) {
             <div style={{ flex: 1, overflowY: "auto" }}>
               
               <Breadcrumbs />
-              {(id !== "" && rantevou.id_p !== undefined)  
+              {(rantevou.id_p !== "")  
                     ? <h4 style={{ color: "red", textAlign: "center" }}> Παρακαλώ συμπληρώστε σωστά όλα τα πεδία </h4> : ""}
               
-
+              <h4>{rantevou.id_p}</h4>
               <div style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%"}}>
                 <div style={{width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px"}}>
                     <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
@@ -391,7 +422,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                           {loading ? (
                             <MenuItem disabled>Loading...</MenuItem>
                           ) : (
-                            posts.filter(remote).map((post) => (
+                            posts.filter(isavailable).filter(remote).map((post) => (
                               <MenuItem onClick={()=>handleDropdownChange(post)} key={post.id} value={post.id}>
                                 {post.date}
                               </MenuItem>
@@ -411,7 +442,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                           {loading ? (
                             <MenuItem disabled>Loading...</MenuItem>
                           ) : (
-                            posts.filter(ftf).map((post) => (
+                            posts.filter(isavailable).filter(ftf).map((post) => (
                               <MenuItem key={post.id} value={post.id}>
                                 {post.date}
                               </MenuItem>
