@@ -599,7 +599,6 @@ function ApodoxiSymbolaiou() {
                                             <b>Λήξη συμβολαίου:</b> {contract.endDate}
                                         </h4>
                                     </div>
-
                                     
                                 </>
 

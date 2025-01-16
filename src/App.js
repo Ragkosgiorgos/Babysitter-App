@@ -35,6 +35,7 @@ import ViewAvailabilityPGU from "./Pages/Goneis/AitiseisEndiaferontos/ViewAvaila
 import Dashboard from "./Components/Dashboard";
 import Profiles from "./Pages/Profiles";
 import Ratings from "./Pages/Ratings";
+import ProvoliSymbolaiouEpaggelmatia from "./Pages/Epaggelmaties/Symbolaia/ProvoliSymbolaiaEpaggelmaties";
 
 function App() {
   return (
@@ -88,6 +89,7 @@ function App() {
           {/* Babysitter Symbolaia */}
           <Route path="epaggelmaties/symbolaia" element={<MainSymbolaiaEpaggelmatiesPGU />} />
           <Route path="/epaggelmaties/symbolaia/apantisi/:contractId" element={<ApodoxiSymbolaiou/>} />
+          <Route path="/epaggelmaties/symbolaia/provoli/:contractId" element={<ProvoliSymbolaiouEpaggelmatia/>} />
 
           {/* Khdemones Pliromes */}
           <Route path="/goneis/symbolaia/pliromes" element={<MainPliromesGoneis/>} />

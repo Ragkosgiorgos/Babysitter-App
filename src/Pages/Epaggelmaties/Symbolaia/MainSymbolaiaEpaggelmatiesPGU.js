@@ -94,6 +94,10 @@ function MainSymbolaiaEpaggelmatiesPGU() {
     navigate(`apantisi/${contractId}`); 
   };
 
+  const handleRedirectView = (contractId) => {
+    navigate(`/epaggelmaties/symbolaia/provoli/${contractId}`); 
+  };
+
   if (loading) {
     return <Loader />;
   }
@@ -127,10 +131,10 @@ function MainSymbolaiaEpaggelmatiesPGU() {
               {loading ? (
                 <Loader />
               ) : (
-                <table style={{ width: "80%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius: "10px" }}>
+                <table style={{ width: "70%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius: "10px" }}>
                   <thead style={{ lineHeight: "2em" }}>
                     <tr style={{ borderBottom: "2px solid #333" }}>
-                      <th>Κωδικός συμβολαίου</th>
+                      <th>Περίοδος Συμβολαίου</th>
                       <th>Ονοματεπώνυμο κηδεμόνα</th>
                       <th>Κατάσταση συμβολαίου</th>
                       <th>Ενέργειες</th>
@@ -143,7 +147,7 @@ function MainSymbolaiaEpaggelmatiesPGU() {
                     ) : (
                       contracts.map((contract, index) => (
                         <tr key={contract.id}>
-                          <td>{contract.id}</td>
+                          <td>{contract.startDate} - {contract.endDate}</td>
                           <td>{findParentName(contract.id_p)}</td>
                           <td style={{
                             color: contract.status === "Σε ισχύ" ? "green" :
@@ -159,7 +163,7 @@ function MainSymbolaiaEpaggelmatiesPGU() {
                                 Απάντηση
                               </span>
                             ) : (
-                              <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handleRedirect(contract.id)}>
+                              <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handleRedirectView(contract.id)}>
                                 Προβολή
                               </span>
                             )}

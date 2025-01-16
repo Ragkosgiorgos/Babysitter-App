@@ -168,26 +168,26 @@ function MainSymbolaiaGoneisPGU() {
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
 
-              <table style={{ width: "80%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius: "10px" }}>
+              <table style={{ width: "70%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius: "10px" }}>
                 <thead style={{ lineHeight: "2em" }}>
                   <tr style={{ borderBottom: "2px solid #333" }}>
-                    <th>Κωδικός συμβολαίου</th>
+                    <th>Περίοδος Συμβολαίου</th>
                     <th>Ονοματεπώνυμο babysitter</th>
                     <th>Κατάσταση συμβολαίου</th>
                     <th>Αξιολόγηση</th>
                     <th>Συμβόλαιο</th>
-                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
                     { contracts.map((contract) => (
                         <tr>
-                            <td>{contract.id}</td>
+                            <td>{contract.startDate} - {contract.endDate}</td>
                             <td>{findProfessionalName(contract.id_b)}</td>
                             <td style={{
                               color: contract.status === "Σε ισχύ" ? "green" :
                                      contract.status === "Σε αναμονή" ? "#f28c28" : 
                                      contract.status === "Απορρίφθηκε" ? "red" : "black"
+                                     
                              }}>
                                 {contract.status}
                             </td>
@@ -216,6 +216,11 @@ function MainSymbolaiaGoneisPGU() {
                             </td>
                         </tr>
                     ))}
+                    {contracts.length === 0 && (
+                      <tr>
+                        <td colSpan={4}>Δεν υπάρχουν συμβόλαια</td>
+                      </tr>
+                    )}
                 </tbody>
               </table>
 
