@@ -46,11 +46,8 @@ function MainEpaggelmatiesPGU(props){
       const navigate = useNavigate();
 
         const handleClick = () => {
-            if (babysitter.property === 'babysitter') {
-                navigate('/dashboard/aggelies'); // Redirect to the desired page
-            } else {
-                alert('You are not authorized to access this page'); // Optional alert
-            }
+                navigate('/dashboard/aggelies');
+        
         };
 
     return(
@@ -75,19 +72,19 @@ function MainEpaggelmatiesPGU(props){
                 </p>
  
                 <div style={{ marginTop: "25px" }}>
-                    <Link to="/dashboard/aggelies" style={{
-                        padding: "12px 25px", 
-                        backgroundColor: "#007bff", 
-                        color: "#fff", 
-                        textDecoration: "none", 
-                        borderRadius: "5px", 
-                        fontWeight: "bold", 
-                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                        cursor: "pointer",
-                        transition: "background-color 0.3s ease-in-out"
-                    }}>
-                        Δημιουργία Αγγελίας
-                    </Link>
+                <button onClick={handleClick} style={{
+                    padding: "12px 25px", 
+                    backgroundColor: "#007bff", 
+                    color: "#fff", 
+                    textDecoration: "none", 
+                    borderRadius: "5px", 
+                    fontWeight: "bold", 
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                    cursor: "pointer",
+                    transition: "background-color 0.3s ease-in-out"
+                  }}>
+                    Δημιουργία Αγγελίας
+                  </button>
                 </div>
             </div>
             

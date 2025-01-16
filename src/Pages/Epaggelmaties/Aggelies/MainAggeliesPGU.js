@@ -27,11 +27,35 @@ function MainAggeliesPGU() {
         if (user) {
           setUuid(user.uid);
         } else {
-          navigate("/404");
+          navigate("/login");
         }
       });
       return () => unsubscribe();
     }, [navigate]);
+
+    const [user, setUser] = useState('');
+    // Fetch user data when uuid is available
+    useEffect(() => {
+        if (uuid) {
+            const fetchUserData = async () => {
+                try {
+                    setLoading(true);
+                    const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
+                    const querySnapshot = await getDocs(q);
+                    const users = querySnapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }));
+                    setUser(users[0]);
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchUserData();
+        }
+    }, [uuid]);
 
     // Fetch the job posts' data from the database
     useEffect(() => {
@@ -95,6 +119,11 @@ function MainAggeliesPGU() {
 
     if (loading) {
       return <Loader />;
+    }
+
+    if (uuid && user?.property !== "babysitter")
+    {
+      navigate("/404");
     }
 
     return (

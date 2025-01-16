@@ -181,6 +181,10 @@ function MainSymbolaiaEpaggelmatiesPGU() {
                           </td>
                         </tr>
                       ))
+                    )}{contracts.length === 0 && (
+                      <tr>
+                        <td colSpan={3}>Δεν υπάρχουν συμβόλαια</td>
+                      </tr>
                     )}
                   </tbody>
                 </table>
