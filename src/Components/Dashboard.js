@@ -113,6 +113,7 @@ const Dashboard = () => {
                                     <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: "3vh" }}>
                                         <PageCard title="Τα Ραντεβού μου" url="/epaggelmaties/rantevou" />
                                         <PageCard title="Τα Συμφωνητικά μου" url="/goneis/symbolaia" />
+                                        <PageCard title="Αιτήσεις Ενδιαφέροντός" url="/goneis/profile/aitiseis-endiaferontos" />
                                     </div>
 
                                     <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: "3vh"}}>
