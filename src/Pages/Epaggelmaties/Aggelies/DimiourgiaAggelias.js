@@ -258,11 +258,7 @@ function DimiourgiaAggelias() {
         return <Loader />;
     }
 
-    if (!user) {
-        navigate("/404");
-    }
-
-    if (user?.property !== "babysitter") {
+    if (!user && !loading) {
         navigate("/404");
     }
     
@@ -276,32 +272,32 @@ function DimiourgiaAggelias() {
                             <h2 style={{ textAlign: "left", textDecoration: "underline" }}><b>Επιβεβαιώστε τα προσωπικά σας στοιχεία</b></h2>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginTop: "3%" }}>
                                 <h4 style={{ textAlign: "left" }}><b>Όνομα:</b> {user.firstName} </h4>
-                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate("/edit-profile")} />
+                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate("/dashboard/profiles")} />
                             </div>
                             <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginTop: "3%" }}>
                                 <h4 style={{ textAlign: "left" }}><b>Επίθετο:</b> {user.lastName}</h4>
-                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate("/edit-profile")} />
+                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate("/dashboard/profiles")} />
                             </div>
                             <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginTop: "3%" }}>
                                 <h4 style={{ textAlign: "left" }}><b>Ημερομηνία γέννησης:</b> {user.birthDate}</h4>
-                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate("/edit-profile")} />
+                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate("/dashboard/profiles")} />
                             </div>
                             <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginTop: "3%" }}>
                                 <h4 style={{ textAlign: "left" }}><b>Πόλη:</b> {user.area}</h4>
-                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate("/edit-profile")} />
+                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate("/dashboard/profiles")} />
                             </div>
                             <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginTop: "3%" }}>
                                 <h4 style={{ textAlign: "left" }}><b>Αριθμός κινητού τηλεφώνου:</b> {user.phone}</h4>
-                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate("/edit-profile")} />
+                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate("/dashboard/profiles")} />
                             </div>
                             <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginTop: "3%" }}>
                                 <h4 style={{ textAlign: "left" }}><b>Email:</b> {user.email}</h4>
-                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate("/edit-profile")} />
+                                <EditIcon style={{ float: "right", cursor: "pointer" }} onClick={() => navigate("/dashboard/profiles")} />
                             </div>
                         </div>
                     </div>
@@ -312,9 +308,9 @@ function DimiourgiaAggelias() {
                                       justifyContent: "center", marginLeft: "20%", padding: "2%", marginTop: "2%" }}>
 
                             <h2 style={{ textAlign: "center", textDecoration: "underline" }}><b>Συμπληρώστε τα στοιχεία της αγγελίας</b></h2>
-                            <h6 style={{ textAlign: "center", textDecoration: "underline", color: "#ff5252" }}>*Όλα τα πεδία είναι υποχρεωτικά</h6>
+                            <h6 style={{ textAlign: "center", textDecoration: "underline" }}>*Όλα τα πεδία είναι υποχρεωτικά</h6>
                                 {isSubmitted && (!newData.description || !newData.area || !newData.ageFrom || !newData.ageTo || !newData.time || !newData.accomodation || !correctAge)
-                                             ? <h4 style={{ color: "red", textAlign: "center" }}> Παρακαλώ συμπληρώστε σωστά όλα τα πεδία </h4> : ""}
+                                             ? <h4 style={{ color: "red", textAlign: "center" }}> Παρακαλoύμε συμπληρώστε σωστά όλα τα πεδία </h4> : ""}
                                              
                             <h5 style={{ display: "flex", flexDirection: "row", fontWeight: "bold", marginTop: "3%" }}> Περιγραφή </h5> 
                             <div style={{ marginLeft: "0%" }}>{isSubmitted && !newData.description && <h6 style={{ color: "red" }}> <b>*Συμπληρώστε το πεδίο</b> </h6>}</div>
@@ -449,9 +445,9 @@ function DimiourgiaAggelias() {
                                 <div style={{ display: "flex", flexDirection: "column", backgroundColor: "#ece7f2", borderRadius: "2%",
                                                 justifyContent: "center", padding: "2%" }}>
                                     <h2 style={{ textAlign: "center", textDecoration: "underline" }}><b> Τα προσωπικά σας στοιχεία </b></h2>
-                                    <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Όνομα:</b> {user.name} </h4>
+                                    <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Όνομα:</b> {user.firstName} </h4>
                                     <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
-                                    <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Επίθετο:</b> {user.surname}</h4>
+                                    <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Επίθετο:</b> {user.lastName}</h4>
                                     <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
                                     <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Ημερομηνία γέννησης:</b> {user.birthDate}</h4>
                                     <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
@@ -522,7 +518,7 @@ function DimiourgiaAggelias() {
                         {newData.status === "Δημοσιευμένη" && <h2>Η αγγελία σας δημοσιεύτηκε με επιτυχία!</h2>}
                         {newData.status === "Σε προσωρινή αποθήκευση" && <h2>Η αγγελία σας αποθηκεύτηκε με επιτυχία!<br/>
                                                                              Μπορείτε να την επεξεργαστείτε και να την οριστικοποιήσετε αργότερα.</h2>}
-                        <h4>Μπορείτε να δείτε την αγγελία σας στην κατηγορία <a href="/aggelies"> "Οι αγγελίες μου"</a>.</h4>
+                        <h4>Μπορείτε να δείτε την αγγελία σας στην κατηγορία <a href="/dashboard/aggelies"> "Οι αγγελίες μου"</a>.</h4>
                     </div>
                 );
             case 4:

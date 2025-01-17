@@ -2,10 +2,6 @@ import React, { useState, useEffect } from "react";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import InfoIcon from '@mui/icons-material/Info';
 import Loader from "../../../Components/Loader";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
@@ -35,47 +31,47 @@ function EpaggRatingMain() {
 
   // Fetch user, posts, and parents data
   useEffect(() => {
-    const fetchData = async () => {
-      if (!uuid) return;
+    if (uuid) {
+      const fetchData = async () => {
+        try {
+          setLoading(true);
 
-      try {
-        setLoading(true);
+          // Fetch user data
+          const userQuery = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
+          const userSnapshot = await getDocs(userQuery);
+          const users = userSnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setUser(users[0]);
 
-        // Fetch user data
-        const userQuery = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
-        const userSnapshot = await getDocs(userQuery);
-        const users = userSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setUser(users[0]);
+          // Fetch posts
+          const postsQuery = query(collection(FIREBASE_DB, 'ratings'), where('id_b', '==', uuid));
+          const postsSnapshot = await getDocs(postsQuery);
+          const posts = postsSnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setFilteredPosts(posts);
 
-        // Fetch posts
-        const postsQuery = query(collection(FIREBASE_DB, 'ratings'), where('id_b', '==', uuid));
-        const postsSnapshot = await getDocs(postsQuery);
-        const posts = postsSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setFilteredPosts(posts);
+          // Fetch parents
+          const parentsQuery = query(collection(FIREBASE_DB, 'user'), where('property', '==', 'parent'));
+          const parentsSnapshot = await getDocs(parentsQuery);
+          const parentsData = parentsSnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setParents(parentsData);
+          
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
 
-        // Fetch parents
-        const parentsQuery = query(collection(FIREBASE_DB, 'user'), where('property', '==', 'parent'));
-        const parentsSnapshot = await getDocs(parentsQuery);
-        const parentsData = parentsSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setParents(parentsData);
-        
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+      fetchData();
+    }
   }, [uuid]);
 
   // Preview rating
@@ -87,7 +83,7 @@ function EpaggRatingMain() {
     return <Loader />;
   }
 
-  if (!user) {
+  if (!user && !loading) {
     navigate("/404");
   }
 
@@ -102,21 +98,6 @@ function EpaggRatingMain() {
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
               <h2 style={{ fontWeight: "bold", textAlign: "center", marginTop: "3%" }}>Οι Αξιολογήσεις μου</h2>
-              <Tooltip
-                title={
-                  <div style={{ display: "flex", justifyContent: "center", gap: "5%", flexDirection: "column" }}>
-                    <div>
-                      <VisibilityIcon style={{ cursor: "pointer" }} />: προβολή αξιολόγησης
-                    </div>
-                  </div>
-                }
-                placement="top"
-                style={{ marginTop: "3%" }}
-              >
-                <Button>
-                  <InfoIcon />
-                </Button>
-              </Tooltip>
             </div>
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
@@ -142,7 +123,7 @@ function EpaggRatingMain() {
                         </td>
                         <td>{post.rating}/5</td>
                         <td style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "0.5em", gap: "10px" }}>
-                          <VisibilityIcon style={{ cursor: "pointer" }} onClick={() => previewRating(post.id)} />
+                          <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => previewRating(post.id)}>Προβολή</span>
                         </td>
                       </tr>
                     ))

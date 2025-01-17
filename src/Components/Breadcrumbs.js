@@ -20,6 +20,7 @@ const translations = {
   aggelies: "Αγγελίες",
   previewAggelias: "Προβολή αγγελίας",
   dashboard: "Dashboard",
+  add: "Δημιουργία αξιολόγησης",
 };
 
 function Breadcrumbs() {

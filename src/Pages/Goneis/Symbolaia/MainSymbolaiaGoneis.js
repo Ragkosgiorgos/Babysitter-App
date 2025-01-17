@@ -2,19 +2,12 @@ import React, { useState, useEffect } from "react";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs.js";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Loader from "../../../Components/Loader.js";
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import InfoIcon from '@mui/icons-material/Info';
 import { useNavigate } from "react-router-dom";
-import ReplayIcon from '@mui/icons-material/Replay';
-import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs } from 'firebase/firestore';
-import { FIREBASE_DB, FIREBASE_AUTH } from '../../../config/firebase.js'
 import dayjs from "dayjs";
-import { doc, updateDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
+import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
+import { FIREBASE_DB, FIREBASE_AUTH } from '../../../config/firebase.js'
 
 function MainSymbolaiaGoneisPGU() {
   const navigate = useNavigate();
@@ -76,21 +69,16 @@ function MainSymbolaiaGoneisPGU() {
             const today = dayjs();
               for (const contract of posts) {
                 const rawEndDate = contract.endDate.trim();
-                console.log(`Raw end date for contract ${contract.id}:`, rawEndDate);
 
                 // Split the date string into day, month, and year
                 const [day, month, year] = rawEndDate.split('/');
                 const dateObj = new Date(`${year}-${month}-${day}`);  // Format it as YYYY-MM-DD for the native Date object
 
-                console.log("Native Date object:", dateObj);
-
                 if (isNaN(dateObj.getTime())) {
-                  console.error(`Invalid end date for contract ${contract.id}: ${rawEndDate}`);
                   continue;  // Skip this contract if the date is invalid
                 }
 
                 const endDate = dayjs(dateObj);  // Convert back to Day.js object if needed
-                console.log("Parsed end date:", endDate.format("YYYY-MM-DD"));
 
                 if (endDate.isBefore(today) && contract.status === "Σε ισχύ") {
                   // Update contract status in Firestore
@@ -140,8 +128,6 @@ function MainSymbolaiaGoneisPGU() {
   };
 
   const findReviewId = async (babysitterId) => {
-    console.log("Fetching rating for:", { uuid, babysitterId }); // Debug log
-  
     try {
       const q = query(
         collection(FIREBASE_DB, 'ratings'),
@@ -152,11 +138,9 @@ function MainSymbolaiaGoneisPGU() {
   
       if (!querySnapshot.empty) {
         const ratingDoc = querySnapshot.docs[0];
-        console.log("Rating found:", ratingDoc.id); // Debug log
         return ratingDoc.id;
       }
-  
-      console.log("No rating found");
+
       return null;
     } catch (error) {
       console.error('Error fetching rating:', error);
@@ -167,16 +151,11 @@ function MainSymbolaiaGoneisPGU() {
   const [error, setError] = useState(null);
 
   const handleNewContract = (childBirthDate) => {
-    console.log(childBirthDate);
-
     // Split the birthdate string (DD/MM/YYYY) into day, month, and year
     const [day, month, year] = childBirthDate.split('/');
 
     // Create a new Date object using the parsed values
-    const birthDate = new Date(year, month - 1, day); // month is 0-based in JS
-
-    
-    
+    const birthDate = new Date(year, month - 1, day);
 
     // Get the current date
     const currentDate = new Date();
@@ -196,16 +175,13 @@ function MainSymbolaiaGoneisPGU() {
     // Calculate the fraction of the year completed
     const age = ageYears + ageMonths / 12;
 
-    console.log(age.toFixed(2)); // Outputs age as a float with 2 decimal places
-
     if (age.toFixed(2) < 0.5 || age.toFixed(2) > 2.5) {
       setError("Η ηλικία του παιδιού πρέπει να είναι μεταξύ 0.5 και 2.5 ετών.");
-    }else{
+    } else {
       setError(null);
       navigate('/neo-symbolaio');
     }
-};
-
+  };
   
   const handleRedirect = (contractId) => {
     navigate(`provoli/${contractId}`); 
@@ -228,16 +204,6 @@ function MainSymbolaiaGoneisPGU() {
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
               <h2 style={{ fontWeight: "bold", textAlign: "center", marginTop: "3%" }}>Τα συμβόλαια μου</h2>
-              <Tooltip title={
-                <div style={{ display: "flex", justifyContent: "center", gap: "5%", flexDirection: "column" }}>
-                  <div><VisibilityIcon style={{ cursor: "pointer" }} onClick={()=> handleRedirect(contracts.id)} />: προβολή συμβολαίου</div>
-                  <div><DeleteForeverIcon style={{ cursor: "pointer",color:"black" }} />: διαγραφή συμβολαίου</div>
-                  <div><ReplayIcon
-                        style={{ cursor: "pointer", marginLeft: "10px" }}/>:Ανανέωση συμβολαίου</div>
-                </div>
-              } placement="top" style={{ marginTop: "3%" }}>
-                <Button> <InfoIcon /> </Button>
-              </Tooltip>
             </div>
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%", marginLeft: "70%" }}>

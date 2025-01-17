@@ -63,6 +63,7 @@ function App() {
           <Route path="dashboard/aggelies" element={<MainAggeliesPGU />} />
           <Route path="neaAggelia" element={<DimiourgiaAggelias />} />
           <Route path="previewAggelias" element={<PreviewAggelias />} />
+          <Route path="/aggelies/viewPost" element={<ViewJobPost />} />
           <Route path="/anazitisi/viewPost" element={<ViewJobPost />} />
           
           {/* Rantevou */}
@@ -74,7 +75,7 @@ function App() {
 
           {/* Khdemones Ratings */}
           <Route path="/ratings" element={<Ratings />} />
-          <Route path="goneis/ratings/add" element={<CreateRating />} />
+          <Route path="/ratings/add" element={<CreateRating />} />
 
           {/* Babysitter Ratings */}
           <Route path="/ratings/previewAksiologisi" element={<ViewRating />} />

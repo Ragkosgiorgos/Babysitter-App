@@ -3,9 +3,9 @@ import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import Loader from '../../../Components/Loader';
-import { Carousel } from 'react-bootstrap';
-import { useNavigate } from "react-router-dom";
 import { calculateAge, TruncatedText } from "../../../Utils/Methods/index";
+import { useNavigate } from "react-router-dom";
+import { Carousel } from 'react-bootstrap';
 import ClearIcon from '@mui/icons-material/Clear';
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
 import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
@@ -20,6 +20,7 @@ function Viografiko() {
     const [loading, setLoading] = useState(true);
     const [description, setDescription] = useState("");
 
+    // Fetch user's uuid
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
             if (user) {
@@ -31,6 +32,7 @@ function Viografiko() {
         return () => unsubscribe();
     }, [navigate]);
 
+    // Fetch user data & ratings from the database
     useEffect(() => {
         if (uuid) {
             const fetchUser = async () => {
@@ -79,6 +81,7 @@ function Viografiko() {
         setDescription(e.target.value);
     };
 
+    // Save the description to the database
     const saveDescription = async () => {
         if (description !== profile.description) {
             try {
@@ -121,6 +124,7 @@ function Viografiko() {
         return mails;
     };
     
+    // Delete a mail from the profile ( -1 to the systatikes )
     const handleDelete = () => {
         // Add your logic to handle the deletion of the mail
         setProfile({ ...profile, systatikes: profile.systatikes - 1 });
@@ -191,12 +195,13 @@ function Viografiko() {
                                     <h6> <b style={{ textDecoration: "underline" }}>Περιγραφή:</b></h6>
                                     <textarea style={{ width: "100%", height: "100px", resize: "none", border: "1px solid black", backgroundColor: "#D9EAFD", padding: "10px", borderRadius: "10px" }}
                                     value={description} onChange={handleDescriptionChange} />
+                                    { description !== profile.description &&
                                     <button className="btn btn-primary" 
                                         style={{ marginTop: "10px", backgroundColor: "green", color: "white", cursor: "pointer", 
                                                 border: "1px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", }} 
                                         onClick={saveDescription}>
                                         Αποθήκευση
-                                    </button>
+                                    </button> }
                                 </div>
 
                             </div>
@@ -227,21 +232,36 @@ function Viografiko() {
                             <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center" }}>
                                 <span style={{ fontSize: "20px" }}><b style={{textDecoration:"underline"}}>Αξιολογήσεις</b></span>
                                 {ratings.length === 0 ? <h5 style={{marginTop:"4vh"}}>Δεν υπάρχουν αξιολογήσεις!</h5> : 
-                                <Carousel data-bs-theme="dark" style={{ width: "20vw", height: "30vh", marginTop: "2vh" }}>
-                                    {ratings.map((rating) => (
-                                        <Carousel.Item key={rating.id}>
-                                            <h3>Βαθμολογία: {rating.rating}</h3>
-                                            <p style={{ width:"70%", textAlign:"center", margin:"auto" }}>
+                                    <Carousel
+                                        data-bs-theme="dark"
+                                        style={{ width: "90%", maxWidth: "400px", height: "300px", margin: "2vh auto" }}
+                                    >
+                                        {ratings.map((rating) => (
+                                            <Carousel.Item key={rating.id} style={{ textAlign: "center", padding: "20px" }}>
+                                            <h3 style={{ fontSize: "1.2rem", marginBottom: "1rem" }}>Βαθμολογία: {rating.rating}</h3>
+                                            <p style={{ fontSize: "1rem", margin: "auto", maxWidth: "90%" }}>
                                                 {TruncatedText(rating.comment)}
                                             </p>
-                                            <button style={{ borderRadius: "5%", fontSize: "12px" }}
-                                                    onClick = {() => handleViewRating(rating.id)}>
+                                            <button
+                                                style={{
+                                                borderRadius: "5px",
+                                                fontSize: "14px",
+                                                padding: "10px 15px",
+                                                marginTop: "90px",
+                                                border: "1px solid #333",
+                                                cursor: "pointer",
+                                                backgroundColor: "#007bff",
+                                                color: "white",
+                                                boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                                                }}
+                                                onClick={() => handleViewRating(rating.id)}
+                                            >
                                                 Προβολή
                                             </button>
-                                        </Carousel.Item>
-                                        
-                                    ))}
-                                </Carousel>}
+                                            </Carousel.Item>
+                                        ))}
+                                    </Carousel>
+                                }
                             </div>
                         </div>
 
