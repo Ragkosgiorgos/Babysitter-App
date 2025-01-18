@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from 'react-router-dom';
 import { calculateAge, capitalizeWords } from "../../Utils/Methods/index";
+import { Rating } from "@mui/material";
 
 function JobPosting(props){
   const profile = props.profile;
@@ -22,15 +23,16 @@ function JobPosting(props){
 
           <h6 style={{ marginTop: "3%" , backgroundColor: "#D9EAFD", borderRadius: "50%", width: "80px", height: "80px", display: "flex", justifyContent: "center", alignItems: "center", marginLeft: "2%", marginRight: "3%", border: "2px solid black" }}>
             {profile.img ? 
-                (profile.gender === "Άντρας" ? <img src="/images/men_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} /> :
-                <img src="/images/woman_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
+                (profile.gender === "Άντρας" ? <img src="/images/men_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} /> 
+                  : profile.gender === "Γυναίκα" ? <img src="/images/woman_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} /> 
+                  : <img src="/images/default_profile.png" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
                 )
             : <img src="/images/default_profile.png" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />}
           </h6>
 
           <div style={{display:"flex",flexDirection:"column",marginTop:"2vh"}}>
 
-            <h3> {profile.firstName} {profile.lastName} </h3>
+            <h3> {profile.firstName} {profile.lastName}  <Rating name="read-only" value={profile.totalRatingAvg} readOnly style={{ fontSize: "0.8em" }} /> </h3>
             <div style={{display:"flex", flexDirection:"column", marginLeft:"0%", marginRight:"0%"}}>
               <h6> <b>Πόλη:</b> {capitalizeWords(post.area)} </h6>
               <h6> <b>Ηλικία:</b> {calculateAge(profile.birthDate)} </h6>

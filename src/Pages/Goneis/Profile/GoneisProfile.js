@@ -17,19 +17,20 @@ registerLocale('el', el);
 function GoneisProfile() {
   const [editedData, setEditedData] = useState({});
   const [isEditing, setIsEditing] = useState({
+    email: false,
     firstName: false,
     lastName: false,
     birthDate: false,
     afm: false,
-    address: false,
     area: false,
-    email: false,
     phone: false,
-    childfirstName: false,
-    childlastName: false,
-    childBirthDate: false,
-    childAmka: false,
+    gender: false,
     img: false,
+
+    childFirstName: false,
+    childLastName: false,
+    childBirthDate: false,
+    childGender: false,
   });
 
   const [uuid, setUuid] = useState(null);
@@ -79,6 +80,10 @@ function GoneisProfile() {
   };
 
   const handleSaveChanges = async (field) => {
+    if (!validateForm()) { // If there are errors, do not save changes and return and print the errors
+      return;
+    }
+    
     setIsEditing({ ...isEditing, [field]: false });
     setKhdemonas({ ...khdemonas, [field]: editedData[field] });
 
@@ -120,6 +125,80 @@ function GoneisProfile() {
     }
   };
 
+  // Validation of input
+  const [error, setError] = useState({});
+  const validateForm = () => {
+    const newErrors = {};
+    if (!editedData.email) {
+        newErrors.email = 'Το email είναι υποχρεωτικό.';
+    } else if (!/\S+@\S+\.\S+/.test(editedData.email)) {
+        newErrors.email = 'Λάθος μορφή email.';
+    }
+
+    if (!editedData.firstName) {
+        newErrors.firstName = 'Το όνομα είναι υποχρεωτικό.';
+    } else if (!/^[a-zA-Zα-ωΑ-ΩάέήίόύώΆΈΉΊΌΎΏϊϋΐΰ]+$/.test(editedData.firstName)) {
+        newErrors.firstName = 'Το όνομα πρέπει να περιέχει μόνο γράμματα.';
+    }
+
+    if (!editedData.lastName) {
+        newErrors.lastName = 'Το επώνυμο είναι υποχρεωτικό.';
+    } else if (!/^[a-zA-Zα-ωΑ-ΩάέήίόύώΆΈΉΊΌΎΏϊϋΐΰ]+$/.test(editedData.lastName)) {
+        newErrors.lastName = 'Το επώνυμο πρέπει να περιέχει μόνο γράμματα.';
+    }
+
+    if (!editedData.birthDate) {
+        newErrors.birthDate = 'Η ημερομηνία γέννησης είναι υποχρεωτική.';
+    } else {
+        const age = new Date().getFullYear() - new Date(editedData.birthDate).getFullYear();
+        if (age < 18) {
+            newErrors.birthDate = 'Πρέπει να είστε άνω των 18 ετών.';
+        }
+    }
+
+    if (!editedData.afm) {
+        newErrors.afm = 'Το ΑΦΜ είναι υποχρεωτικό.';
+    } else if (!/^\d{9}$/.test(editedData.afm)) {
+        newErrors.afm = 'Το ΑΦΜ πρέπει να αποτελείται από 9 ψηφία.';
+    }
+
+    if (!editedData.phone) {
+        newErrors.phone = 'Το τηλέφωνο είναι υποχρεωτικό.';
+    } else if (!/^\d{10}$/.test(editedData.phone)) {
+        newErrors.phone = 'Το τηλέφωνο πρέπει να αποτελείται από 10 ψηφία.';
+    }
+
+    if (!editedData.childFirstName) {
+      newErrors.childFirstName = 'Το όνομα του παιδιού είναι υποχρεωτικό.';
+    } else if (!/^[a-zA-Zα-ωΑ-ΩάέήίόύώΆΈΉΊΌΎΏϊϋΐΰ]+$/.test(editedData.childFirstName)) {
+        newErrors.childFirstName = 'Το όνομα του παιδιού πρέπει να περιέχει μόνο γράμματα.';
+    }
+
+    if (!editedData.childLastName) {
+        newErrors.childLastName = 'Το επώνυμο του παιδιού είναι υποχρεωτικό.';
+    } else if (!/^[a-zA-Zα-ωΑ-ΩάέήίόύώΆΈΉΊΌΎΏϊϋΐΰ]+$/.test(editedData.childLastName)) {
+        newErrors.childLastName = 'Το επώνυμο του παιδιού πρέπει να περιέχει μόνο γράμματα.';
+    }
+
+    setError(newErrors);
+
+    // If no errors, return true; otherwise, return false
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const areasOfGreece = [
+    "Αθήνα",
+    "Θεσσαλονίκη",
+    "Πάτρα",
+    "Ηράκλειο",
+    "Λάρισα",
+    "Βόλος",
+    "Ιωάννινα",
+    "Καβάλα",
+    "Χανιά",
+    "Ρόδος",
+  ];
+
   if (isLoading) {
     return <Loader />;
   }
@@ -140,8 +219,9 @@ function GoneisProfile() {
             <h3 style={{ textAlign: "center", textDecoration: "underline" }}> <b> Φωτογραφία </b> </h3>
             <h6 style={{ marginTop: "3%", backgroundColor: "#D9EAFD", borderRadius: "50%", width: "80px", height: "80px", display: "flex", justifyContent: "center", alignItems: "center", border: "2px solid #333" }}>
               {khdemonas.img ? 
-                (khdemonas.gender === "Άντρας" ? <img src="/images/men_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} /> :
-                <img src="/images/woman_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
+                (khdemonas.gender === "Άντρας" ? <img src="/images/men_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} /> 
+                  : khdemonas.gender === "Γυναίκα" ? <img src="/images/woman_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
+                  : <img src="/images/default_profile.png" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
                 )
               : <img src="/images/default_profile.png" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />}
             </h6>
@@ -168,7 +248,7 @@ function GoneisProfile() {
               <h3 style={{ textAlign: "left", textDecoration: "underline" }}>
                 <b> Τα προσωπικά σας στοιχεία </b>
               </h3>
-              {["firstName", "lastName", "birthDate", "afm", "email", "phone"].map((field) => (
+              {["firstName", "lastName", "birthDate", "email", "afm", "area", "phone", "gender"].map((field) => (
                 <div key={field}>
                   <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -179,7 +259,9 @@ function GoneisProfile() {
                             : field === "birthDate" ? "Ημερομηνία γέννησης"
                             : field === "afm" ? "ΑΦΜ"
                             : field === "email" ? "Email"
-                            : "Τηλέφωνο"}:
+                            : field === "area" ? "Περιοχή"
+                            : field === "phone" ? "Τηλέφωνο"
+                            : "Φύλο"}:
                         </b>{" "}
                         {isEditing[field] ? (
                           field === "birthDate" ? (
@@ -202,6 +284,30 @@ function GoneisProfile() {
                               placeholderText="Επιλέξτε ημερομηνία"
                               maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
                             />
+                          ) : field === "gender" ? (
+                            <select
+                              name={field}
+                              value={editedData[field]}
+                              onChange={handleInputChange}
+                              style={{ width: "20%", padding: "5px", fontSize: "20px", marginLeft: "15px" }}
+                            >
+                              <option value="Άντρας">Άντρας</option>
+                              <option value="Γυναίκα">Γυναίκα</option>
+                              <option value="Άλλο">Άλλο</option>
+                            </select>
+                          ) : field === "area" ? (
+                            <select
+                              name={field}
+                              value={editedData[field]}
+                              onChange={handleInputChange}
+                              style={{ width: "30%", padding: "5px", fontSize: "20px", marginLeft: "15px" }}
+                            >
+                              {areasOfGreece.map((area) => (
+                                <option key={area} value={area}>
+                                  {area}
+                                </option>
+                              ))}
+                            </select>
                           ) : (
                             <input
                               type="text"
@@ -215,14 +321,32 @@ function GoneisProfile() {
                         )}
                       </div>
                       {isEditing[field] && (
-                        <button style={{ marginRight: "10px", fontSize: "12px", padding: "5px 10px", borderRadius: "5px", cursor: "pointer", border: "1px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", color: "white", backgroundColor: "green" }}
-                          onClick={() => handleSaveChanges(field)}>
+                        <button
+                          style={{
+                            marginRight: "10px",
+                            fontSize: "12px",
+                            padding: "5px 10px",
+                            borderRadius: "5px",
+                            cursor: "pointer",
+                            border: "1px solid #333",
+                            boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)",
+                            color: "white",
+                            backgroundColor: "green"
+                          }}
+                          onClick={() => handleSaveChanges(field)}
+                        >
                           Αποθήκευση
                         </button>
                       )}
-                      <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick(field)}/>
+                      <img
+                        style={{ cursor: "pointer" }}
+                        src="/edit (1).svg"
+                        alt="Edit"
+                        onClick={() => handleEditClick(field)}
+                      />
                     </div>
                   </h4>
+                  {error[field] && <p style={{ color: 'red', marginLeft: "6%" }}>{error[field]}</p>}
                   <hr />
                 </div>
               ))}
@@ -232,10 +356,10 @@ function GoneisProfile() {
               <h3 style={{ textAlign: "left", textDecoration: "underline" }}>
                 <b> Τα προσωπικά στοιχεία του παιδιού </b>
               </h3>
-              {["childFirstName", "childLastName", "childBirthDate", "childAmka"].map((field) => (
+              {["childFirstName", "childLastName", "childBirthDate", "childGender"].map((field) => (
                 <div key={field}>
                   <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <div style={{ width: "80%" }}>
                         <b>
                           {field === "childFirstName"
@@ -244,7 +368,7 @@ function GoneisProfile() {
                             ? "Επίθετο παιδιού"
                             : field === "childBirthDate"
                             ? "Ημερομηνία γέννησης παιδιού"
-                            : "AMKA"}:
+                            : "Φύλο παιδιού"}:
                         </b>{" "}
                         {isEditing[field] ? (
                           field === "childBirthDate" ? (
@@ -267,6 +391,16 @@ function GoneisProfile() {
                               placeholderText="Επιλέξτε ημερομηνία"
                               maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
                             />
+                          ) : field === "childGender" ? (
+                            <select
+                              name={field}
+                              value={editedData[field]}
+                              onChange={handleInputChange}
+                              style={{ width: "20%", padding: "5px", fontSize: "20px", marginLeft: "15px" }}
+                            >
+                              <option value="Άντρας">Άντρας</option>
+                              <option value="Γυναίκα">Γυναίκα</option>
+                            </select>
                           ) : (
                             <input
                               type="text"
@@ -280,14 +414,32 @@ function GoneisProfile() {
                         )}
                       </div>
                       {isEditing[field] && (
-                        <button style={{ marginRight: "10px", fontSize: "12px", padding: "5px 10px", borderRadius: "5px", cursor: "pointer", border: "1px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", color: "white", backgroundColor: "green" }}
-                          onClick={() => handleSaveChanges(field)}>
+                        <button
+                          style={{
+                            marginRight: "10px",
+                            fontSize: "12px",
+                            padding: "5px 10px",
+                            borderRadius: "5px",
+                            cursor: "pointer",
+                            border: "1px solid #333",
+                            boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)",
+                            color: "white",
+                            backgroundColor: "green"
+                          }}
+                          onClick={() => handleSaveChanges(field)}
+                        >
                           Αποθήκευση
                         </button>
                       )}
-                      <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick(field)}/>
+                      <img
+                        style={{ cursor: "pointer" }}
+                        src="/edit (1).svg"
+                        alt="Edit"
+                        onClick={() => handleEditClick(field)}
+                      />
                     </div>
                   </h4>
+                  {error[field] && <p style={{ color: 'red', marginLeft: "6%" }}>{error[field]}</p>}
                   <hr />
                 </div>
               ))}
