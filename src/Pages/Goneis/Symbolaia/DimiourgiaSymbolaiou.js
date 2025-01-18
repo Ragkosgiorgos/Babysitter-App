@@ -25,7 +25,7 @@ function DimiourgiaSymbolaiou(props) {
     const [loading, setLoading] = useState(false);
     const [uuid, setUuid] = useState(null);
     const [profiles, setProfiles] = useState([]);
-    const [contracts, setContracts] = useState([]);
+    const [rantevou, setRantevou] = useState([]);
     const [contract, setContract] = useState([]);
     const [khdemonas, setKhdemonas] = useState({});
     const [isDateRangeOverlapping, setIsDateRangeOverlapping] = useState(false);
@@ -49,6 +49,11 @@ function DimiourgiaSymbolaiou(props) {
     const [babysitter, setBabysitter] = useState({});
     const [contractId, setContractId] = useState(null);
 
+    useEffect(() => {
+        console.log("Updated stepTwoData:", stepTwoData);
+    }, [stepTwoData]);
+    
+
 
 
     const [currentStep, setCurrentStep] = useState(0);
@@ -61,6 +66,7 @@ function DimiourgiaSymbolaiou(props) {
         const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
             if (user) {
                 setUuid(user.uid);
+                console.log(uuid)
             }
         });
         return () => unsubscribe();
@@ -91,41 +97,59 @@ function DimiourgiaSymbolaiou(props) {
 
     // Fetch all contracts based on user UUID
     useEffect(() => {
-        if (uuid) { // Don't fetch if UUID is not set
-            const fetchContracts = async () => {
+        if (uuid) { // Ensure UUID is available
+            const fetchRantevou = async () => {
                 setLoading(true);
                 try {
-                    const q = query(collection(FIREBASE_DB, 'rantevou'), where('id_p', '==', uuid));
+                    console.log("UUID being queried:", uuid);
+    
+                    const q = query(
+                        collection(FIREBASE_DB, 'rantevou'),
+                        where('id_p', '==', uuid)
+                    );
+    
                     const querySnapshot = await getDocs(q);
-                    const contracts = querySnapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                    }));
-                    setContracts(contracts);
+                    console.log("Query Snapshot:", querySnapshot);
+                    console.log("Number of documents fetched:", querySnapshot.size);
+    
+                    if (!querySnapshot.empty) {
+                        const rantevou = querySnapshot.docs.map((doc) => ({
+                            id: doc.id,
+                            ...doc.data(),
+                        }));
+                        console.log("Fetched contracts:", rantevou);
+                        setRantevou(rantevou);
+                    } else {
+                        console.log("No contracts found for UUID:", uuid);
+                        setRantevou([]); 
+                    }
                 } catch (error) {
                     console.error('Error fetching contracts:', error);
                 } finally {
                     setLoading(false);
                 }
             };
-            fetchContracts();
+    
+            fetchRantevou();
         }
     }, [uuid]);
+    
 
 
     // Fetch all contracts based on user UUID
     useEffect(() => {
-        if (contractId) { // Don't fetch if UUID is not set
+        if (uuid) { // Don't fetch if UUID is not set
             const fetchContracts = async () => {
                 setLoading(true);
                 try {
-                    const q = query(collection(FIREBASE_DB, 'contracts'), where('id', '==', contractId));
+                    const q = query(collection(FIREBASE_DB, 'contracts'), where('id_p', '==', uuid));
                     const querySnapshot = await getDocs(q);
                     const contract = querySnapshot.docs.map((doc) => ({
                         id: doc.id,
                         ...doc.data(),
                     }));
                     setContract(contract);
+                    console.log(contract)
                 } catch (error) {
                     console.error('Error fetching contracts:', error);
                 } finally {
@@ -161,7 +185,7 @@ function DimiourgiaSymbolaiou(props) {
 
     // Filter hired babysitters based on contracts
     const hiredBabysitters = profiles.filter((profile) => {
-        return contracts.some((contract) => contract.id_b === profile.userId);
+        return rantevou.some((contract) => contract.id_b === profile.userId);
     });
     const [errors, setErrors] = useState({});
 
@@ -199,15 +223,31 @@ function DimiourgiaSymbolaiou(props) {
         }));
     };
     const isDateRangeOverlappingWithContracts = (selectedRange) => {
-        const newStartDate = dayjs(selectedRange.startDate, 'YYYY-MM-DD'); // Adjust format as necessary
-        const newEndDate = dayjs(selectedRange.endDate, 'YYYY-MM-DD'); // Adjust format as necessary
-    
+        const newStartDate = dayjs(selectedRange.startDate);
+        const newEndDate = dayjs(selectedRange.endDate);
+
+
         console.log("Checking overlap with selected range: ", newStartDate.format('DD/MM/YYYY'), newEndDate.format('DD/MM/YYYY'));
-    
-        return contracts.some((contract) => {
-            const existingStartDate = dayjs(contract.startDate, 'DD/MM/YYYY'); // Assuming contract startDate is in 'DD/MM/YYYY' format
-            const existingEndDate = dayjs(contract.endDate, 'DD/MM/YYYY'); // Assuming contract endDate is in 'DD/MM/YYYY' format
-    
+        console.log("SS")
+        console.log(contract)
+        return contract.some((contract) => {
+            const existingStartDate = dayjs(contract.startDate, 'DD/MM/YYYY');
+            const existingEndDate = dayjs(contract.endDate, 'DD/MM/YYYY');
+
+            // Validate the parsed dates
+            if (!existingStartDate.isValid() || !existingEndDate.isValid()) {
+                console.error("Invalid date format for contract:", {
+                    startDate: contract.startDate,
+                    endDate: contract.endDate
+                });
+            } else {
+                console.log("Parsed contract range:", 
+                    existingStartDate.format('DD/MM/YYYY'), 
+                    existingEndDate.format('DD/MM/YYYY')
+                );
+            }
+
+
             console.log("Checking contract range: ", existingStartDate.format('DD/MM/YYYY'), existingEndDate.format('DD/MM/YYYY'));
     
             // Check if the selected date range overlaps with any contract date range
