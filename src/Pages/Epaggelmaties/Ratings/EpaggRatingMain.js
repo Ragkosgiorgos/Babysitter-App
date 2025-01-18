@@ -101,13 +101,12 @@ function EpaggRatingMain() {
             </div>
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
-              <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius: "10px" }}>
+              <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius: "10px", tableLayout: "fixed" }}>
                 <thead style={{ lineHeight: "2em" }}>
                   <tr style={{ borderBottom: "2px solid #333" }}>
-                    <th>Κωδικός αξιολόγησης</th>
-                    <th>Κηδεμόνας</th>
-                    <th>Βαθμολογία</th>
-                    <th>Ενέργειες</th>
+                    <th style={{ padding: "10px" }}>Κηδεμόνας</th>
+                    <th style={{ padding: "10px" }}>Βαθμολογία</th>
+                    <th style={{ padding: "10px" }}>Ενέργειες</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -115,14 +114,13 @@ function EpaggRatingMain() {
                     .filter((post) => post.id_b === uuid)
                     .map((post, index) => (
                       <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
-                        <td>{index + 1}</td>
-                        <td>
+                        <td style={{ padding: "10px" }}>
                           {parents
                             .filter((parent) => parent.userId === post.id_p)
                             .map((parent) => parent.firstName + " " + parent.lastName)}
                         </td>
-                        <td>{post.rating}/5</td>
-                        <td style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "0.5em", gap: "10px" }}>
+                        <td style={{ padding: "10px" }}>{post.rating}/5</td>
+                        <td style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "0.5em", gap: "10px", padding: "10px" }}>
                           <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => previewRating(post.id)}>Προβολή</span>
                         </td>
                       </tr>
@@ -130,7 +128,7 @@ function EpaggRatingMain() {
                   }
                   {filteredPosts.length === 0 && (
                     <tr>
-                      <td colSpan={4}>Δεν υπάρχουν αγγελίες</td>
+                      <td colSpan={3}>Δεν υπάρχουν αγγελίες</td>
                     </tr>
                   )}
                 </tbody>

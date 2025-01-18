@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
@@ -78,6 +77,91 @@ function PreviewAitiseisEndiaferontosPGU(props) {
     };
   fetchAitiseisData();
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setnewData((prevData) => ({
+        ...prevData,
+        [name]: value,
+    }));
+  };
+
+  const handleTempSave = async () => {
+    if (id === "") { // If post_id === -1 then we are creating a new post
+        newData.status = "Σε προσωρινή αποθήκευση";
+        try{
+            const aitiseisRef = collection(FIREBASE_DB, 'aitiseis_endiaferontos');
+
+            const docRef = await addDoc(aitiseisRef, newData);
+
+            const documentId = docRef.id;
+            newData.id = documentId;
+
+            await setDoc(docRef, { id: documentId }, { merge: true });
+
+        } catch (error) {
+            console.error('Error adding document:', error);
+
+        }
+        } else { // Otherwise we are editing an existing post
+        try {
+            const postRef = doc(FIREBASE_DB, 'aitiseis_endiaferontos', id);
+            await setDoc(postRef, newData, { merge: true });
+
+        } catch (error) {
+            console.error('Error updating document:', error);
+
+        }
+    }
+  };
+
+  const handleFinalSave = async () => {
+    if (id === "") { // If post_id === -1 then we are creating a new post
+        newData.UserId = uuid;
+        newData.status = "Δημοσιευμένη";
+        try{
+            const aitiseisRef = collection(FIREBASE_DB, 'aitiseis_endiaferontos');
+
+            const docRef = await addDoc(aitiseisRef, newData);
+
+            const documentId = docRef.id;
+            newData.id = documentId;
+
+            await setDoc(docRef, { id: documentId }, { merge: true });
+
+        } catch (error) {
+            console.error('Error adding document:', error);
+
+        }
+        } else { // Otherwise we are editing an existing post
+        newData.status = "Οριστική υποβολή";
+        try {
+            const q = query(collection(FIREBASE_DB, 'aitiseis_endiaferontos'), where('id', '==', id), where('UserId', '==', uuid));
+            const querySnapshot = await getDocs(q);
+            const posts = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            const postRef = doc(FIREBASE_DB, 'aitiseis_endiaferontos', posts[0].id);
+            await setDoc(postRef, newData, { merge: true });
+
+        } catch (error) {
+            console.error('Error updating document:', error);
+
+        }finally {
+          navigate(-1);
+        }
+    }
+  };
+
+  const location = useLocation();
+  const today = dayjs();
+
+  const isInPast = (date) => (date.get('year') < dayjs().get('year')) || (date.get('year') === dayjs().get('year') && date.get('month') < dayjs().get('month')) || (date.get('year') === dayjs().get('year') && date.get('month') === dayjs().get('month') && date.get('date') < dayjs().get('date'));
+  const isNotPast = (date) => (date.get('year') > dayjs().get('year')) || (date.get('year') === dayjs().get('year') && date.get('month') > dayjs().get('month')) || (date.get('year') === dayjs().get('year') && date.get('month') === dayjs().get('month') && date.get('date') >= dayjs().get('date'));
+
+  
+
+  // const [value, setValue] = useState("");  
   
   if (!user || !aitisi) {
     return <div>Δεν βρέθηκε ο χρήστης</div>;
@@ -139,6 +223,83 @@ function PreviewAitiseisEndiaferontosPGU(props) {
                         </div>
                     </div>
                 </div>
+                  
+              {/* <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
+        
+                <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
+                  <tbody>
+                  <tr style={{ borderBottom: "2px solid #333" }}>
+                  <th>Στοιχεία επικοινωνίας:</th>
+                  </tr>
+                  <div >
+                    <div>
+                        <label style={{ padding: "20px" }}>
+
+                            Ονοματεπώνυμο <tr> {user.firstName + " " + user.lastName} </tr>
+                        </label> 
+
+                        <label style={{ padding: "20px" }}>
+                            Τηλέφωνο <tr> {user.phone} </tr>
+                        </label> 
+                         
+                        <label>
+                            Email <tr> {user.email} </tr>
+                        </label> 
+                    </div>
+                  </div>
+                  </tbody>
+                </table>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
+                <table style={{ width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
+                  <tbody>
+                  
+            
+                  <h5 style={{ fontWeight: "bold"}}> Στοιχεία παιδιού </h5>
+                  <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
+                    <th>Φύλο: {aitisi.gender}</th>
+                    
+                  </div>
+                  <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
+                    <th>Ημερομηνία γέννησης: {user.childBirthDate}</th>
+                  </div>
+
+                  </tbody>
+                </table>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
+                <table style={{ width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
+                  <tbody>
+                  <h5 style={{ marginLeft: "5%" ,textAlign: "left" ,fontWeight: "bold"}}> Επιθυμητός τρόπος επικοινωνίας: {aitisi.tropos_synantisis}</h5>
+                  </tbody>
+                </table>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
+                <table style={{ width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
+                  <tbody>
+                  <h5 style={{ marginLeft: "5%" ,textAlign: "left" ,fontWeight: "bold"}}> Ημερομηνία και ώρα: {aitisi.date}</h5>
+                  </tbody>
+                </table>
+              </div>
+
+               <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
+                <table style={{ width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
+                  <tbody>
+                  <h5 style={{ marginLeft: "5%" ,textAlign: "left" ,fontWeight: "bold"}}> Μήνυμα </h5>
+                  <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
+                  <Box
+                    
+                    component="form"
+                  >
+                    {aitisi.description}
+                  </Box>
+                  </div>
+                  </tbody>
+                </table>
+               </div> */}
               <div style={{ display: "flex", justifyContent: "left", alignItems: "left", marginTop: "5%"}}>
                 
                 <button onClick={()=> navigate(-1)}  style={{ width: "15%" , height: "8vh", backgroundColor: "gray", color: "white", border: "none", 
@@ -146,6 +307,9 @@ function PreviewAitiseisEndiaferontosPGU(props) {
                   Επιστροφή
                 </button>
               </div>                
+            {/* </div>
+          </div>
+        </div> */}
         
           <Footer />
         </div>

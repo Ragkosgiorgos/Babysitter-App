@@ -258,9 +258,19 @@ function SubmitAitiseisEndiaferontosPGU(props) {
   };  
 
   const handleProfileRedirect = () =>{ 
-    navigate("/dashboard/profiles");
+    navigate("/dashboard/rofiles");
     };
-
+  
+  const isInPast = (date) => (date.get('year') < dayjs().get('year')) || (date.get('year') === dayjs().get('year') && date.get('month') < dayjs().get('month')) || (date.get('year') === dayjs().get('year') && date.get('month') === dayjs().get('month') && date.get('date') < dayjs().get('date'));
+  const isNotPast = (date) => (date.get('year') > dayjs().get('year')) || (date.get('year') === dayjs().get('year') && date.get('month') > dayjs().get('month')) || (date.get('year') === dayjs().get('year') && date.get('month') === dayjs().get('month') && date.get('date') >= dayjs().get('date'));
+  
+  const handleDateTimeRangePickerChange = (_value) => {
+    let date = dayjs(_value).format('YYYY-MM-DD HH:mm');
+    setnewData((prevData) => ({
+      ...prevData,
+      ["date"]: date,
+    }));
+  }
 
   function ftf(posts){
     return posts.tropos_synantisis === "Δια ζώσης";
@@ -292,8 +302,10 @@ function SubmitAitiseisEndiaferontosPGU(props) {
             <div style={{ flex: 1, overflowY: "auto" }}>
               
               <Breadcrumbs />
-              {(id !=="" && rantevou.id_p !== "")  
+              {(rantevou.id_p !== "")  
                     ? <h4 style={{ color: "red", textAlign: "center" }}> Παρακαλώ συμπληρώστε σωστά όλα τα πεδία </h4> : ""}
+              
+              <h4>{rantevou.id_p}</h4>
               <div style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%"}}>
                 <div style={{width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px"}}>
                     <h2 style={{ textAlign: "center", textDecoration: "underline" }}>

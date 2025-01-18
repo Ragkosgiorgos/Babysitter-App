@@ -2,10 +2,6 @@ import React, { useState, useEffect } from "react";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import InfoIcon from '@mui/icons-material/Info';
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
@@ -95,13 +91,6 @@ function AvailableRantevouPGU() {
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
               <h2 style={{ fontWeight: "bold", textAlign: "center", marginTop: "3%" }}>Τα διαθέσιμα ραντεβού μου</h2>
-              <Tooltip title={
-                              <div style={{ display: "flex", justifyContent: "center", gap: "5%", flexDirection:"column" }}>
-                                {/* <div><  style={{ cursor: "pointer" }} />: στοιχεία ραντεβού</div> */}
-                                <div><DeleteForeverIcon style={{ cursor: "pointer" }}  />: διαγραφή ραντεβού</div>
-                              </div>} placement="top" style={{marginTop:"3%"}}>
-                  <Button> <InfoIcon /> </Button>
-                </Tooltip>
             </div>
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%", marginLeft: "70%" }}>
               
@@ -127,12 +116,17 @@ function AvailableRantevouPGU() {
                     <tr key={posts.id} style={{ borderTop: "0.2px solid #333" }}>
                       <td>{posts.date}</td>
                       <td>{posts.tropos_synantisis}</td>
-                      <td style={{ display: "flex", justifyContent: "center", gap: "0%" }}>
-                      <Button onClick={() => routeChangeEdit(posts.id)}> <img style={{ cursor: "pointer" ,marginRight: "0px", position: "relative" }} src="/edit.svg" width="40%" height="20vh" alt="" /> </Button>
-                      <DeleteForeverIcon onClick={() => handleDelete(posts.id)} style={{ cursor: "pointer" ,marginTop: "4px"}} />
+                      <td style={{ display: "flex", justifyContent: "center", gap: "20px" }}>
+                        <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => routeChangeEdit(posts.id)}>Προβολή</span>
+                        <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handleDelete(posts.id)}>Διαγραφή</span>
                       </td>
                     </tr>
                   ))}
+                  { posts.filter(isavailable).length === 0 &&
+                    <tr>
+                      <td colSpan="3">Δεν υπάρχουν διαθέσιμα ραντεβού</td>
+                    </tr>
+                  }
                 </tbody>
               </table>
 
