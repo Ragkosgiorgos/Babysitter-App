@@ -16,11 +16,7 @@ import { FIREBASE_DB, FIREBASE_AUTH } from '../../../config/firebase.js';
 import { addDoc, setDoc } from 'firebase/firestore';
 import { useNavigate } from "react-router-dom";
 import { handleScrollToTop } from "../../../Utils/Methods/index.js";
-import customParseFormat from 'dayjs/plugin/customParseFormat';
-
-// Extend dayjs with the customParseFormat plugin
-dayjs.extend(customParseFormat);
-
+dayjs.locale("el"); // Set the locale to Greek
 
 function DimiourgiaSymbolaiou(props) {
     const navigate = useNavigate();
@@ -29,7 +25,7 @@ function DimiourgiaSymbolaiou(props) {
     const [loading, setLoading] = useState(false);
     const [uuid, setUuid] = useState(null);
     const [profiles, setProfiles] = useState([]);
-    const [rantevou, setRantevou] = useState([]);
+    const [contracts, setContracts] = useState([]);
     const [contract, setContract] = useState([]);
     const [khdemonas, setKhdemonas] = useState({});
     const [isDateRangeOverlapping, setIsDateRangeOverlapping] = useState(false);
@@ -98,8 +94,8 @@ function DimiourgiaSymbolaiou(props) {
 
     // Fetch all appointments based on user UUID
     useEffect(() => {
-        if (uuid) { // Ensure UUID is available
-            const fetchRantevou = async () => {
+        if (uuid) { // Don't fetch if UUID is not set
+            const fetchContracts = async () => {
                 setLoading(true);
                 try {    
                     const q = query(
@@ -125,20 +121,18 @@ function DimiourgiaSymbolaiou(props) {
                     setLoading(false);
                 }
             };
-    
-            fetchRantevou();
+            fetchContracts();
         }
     }, [uuid]);
-    
 
 
     // Fetch all contracts based on user UUID
     useEffect(() => {
-        if (uuid) { // Don't fetch if UUID is not set
+        if (contractId) { // Don't fetch if UUID is not set
             const fetchContracts = async () => {
                 setLoading(true);
                 try {
-                    const q = query(collection(FIREBASE_DB, 'contracts'), where('id_p', '==', uuid));
+                    const q = query(collection(FIREBASE_DB, 'contracts'), where('id', '==', contractId));
                     const querySnapshot = await getDocs(q);
                     const contract = querySnapshot.docs.map((doc) => ({
                         id: doc.id,
@@ -180,7 +174,7 @@ function DimiourgiaSymbolaiou(props) {
 
     // Filter hired babysitters based on contracts
     const hiredBabysitters = profiles.filter((profile) => {
-        return rantevou.some((contract) => contract.id_b === profile.userId);
+        return contracts.some((contract) => contract.id_b === profile.userId);
     });
     const [errors, setErrors] = useState({});
 
@@ -206,50 +200,22 @@ function DimiourgiaSymbolaiou(props) {
         }));
     };
     const isDateRangeOverlappingWithContracts = (selectedRange) => {
-        const newStartDate = dayjs(selectedRange.startDate);
-        const newEndDate = dayjs(selectedRange.endDate);
+        const newStartDate = dayjs(selectedRange.startDate, 'YYYY-MM-DD'); // Adjust format as necessary
+        const newEndDate = dayjs(selectedRange.endDate, 'YYYY-MM-DD'); // Adjust format as necessary
     
         console.log("Checking overlap with selected range: ", newStartDate.format('DD/MM/YYYY'), newEndDate.format('DD/MM/YYYY'));
     
-        // Ensure contract is defined and is an array
-        if (!Array.isArray(contract)) {
-            console.error("Contract is not an array:", contract);
-            return false;
-        }
-
-        let overlapoccured = false;
-    
-        contract.forEach((contract) => {
-            const existingStartDate = dayjs(contract.startDate, 'DD/MM/YYYY');
-            const existingEndDate = dayjs(contract.endDate, 'DD/MM/YYYY');
-    
-            // Validate the parsed dates
-            if (!existingStartDate.isValid() || !existingEndDate.isValid()) {
-                console.error("Invalid date format for contract:", {
-                    startDate: contract.startDate,
-                    endDate: contract.endDate
-                });
-            } else {
-                console.log("Parsed contract range:", 
-                    existingStartDate.format('DD/MM/YYYY'), 
-                    existingEndDate.format('DD/MM/YYYY')
-                );
-            }
+        return contracts.some((contract) => {
+            const existingStartDate = dayjs(contract.startDate, 'DD/MM/YYYY'); // Assuming contract startDate is in 'DD/MM/YYYY' format
+            const existingEndDate = dayjs(contract.endDate, 'DD/MM/YYYY'); // Assuming contract endDate is in 'DD/MM/YYYY' format
     
             console.log("Checking contract range: ", existingStartDate.format('DD/MM/YYYY'), existingEndDate.format('DD/MM/YYYY'));
     
             // Check if the selected date range overlaps with any contract date range
-            if (
-                newStartDate.isBefore(existingEndDate) && 
-                newEndDate.isAfter(existingStartDate)
-            ) {
-                console.log("Overlap detected with contract:", contract.id);
-                overlapoccured = true;
-            }
+            return (
+                (newStartDate.isBefore(existingEndDate) && newEndDate.isAfter(existingStartDate))
+            );
         });
-
-        // Return false if no overlap is found
-        return overlapoccured;
     };
     
     
@@ -264,8 +230,6 @@ function DimiourgiaSymbolaiou(props) {
         const selectedRange = item.selection;
         const overlap = isDateRangeOverlappingWithContracts(selectedRange);
         setIsDateRangeOverlapping(overlap);
-        console.log(overlap);
-        console.log(isDateRangeOverlapping);
     };
     
 
@@ -299,6 +263,7 @@ const submitContract = async () => {
 
         setContractId(documentId); // Save contract ID
 
+        // ✅ After successfully submitting the contract, submit the payments
         await submitPayment(documentId, stepTwoData.dateRange[0].startDate, stepTwoData.dateRange[0].endDate);
 
     } catch (error) {
@@ -868,6 +833,7 @@ const submitPayment = async (contractId, startDate, endDate) => {
                 <ProgressTracker steps={steps} activeStep={currentStep} />
     
                 {renderStepContent()}
+    
                 <div
     style={{
         display: "flex",

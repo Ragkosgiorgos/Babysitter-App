@@ -163,19 +163,21 @@ function MainAggeliesPGU() {
 
               <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
 
-                <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px", tableLayout: "fixed" }}>
+                <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
                   <thead style={{ lineHeight: "2em" }}>
                     <tr style={{ borderBottom: "2px solid #333" }}>
-                      <th style={{ padding: "10px" }}>Κατάσταση Αγγελίας</th>
-                      <th style={{ padding: "10px" }}>Ενέργειες</th>
+                      <th>Κωδικός Αγγελίας</th>
+                      <th>Κατάσταση Αγγελίας</th>
+                      <th>Ενέργειες</th>
                     </tr>
                   </thead>
                   <tbody>
                     {posts.map((post, index) => (
                       <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
-                        <td style={{ padding: "10px" }}>{post.status === "Δημοσιευμένη" ? <span style={{ color: "green" }}>{post.status}</span> : <span style={{ color: "#F28C28" }}>{post.status}</span>}</td>
-                        <td style={{ display: "flex", justifyContent: "center", alignItems:"center", marginTop: "0.5em", gap: "25px", padding: "10px" }}>
-                          {post.status === "Δημοσιευμένη" ?  <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => previewAggeliaRender(post.id)}>Προβολή</span> : ""}
+                        <td>{index + 1}</td>
+                        <td>{post.status === "Δημοσιευμένη" ? <span style={{ color: "green" }}>{post.status}</span> : <span style={{ color: "#F28C28" }}>{post.status}</span>}</td>
+                        <td style={{ display: "flex", justifyContent: "center", alignItems:"center", marginTop: "0.5em", gap: "10px" }}>
+                          {post.status === "Δημοσιευμένη" ?  <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => previewAggeliaRender(post.id)}>{FixedLengthText({ text: "Προβολή", length: 12 })}</span> : ""}
                           {post.status !== "Δημοσιευμένη" ?  <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handleTempView(post.id)}>Επεξεργασία</span> : ""}
                           <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handleDelete(post.id)}>Διαγραφή</span>
                         </td>

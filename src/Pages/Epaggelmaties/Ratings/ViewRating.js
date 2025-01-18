@@ -92,7 +92,7 @@ function ViewRating() {
           </div>
 
           <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginTop: "3%", backgroundColor: "#D9EAFD", borderRadius: "10px", width: "50%", marginLeft: "25%" }}>
-            {rating.comment ? <p style={{ marginLeft: "2%", marginRight: "2%", marginTop: "1.5%" }}><b>Σχόλια: </b>{rating.comment}</p> : <p style={{ marginLeft: "2%" }}>Δεν υπάρχει σχόλιο</p>}
+            {rating.comment ? <p style={{ marginLeft: "2%" }}><b>Σχόλια: </b>{rating.comment}</p> : <p style={{ marginLeft: "2%" }}>Δεν υπάρχει σχόλιο</p>}
           </div>
 
         </div>

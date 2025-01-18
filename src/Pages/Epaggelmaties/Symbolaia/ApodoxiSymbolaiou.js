@@ -215,40 +215,40 @@ function ApodoxiSymbolaiou() {
             case 1:
                 return (
                     <div style={{ textAlign: "center" }}>
-                    <div style={{display: "flex",flexDirection: "column",marginTop: "2%",backgroundColor: "#ece7f2",borderRadius: "2%",width: "60%",justifyContent: "center",marginLeft: "20%",padding: "2%",}}>
+                        <div style={{display: "flex",flexDirection: "column",marginTop: "2%",backgroundColor: "#ece7f2",borderRadius: "2%",width: "60%",justifyContent: "center",marginLeft: "20%",padding: "2%",}}>
                             <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                                 <b>Επιβεβαίωση στοιχείων επαγγελματία</b>
                             </h2>
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
-                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                <h4>
                                     <b>Όνομα:</b> {user.firstName}
                                 </h4>
                                 <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick()} />
                             </div>
                             <hr />
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
-                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                <h4>
                                     <b>Επίθετο:</b> {user.lastName}
                                 </h4>
                                 <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick()} />
                             </div>
                             <hr />
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
-                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                <h4>
                                     <b>Ημερομηνία γέννησης:</b> {user.birthDate}
                                 </h4>
                                 <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick()} />
                             </div>
                             <hr />
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
-                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                <h4>
                                     <b>email:</b> {user.email}
                                 </h4>
                                 <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick()} />
                             </div>
                             <hr />
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
-                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                <h4>
                                     <b>Τηλέφωνο:</b> {user.phone}
                                 </h4>
                                 <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick()} />

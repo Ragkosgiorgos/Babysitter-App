@@ -4,15 +4,9 @@ import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import ClearIcon from '@mui/icons-material/Clear';
 import Loader from "../../../Components/Loader";
-import DatePicker, { registerLocale } from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
-import { el } from 'date-fns/locale'; // Greek locale
 import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-
-// Register Greek locale
-registerLocale('el', el);
 
 function GoneisProfile() {
   const [editedData, setEditedData] = useState({});
@@ -182,36 +176,14 @@ function GoneisProfile() {
                             : "Τηλέφωνο"}:
                         </b>{" "}
                         {isEditing[field] ? (
-                          field === "birthDate" ? (
-                            <DatePicker
-                              selected={
-                                editedData.birthDate
-                                  ? new Date(
-                                      ...editedData.birthDate.split("/").reverse().map((n, i) => (i === 1 ? +n - 1 : +n))
-                                    )
-                                  : null
-                              }
-                              onChange={(date) => {
-                                if (date) {
-                                  const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-                                  handleInputChange({ target: { name: "birthDate", value: formattedDate } });
-                                }
-                              }}
-                              locale="el"
-                              dateFormat="dd/MM/yyyy"
-                              placeholderText="Επιλέξτε ημερομηνία"
-                              maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
-                            />
-                          ) : (
-                            <input
-                              type="text"
-                              name={field}
-                              value={editedData[field]}
-                              onChange={handleInputChange}
-                            />
-                          )
+                          <input
+                            type={field === "birthDate" ? "date" : "text"}
+                            name={field}
+                            value={editedData[field]}
+                            onChange={handleInputChange}
+                          />
                         ) : (
-                          khdemonas?.[field]
+                          field === "birthDate" ? khdemonas[field] : (khdemonas?.[field] || "N/A")
                         )}
                       </div>
                       {isEditing[field] && (
@@ -247,36 +219,14 @@ function GoneisProfile() {
                             : "AMKA"}:
                         </b>{" "}
                         {isEditing[field] ? (
-                          field === "childBirthDate" ? (
-                            <DatePicker
-                              selected={
-                                editedData.childBirthDate
-                                  ? new Date(
-                                      ...editedData.childBirthDate.split("/").reverse().map((n, i) => (i === 1 ? +n - 1 : +n))
-                                    )
-                                  : null
-                              }
-                              onChange={(date) => {
-                                if (date) {
-                                  const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-                                  handleInputChange({ target: { name: "childBirthDate", value: formattedDate } });
-                                }
-                              }}
-                              locale="el"
-                              dateFormat="dd/MM/yyyy"
-                              placeholderText="Επιλέξτε ημερομηνία"
-                              maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
-                            />
-                          ) : (
-                            <input
-                              type="text"
-                              name={field}
-                              value={editedData[field]}
-                              onChange={handleInputChange}
-                            />
-                          )
+                          <input
+                            type={field === "childBirthDate" ? "date" : "text"}
+                            name={field}
+                            value={editedData[field]}
+                            onChange={handleInputChange}
+                          />
                         ) : (
-                          khdemonas?.[field]
+                          field === "childBirthDate" ? khdemonas[field] : (khdemonas?.[field] || "N/A")
                         )}
                       </div>
                       {isEditing[field] && (

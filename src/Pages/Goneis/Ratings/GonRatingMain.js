@@ -5,7 +5,7 @@ import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import Loader from "../../../Components/Loader";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
 
 function GonRatingMain() {
@@ -76,6 +76,19 @@ function GonRatingMain() {
     return babysitter ? babysitter.firstName + " " + babysitter.lastName : "Δεν βρέθηκε";
   };
 
+  // Delete a post
+  const handleDelete = async (id) => {
+    try {
+      const updatedPosts = filteredPosts.filter(post => post.id !== id);
+      setFilteredPosts(updatedPosts);
+
+      const postRef = doc(FIREBASE_DB, 'ratings', id);
+      await deleteDoc(postRef);
+    } catch (error) {
+      console.error('Error deleting post:', error);
+    }
+  };
+
   // Navigate to preview
   const previewRating = (id) => {
     navigate(`/ratings/previewAksiologisi?id=${id}`);
@@ -115,31 +128,33 @@ function GonRatingMain() {
             </div>
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
-              <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px", tableLayout: "fixed" }}>
+
+              <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
                 <thead style={{ lineHeight: "2em"}}>
                   <tr style={{ borderBottom: "2px solid #333" }}>
-                    <th style={{ padding: "10px" }}>Babysitter</th>
-                    <th style={{ padding: "10px" }}>Συνολική βαθμολογία</th>
-                    <th style={{ padding: "10px" }}>Ενέργειες</th>
+                    <th>Babysitter</th>
+                    <th>Συνολική βαθμολογία</th>
+                    <th>Ενέργειες</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredPosts.map((post) => (
                     <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
-                      <td style={{ padding: "10px" }}>{findBabysitter(post.id_b)}</td>
-                      <td style={{ padding: "10px" }}>{post.rating}</td>
-                      <td style={{ display: "flex", justifyContent: "center", alignItems:"center", marginTop:"0.5em", gap:"10px", padding: "10px" }}>
+                      <td>{findBabysitter(post.id_b)}</td>
+                      <td>{post.rating}</td>
+                      <td style={{ display: "flex", justifyContent: "center", alignItems:"center", marginTop:"0.5em", gap:"10px" }}>
                         <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => previewRating(post.id)}> Προβολή </span>
                       </td>
                     </tr>
                   ))}
                   {filteredPosts.length === 0 && (
                     <tr>
-                      <td colSpan={3} style={{ padding: "10px" }}>Δεν υπάρχουν αγγελίες</td>
+                      <td colSpan={4}>Δεν υπάρχουν αγγελίες</td>
                     </tr>
                   )}
                 </tbody>
               </table>
+
             </div>
 
           </div>

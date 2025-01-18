@@ -3,17 +3,12 @@ import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import Loader from "../../../Components/Loader";
-import { useNavigate } from "react-router-dom";
 import ClearIcon from '@mui/icons-material/Clear';
-import DatePicker, { registerLocale } from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
-import { el } from 'date-fns/locale'; // Greek locale
 import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
-// Register Greek locale
-registerLocale('el', el);
+import { useNavigate } from "react-router-dom";
 
 function EpaggelmatiesProfile() {
   const navigate = useNavigate();
@@ -129,7 +124,7 @@ function EpaggelmatiesProfile() {
     return <Loader />;
   }
 
-  if (!babysitter && !loading) {
+  if (!babysitter) {
     navigate("/404");
   }
 
@@ -193,53 +188,23 @@ function EpaggelmatiesProfile() {
                             : "Τηλέφωνο"}:
                         </b>{" "}
                         {isEditing[field] ? (
-                          field === "birthDate" ? (
-                            <DatePicker
-                              selected={
-                                editedData.birthDate
-                                  ? new Date(
-                                      ...editedData.birthDate.split("/").reverse().map((n, i) => (i === 1 ? +n - 1 : +n))
-                                    )
-                                  : null
-                              }
-                              onChange={(date) => {
-                                if (date) {
-                                  const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-                                  handleInputChange({ target: { name: "birthDate", value: formattedDate } });
-                                }
-                              }}
-                              locale="el"
-                              dateFormat="dd/MM/yyyy"
-                              placeholderText="Επιλέξτε ημερομηνία"
-                              maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
-                            />
-                          ) : (
-                            <input
-                              type="text"
-                              name={field}
-                              value={editedData[field]}
-                              onChange={handleInputChange}
-                            />
-                          )
+                          <input
+                            type={field === "birthDate" ? "date" : "text"}
+                            name={field}
+                            value={editedData[field]}
+                            onChange={handleInputChange}
+                          />
                         ) : (
-                          babysitter?.[field]
+                          field === "birthDate" ? babysitter[field] : (babysitter[field] || "N/A")
                         )}
                       </div>
                       {isEditing[field] && (
-                        <button
-                          style={{ marginRight: "10px", fontSize: "12px", padding: "5px 10px", borderRadius: "5px", cursor: "pointer", border: "1px solid #333", 
-                                   boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", color: "white", backgroundColor: "green" }}
-                          onClick={() => handleSaveChanges(field)}
-                        >
+                        <button style={{ marginRight: "10px", fontSize: "12px", padding: "5px 10px", borderRadius: "5px", cursor: "pointer", border: "1px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", color: "white", backgroundColor: "green" }}
+                          onClick={() => handleSaveChanges(field)}>
                           Αποθήκευση
                         </button>
                       )}
-                      <img
-                        style={{ cursor: "pointer" }}
-                        src="/edit (1).svg"
-                        alt="Edit"
-                        onClick={() => handleEditClick(field)}
-                      />
+                      <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick(field)}/>
                     </div>
                   </h4>
                   <hr />
