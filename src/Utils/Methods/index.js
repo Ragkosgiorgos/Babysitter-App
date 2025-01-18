@@ -8,15 +8,20 @@ export function logout () {
     }
 }
 
-// Calculates the age based on birthdate
 export function calculateAge(birthdate) {
-    const birthDate = new Date(birthdate);
+    // Split the input string into day, month, and year
+    const [day, month, year] = birthdate.split('/').map(Number);
+    
+    // Create a Date object from the parsed components
+    const birthDate = new Date(year, month - 1, day); // Month is 0-indexed in JavaScript
+
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDifference = today.getMonth() - birthDate.getMonth();
     const dayDifference = today.getDate() - birthDate.getDate();
+    
     if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
-      age--;
+        age--;
     }
     return age;
 };

@@ -3,15 +3,51 @@ import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
 import Accordion from 'react-bootstrap/Accordion';
 import Breadcrumbs from "../../Components/Breadcrumbs";
+import { useNavigate } from 'react-router-dom';
 
-function MainGoneisPGU(props){
+function MainGoneisPGU(){
+    const navigate = useNavigate();
+
+    const handleSearchRedirect = () => {
+      navigate('/anazitisi', { state: { area: "", age: "age" } });
+    };
 
     return(
         <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-            
             <Header />
             
             <Breadcrumbs />
+
+            <div style={{
+                marginTop: "6vh", 
+                marginBottom: "20px", 
+                padding: "20px", 
+                borderRadius: "8px", 
+                textAlign: "center", 
+                fontSize: "18px",
+                fontWeight: "bold",
+              }}>
+                <h2>Ψάχνετε Babysitter για το παιδί σας;</h2>
+                <p style={{ fontSize: "16px", fontWeight: "normal", margin: "15px 0" }}>
+                  Εμπιστευτείτε τους επαγγελματίες μας για την φροντίδα και ασφάλεια του παιδιού σας.
+                </p>
+          
+                <div style={{ marginTop: "25px" }}>
+                  <button onClick={handleSearchRedirect} style={{
+                    padding: "12px 25px", 
+                    backgroundColor: "#007bff", 
+                    color: "#fff", 
+                    textDecoration: "none", 
+                    borderRadius: "5px", 
+                    fontWeight: "bold", 
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                    cursor: "pointer",
+                    transition: "background-color 0.3s ease-in-out"
+                  }}>
+                    Αναζήτηση babysitter
+                  </button>
+                </div>
+              </div>
 
             <div style={{ flex: 1, overflowY: "auto" }}>
                 <div style={{ display: "flex", justifyContent: "center", marginTop: "25px" }}>

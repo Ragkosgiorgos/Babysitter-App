@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import Loader from "./../Loader";
+import { useNavigate } from "react-router-dom";
 import { TruncatedText, capitalizeWords } from "../../Utils/Methods/index";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { FIREBASE_DB } from "../../config/firebase";
@@ -32,14 +32,14 @@ function JobofferReview(props) {
     } , [job_id]);
 
     const handleSearchRedirect = () => {
-        navigate(`/viewPost?id=${job_id}`);
+        navigate(`/anazitisi/viewPost?id=${job_id}`);
     };
 
     if (loading) {
         return <Loader />;
     }
 
-    if (!aggelia) {
+    if (!aggelia && !loading) {
         navigate("/404");
     }
 

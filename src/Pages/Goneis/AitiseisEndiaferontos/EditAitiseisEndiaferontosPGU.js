@@ -255,6 +255,11 @@ function SubmitAitiseisEndiaferontosPGU(props) {
       }
   };
 
+  if (uuid && user?.property !== "babysitter")
+    {
+      navigate("/404");
+    }
+
   const handleDropdownChange = (post) => {
     setnewData((prevData) => ({
       ...prevData,

@@ -3,7 +3,6 @@ import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import Loader from "../../../Components/Loader";
-import { convertDateFormat } from "../../../Utils/Methods";
 import ClearIcon from '@mui/icons-material/Clear';
 import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
@@ -196,7 +195,7 @@ function EpaggelmatiesProfile() {
                             onChange={handleInputChange}
                           />
                         ) : (
-                          field === "birthDate" ? convertDateFormat(babysitter[field]) : (babysitter[field] || "N/A")
+                          field === "birthDate" ? babysitter[field] : (babysitter[field] || "N/A")
                         )}
                       </div>
                       {isEditing[field] && (

@@ -3,11 +3,6 @@ import { useNavigate } from "react-router-dom";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import InfoIcon from '@mui/icons-material/Info';
 import Loader from "../../../Components/Loader";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
@@ -101,7 +96,7 @@ function GonRatingMain() {
 
   // Navigate to add new rating
   const handleNewRating = () => {
-    navigate("/goneis/ratings/add");
+    navigate("/ratings/add");
   };
 
   if (loading) {
@@ -121,13 +116,6 @@ function GonRatingMain() {
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
               <h2 style={{ fontWeight: "bold", textAlign: "center", marginTop: "3%" }}>Οι Αξιολογήσεις μου</h2>
-              <Tooltip title={
-                              <div style={{ display: "flex", justifyContent: "center", gap: "5%", flexDirection:"column" }}>
-                                <div><VisibilityIcon style={{ cursor: "pointer" }} />: προβολή αξιολόγησης</div>
-                                <div><DeleteForeverIcon style={{ cursor: "pointer" }}  />: διαγραφή αξιολόγησης</div>
-                              </div>} placement="top" style={{marginTop:"3%"}}>
-                  <Button> <InfoIcon /> </Button>
-                </Tooltip>
             </div>
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%", marginLeft: "70%" }}>
               
@@ -155,8 +143,7 @@ function GonRatingMain() {
                       <td>{findBabysitter(post.id_b)}</td>
                       <td>{post.rating}</td>
                       <td style={{ display: "flex", justifyContent: "center", alignItems:"center", marginTop:"0.5em", gap:"10px" }}>
-                        <VisibilityIcon style={{ cursor: "pointer" }} onClick={() => previewRating(post.id)} />
-                        <DeleteForeverIcon style={{ cursor: "pointer" }} onClick={() => handleDelete(post.id)} />
+                        <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => previewRating(post.id)}> Προβολή </span>
                       </td>
                     </tr>
                   ))}

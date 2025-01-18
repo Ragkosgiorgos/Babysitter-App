@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
+import ProgressTracker from "../../../Components/ProgressTracker";
+import Loader from "../../../Components/Loader";
+import { calculateAge } from "../../../Utils/Methods/index";
+import { useNavigate } from "react-router-dom";
 import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
 import Typography from '@mui/material/Typography';
-import { calculateAge } from "../../../Utils/Methods/index";
-import ProgressTracker from "../../../Components/ProgressTracker";
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, query, where, getDocs, addDoc, setDoc } from 'firebase/firestore';
 import { FIREBASE_DB, FIREBASE_AUTH } from '../../../config/firebase';
@@ -15,20 +16,26 @@ import { FIREBASE_DB, FIREBASE_AUTH } from '../../../config/firebase';
 function CreateRating() {
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(true);
+
   // Get user's UUID and fetch user data
   const [uuid, setUuid] = useState(null);
   useEffect(() => {
-      const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
-          if (user) {
-              setUuid(user.uid);
-          }
-      });
-      return () => unsubscribe();
+    const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+        if (user) {
+            setUuid(user.uid);
+        } else {
+            navigate("/404");
+        }
+    });
+    return () => unsubscribe();
   }, []);
 
   const [profiles, setProfiles] = useState([]);
-  const fetchUserData = async () => {
+  useEffect(() => {
+    const fetchUserData = async () => {
       try {
+          setLoading(true);
           const q1 = query(collection(FIREBASE_DB, 'user'), where('property', '==', 'babysitter'));
           const querySnapshot1 = await getDocs(q1);
           const users1 = querySnapshot1.docs.map((doc) => ({
@@ -38,26 +45,34 @@ function CreateRating() {
           setProfiles(users1);
       } catch (error) {
           console.error('Error fetching user data:', error);
+      } finally {
+          setLoading(false);
       }
-  };
-  fetchUserData();
+    };
+    fetchUserData();
+  }, []);
 
   // Fetch all the babysitters that the user has hired
   const [contracts, setContracts] = useState([]);
-  const fetchContracts = async () => {
-    try {
-        const q = query(collection(FIREBASE_DB, 'contracts'), where('id_p', '==', uuid));
-        const querySnapshot = await getDocs(q);
-        const contracts = querySnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-        }));
-        setContracts(contracts);
-    } catch (error) {
-        console.error('Error fetching contracts:', error);
-    }
-  };
-  fetchContracts();
+  useEffect(() => {
+    const fetchContracts = async () => {
+      try {
+          setLoading(true);
+          const q = query(collection(FIREBASE_DB, 'contracts'), where('id_p', '==', uuid));
+          const querySnapshot = await getDocs(q);
+          const contracts = querySnapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+          }));
+          setContracts(contracts);
+      } catch (error) {
+          console.error('Error fetching contracts:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchContracts();
+  }, [uuid]);
 
   const hiredBabysitters = profiles.filter((profile) => {
     return contracts.some((contract) => contract.id_b === profile.userId);
@@ -89,6 +104,7 @@ function CreateRating() {
     rating.id_p = uuid;
     rating.id_b = babysitter.userId;
     try{
+      setLoading(true);
       const ratingsRef = collection(FIREBASE_DB, 'ratings');
 
       const docRef = await addDoc(ratingsRef, rating);
@@ -99,7 +115,7 @@ function CreateRating() {
     } catch (error) {
       console.error('Error adding document:', error);
     } finally {
-      
+      setLoading(false);
     }
   };
 
@@ -130,6 +146,47 @@ function CreateRating() {
     const babysitter = profiles.filter((profile) => profile.userId === babysitter_id);
     setBabysitter(babysitter[0]);
   };
+
+  if (loading) {
+    return <Loader />;
+  }
+
+  if (uuid && !loading && !hiredBabysitters.length) {
+    return (
+      <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
+        <div>
+          <Header />
+
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <Breadcrumbs />
+
+            <ProgressTracker activeStep={activeStep} steps={steps} />
+
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", marginTop: "5%" }}>
+            <h2 style={{ fontWeight: "bold", textAlign: "center" }}>
+              Δεν έχετε προσλάβει κάποιον/α babysitter,<br></br> συνεπώς δεν μπορείτε να αξιολογήσετε κάποιον/α από αυτούς/ες.
+            </h2>
+            <button style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5%", width: "12%", cursor: "pointer", border: "1px solid #333",
+                            boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", marginLeft: "4%", marginTop: "2%" }} onClick={goBack}>
+              Επιστροφή
+            </button>
+          </div>
+
+        </div>
+
+        <div>
+          <Footer />
+        </div>
+
+      </div>
+    );
+  }
+
+  if (!uuid && !loading) {
+    navigate("/404");
+  }
 
   const renderStep = (step) => {
     switch (step) {
@@ -252,8 +309,17 @@ function CreateRating() {
             </div>
           </div>
         );
+      case 2: 
+        <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+          <h1>Η αξιολόγηση σας καταχωρήθηκε με επιτυχία!</h1>
+          <button style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5%", width: "12%", cursor: "pointer", border: "1px solid #333", 
+                          boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", marginLeft: "4%", marginTop: "2%" }} onClick={goBack}>
+            Επιστροφή
+          </button>
+        </div>
+        
       default:
-        navigate("/goneis/ratings");
+        window.history.back();
     }
   }
 

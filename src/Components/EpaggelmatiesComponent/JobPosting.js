@@ -10,7 +10,7 @@ function JobPosting(props){
   const navigate = useNavigate();
 
   const handleRedirect = (id) => {
-    navigate(`/viewPost?id=${id}`);
+    navigate(`/anazitisi/viewPost?id=${id}`);
   }
 
   return(

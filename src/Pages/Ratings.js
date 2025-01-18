@@ -24,31 +24,33 @@ function Ratings() {
     const [loading, setLoading] = useState(true);
     const [profile, setProfile] = useState({});
     useEffect(() => {
-    const fetchUserData = async () => {
-        try {
-            setLoading(true);
-            const q = query(collection(FIREBASE_DB, "user"), where("userId", "==", uuid));
-            const querySnapshot = await getDocs(q);
-            const profiles = querySnapshot.docs.map((doc) => ({
-                uid: doc.id,
-                ...doc.data(),
-            }));
-            setProfile(profiles[0]);
-        } catch (error) {
-            console.error("Error fetching user data:", error);
-        } finally {
-            setLoading(false);
-        }
-    }
+        if (uuid) {
+            const fetchUserData = async () => {
+                try {
+                    setLoading(true);
+                    const q = query(collection(FIREBASE_DB, "user"), where("userId", "==", uuid));
+                    const querySnapshot = await getDocs(q);
+                    const profiles = querySnapshot.docs.map((doc) => ({
+                        uid: doc.id,
+                        ...doc.data(),
+                    }));
+                    setProfile(profiles[0]);
+                } catch (error) {
+                    console.error("Error fetching user data:", error);
+                } finally {
+                    setLoading(false);
+                }
+            }
 
-    fetchUserData();
+            fetchUserData();
+        }
     }, [uuid]);
 
     if (loading) {
         return <Loader />;
     }
 
-    if (!profile) {
+    if (!profile && !loading) {
         navigate('/login'); 
     }
 

@@ -2,20 +2,13 @@ import React, { useState, useEffect } from "react";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import Button from '@mui/material/Button';
 import Loader from "../../../Components/Loader";
-import Tooltip from '@mui/material/Tooltip';
-import InfoIcon from '@mui/icons-material/Info';
 import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
-import dayjs from "dayjs";
 import { doc, updateDoc } from "firebase/firestore";
-
 
 function MainSymbolaiaEpaggelmatiesPGU() {
   const navigate = useNavigate();
@@ -42,18 +35,29 @@ function MainSymbolaiaEpaggelmatiesPGU() {
               ...doc.data()
             }));
 
-          const today = dayjs();
-          for (const contract of fetchedContracts) {
-            const endDate = dayjs(contract.endDate, "MM/DD/YYYY"); 
-            if (endDate.isBefore(today) && contract.status === "Σε ισχύ") {
-              // Update contract status in Firestore
-              const contractDoc = doc(FIREBASE_DB, "contracts", contract.id);
-              await updateDoc(contractDoc, { status: "Ολοκληρώθηκε" });
+            const today = dayjs();
+            for (const contract of fetchedContracts) {
+              const rawEndDate = contract.endDate.trim()
 
-              // Update the local state
-              contract.status = "Ολοκληρώθηκε";
+              const [day, month, year] = rawEndDate.split('/');
+              const dateObj = new Date(`${year}-${month}-${day}`);
+
+              if (isNaN(dateObj.getTime())) {
+                console.error(`Invalid end date for contract ${contract.id}: ${rawEndDate}`);
+                continue;  // Skip this contract if the date is invalid
+              }
+
+              const endDate = dayjs(dateObj);
+
+              if (endDate.isBefore(today) && contract.status === "Σε ισχύ") {
+                // Update contract status in Firestore
+                const contractDoc = doc(FIREBASE_DB, "contracts", contract.id);
+                await updateDoc(contractDoc, { status: "Ολοκληρώθηκε" });
+
+                // Update the local state
+                contract.status = "Ολοκληρώθηκε";
+              }
             }
-          }
 
             setContracts(fetchedContracts); // Update state with the fetched contracts
           }
@@ -115,15 +119,6 @@ function MainSymbolaiaEpaggelmatiesPGU() {
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
               <h2 style={{ fontWeight: "bold", textAlign: "center", marginTop: "3%" }}>Τα συμβόλαια μου</h2>
-              <Tooltip title={
-                <div style={{ display: "flex", justifyContent: "center", gap: "5%", flexDirection: "column" }}>
-                  <div><VisibilityIcon style={{ cursor: "pointer" }} />: προβολή συμβολαίου</div>
-                  <div><DeleteForeverIcon style={{ cursor: "pointer" }} />: διαγραφή συμβολαίου</div>
-                  <div><ArrowForwardIcon style={{cursor: "pointer" }}/>Απάντηση συμβολαίου</div>
-                </div>
-              } placement="top" style={{ marginTop: "3%" }}>
-                <Button> <InfoIcon /> </Button>
-              </Tooltip>
             </div>
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
@@ -143,10 +138,10 @@ function MainSymbolaiaEpaggelmatiesPGU() {
                   </thead>
                   <tbody>
                     {contracts.length === 0 ? (
-                      <tr><td colSpan="3">Δεν υπάρχουν συμβόλαια.</td></tr>
+                      <tr><td colSpan="4">Δεν υπάρχουν συμβόλαια.</td></tr>
                     ) : (
                       contracts.map((contract, index) => (
-                        <tr key={contract.id}>
+                        <tr key={contract.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
                           <td>{contract.startDate} - {contract.endDate}</td>
                           <td>{findParentName(contract.id_p)}</td>
                           <td style={{

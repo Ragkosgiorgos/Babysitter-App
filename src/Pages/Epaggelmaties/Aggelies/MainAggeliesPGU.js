@@ -2,15 +2,12 @@ import React, { useState, useEffect } from "react";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
-//import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-//import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-//import VisibilityIcon from '@mui/icons-material/Visibility';
+import Loader from "../../../Components/Loader";
+import { FixedLengthText } from "../../../Utils/Methods";
+import { useNavigate } from "react-router-dom";
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
-import { useNavigate } from "react-router-dom";
-import { FixedLengthText } from "../../../Utils/Methods";
-import Loader from "../../../Components/Loader";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
@@ -27,11 +24,35 @@ function MainAggeliesPGU() {
         if (user) {
           setUuid(user.uid);
         } else {
-          navigate("/404");
+          navigate("/login");
         }
       });
       return () => unsubscribe();
     }, [navigate]);
+
+    const [user, setUser] = useState('');
+    // Fetch user data when uuid is available
+    useEffect(() => {
+        if (uuid) {
+            const fetchUserData = async () => {
+                try {
+                    setLoading(true);
+                    const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
+                    const querySnapshot = await getDocs(q);
+                    const users = querySnapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }));
+                    setUser(users[0]);
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchUserData();
+        }
+    }, [uuid]);
 
     // Fetch the job posts' data from the database
     useEffect(() => {
@@ -90,11 +111,16 @@ function MainAggeliesPGU() {
 
     // Redirects
     const handleNewPost = () => navigate("/neaAggelia");
-    const previewAggeliaRender = (aggelia_id) => navigate(`/previewAggelias?aggelia_id=${aggelia_id}`);
+    //const previewAggeliaRender = (aggelia_id) => navigate(`/previewAggelias?aggelia_id=${aggelia_id}`);
+    const previewAggeliaRender = (aggelia_id) => navigate(`/aggelies/viewPost?id=${aggelia_id}`);
     const handleTempView = (post_id) => navigate(`/neaAggelia?step=2&post_id=${post_id}`);
 
     if (loading) {
       return <Loader />;
+    }
+
+    if (uuid && user && user?.property !== "babysitter") {
+      navigate("/404");
     }
 
     return (
@@ -110,28 +136,22 @@ function MainAggeliesPGU() {
 
               <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
                 <h2 style={{ fontWeight: "bold", textAlign: "center", marginTop: "3%" }}>Οι Αγγελίες μου</h2>
-                {/*<Tooltip title={
-                                <div style={{ display: "flex", justifyContent: "center", gap: "5%", flexDirection:"column" }}>
-                                  <div><VisibilityIcon style={{ cursor: "pointer" }} />: προβολή αγγελίας</div>
-                                  <div><ArrowForwardIcon style={{ cursor: "pointer" }} />: επεξεργασία αγγελίας</div>
-                                  <div><DeleteForeverIcon style={{ cursor: "pointer" }}  />: διαγραφή αγγελίας</div>
-                                </div>} placement="top" style={{marginTop:"3%"}}>
-                  <Button> <InfoIcon /> </Button>
-                </Tooltip>*/}
               </div>
 
               <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%", marginLeft: "70%" }}>  
                 <Tooltip title={
-                                <div style={{ display: "flex", justifyContent: "center", gap: "5%", flexDirection:"column", fontSize:"1.2em", textAlign:"left" }}>
-                                  Για την δημιουργία αγγελίας χρειάζονται:
-                                  <ul> 
-                                    <li>Τίτλος αγγελίας</li>
-                                    <li>Περιγραφή αγγελίας</li>
-                                    <li>Επιλογή πλήρης/μερικής απασχόλησης</li>
-                                    <li>Επιλογή περιοχής</li>
-                                    <li>Επιλογή διαθεσιμότητας(ΣΚ/Καθημερινές/Και τα δύο)</li>
-                                  </ul>
-                                </div>} placement="top">
+                    <div style={{ display: "flex", justifyContent: "center", gap: "5%", flexDirection:"column", fontSize:"1.2em", textAlign:"left" }}>
+                      Για την δημιουργία αγγελίας χρειάζονται:
+                      <ul>
+                        <li>Περιγραφή αγγελίας,</li>
+                        <li>Επιλογή περιοχής,</li>
+                        <li>Επιλογή εύρους ηλικίας παιδιού,</li>
+                        <li>Επιλογή πλήρης/μερικής απασχόλησης,</li>
+                        <li>Επιλογή χώρου εργασίας,</li>
+                        <li>Διάθεση ή μη μεταφορικού μέσου,</li>
+                        <li>Επιλογή διαθεσιμότητας.</li>
+                      </ul>
+                    </div>} placement="top">
                     <Button> <InfoIcon /> </Button>
                   </Tooltip>
 
@@ -158,9 +178,6 @@ function MainAggeliesPGU() {
                         <td>{index + 1}</td>
                         <td>{post.status === "Δημοσιευμένη" ? <span style={{ color: "green" }}>{post.status}</span> : <span style={{ color: "#F28C28" }}>{post.status}</span>}</td>
                         <td style={{ display: "flex", justifyContent: "center", alignItems:"center", marginTop: "0.5em", gap: "10px" }}>
-                          {/* post.status !== "Σε προσωρινή αποθήκευση" ? <VisibilityIcon style={{ cursor: "pointer" }} onClick={() => previewAggeliaRender(post.id)} /> : <VisibilityIcon style={{ height: "0px" }}/>*/ }
-                          {/* post.status === "Σε προσωρινή αποθήκευση" ? <ArrowForwardIcon style={{ cursor: "pointer" }} onClick={() => handleTempView(post.id)} /> : <ArrowForwardIcon style={{ height: "0px" }}/> */}
-                          {/*<DeleteForeverIcon style={{ cursor: "pointer" }} onClick={() => handleDelete(post.id)} >*/}
                           {post.status === "Δημοσιευμένη" ?  <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => previewAggeliaRender(post.id)}>{FixedLengthText({ text: "Προβολή", length: 12 })}</span> : ""}
                           {post.status !== "Δημοσιευμένη" ?  <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handleTempView(post.id)}>Επεξεργασία</span> : ""}
                           <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handleDelete(post.id)}>Διαγραφή</span>

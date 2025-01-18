@@ -2,19 +2,12 @@ import React, { useState, useEffect } from "react";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs.js";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Loader from "../../../Components/Loader.js";
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import InfoIcon from '@mui/icons-material/Info';
 import { useNavigate } from "react-router-dom";
-import ReplayIcon from '@mui/icons-material/Replay';
-import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs } from 'firebase/firestore';
-import { FIREBASE_DB, FIREBASE_AUTH } from '../../../config/firebase.js'
 import dayjs from "dayjs";
-import { doc, updateDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
+import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
+import { FIREBASE_DB, FIREBASE_AUTH } from '../../../config/firebase.js'
 
 function MainSymbolaiaGoneisPGU() {
   const navigate = useNavigate();
@@ -23,6 +16,8 @@ function MainSymbolaiaGoneisPGU() {
   const [uuid, setUuid] = useState(null);
   const [loading, setLoading] = useState(false);
   const [babysitters, setBabysitters] = useState([]);
+  const[profile,setProfile] = useState([]);
+  
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
       if (user) {
@@ -31,7 +26,33 @@ function MainSymbolaiaGoneisPGU() {
     });
     return () => unsubscribe();
   }, []);
-
+  
+  useEffect(() => {
+    if (uuid) {
+      console.log("Fetching user data for uuid:", uuid); // Log uuid to ensure it is set correctly
+      fetchUserData();
+    }
+  }, [uuid]); // Runs when uuid changes
+  
+  const fetchUserData = async () => {
+    try {
+      setLoading(true);
+      const q = query(collection(FIREBASE_DB, "user"), where("userId", "==", uuid));
+      const querySnapshot = await getDocs(q);
+      const profiles = querySnapshot.docs.map((doc) => ({
+        uid: doc.id,
+        ...doc.data(),
+      }));
+      if (profiles.length > 0) {
+        setProfile(profiles[0]);
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   // Fetch the job posts' data
   const [contracts, setContracts] = useState([]);
   useEffect(() => {
@@ -46,18 +67,30 @@ function MainSymbolaiaGoneisPGU() {
                 ...doc.data(),
             }));
             const today = dayjs();
-          for (const contract of posts) {
-            const endDate = dayjs(contract.endDate, "MM/DD/YYYY"); 
-            if (endDate.isBefore(today) && contract.status === "Σε ισχύ") {
-              // Update contract status in Firestore
-              const contractDoc = doc(FIREBASE_DB, "contracts", contract.id);
-              await updateDoc(contractDoc, { status: "Ολοκληρώθηκε" });
+              for (const contract of posts) {
+                const rawEndDate = contract.endDate.trim();
 
-              // Update the local state
-              contract.status = "Ολοκληρώθηκε";
-            }
-          }
-            setContracts(posts);
+                // Split the date string into day, month, and year
+                const [day, month, year] = rawEndDate.split('/');
+                const dateObj = new Date(`${year}-${month}-${day}`);  // Format it as YYYY-MM-DD for the native Date object
+
+                if (isNaN(dateObj.getTime())) {
+                  continue;  // Skip this contract if the date is invalid
+                }
+
+                const endDate = dayjs(dateObj);  // Convert back to Day.js object if needed
+
+                if (endDate.isBefore(today) && contract.status === "Σε ισχύ") {
+                  // Update contract status in Firestore
+                  const contractDoc = doc(FIREBASE_DB, "contracts", contract.id);
+                  await updateDoc(contractDoc, { status: "Ολοκληρώθηκε" });
+
+                  // Update the local state
+                  contract.status = "Ολοκληρώθηκε";
+                }
+              }
+              setContracts(posts);
+
         } catch (error) {
             console.error('Error fetching posts:', error);
         }
@@ -95,8 +128,6 @@ function MainSymbolaiaGoneisPGU() {
   };
 
   const findReviewId = async (babysitterId) => {
-    console.log("Fetching rating for:", { uuid, babysitterId }); // Debug log
-  
     try {
       const q = query(
         collection(FIREBASE_DB, 'ratings'),
@@ -107,24 +138,51 @@ function MainSymbolaiaGoneisPGU() {
   
       if (!querySnapshot.empty) {
         const ratingDoc = querySnapshot.docs[0];
-        console.log("Rating found:", ratingDoc.id); // Debug log
         return ratingDoc.id;
       }
-  
-      console.log("No rating found");
+
       return null;
     } catch (error) {
       console.error('Error fetching rating:', error);
       return null;
     }
   };
-  
 
+  const [error, setError] = useState(null);
 
-  const handleNewContract = () => {
-    navigate('/neo-symbolaio');
+  const handleNewContract = (childBirthDate) => {
+    // Split the birthdate string (DD/MM/YYYY) into day, month, and year
+    const [day, month, year] = childBirthDate.split('/');
+
+    // Create a new Date object using the parsed values
+    const birthDate = new Date(year, month - 1, day);
+
+    // Get the current date
+    const currentDate = new Date();
+
+    // Calculate the full years
+    let ageYears = currentDate.getFullYear() - birthDate.getFullYear();
+
+    // Calculate the full months difference
+    let ageMonths = currentDate.getMonth() - birthDate.getMonth();
+
+    // If the child hasn't had their birthday yet this year, adjust the years and months
+    if (ageMonths < 0 || (ageMonths === 0 && currentDate.getDate() < birthDate.getDate())) {
+        ageYears--;
+        ageMonths += 12; // Adjust months to be positive
+    }
+
+    // Calculate the fraction of the year completed
+    const age = ageYears + ageMonths / 12;
+
+    if (age.toFixed(2) < 0.5 || age.toFixed(2) > 2.5) {
+      setError("Η ηλικία του παιδιού πρέπει να είναι μεταξύ 0.5 και 2.5 ετών.");
+    } else {
+      setError(null);
+      navigate('/neo-symbolaio');
+    }
   };
-
+  
   const handleRedirect = (contractId) => {
     navigate(`provoli/${contractId}`); 
   };
@@ -146,25 +204,23 @@ function MainSymbolaiaGoneisPGU() {
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
               <h2 style={{ fontWeight: "bold", textAlign: "center", marginTop: "3%" }}>Τα συμβόλαια μου</h2>
-              <Tooltip title={
-                <div style={{ display: "flex", justifyContent: "center", gap: "5%", flexDirection: "column" }}>
-                  <div><VisibilityIcon style={{ cursor: "pointer" }} onClick={()=> handleRedirect(contracts.id)} />: προβολή συμβολαίου</div>
-                  <div><DeleteForeverIcon style={{ cursor: "pointer",color:"black" }} />: διαγραφή συμβολαίου</div>
-                  <div><ReplayIcon
-                        style={{ cursor: "pointer", marginLeft: "10px" }}/>:Ανανέωση συμβολαίου</div>
-                </div>
-              } placement="top" style={{ marginTop: "3%" }}>
-                <Button> <InfoIcon /> </Button>
-              </Tooltip>
             </div>
 
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%", marginLeft: "70%" }}>  
-                <button style={{  height: "3%", backgroundColor: "#2b8cbe", color: "white",
-                    borderRadius: "5px", cursor: "pointer", border: "3px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)" }}
-                    onClick={handleNewContract}>
-                    Δημιουργία νέου συμβολαίου
-                </button>
-            </div>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%", marginLeft: "70%" }}>
+            {/* Display error message if error exists */}
+            {error && (
+                <div style={{ color: "red", marginBottom: "10px", textAlign: "center" }}>
+                    {error}
+                </div>
+            )}
+
+            <button 
+                style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5px", cursor: "pointer", border: "3px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)" }}
+                onClick={() => handleNewContract(profile.childBirthDate)} 
+            >
+                Δημιουργία νέου συμβολαίου
+            </button>
+        </div>
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
 
