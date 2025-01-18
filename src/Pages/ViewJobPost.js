@@ -196,7 +196,7 @@ function ViewJobPost() {
                             {filteredRatings.map((rating) => (
                                 <Carousel.Item key={rating.id}>
                                     <h3>Βαθμολογία: {rating.rating}</h3>
-                                    <p style={{ width:"70%", textAlign:"center", margin:"auto" }}>
+                                    <p style={{ width:"70%", textAlign: "center", margin: "auto", marginBottom: "1vh" }}>
                                         {TruncatedText(rating.comment)}
                                     </p>
                                     <button style={{ borderRadius: "5%", fontSize: "12px" }}

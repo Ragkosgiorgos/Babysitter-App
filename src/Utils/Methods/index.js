@@ -28,7 +28,7 @@ export function calculateAge(birthdate) {
 
 // Returns the first 150 characters of a text and appends "..." at the end
 export function TruncatedText (text) {
-    return text.length > 250 ? text.substring(0, 250) + "..." : text;
+    return text.length > 180 ? text.substring(0, 180) + "..." : text;
 };
 
 // Decapitalize the first letter of each word
