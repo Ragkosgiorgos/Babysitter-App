@@ -118,7 +118,7 @@ function MainSymbolaiaEpaggelmatiesPGU() {
             <Breadcrumbs />
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
-              <h2 style={{ fontWeight: "bold", textAlign: "center", marginTop: "3%" }}>Τα συμβόλαια μου</h2>
+              <h2 style={{ fontWeight: "bold", textAlign: "center", marginTop: "3%" }}>Τα Συμφωνητικά μου</h2>
             </div>
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>

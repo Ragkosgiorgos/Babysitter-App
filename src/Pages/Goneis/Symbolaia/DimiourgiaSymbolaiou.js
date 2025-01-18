@@ -58,11 +58,9 @@ function DimiourgiaSymbolaiou(props) {
     }, [stepTwoData]);
     
 
-
-
     const [currentStep, setCurrentStep] = useState(0);
 
-    // Define isLoading state
+
     const [isLoading, setIsLoading] = useState(false); // Added isLoading state
 
     // Check if user is logged in and get UUID
@@ -70,7 +68,6 @@ function DimiourgiaSymbolaiou(props) {
         const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
             if (user) {
                 setUuid(user.uid);
-                console.log(uuid)
             }
         });
         return () => unsubscribe();
@@ -78,7 +75,7 @@ function DimiourgiaSymbolaiou(props) {
 
     // Fetch all babysitters
     useEffect(() => {
-        if (uuid) { // Don't fetch if UUID is not set (user not logged in)
+        if (uuid) { 
             const fetchUserData = async () => {
                 setLoading(true);
                 try {
@@ -99,32 +96,27 @@ function DimiourgiaSymbolaiou(props) {
         }
     }, [uuid]);
 
-    // Fetch all contracts based on user UUID
+    // Fetch all appointments based on user UUID
     useEffect(() => {
         if (uuid) { // Ensure UUID is available
             const fetchRantevou = async () => {
                 setLoading(true);
-                try {
-                    console.log("UUID being queried:", uuid);
-    
+                try {    
                     const q = query(
                         collection(FIREBASE_DB, 'rantevou'),
                         where('id_p', '==', uuid)
                     );
     
                     const querySnapshot = await getDocs(q);
-                    console.log("Query Snapshot:", querySnapshot);
-                    console.log("Number of documents fetched:", querySnapshot.size);
-    
+       
                     if (!querySnapshot.empty) {
                         const rantevou = querySnapshot.docs.map((doc) => ({
                             id: doc.id,
                             ...doc.data(),
                         }));
-                        console.log("Fetched contracts:", rantevou);
+
                         setRantevou(rantevou);
                     } else {
-                        console.log("No contracts found for UUID:", uuid);
                         setRantevou([]); 
                     }
                 } catch (error) {
@@ -153,7 +145,6 @@ function DimiourgiaSymbolaiou(props) {
                         ...doc.data(),
                     }));
                     setContract(contract);
-                    console.log(contract)
                 } catch (error) {
                     console.error('Error fetching contracts:', error);
                 } finally {
@@ -192,18 +183,6 @@ function DimiourgiaSymbolaiou(props) {
         return rantevou.some((contract) => contract.id_b === profile.userId);
     });
     const [errors, setErrors] = useState({});
-
-    const validateStepTwo = () => {
-        const errors = {};
-    
-        if (!babysitter.userId) errors.babysitter = "Παρακαλώ επιλέξτε νταντά";
-        if (!weekdays && !weekends) errors.days = "Παρακαλώ επιλέξτε ημέρες";
-        if (!stepTwoData.hostingPreference) errors.hostingPreference = "Παρακαλώ επιλέξτε χώρο Φιλοξενίας";
-        if (!stepTwoData.employmentTime) errors.employmentTime = "Παρακαλώ επιλέξτε χρόνο απασχόλησης";
-        if (!stepTwoData.dateRange[0].startDate || !stepTwoData.dateRange[0].endDate) errors.dateRange = "Παρακαλώ επιλέξτε διάρκεια απασχόλησης";
-    
-        return errors;
-    };
 
     const handleWeekdaysChange = (event) => {
         setWeekdays(event.target.checked);
@@ -567,11 +546,12 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                         marginBottom: "20px",
                                     }}
                                 >
+                                    
                                     <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                                         <b>Επιλέξτε τον επαγγελματία που θέλετε να κάνετε συμβόλαιο</b>
                                     </h2>
                                     {isSubmitting && !babysitter.userId && (
-                                        <p style={{ color: "red", marginLeft: "25%" }}>
+                                        <p style={{ color: "red",textAlign:"center" }}>
                                             Παρακαλώ επιλέξτε νταντά
                                         </p>
                                     )}
@@ -600,9 +580,12 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                         marginBottom: "20px",
                                     }}
                                 >
+    
                                     <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                                         <b>Ημέρες</b>
                                     </h2>
+                                    <div style={{display:"flex",flexDirection:"row"}}>
+                                    
                                     <FormControlLabel
                                         control={<Checkbox checked={weekdays} onChange={handleWeekdaysChange} />}
                                         label="Καθημερινές"
@@ -612,10 +595,12 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                         label="Σαββατοκύριακο"
                                     />
                                     {isSubmitting && !weekdays && !weekends && (
-                                        <p style={{ color: "red", marginLeft: "25%" }}>
+                                        <p style={{ color: "red",textAlign:"center" }}>
                                             Παρακαλώ επιλέξτε τουλάχιστον μία κατηγορία ημέρας
                                         </p>
                                     )}
+                                    </div>
+                                    
                                 </div>
 
                                 {/* Third Box: Hosting Preference */}
@@ -628,9 +613,11 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                         marginBottom: "20px",
                                     }}
                                 >
+                                
                                     <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                                         <b>Φιλοξενία</b>
                                     </h2>
+                                    <div style={{display:"flex",flexDirection:"row"}}>
                                     <FormControl>
                                         <RadioGroup
                                             aria-labelledby="demo-radio-buttons-group-label"
@@ -651,11 +638,14 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                             />
                                         </RadioGroup>
                                     </FormControl>
+
                                     {isSubmitting && !stepTwoData.hostingPreference && (
-                                        <p style={{ color: "red", marginLeft: "25%" }}>
+                                        <p style={{ color: "red",textAlign:"center" }}>
                                             Παρακαλώ επιλέξτε χώρο Φιλοξενίας
                                         </p>
                                     )}
+                                    </div>
+                                    
                                 </div>
 
                                 {/* Fourth Box: Employment Time */}
@@ -668,9 +658,11 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                         marginBottom: "20px",
                                     }}
                                 >
+                                
                                     <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                                         <b>Χρόνος απασχόλησης</b>
                                     </h2>
+                                    <div style={{display:"flex",flexDirection:"row"}}>
                                     <FormControl>
                                         <RadioGroup
                                             value={stepTwoData.employmentTime}
@@ -680,11 +672,14 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                             <FormControlLabel value="Πλήρης" control={<Radio />} label="Πλήρης" />
                                         </RadioGroup>
                                     </FormControl>
+
                                     {isSubmitting && !stepTwoData.employmentTime && (
-                                        <p style={{ color: "red", marginLeft: "25%" }}>
+                                        <p style={{ color: "red",textAlign:"center"}}>
                                             Παρακαλώ επιλέξτε χρόνο απασχόλησης
                                         </p>
                                     )}
+                                    </div>
+                                    
                                 </div>
 
                                 {/* Fifth Box: Date Range */}
@@ -700,6 +695,7 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                     <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                                         <b>Διάρκεια απασχόλησης</b>
                                     </h2>
+                                    <div style={{display:"flex",flexDirection:"row"}}>
                                     <DateRange
                                         editableDateInputs={true}
                                         onChange={handleDateRangeChange}
@@ -707,21 +703,29 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                         ranges={stepTwoData.dateRange}
                                         minDate={new Date()}
                                     />
+
                                     {isSubmitting && !stepTwoData.dateRange[0]?.startDate && (
-                                        <p style={{ color: "red", marginLeft: "25%" }}>
+                                        <p style={{ color: "red",textAlign:"center" }}>
                                             Παρακαλώ επιλέξτε ημερομηνία έναρξης
                                         </p>
                                     )}
                                     {isSubmitting && !stepTwoData.dateRange[0]?.endDate && (
-                                        <p style={{ color: "red", marginLeft: "25%" }}>
+                                        <p style={{ color: "red",textAlign:"center" }}>
                                             Παρακαλώ επιλέξτε ημερομηνία λήξης
                                         </p>
                                     )}
                                     {isDateRangeOverlapping && (
-                                        <p style={{ color: "red", marginLeft: "25%" }}>
+                                        <p style={{ color: "red", textAlign:"center" }}>
                                             Η ημερομηνία που επιλέξατε επικαλύπτεται με άλλες συμβάσεις.
                                         </p>
                                     )}
+
+                                    {stepTwoData.dateRange[0]?.startDate === "" || stepTwoData.dateRange[0]?.endDate === "" ? (
+                                        <p style={{ color: "red", textAlign: "center" }}>
+                                          Παρακαλώ επιλέξτε ημερομηνία έναρξης και λήξης.
+                                        </p>
+                                      ) : null}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -890,7 +894,7 @@ const submitPayment = async (contractId, startDate, endDate) => {
                     window.history.back();
                 }}
             >
-                Επιστροφή
+                Προηγούμενο
             </button>
 
             <button
