@@ -3,7 +3,6 @@ import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import Loader from "../../../Components/Loader";
-import { FixedLengthText } from "../../../Utils/Methods";
 import { useNavigate } from "react-router-dom";
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';

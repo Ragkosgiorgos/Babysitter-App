@@ -74,24 +74,49 @@ function CreateRating() {
     fetchContracts();
   }, [uuid]);
 
-  // Filter the babysitters that the user has hired, but hasn't rated yet and have an active contract
-  const hiredBabysitters = profiles.filter((profile) => {
-    return contracts.some((contract) => {
-      let startDate;
-      if (contract.startDate instanceof Date) {
-        startDate = contract.startDate;
-      } else if (contract.startDate.toDate) {
-        startDate = contract.startDate.toDate();
-      } else {
-        startDate = new Date(contract.startDate);
+  const [ratings, setRatings] = useState([]);
+  useEffect(() => {
+    const fetchRatings = async () => {
+      try {
+          setLoading(true);
+          const q = query(collection(FIREBASE_DB, 'ratings'), where('id_p', '==', uuid));
+          const querySnapshot = await getDocs(q);
+          const ratings = querySnapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+          }));
+          setRatings(ratings);
+      } catch (error) {
+          console.error('Error fetching ratings:', error);
+      } finally {
+        setLoading(false);
       }
+    };
+    fetchRatings();
+  }, [uuid]);
+
+  // Filter the babysitters that the user has hired, but hasn't rated yet and have an active contract
+  const today = new Date();
+
+  const hiredBabysitters = profiles.filter((profile) => {
+    // Filter contracts for the current babysitter
+    const contractDue = contracts.filter((contract) => {
+      if (contract.id_b !== profile.userId) return false;
   
-      const isActiveContract = new Date(startDate) < new Date();
-      const isAlreadyRated = profiles.some((profile) => profile.userId === contract.id_b);
+      // Parse the startDate from "DD/MM/YYYY"
+      const [day, month, year] = contract.startDate.split("/").map(Number);
+      const startDate = new Date(year, month - 1, day);
   
-      return contract.id_b === profile.userId && isActiveContract && !isAlreadyRated;
+      // Check if the contract's startDate is today or in the past
+      return startDate <= today;
     });
-  });
+  
+    // Check if the babysitter is already rated
+    const rated = ratings.filter((rating) => rating.id_b === profile.userId);
+  
+    // Return true if the babysitter has on due contracts and is not rated
+    return contractDue.length > 0 && rated.length === 0;
+  });  
 
   const [babysitter, setBabysitter] = useState({});
 
@@ -101,10 +126,6 @@ function CreateRating() {
     id_p: uuid,
     rating: 0,
     comment: "",
-    rating_contact: 0,
-    rating_relationship: 0,
-    rating_fulfill: 0,
-    rating_help: 0
   });
 
   const steps = [
@@ -132,25 +153,41 @@ function CreateRating() {
     } finally {
       setLoading(false);
     }
+
+    // Update babysitter profile with the new rating average
+    const babysitterProfile = profiles.filter((profile) => profile.userId === babysitter.userId);
+    let sum = babysitterProfile[0].rating * babysitterProfile[0].ratingCount;
+    sum += rating.rating;
+    const newRatingCount = babysitterProfile[0].ratingCount + 1;
+    const newRating = sum / newRatingCount;
+    babysitterProfile[0].rating = newRating;
+    babysitterProfile[0].ratingCount = newRatingCount;
+
+    try {
+      setLoading(true);
+      const docRef = collection(FIREBASE_DB, 'user').doc(babysitterProfile[0].id);
+      await setDoc(docRef, babysitterProfile[0], { merge: true });
+    } catch (error) {
+      console.error('Error updating document:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const handleNext = () => {
-    if (activeStep === 0 && !babysitter.userId) {
+    if (activeStep === 0) {
       setIsSubmitting(true);
-      return;
     }
-    setActiveStep((prevStep) => prevStep + 1);
     if (activeStep === 1) {
       submitRating();
     }
+    setActiveStep((prevStep) => prevStep + 1);
   };
 
   const handleBack = () => {
+    if (activeStep === 0 || activeStep == 2) goBack();
     setActiveStep((prevStep) => prevStep - 1);
-    if (activeStep === 2) {
-      goBack();
-    }
   };
 
   const goBack = () => {
@@ -242,76 +279,21 @@ function CreateRating() {
 
               <div style={{ display: "flex", flexDirection: "column", marginTop: "3%" }}>
                 <h1>{babysitter.firstName} {babysitter.lastName} ({calculateAge(babysitter.birthDate)} ετών)</h1>
-                <p style={{ width: "80%"}} > {babysitter.description}</p>
               </div>
                   
             </div>
-
-            <div style={{ display: "flex", flexDirection: "column", marginTop: "3%", justifyContent: "center", alignItems: "center" }}>
-
-              <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
-
-                <Box component="fieldset" mb={3} borderColor="transparent">
-                  <Typography component="legend">Εξυπηρετικότητα</Typography>
-                  <Rating
-                    name="simple-controlled"
-                    value={rating.rating_help}
-                    onChange={(event, newValue) => {
-                      setRating({ ...rating, rating_help: newValue });
-                    }}
-                  />
-                </Box>
-
-                <Box component="fieldset" mb={3} borderColor="transparent">
-                  <Typography component="legend">Επικοινωνία</Typography>
-                  <Rating
-                    name="simple-controlled"
-                    value={rating.rating_contact}
-                    onChange={(event, newValue) => {
-                      setRating({ ...rating, rating_contact: newValue });
-                    }}
-                  />
-                </Box>
-              </div>
-
-              <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", marginLeft: "2.5%" }}>
-
-                <Box component="fieldset" mb={3} borderColor="transparent">
-                  <Typography component="legend">Σχέση με το παιδί</Typography>
-                  <Rating
-                    name="simple-controlled"
-                    value={rating.rating_relationship}
-                    onChange={(event, newValue) => {
-                      setRating({ ...rating, rating_relationship: newValue });
-                    }}
-                  />
-                </Box>
-
-                <Box component="fieldset" mb={3} borderColor="transparent">
-                  <Typography component="legend">Εξυπηρετικότητα</Typography>
-                  <Rating
-                    name="simple-controlled"
-                    value={rating.rating_fulfill}
-                    onChange={(event, newValue) => {
-                      setRating({ ...rating, rating_fulfill: newValue });
-                    }}
-                  />
-                </Box>
-              </div>
               
-              <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", marginLeft: "3%" }}>
+            <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", marginLeft: "3%" }}>
               <Box component="fieldset" mb={3} borderColor="transparent">
-                  <Typography component="legend">Συνολική βαθμολογία</Typography>
-                  <Rating
-                    name="simple-controlled"
-                    value={rating.rating}
-                    onChange={(event, newValue) => {
-                      setRating({ ...rating, rating: newValue });
-                    }}
-                  />
-                </Box>
-              </div>
-
+                <Typography component="legend">Συνολική βαθμολογία</Typography>
+                <Rating
+                  name="simple-controlled"
+                  value={rating.rating}
+                  onChange={(event, newValue) => {
+                    setRating({ ...rating, rating: newValue });
+                  }}
+                />
+              </Box>
             </div>
 
             <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginTop: "3%", backgroundColor: "#D9EAFD", borderRadius: "10px", width: "50%", marginLeft: "25%" }}>
@@ -325,16 +307,18 @@ function CreateRating() {
           </div>
         );
       case 2: 
-        <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-          <h1>Η αξιολόγηση σας καταχωρήθηκε με επιτυχία!</h1>
-          <button style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5%", width: "12%", cursor: "pointer", border: "1px solid #333", 
-                          boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", marginLeft: "4%", marginTop: "2%" }} onClick={goBack}>
-            Επιστροφή
-          </button>
-        </div>
+        return (
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", marginTop: "5%" }}>
+            <h1>Η αξιολόγησή σας καταχωρήθηκε με επιτυχία!</h1>
+            <button style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5%", width: "12%", cursor: "pointer", border: "1px solid #333", 
+                            boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", marginLeft: "4%", marginTop: "2%" }} onClick={goBack}>
+              Επιστροφή
+            </button>
+          </div>
+        );
         
       default:
-        window.history.back();
+        <>step:{step}</>
     }
   }
 

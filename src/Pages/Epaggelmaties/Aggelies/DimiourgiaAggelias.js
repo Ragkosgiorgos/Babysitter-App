@@ -62,7 +62,7 @@ function DimiourgiaAggelias() {
         id: post_id,
         uid: "",
         status: "Σε προσωρινή αποθήκευση",
-        date: new Date().toLocaleDateString(),
+        date: new Date().toLocaleDateString('en-GB'),
         area: "",
         description: "",
         accomodation: "",

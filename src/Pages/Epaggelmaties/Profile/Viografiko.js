@@ -6,6 +6,7 @@ import Loader from '../../../Components/Loader';
 import { calculateAge, TruncatedText } from "../../../Utils/Methods/index";
 import { useNavigate } from "react-router-dom";
 import { Carousel } from 'react-bootstrap';
+import Rating from '@mui/material/Rating';
 import ClearIcon from '@mui/icons-material/Clear';
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
 import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
@@ -18,7 +19,6 @@ function Viografiko() {
     const [profile, setProfile] = useState({});
     const [ratings, setRatings] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [description, setDescription] = useState("");
 
     // Fetch user's uuid
     useEffect(() => {
@@ -45,7 +45,6 @@ function Viografiko() {
                         ...doc.data(),
                     }));
                     setProfile(posts[0]);
-                    setDescription(posts[0].description);
                     if (posts[0].property !== "babysitter") {
                         navigate("/");
                     }
@@ -72,32 +71,12 @@ function Viografiko() {
                 } finally {
                     setLoading(false);
                 }
-            }
+            };
             fetchRatings();
         }
     }, [uuid, navigate]);
 
-    const handleDescriptionChange = (e) => {
-        setDescription(e.target.value);
-    };
-
-    // Save the description to the database
-    const saveDescription = async () => {
-        if (description !== profile.description) {
-            try {
-                setLoading(true);
-                await updateDoc(doc(FIREBASE_DB, 'user', profile.id), {
-                    description: description,
-                });
-            } catch (error) {
-                console.error('Error updating document:', error);
-            } finally {
-                setLoading(false);
-            }
-        }
-    }
-
-    // Create a ul with as li as the number of systatikes that redirect to the file dummy.pdf
+    // Handle recommendation letters display
     const viewDummyMails = () => {
         let mails = [];
         for (let i = 0; i < profile.systatikes; i++) {
@@ -114,7 +93,7 @@ function Viografiko() {
                             color: "red",
                             fontSize: "16px",
                         }}
-                        onClick={handleDelete}
+                        onClick={() => handleDelete(i)}
                     >
                         <ClearIcon />
                     </button>
@@ -123,41 +102,45 @@ function Viografiko() {
         }
         return mails;
     };
-    
-    // Delete a mail from the profile ( -1 to the systatikes )
-    const handleDelete = () => {
-        // Add your logic to handle the deletion of the mail
-        setProfile({ ...profile, systatikes: profile.systatikes - 1 });
 
+    // Delete a mail from the profile
+    const handleDelete = async (index) => {
         try {
             setLoading(true);
-            // Update the mails in the database
-            updateDoc(doc(FIREBASE_DB, 'user', profile.id), {
+            await updateDoc(doc(FIREBASE_DB, 'user', profile.id), {
                 systatikes: profile.systatikes - 1,
             });
+            setProfile((prevProfile) => ({
+                ...prevProfile,
+                systatikes: prevProfile.systatikes - 1,
+            }));
         } catch (error) {
-            console.error('Error updating document:', error);
+            console.error('Error deleting mail:', error);
         } finally {
             setLoading(false);
         }
-    };    
+    };
 
-    // Add a new mail to the profile ( +1 to the systatikes )
-    const handleAddMail = async () => {
-        setProfile({ ...profile, systatikes: profile.systatikes + 1 });
+    // Add a new mail to the profile
+    const handleAddMail = async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
 
-        // Update the mails in the database
         try {
             setLoading(true);
             await updateDoc(doc(FIREBASE_DB, 'user', profile.id), {
                 systatikes: profile.systatikes + 1,
             });
+            setProfile((prevProfile) => ({
+                ...prevProfile,
+                systatikes: prevProfile.systatikes + 1,
+            }));
         } catch (error) {
-            console.error('Error updating document:', error);
+            console.error('Error adding mail:', error);
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     const handleViewRating = (r_id) => {
         navigate(`/ratings/previewAksiologisi?id=${r_id}`);
@@ -179,48 +162,46 @@ function Viografiko() {
                         <h1 style={{ textAlign: "center", fontWeight: "bold", textDecoration: "underline" }}>Το Βιογραφικό μου</h1>
 
                         <div style={{ display: "flex", flex: 1, flexDirection: "row", justifyContent: "center", marginTop: "4vh" }}>
-                            
                             <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center" }}>
                                 <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "2vw" }}>
                                     <h6 style={{ backgroundColor: "#D9EAFD", borderRadius: "50%", width: "80px", height: "80px", display: "flex", justifyContent: "center", alignItems: "center", border: "2px solid black" }}>
-                                    {profile.img ? 
-                                    (profile.gender === "Άντρας" ? <img src="/images/men_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} /> : 
-                                    <img src="/images/women_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />)
-                                    : <img src="/images/default_profile.png" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />}
+                                        {profile.img ? 
+                                            (profile.gender === "Άντρας" ? 
+                                                <img src="/images/men_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} /> : 
+                                                <img src="/images/women_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
+                                            ) : 
+                                            <img src="/images/default_profile.png" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
+                                        }
                                     </h6>
                                     <h3><b>{profile.firstName} {profile.lastName}</b> ({calculateAge(profile.birthDate)} ετών)</h3>
                                 </div>
-
-                                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "60%", marginTop: "2vh", marginBottom: "2vh" }}>
-                                    <h6> <b style={{ textDecoration: "underline" }}>Περιγραφή:</b></h6>
-                                    <textarea style={{ width: "100%", height: "100px", resize: "none", border: "1px solid black", backgroundColor: "#D9EAFD", padding: "10px", borderRadius: "10px" }}
-                                    value={description} onChange={handleDescriptionChange} />
-                                    { description !== profile.description &&
-                                    <button className="btn btn-primary" 
-                                        style={{ marginTop: "10px", backgroundColor: "green", color: "white", cursor: "pointer", 
-                                                border: "1px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", }} 
-                                        onClick={saveDescription}>
-                                        Αποθήκευση
-                                    </button> }
-                                </div>
-
+                                <Rating name="read-only" value={profile.totalRatingAvg} readOnly style={{ marginTop: "1vh", fontSize: "30px" }} />
                             </div>
-
                         </div>
 
                         <div style={{ display: "flex", flex: 1, flexDirection: "row", justifyContent: "center", marginTop: "2vh" }}>
                             <div style={{ display: "flex", flex: 1, justifyContent: "center", flexDirection: "column", textAlign: "center", marginTop: "1vh" }}>
                                 <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center" }}>
-                                    <span style={{ fontSize: "20px" }}><b style={{textDecoration:"underline"}}>Συστατικές επιστολές</b></span>
-                                    {profile.systatikes === 0 ? <h6 style={{marginTop:"2vh"}}>Δεν υπάρχουν επιστολές!</h6> : viewDummyMails()}
+                                    <span style={{ fontSize: "20px" }}><b style={{ textDecoration: "underline" }}>Συστατικές επιστολές</b></span>
+                                    {profile.systatikes === 0 ? <h6 style={{ marginTop: "2vh" }}>Δεν υπάρχουν επιστολές!</h6> : viewDummyMails()}
                                 </div>
                                 <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center" }}>
-                                    <button style={{ marginTop: "10px", backgroundColor: "green", color: "white", borderRadius: "5px", cursor: "pointer", 
-                                                     border: "1px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", fontSize: "15px" }}
-                                        onClick={() => document.getElementById("fileInput").click()}>
+                                    <button 
+                                        style={{ 
+                                            marginTop: "10px", 
+                                            backgroundColor: "green", 
+                                            color: "white", 
+                                            borderRadius: "5px", 
+                                            cursor: "pointer", 
+                                            border: "1px solid #333", 
+                                            boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", 
+                                            fontSize: "15px" 
+                                        }}
+                                        onClick={() => document.getElementById("fileInput").click()}
+                                    >
                                         Επιλογή συστατικής επιστολής
-                                        </button>
-                                        <input
+                                    </button>
+                                    <input
                                         type="file"
                                         id="fileInput"
                                         style={{ display: "none" }}
@@ -230,41 +211,40 @@ function Viografiko() {
                             </div>
 
                             <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center" }}>
-                                <span style={{ fontSize: "20px" }}><b style={{textDecoration:"underline"}}>Αξιολογήσεις</b></span>
-                                {ratings.length === 0 ? <h5 style={{marginTop:"4vh"}}>Δεν υπάρχουν αξιολογήσεις!</h5> : 
+                                <span style={{ fontSize: "20px" }}><b style={{ textDecoration: "underline" }}>Αξιολογήσεις</b></span>
+                                {ratings.length === 0 ? <h5 style={{ marginTop: "4vh" }}>Δεν υπάρχουν αξιολογήσεις!</h5> : 
                                     <Carousel
                                         data-bs-theme="dark"
                                         style={{ width: "90%", maxWidth: "400px", height: "300px", margin: "2vh auto" }}
                                     >
                                         {ratings.map((rating) => (
                                             <Carousel.Item key={rating.id} style={{ textAlign: "center", padding: "20px" }}>
-                                            <h3 style={{ fontSize: "1.2rem", marginBottom: "1rem" }}>Βαθμολογία: {rating.rating}</h3>
-                                            <p style={{ fontSize: "1rem", margin: "auto", maxWidth: "90%" }}>
-                                                {TruncatedText(rating.comment)}
-                                            </p>
-                                            <button
-                                                style={{
-                                                borderRadius: "5px",
-                                                fontSize: "14px",
-                                                padding: "10px 15px",
-                                                marginTop: "90px",
-                                                border: "1px solid #333",
-                                                cursor: "pointer",
-                                                backgroundColor: "#007bff",
-                                                color: "white",
-                                                boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-                                                }}
-                                                onClick={() => handleViewRating(rating.id)}
-                                            >
-                                                Προβολή
-                                            </button>
+                                                <h3 style={{ fontSize: "1.2rem", marginBottom: "1rem" }}>Βαθμολογία: {rating.rating}</h3>
+                                                <p style={{ fontSize: "1rem", margin: "auto", maxWidth: "90%" }}>
+                                                    {TruncatedText(rating.comment)}
+                                                </p>
+                                                <button
+                                                    style={{
+                                                        borderRadius: "5px",
+                                                        fontSize: "14px",
+                                                        padding: "10px 15px",
+                                                        marginTop: "90px",
+                                                        border: "1px solid #333",
+                                                        cursor: "pointer",
+                                                        backgroundColor: "#007bff",
+                                                        color: "white",
+                                                        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                                                    }}
+                                                    onClick={() => handleViewRating(rating.id)}
+                                                >
+                                                    Προβολή
+                                                </button>
                                             </Carousel.Item>
                                         ))}
                                     </Carousel>
                                 }
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>

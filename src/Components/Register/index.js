@@ -247,6 +247,8 @@ export default function Register() {
 
                     // For babysitters
                     education,
+                    totalRatingAvg: 0,
+                    ratingsCount: 0,
 
                     // For parents
                     childFirstName,
