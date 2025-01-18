@@ -74,20 +74,22 @@ function CreateRating() {
     fetchContracts();
   }, [uuid]);
 
+  // Filter the babysitters that the user has hired, but hasn't rated yet and have an active contract
   const hiredBabysitters = profiles.filter((profile) => {
     return contracts.some((contract) => {
-      // Ensure contract.startDate is converted to a Date object
       let startDate;
       if (contract.startDate instanceof Date) {
         startDate = contract.startDate;
       } else if (contract.startDate.toDate) {
         startDate = contract.startDate.toDate();
       } else {
-        startDate = new Date(contract.startDate); // assuming it's a string or number
+        startDate = new Date(contract.startDate);
       }
-      
-      return contract.id_b === profile.userId && new Date(startDate) < new Date() &&
-             !profiles.some((profile) => profile.userId === contract.id_b);
+  
+      const isActiveContract = new Date(startDate) < new Date();
+      const isAlreadyRated = profiles.some((profile) => profile.userId === contract.id_b);
+  
+      return contract.id_b === profile.userId && isActiveContract && !isAlreadyRated;
     });
   });
 
@@ -179,7 +181,7 @@ function CreateRating() {
 
           <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", marginTop: "5%" }}>
             <h2 style={{ fontWeight: "bold", textAlign: "center" }}>
-              Δεν έχετε προσλάβει κάποιον/α babysitter,<br></br> συνεπώς δεν μπορείτε να αξιολογήσετε κάποιον/α από αυτούς/ες.
+              Δεν υπάρχει κάποιος/α babysitter, για να αξιολογήσετε.
             </h2>
             <button style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5%", width: "12%", cursor: "pointer", border: "1px solid #333",
                             boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", marginLeft: "4%", marginTop: "2%" }} onClick={goBack}>
