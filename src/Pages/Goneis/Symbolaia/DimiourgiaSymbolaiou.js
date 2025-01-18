@@ -237,8 +237,9 @@ function DimiourgiaSymbolaiou(props) {
             console.error("Contract is not an array:", contract);
             return false;
         }
+
+        let overlapoccured = false;
     
-        console.log("SS");
         contract.forEach((contract) => {
             const existingStartDate = dayjs(contract.startDate, 'DD/MM/YYYY');
             const existingEndDate = dayjs(contract.endDate, 'DD/MM/YYYY');
@@ -264,12 +265,12 @@ function DimiourgiaSymbolaiou(props) {
                 newEndDate.isAfter(existingStartDate)
             ) {
                 console.log("Overlap detected with contract:", contract.id);
-                return true; // Return true if overlap is found
+                overlapoccured = true;
             }
         });
-    
+
         // Return false if no overlap is found
-        return false;
+        return overlapoccured;
     };
     
     

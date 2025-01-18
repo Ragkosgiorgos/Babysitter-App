@@ -75,7 +75,20 @@ function CreateRating() {
   }, [uuid]);
 
   const hiredBabysitters = profiles.filter((profile) => {
-    return contracts.some((contract) => contract.id_b === profile.userId);
+    return contracts.some((contract) => {
+      // Ensure contract.startDate is converted to a Date object
+      let startDate;
+      if (contract.startDate instanceof Date) {
+        startDate = contract.startDate;
+      } else if (contract.startDate.toDate) {
+        startDate = contract.startDate.toDate();
+      } else {
+        startDate = new Date(contract.startDate); // assuming it's a string or number
+      }
+      
+      return contract.id_b === profile.userId && new Date(startDate) < new Date() &&
+             !profiles.some((profile) => profile.userId === contract.id_b);
+    });
   });
 
   const [babysitter, setBabysitter] = useState({});

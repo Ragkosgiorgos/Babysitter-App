@@ -104,7 +104,7 @@ function MainAitiseisEndiaferontosPGU() {
                   ))}
                   {posts.length === 0 && (
                     <tr>
-                      <td colSpan={3}>Δεν υπάρχουν αγγελίες</td>
+                      <td colSpan={3}>Δεν υπάρχουν αιτήσεις</td>
                     </tr>
                   )}
                 </tbody>
