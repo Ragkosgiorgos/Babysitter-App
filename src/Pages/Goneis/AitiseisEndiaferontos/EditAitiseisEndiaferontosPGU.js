@@ -3,11 +3,7 @@ import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import { useNavigate } from "react-router-dom";
-import { RadioGroup, FormControlLabel, Radio, MenuItem, Select, FormControl, InputLabel } from "@mui/material";
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { RadioGroup, FormControlLabel, Radio, MenuItem, Select } from "@mui/material";
 import dayjs from 'dayjs';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -253,11 +249,6 @@ function SubmitAitiseisEndiaferontosPGU(props) {
     }
   };
 
-  if (uuid && user?.property !== "babysitter")
-    {
-      navigate("/404");
-    }
-
   const handleDropdownChange = (post) => {
     setnewData((prevData) => ({
       ...prevData,
@@ -364,24 +355,11 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                       <b>Στοιχεία παιδιού</b>
                     </h2>
                     <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
-                      <th>Φύλο</th>
-                      <RadioGroup name="gender" value={newData.gender } onClick={handleInputChange} style={{ padding: "5px", borderRadius: "4px" }}>
-                          <FormControlLabel value="Αγόρι" control={<Radio />} label="Αγόρι" />
-                          <FormControlLabel value="Κορίτσι" control={<Radio />} label="Κορίτσι" />
-                      </RadioGroup>
+                      <th>Φύλο: {user?.childGender}</th>
+
                     </div>
                     <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
-                      <th>Ημερομηνία γέννησης</th>
-                      <LocalizationProvider  dateAdapter={AdapterDayjs}>
-                          <DemoContainer  components={['DatePicker']}>
-                              <DatePicker 
-                                name="childBirthDate"
-                                shouldDisableYear={isNotPast}
-                                onChange={handleInputChange}
-                                value={dayjs(user.childBirthDate)}
-                                label="Ημερομηνία γέννησης" />
-                          </DemoContainer>
-                      </LocalizationProvider>
+                      <th>Ημερομηνία γέννησης: {user?.childBirthDate}</th>
                     </div>
                   </tbody>
                 </table>
@@ -401,12 +379,13 @@ function SubmitAitiseisEndiaferontosPGU(props) {
 
                       {newData.tropos_synantisis === 'Διαδικτυακά' && (
                         <Select
-                          value={newData.id_r || ""}
+                          value={newData.id_r || "Επιλέξτε ημερομηνία και ώρα"}
                           label="Επιλέξτε ημερομηνία και ώρα"
                           onChange={(e) => {
                             const selectedPost = posts.find((post) => post.id === e.target.value);
                             handleDropdownChange(selectedPost);
                           }}
+                          style={{ minWidth: "40%", height: "2%", fontSize: "1.5em", marginTop: "2%" }}
                         >
                           {loading ? (
                             <Loader />
@@ -427,6 +406,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                             const selectedPost = posts.find((post) => post.id === e.target.value);
                             handleDropdownChange(selectedPost);
                           }}
+                          style={{ minWidth: "40%", height: "2%", fontSize: "1.5em", marginTop: "2%" }}
                         >
                           {loading ? (
                             <Loader />

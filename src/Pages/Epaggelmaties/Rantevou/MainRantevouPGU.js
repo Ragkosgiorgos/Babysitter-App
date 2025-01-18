@@ -88,13 +88,6 @@ function MainRantevouPGU() {
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
               <h2 style={{ fontWeight: "bold", textAlign: "center", marginTop: "3%" }}>Τα ραντεβού μου</h2>
-              <Tooltip title={
-                              <div style={{ display: "flex", justifyContent: "center", gap: "5%", flexDirection:"column" }}>
-                                <div><VisibilityIcon   style={{ cursor: "pointer" }} />: στοιχεία ραντεβού</div>
-                                <div><DeleteForeverIcon style={{ cursor: "pointer" }}  />: διαγραφή ραντεβού</div>
-                              </div>} placement="top" style={{marginTop:"3%"}}>
-                  <Button> <InfoIcon /> </Button>
-                </Tooltip>
             </div>
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%", marginLeft: "70%" }}>
               
@@ -111,7 +104,6 @@ function MainRantevouPGU() {
               <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
                 <thead>
                   <tr style={{ borderBottom: "2px solid #333" }}>
-                    <th>Κωδικός αίτησης</th>
                     <th>Αγγελία</th>
                     <th>Ημερομηνία</th>
                     <th>Τρόπος</th>
@@ -121,16 +113,19 @@ function MainRantevouPGU() {
                 <tbody>
                   {posts.filter(isbooked).map((post) => (
                     <tr key={post.id} style={{ borderTop: "0.2px solid #333" }}>
-                      <td>{post.id}</td>
                       <td>{post.id_aggelias}</td>
                       <td>{post.date}</td>
                       <td>{post.tropos_synantisis}</td>
                       <td style={{ display: "flex", justifyContent: "center", gap: "10%" }}>
-                        <VisibilityIcon onClick={() => routeChangePreview(post.id)  } style={{ cursor: "pointer" }} />
-                        <DeleteForeverIcon style={{ cursor: "pointer" }} />
+                        <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => routeChangePreview(post.id)}>Προβολή</span>
                       </td>
                     </tr>
                   ))}
+                  {posts.length === 0 && (
+                    <tr>
+                      <td colSpan={4} style={{ padding: "10px" }}>Δεν υπάρχουν ραντεβού</td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
 
