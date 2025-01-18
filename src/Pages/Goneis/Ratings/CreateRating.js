@@ -186,7 +186,7 @@ function CreateRating() {
   };
 
   const handleBack = () => {
-    if (activeStep === 0 || activeStep == 2) goBack();
+    if (activeStep === 0 || activeStep === 2) goBack();
     setActiveStep((prevStep) => prevStep - 1);
   };
 
@@ -311,7 +311,7 @@ function CreateRating() {
           <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", marginTop: "5%" }}>
             <h1>Η αξιολόγησή σας καταχωρήθηκε με επιτυχία!</h1>
             <button style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5%", width: "12%", cursor: "pointer", border: "1px solid #333", 
-                            boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", marginLeft: "4%", marginTop: "2%" }} onClick={goBack}>
+                            boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", marginTop: "2%" }} onClick={goBack}>
               Επιστροφή
             </button>
           </div>
@@ -339,15 +339,17 @@ function CreateRating() {
         </div>
 
         <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", gap: "70%", marginLeft: "20%", width: "60%" }}>
+          {activeStep < 2 && (
           <button style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5%", width: "12%", cursor: "pointer", border: "1px solid #333", 
                           boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", marginLeft: "4%", marginTop: "2%" }} onClick={handleBack}>
             {activeStep === 0 ? "Επιστροφή" : "Προηγούμενο"}
-          </button>
+          </button> )}
 
+          {activeStep < 2 && (
           <button style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5%", width: "12%", cursor: "pointer", border: "1px solid #333",
                           boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", marginLeft: "4%", marginTop: "2%" }} onClick={handleNext}>
             {activeStep === steps.length - 1 ? "Υποβολή" : "Επόμενο"}
-          </button>
+          </button> )}
         </div>
 
         <div>

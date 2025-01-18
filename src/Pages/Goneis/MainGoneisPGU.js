@@ -9,7 +9,7 @@ function MainGoneisPGU(){
     const navigate = useNavigate();
 
     const handleSearchRedirect = () => {
-      navigate('/anazitisi', { state: { area: "", age: "age" } });
+      navigate('/anazitisi', { state: { area: "", age: "" } });
     };
 
     return(

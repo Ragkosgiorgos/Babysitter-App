@@ -1,8 +1,15 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const PageCard = ({ title, url }) => {
+    const navigate = useNavigate();
+
     const handleRedirect = () => {
-        window.location.href = url;
+        if (title === "Αναζήτηση") {
+            navigate('/anazitisi', { state: { area: "", age: "" } });
+        } else {
+            window.location.href = url;
+        }
     }
 
     return (

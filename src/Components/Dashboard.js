@@ -12,7 +12,6 @@ import { useNavigate } from 'react-router-dom';
 const Dashboard = () => {
     const navigate = useNavigate();
     
-    // Not allow entry to not logged in users/ redirect to login page
     const [uuid, setUuid] = useState(null);
     const [loading, setLoading] = useState(false);
     useEffect(() => {
@@ -112,11 +111,12 @@ const Dashboard = () => {
                                 <div>
                                     <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: "3vh" }}>
                                         <PageCard title="Τα Ραντεβού μου" url="/epaggelmaties/rantevou" />
-                                        <PageCard title="Τα Συμφωνητικά μου" url="/goneis/symbolaia" />
+                                        <PageCard title="Αναζήτηση" url="/anazitisi" onClick={() => navigate('/anazitisi', { state: { area: "", age: "" } })} />
                                         <PageCard title="Αιτήσεις Ενδιαφέροντος" url="/goneis/profile/aitiseis-endiaferontos" />
                                     </div>
 
                                     <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: "3vh"}}>
+                                        <PageCard title="Τα Συμφωνητικά μου" url="/goneis/symbolaia" />
                                         <PageCard title="Οι Πληρωμές μου" url="/goneis/symbolaia/pliromes" />
                                         <PageCard title="Οι Αξιολογήσεις μου" url="/ratings" />
                                     </div>
@@ -124,14 +124,22 @@ const Dashboard = () => {
                             }
                         </div>
 
+                        <div style={{ display: "flex", justifyContent: "center", marginTop: "15vh" }}>
+                            <button 
+                                onClick={handleUnsubscribe} 
+                                style={{ padding: "10px 20px", fontSize: "1.5rem", fontWeight: "bold", backgroundColor: "#f44336", color: "#fff", border: "none", borderRadius: "5px", cursor: "pointer" }}
+                            >
+                                Αποσύνδεση
+                            </button>
+                        </div>
+
                     </div>
                 </div>
             </div>
 
             <div>
-            <Footer />
+                <Footer />
             </div>
-
         </div>
     );
 };

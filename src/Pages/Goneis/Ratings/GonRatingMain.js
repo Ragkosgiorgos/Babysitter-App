@@ -135,7 +135,7 @@ function GonRatingMain() {
                   ))}
                   {filteredPosts.length === 0 && (
                     <tr>
-                      <td colSpan={3} style={{ padding: "10px" }}>Δεν υπάρχουν αγγελίες</td>
+                      <td colSpan={3} style={{ padding: "10px" }}>Δεν υπάρχουν αξιολογήσεις</td>
                     </tr>
                   )}
                 </tbody>
