@@ -16,7 +16,11 @@ import { FIREBASE_DB, FIREBASE_AUTH } from '../../../config/firebase.js';
 import { addDoc, setDoc } from 'firebase/firestore';
 import { useNavigate } from "react-router-dom";
 import { handleScrollToTop } from "../../../Utils/Methods/index.js";
-dayjs.locale("el"); // Set the locale to Greek
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+// Extend dayjs with the customParseFormat plugin
+dayjs.extend(customParseFormat);
+
 
 function DimiourgiaSymbolaiou(props) {
     const navigate = useNavigate();
@@ -225,15 +229,20 @@ function DimiourgiaSymbolaiou(props) {
     const isDateRangeOverlappingWithContracts = (selectedRange) => {
         const newStartDate = dayjs(selectedRange.startDate);
         const newEndDate = dayjs(selectedRange.endDate);
-
-
+    
         console.log("Checking overlap with selected range: ", newStartDate.format('DD/MM/YYYY'), newEndDate.format('DD/MM/YYYY'));
-        console.log("SS")
-        console.log(contract)
-        return contract.some((contract) => {
+    
+        // Ensure contract is defined and is an array
+        if (!Array.isArray(contract)) {
+            console.error("Contract is not an array:", contract);
+            return false;
+        }
+    
+        console.log("SS");
+        contract.forEach((contract) => {
             const existingStartDate = dayjs(contract.startDate, 'DD/MM/YYYY');
             const existingEndDate = dayjs(contract.endDate, 'DD/MM/YYYY');
-
+    
             // Validate the parsed dates
             if (!existingStartDate.isValid() || !existingEndDate.isValid()) {
                 console.error("Invalid date format for contract:", {
@@ -246,15 +255,21 @@ function DimiourgiaSymbolaiou(props) {
                     existingEndDate.format('DD/MM/YYYY')
                 );
             }
-
-
+    
             console.log("Checking contract range: ", existingStartDate.format('DD/MM/YYYY'), existingEndDate.format('DD/MM/YYYY'));
     
             // Check if the selected date range overlaps with any contract date range
-            return (
-                (newStartDate.isBefore(existingEndDate) && newEndDate.isAfter(existingStartDate))
-            );
+            if (
+                newStartDate.isBefore(existingEndDate) && 
+                newEndDate.isAfter(existingStartDate)
+            ) {
+                console.log("Overlap detected with contract:", contract.id);
+                return true; // Return true if overlap is found
+            }
         });
+    
+        // Return false if no overlap is found
+        return false;
     };
     
     
@@ -269,6 +284,8 @@ function DimiourgiaSymbolaiou(props) {
         const selectedRange = item.selection;
         const overlap = isDateRangeOverlappingWithContracts(selectedRange);
         setIsDateRangeOverlapping(overlap);
+        console.log(overlap);
+        console.log(isDateRangeOverlapping);
     };
     
 
@@ -302,7 +319,6 @@ const submitContract = async () => {
 
         setContractId(documentId); // Save contract ID
 
-        // ✅ After successfully submitting the contract, submit the payments
         await submitPayment(documentId, stepTwoData.dateRange[0].startDate, stepTwoData.dateRange[0].endDate);
 
     } catch (error) {
@@ -847,95 +863,137 @@ const submitPayment = async (contractId, startDate, endDate) => {
                 <ProgressTracker steps={steps} activeStep={currentStep} />
     
                 {renderStepContent()}
-    
                 <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        marginTop: "2%",
-                        gap: "50%",
-                        marginBottom: "10px",
-                    }}
-                >
-                    {/* Show 'Προηγούμενο' button only if not at step 0 */}
-                    { currentStep !== 4 && (
-                        <button
-                            style={{
-                                height: "3%",
-                                backgroundColor: "#2b8cbe",
-                                color: "white",
-                                borderRadius: "5px",
-                                marginTop: "2%",
-                                width: "12%",
-                            }}
-                            onClick={() => {
-                                window.history.back();
-                            }}
-                        >
-                            Προηγούμενο
-                        </button>
-                    )}
-    
-                    {currentStep < 3 && (
-                        <button
-                            style={{
-                                height: "3%",
-                                backgroundColor: "#2b8cbe",
-                                color: "white",
-                                borderRadius: "5px",
-                                marginTop: "2%",
-                                width: "12%",
-                            }}
-                            onClick={() => {
-                                if (!isDateRangeOverlapping) {
-                                    goToNextStep();
-                                }
-                            }}
+    style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: "2%",
+        gap: "50%",
+        marginBottom: "10px",
+    }}
+>
+    {/* Show 'Επιστροφή' and 'Επόμενο' in step 0 */}
+    {currentStep === 0 && (
+        <>
+            <button
+                style={{
+                    height: "3%",
+                    backgroundColor: "#2b8cbe",
+                    color: "white",
+                    borderRadius: "5px",
+                    marginTop: "2%",
+                    width: "12%",
+                }}
+                onClick={() => {
+                    window.history.back();
+                }}
+            >
+                Επιστροφή
+            </button>
 
-                        >
-                            Επόμενο
-                        </button>
-                    )}
-    
-                    {/* Show 'Υποβολή' button on step 3 */}
-                    {currentStep === 3 && (
-                        <button
-                            style={{
-                                height: "3%",
-                                backgroundColor: "#2b8cbe",
-                                color: "white",
-                                borderRadius: "5px",
-                                marginTop: "2%",
-                                width: "12%",
-                            }}
-                            onClick={() => {
-                                // Handle submission action here
-                                submitContract();
-                                goToNextStep();
-                            }}
-                        >
-                            Υποβολή
-                        </button>
-                    )}
-                    {currentStep === 4 && (
-                        <button
-                            style={{
-                                height: "3%",
-                                backgroundColor: "#2b8cbe",
-                                color: "white",
-                                borderRadius: "5px",
-                                marginTop: "2%",
-                                width: "12%",
-                            }}
-                            onClick={() => {
-                                window.history.back();
-                            }}
-                        >
-                            Επιστροφή
-                        </button>
-                    )}
-                </div>
+            <button
+                style={{
+                    height: "3%",
+                    backgroundColor: "#2b8cbe",
+                    color: "white",
+                    borderRadius: "5px",
+                    marginTop: "2%",
+                    width: "12%",
+                }}
+                onClick={() => {
+                    if (!isDateRangeOverlapping) {
+                        goToNextStep();
+                    }
+                }}
+            >
+                Επόμενο
+            </button>
+        </>
+    )}
+
+    {/* Show 'Προηγούμενο' button only if not at step 0 */}
+    {currentStep !== 0 && currentStep !== 4 && (
+        <button
+            style={{
+                height: "3%",
+                backgroundColor: "#2b8cbe",
+                color: "white",
+                borderRadius: "5px",
+                marginTop: "2%",
+                width: "12%",
+            }}
+            onClick={() => {
+                goToPreviousStep();
+            }}
+        >
+            Προηγούμενο
+        </button>
+    )}
+
+    {/* Show 'Επόμενο' button only for steps 1 and 2 */}
+    {currentStep < 3 && currentStep !== 0 && (
+        <button
+            style={{
+                height: "3%",
+                backgroundColor: "#2b8cbe",
+                color: "white",
+                borderRadius: "5px",
+                marginTop: "2%",
+                width: "12%",
+            }}
+            onClick={() => {
+                if (!isDateRangeOverlapping) {
+                    goToNextStep();
+                }
+            }}
+        >
+            Επόμενο
+        </button>
+    )}
+
+    {/* Show 'Υποβολή' button only on step 3 */}
+    {currentStep === 3 && (
+        <button
+            style={{
+                height: "3%",
+                backgroundColor: "#2b8cbe",
+                color: "white",
+                borderRadius: "5px",
+                marginTop: "2%",
+                width: "12%",
+            }}
+            onClick={() => {
+                // Handle submission action here
+                submitContract();
+                goToNextStep();
+            }}
+        >
+            Υποβολή
+        </button>
+    )}
+
+    {/* Show 'Επιστροφή' button for steps 4 */}
+    {(currentStep === 4) && (
+        <button
+            style={{
+                height: "3%",
+                backgroundColor: "#2b8cbe",
+                color: "white",
+                borderRadius: "5px",
+                marginTop: "2%",
+                width: "12%",
+            }}
+            onClick={() => {
+                window.history.back();
+            }}
+        >
+            Επιστροφή
+        </button>
+    )}
+</div>
+
+            
             </div>
     
             <Footer />
