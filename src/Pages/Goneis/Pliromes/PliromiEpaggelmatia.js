@@ -133,6 +133,7 @@ function PliromiEpaggelmatia() {
 
     // Set loading state to true while updating payment
     setLoading(true);
+    setIsSubmitting(true)
 
     try {
         // Get the payment document reference
@@ -172,6 +173,7 @@ function PliromiEpaggelmatia() {
         console.error('Error updating payment status:', error);
     } finally {
         setLoading(false);  // Set loading to false after the operation is complete
+        setIsSubmitting(false)
     }
 };
 
@@ -182,12 +184,30 @@ function PliromiEpaggelmatia() {
       'Πληρωμή',
   ];
 
-  // Step navigation handlers
   const goToNextStep = () => {
-      if (currentStep < steps.length - 1) {
-          setCurrentStep(currentStep + 1);
+    if (currentStep === 0) {
+      // Validate babysitter selection in step 0
+      if (!babysitterChoice) {
+        setIsSubmitting(true);  // Show error message if no babysitter is selected
+      } else {
+        setIsSubmitting(false);  // Clear error message if babysitter is selected
+        setCurrentStep(currentStep + 1);  // Move to step 1
       }
+    } else if (currentStep === 1) {
+      // Validate payment selection in step 1
+      if (!selectedPayment) {
+        setIsSubmitting(true);  // Show error message if no payment is selected
+      } else {
+        setIsSubmitting(false);  // Clear error message if payment is selected
+        setCurrentStep(currentStep + 1);  // Move to step 2
+      }
+    }
   };
+  
+  
+  
+  
+  
 
   const goToPreviousStep = () => {
       if (currentStep > 0) {
@@ -222,6 +242,7 @@ function PliromiEpaggelmatia() {
               <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                 <b>Επιλέξτε τον επαγγελματία που θέλετε να πληρώσετε</b>
               </h2>
+              <div>
               <select
                 style={{ width: "50%", height: "30px" }}
                 onChange={(e) => setBabysitterChoice(e.target.value)}
@@ -234,6 +255,12 @@ function PliromiEpaggelmatia() {
                   </option>
                 ))}
               </select>
+              {!babysitterChoice && isSubmitting&&(
+                <p style={{ color: "red",textAlign:"center" }}>
+                    Παρακαλώ επιλέξτε babysitter
+                </p>
+            )}
+              </div>
             </div>
             </div>
           );
@@ -254,6 +281,7 @@ function PliromiEpaggelmatia() {
                         <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                             <b>Πληρωμές</b>
                         </h2>
+                        <div>
                         {loading ? (
                             <p>Φόρτωση πληρωμών...</p>
                         ) : payments.length > 0 ? (
@@ -283,6 +311,12 @@ function PliromiEpaggelmatia() {
                         ) : (
                             <p>Δεν βρέθηκαν πληρωμές για τον επιλεγμένο επαγγελματία.</p>
                         )}
+                        {!selectedPayment && isSubmitting &&(
+                          <p style={{ color: "red",textAlign:"center" }}>
+                              Παρακαλώ επιλέξτε περίοδο πληρωμής
+                          </p>
+                      )}
+                        </div>
                     </div>
                 </div>
             );
@@ -330,6 +364,23 @@ function PliromiEpaggelmatia() {
           }}
         >
           {currentStep === 0 ? (
+            <>
+            <button
+              style={{
+                height: '3%',
+                backgroundColor: '#2b8cbe',
+                color: 'white',
+                borderRadius: '5px',
+                marginTop: '2%',
+                width: '12%',
+              }}
+              onClick={() => {
+                window.history.back();
+            }}
+            >
+              Προηγούμενο
+            </button>
+            
             <button
               style={{
                 height: '3%',
@@ -340,10 +391,10 @@ function PliromiEpaggelmatia() {
                 width: '12%',
               }}
               onClick={goToNextStep}
-              disabled={!babysitterChoice}
             >
               Επόμενο
             </button>
+            </>
             
           ) : currentStep === steps.length - 1 ? (
             <>
@@ -358,7 +409,6 @@ function PliromiEpaggelmatia() {
                 }}
                 onClick={() => {
                     navigate('/goneis/symbolaia/pliromes');  
-                    console.log('Επιστροφή');
                   }}
               >
                 Επιστροφή
@@ -394,8 +444,7 @@ function PliromiEpaggelmatia() {
                     handlePayment();
                     goToNextStep();
                 }}
-                disabled={!selectedPayment}
-                
+
 
               >
                 Πληρωμή

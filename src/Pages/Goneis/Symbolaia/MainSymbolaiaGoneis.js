@@ -203,10 +203,10 @@ function MainSymbolaiaGoneisPGU() {
             <Breadcrumbs />
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
-              <h2 style={{ fontWeight: "bold", textAlign: "center", marginTop: "3%" }}>Τα συμβόλαια μου</h2>
+              <h2 style={{ fontWeight: "bold", textAlign: "center", marginTop: "3%" }}>Τα Συμφωνητικά μου</h2>
             </div>
 
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%", marginLeft: "70%" }}>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%", marginLeft: "70%",flexDirection:"column" }}>
             {/* Display error message if error exists */}
             {error && (
                 <div style={{ color: "red", marginBottom: "10px", textAlign: "center" }}>
@@ -218,7 +218,7 @@ function MainSymbolaiaGoneisPGU() {
                 style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5px", cursor: "pointer", border: "3px solid #333", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)" }}
                 onClick={() => handleNewContract(profile.childBirthDate)} 
             >
-                Δημιουργία νέου συμβολαίου
+                Δημιουργία νέου συμφωνητικού
             </button>
         </div>
 

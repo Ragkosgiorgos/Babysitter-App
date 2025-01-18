@@ -194,7 +194,7 @@ function Header(props) {
                             </li>
                             <li>
                                 <a className="dropdown-item" href="/epaggelmaties/symbolaia">
-                                    Τα Συμβόλαιά μου
+                                    Τα Συμφωνητικά μου
                                 </a>
                             </li>
                             <li>
@@ -308,7 +308,7 @@ function Header(props) {
                             </li>
                             <li>
                                 <a className="dropdown-item" href="/goneis/symbolaia">
-                                    Τα Συμβόλαιά μου
+                                    Τα Συμφωνητικά μου
                                 </a>
                             </li>
                             <li>

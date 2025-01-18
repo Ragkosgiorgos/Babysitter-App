@@ -49,11 +49,14 @@ function DimiourgiaSymbolaiou(props) {
     const [babysitter, setBabysitter] = useState({});
     const [contractId, setContractId] = useState(null);
 
-
+    useEffect(() => {
+        console.log("Updated stepTwoData:", stepTwoData);
+    }, [stepTwoData]);
+    
 
     const [currentStep, setCurrentStep] = useState(0);
 
-    // Define isLoading state
+
     const [isLoading, setIsLoading] = useState(false); // Added isLoading state
 
     // Check if user is logged in and get UUID
@@ -68,7 +71,7 @@ function DimiourgiaSymbolaiou(props) {
 
     // Fetch all babysitters
     useEffect(() => {
-        if (uuid) { // Don't fetch if UUID is not set (user not logged in)
+        if (uuid) { 
             const fetchUserData = async () => {
                 setLoading(true);
                 try {
@@ -89,19 +92,29 @@ function DimiourgiaSymbolaiou(props) {
         }
     }, [uuid]);
 
-    // Fetch all contracts based on user UUID
+    // Fetch all appointments based on user UUID
     useEffect(() => {
         if (uuid) { // Don't fetch if UUID is not set
             const fetchContracts = async () => {
                 setLoading(true);
-                try {
-                    const q = query(collection(FIREBASE_DB, 'rantevou'), where('id_p', '==', uuid));
+                try {    
+                    const q = query(
+                        collection(FIREBASE_DB, 'rantevou'),
+                        where('id_p', '==', uuid)
+                    );
+    
                     const querySnapshot = await getDocs(q);
-                    const contracts = querySnapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                    }));
-                    setContracts(contracts);
+       
+                    if (!querySnapshot.empty) {
+                        const rantevou = querySnapshot.docs.map((doc) => ({
+                            id: doc.id,
+                            ...doc.data(),
+                        }));
+
+                        setRantevou(rantevou);
+                    } else {
+                        setRantevou([]); 
+                    }
                 } catch (error) {
                     console.error('Error fetching contracts:', error);
                 } finally {
@@ -164,18 +177,6 @@ function DimiourgiaSymbolaiou(props) {
         return contracts.some((contract) => contract.id_b === profile.userId);
     });
     const [errors, setErrors] = useState({});
-
-    const validateStepTwo = () => {
-        const errors = {};
-    
-        if (!babysitter.userId) errors.babysitter = "Παρακαλώ επιλέξτε νταντά";
-        if (!weekdays && !weekends) errors.days = "Παρακαλώ επιλέξτε ημέρες";
-        if (!stepTwoData.hostingPreference) errors.hostingPreference = "Παρακαλώ επιλέξτε χώρο Φιλοξενίας";
-        if (!stepTwoData.employmentTime) errors.employmentTime = "Παρακαλώ επιλέξτε χρόνο απασχόλησης";
-        if (!stepTwoData.dateRange[0].startDate || !stepTwoData.dateRange[0].endDate) errors.dateRange = "Παρακαλώ επιλέξτε διάρκεια απασχόλησης";
-    
-        return errors;
-    };
 
     const handleWeekdaysChange = (event) => {
         setWeekdays(event.target.checked);
@@ -510,11 +511,12 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                         marginBottom: "20px",
                                     }}
                                 >
+                                    
                                     <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                                         <b>Επιλέξτε τον επαγγελματία που θέλετε να κάνετε συμβόλαιο</b>
                                     </h2>
                                     {isSubmitting && !babysitter.userId && (
-                                        <p style={{ color: "red", marginLeft: "25%" }}>
+                                        <p style={{ color: "red",textAlign:"center" }}>
                                             Παρακαλώ επιλέξτε νταντά
                                         </p>
                                     )}
@@ -543,9 +545,12 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                         marginBottom: "20px",
                                     }}
                                 >
+    
                                     <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                                         <b>Ημέρες</b>
                                     </h2>
+                                    <div style={{display:"flex",flexDirection:"row"}}>
+                                    
                                     <FormControlLabel
                                         control={<Checkbox checked={weekdays} onChange={handleWeekdaysChange} />}
                                         label="Καθημερινές"
@@ -555,10 +560,12 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                         label="Σαββατοκύριακο"
                                     />
                                     {isSubmitting && !weekdays && !weekends && (
-                                        <p style={{ color: "red", marginLeft: "25%" }}>
+                                        <p style={{ color: "red",textAlign:"center" }}>
                                             Παρακαλώ επιλέξτε τουλάχιστον μία κατηγορία ημέρας
                                         </p>
                                     )}
+                                    </div>
+                                    
                                 </div>
 
                                 {/* Third Box: Hosting Preference */}
@@ -571,9 +578,11 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                         marginBottom: "20px",
                                     }}
                                 >
+                                
                                     <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                                         <b>Φιλοξενία</b>
                                     </h2>
+                                    <div style={{display:"flex",flexDirection:"row"}}>
                                     <FormControl>
                                         <RadioGroup
                                             aria-labelledby="demo-radio-buttons-group-label"
@@ -594,11 +603,14 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                             />
                                         </RadioGroup>
                                     </FormControl>
+
                                     {isSubmitting && !stepTwoData.hostingPreference && (
-                                        <p style={{ color: "red", marginLeft: "25%" }}>
+                                        <p style={{ color: "red",textAlign:"center" }}>
                                             Παρακαλώ επιλέξτε χώρο Φιλοξενίας
                                         </p>
                                     )}
+                                    </div>
+                                    
                                 </div>
 
                                 {/* Fourth Box: Employment Time */}
@@ -611,9 +623,11 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                         marginBottom: "20px",
                                     }}
                                 >
+                                
                                     <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                                         <b>Χρόνος απασχόλησης</b>
                                     </h2>
+                                    <div style={{display:"flex",flexDirection:"row"}}>
                                     <FormControl>
                                         <RadioGroup
                                             value={stepTwoData.employmentTime}
@@ -623,11 +637,14 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                             <FormControlLabel value="Πλήρης" control={<Radio />} label="Πλήρης" />
                                         </RadioGroup>
                                     </FormControl>
+
                                     {isSubmitting && !stepTwoData.employmentTime && (
-                                        <p style={{ color: "red", marginLeft: "25%" }}>
+                                        <p style={{ color: "red",textAlign:"center"}}>
                                             Παρακαλώ επιλέξτε χρόνο απασχόλησης
                                         </p>
                                     )}
+                                    </div>
+                                    
                                 </div>
 
                                 {/* Fifth Box: Date Range */}
@@ -643,6 +660,7 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                     <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                                         <b>Διάρκεια απασχόλησης</b>
                                     </h2>
+                                    <div style={{display:"flex",flexDirection:"row"}}>
                                     <DateRange
                                         editableDateInputs={true}
                                         onChange={handleDateRangeChange}
@@ -650,21 +668,29 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                         ranges={stepTwoData.dateRange}
                                         minDate={new Date()}
                                     />
+
                                     {isSubmitting && !stepTwoData.dateRange[0]?.startDate && (
-                                        <p style={{ color: "red", marginLeft: "25%" }}>
+                                        <p style={{ color: "red",textAlign:"center" }}>
                                             Παρακαλώ επιλέξτε ημερομηνία έναρξης
                                         </p>
                                     )}
                                     {isSubmitting && !stepTwoData.dateRange[0]?.endDate && (
-                                        <p style={{ color: "red", marginLeft: "25%" }}>
+                                        <p style={{ color: "red",textAlign:"center" }}>
                                             Παρακαλώ επιλέξτε ημερομηνία λήξης
                                         </p>
                                     )}
                                     {isDateRangeOverlapping && (
-                                        <p style={{ color: "red", marginLeft: "25%" }}>
+                                        <p style={{ color: "red", textAlign:"center" }}>
                                             Η ημερομηνία που επιλέξατε επικαλύπτεται με άλλες συμβάσεις.
                                         </p>
                                     )}
+
+                                    {stepTwoData.dateRange[0]?.startDate === "" || stepTwoData.dateRange[0]?.endDate === "" ? (
+                                        <p style={{ color: "red", textAlign: "center" }}>
+                                          Παρακαλώ επιλέξτε ημερομηνία έναρξης και λήξης.
+                                        </p>
+                                      ) : null}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -809,93 +835,136 @@ const submitPayment = async (contractId, startDate, endDate) => {
                 {renderStepContent()}
     
                 <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        marginTop: "2%",
-                        gap: "50%",
-                        marginBottom: "10px",
-                    }}
-                >
-                    {/* Show 'Προηγούμενο' button only if not at step 0 */}
-                    { currentStep !== 4 && (
-                        <button
-                            style={{
-                                height: "3%",
-                                backgroundColor: "#2b8cbe",
-                                color: "white",
-                                borderRadius: "5px",
-                                marginTop: "2%",
-                                width: "12%",
-                            }}
-                            onClick={() => {
-                                window.history.back();
-                            }}
-                        >
-                            Προηγούμενο
-                        </button>
-                    )}
-    
-                    {currentStep < 3 && (
-                        <button
-                            style={{
-                                height: "3%",
-                                backgroundColor: "#2b8cbe",
-                                color: "white",
-                                borderRadius: "5px",
-                                marginTop: "2%",
-                                width: "12%",
-                            }}
-                            onClick={() => {
-                                if (!isDateRangeOverlapping) {
-                                    goToNextStep();
-                                }
-                            }}
+    style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: "2%",
+        gap: "50%",
+        marginBottom: "10px",
+    }}
+>
+    {/* Show 'Επιστροφή' and 'Επόμενο' in step 0 */}
+    {currentStep === 0 && (
+        <>
+            <button
+                style={{
+                    height: "3%",
+                    backgroundColor: "#2b8cbe",
+                    color: "white",
+                    borderRadius: "5px",
+                    marginTop: "2%",
+                    width: "12%",
+                }}
+                onClick={() => {
+                    window.history.back();
+                }}
+            >
+                Προηγούμενο
+            </button>
 
-                        >
-                            Επόμενο
-                        </button>
-                    )}
-    
-                    {/* Show 'Υποβολή' button on step 3 */}
-                    {currentStep === 3 && (
-                        <button
-                            style={{
-                                height: "3%",
-                                backgroundColor: "#2b8cbe",
-                                color: "white",
-                                borderRadius: "5px",
-                                marginTop: "2%",
-                                width: "12%",
-                            }}
-                            onClick={() => {
-                                // Handle submission action here
-                                submitContract();
-                                goToNextStep();
-                            }}
-                        >
-                            Υποβολή
-                        </button>
-                    )}
-                    {currentStep === 4 && (
-                        <button
-                            style={{
-                                height: "3%",
-                                backgroundColor: "#2b8cbe",
-                                color: "white",
-                                borderRadius: "5px",
-                                marginTop: "2%",
-                                width: "12%",
-                            }}
-                            onClick={() => {
-                                window.history.back();
-                            }}
-                        >
-                            Επιστροφή
-                        </button>
-                    )}
-                </div>
+            <button
+                style={{
+                    height: "3%",
+                    backgroundColor: "#2b8cbe",
+                    color: "white",
+                    borderRadius: "5px",
+                    marginTop: "2%",
+                    width: "12%",
+                }}
+                onClick={() => {
+                    if (!isDateRangeOverlapping) {
+                        goToNextStep();
+                    }
+                }}
+            >
+                Επόμενο
+            </button>
+        </>
+    )}
+
+    {/* Show 'Προηγούμενο' button only if not at step 0 */}
+    {currentStep !== 0 && currentStep !== 4 && (
+        <button
+            style={{
+                height: "3%",
+                backgroundColor: "#2b8cbe",
+                color: "white",
+                borderRadius: "5px",
+                marginTop: "2%",
+                width: "12%",
+            }}
+            onClick={() => {
+                goToPreviousStep();
+            }}
+        >
+            Προηγούμενο
+        </button>
+    )}
+
+    {/* Show 'Επόμενο' button only for steps 1 and 2 */}
+    {currentStep < 3 && currentStep !== 0 && (
+        <button
+            style={{
+                height: "3%",
+                backgroundColor: "#2b8cbe",
+                color: "white",
+                borderRadius: "5px",
+                marginTop: "2%",
+                width: "12%",
+            }}
+            onClick={() => {
+                if (!isDateRangeOverlapping) {
+                    goToNextStep();
+                }
+            }}
+        >
+            Επόμενο
+        </button>
+    )}
+
+    {/* Show 'Υποβολή' button only on step 3 */}
+    {currentStep === 3 && (
+        <button
+            style={{
+                height: "3%",
+                backgroundColor: "#2b8cbe",
+                color: "white",
+                borderRadius: "5px",
+                marginTop: "2%",
+                width: "12%",
+            }}
+            onClick={() => {
+                // Handle submission action here
+                submitContract();
+                goToNextStep();
+            }}
+        >
+            Υποβολή
+        </button>
+    )}
+
+    {/* Show 'Επιστροφή' button for steps 4 */}
+    {(currentStep === 4) && (
+        <button
+            style={{
+                height: "3%",
+                backgroundColor: "#2b8cbe",
+                color: "white",
+                borderRadius: "5px",
+                marginTop: "2%",
+                width: "12%",
+            }}
+            onClick={() => {
+                window.history.back();
+            }}
+        >
+            Επιστροφή
+        </button>
+    )}
+</div>
+
+            
             </div>
     
             <Footer />
