@@ -3,11 +3,7 @@ import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import { useNavigate } from "react-router-dom";
-import { RadioGroup, FormControlLabel, Radio, MenuItem, Select, FormControl, InputLabel } from "@mui/material";
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { RadioGroup, FormControlLabel, Radio, MenuItem, Select } from "@mui/material";
 import dayjs from 'dayjs';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -255,11 +251,6 @@ function SubmitAitiseisEndiaferontosPGU(props) {
       }
   };
 
-  if (uuid && user?.property !== "babysitter")
-    {
-      navigate("/404");
-    }
-
   const handleDropdownChange = (post) => {
     setnewData((prevData) => ({
       ...prevData,
@@ -357,23 +348,14 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                     <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
                         <b>Στοιχεία παιδιού</b>
                     </h2>
-                    <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "98%" }}>
-                            <div>
-                            <b>Φύλο:</b> {user.childGender || "N/A"}
-                            </div>
-                            <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleProfileRedirect()} />
-                        </div>
-                    </h4>
-                    <hr />
-                    <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "98%" }}>
-                            <div>
-                                <b>Ημερομηνία γέννησης:</b> {user?.childBirthDate || "N/A"}
-                            </div>
-                            <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleProfileRedirect()} />
-                          </div>
-                    </h4>
+                    <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
+                      <th>Φύλο: {user?.childGender}</th>
+
+                    </div>
+                    <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
+                      <th>Ημερομηνία γέννησης: {user?.childBirthDate}</th>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
@@ -390,12 +372,13 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                       </RadioGroup>
                       {newData.tropos_synantisis === 'Διαδικτυακά' && (
                         <Select
-                          value={newData.id_r || ""}
+                          value={newData.id_r || "Επιλέξτε ημερομηνία και ώρα"}
                           label="Επιλέξτε ημερομηνία και ώρα"
                           onChange={(e) => {
                             const selectedPost = posts.find((post) => post.id === e.target.value);
                             handleDropdownChange(selectedPost);
                           }}
+                          style={{ minWidth: "40%", height: "2%", fontSize: "1.5em", marginTop: "2%" }}
                         >
                           {loading ? (
                             <Loader />
@@ -416,6 +399,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                             const selectedPost = posts.find((post) => post.id === e.target.value);
                             handleDropdownChange(selectedPost);
                           }}
+                          style={{ minWidth: "40%", height: "2%", fontSize: "1.5em", marginTop: "2%" }}
                         >
                           {loading ? (
                             <Loader />
@@ -491,7 +475,6 @@ function SubmitAitiseisEndiaferontosPGU(props) {
           <Footer />
         </div>
         
-      </div>
     );
   }
   
