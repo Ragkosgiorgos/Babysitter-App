@@ -20,6 +20,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, addDoc, setDoc, doc } from 'firebase/firestore';
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../../config/firebase";
 import Loader from "../../../Components/Loader";
+import { handleScrollToTop } from "../../../Utils/Methods/index";
 
 
 function AddRantevouPGU() {
@@ -46,17 +47,13 @@ function AddRantevouPGU() {
       id_p: "",
       id_b: "",
       tropos_synantisis: "",
-      date: new Date().toLocaleDateString(),
+      date: "",
       address: "", 
     });
 
       // Fetch user data when uuid is available
       useEffect(() => {
         if (uuid) {
-          setnewData((prevData) => ({
-            ...prevData,
-            ["id_b"]: uuid,
-          }));
             const fetchUserData = async () => {
                 try {
                     setLoading(true);
@@ -72,15 +69,27 @@ function AddRantevouPGU() {
                 } finally {
                     setLoading(false);
                 }
+                setnewData((prevData) => ({
+                  ...prevData,
+                  ["id_b"]: uuid,
+                  address : user.address,
+                }));
             };
             fetchUserData();
         }
     }, [uuid]);
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleFinalSave = async () => {
     // post_id === -1, we are creating a new post
         newData.id_b = uuid;
         newData.status = "Oριστική υποβολή";
+        setIsSubmitted(true);
+        if (!newData.tropos_synantisis || !newData.date) {
+          handleScrollToTop();
+          return;
+        }
+        setIsSubmitted(false);
         try{
             const rantevouRef = collection(FIREBASE_DB, 'rantevou');
   
@@ -100,11 +109,16 @@ function AddRantevouPGU() {
 
     const handleInputChange = (e) => {
       const { name, value } = e.target;
+      console.log(value);
       setnewData((prevData) => ({
           ...prevData,
+          
           [name]: value,
       }));
     };
+
+
+
   
     const handleDateTimeRangePickerChange = (_value) => {
       let date = dayjs(_value).format('YYYY-MM-DD HH:mm');
@@ -151,15 +165,21 @@ function AddRantevouPGU() {
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
 
               <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
-
+                                            
                 <tbody>
+                
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
+                {isSubmitted && (!newData.date)
+                                             ? <h7 style={{ color: "red",marginRight: "55%" }}> Παρακαλoύμε επιλέξετε ημερομηνία και ώρα </h7> : ""}
+ 
                     <DemoContainer components={['Ημερομηνία και ώρα']}>
                         <DemoItem label="Ημερομηνία και ώρα">
                         <DateTimePicker onChange={handleDateTimeRangePickerChange} value={dayjs(newData.date)} shouldDisableYear={isInPast} />
                         </DemoItem>
                     </DemoContainer>
                 </LocalizationProvider>
+                {isSubmitted && (!newData.tropos_synantisis)
+                                             ? <h7 style={{ color: "red",marginRight: "5%" }}> Παρακαλoύμε επιλέξτε τρόπο συνάντησης </h7> : ""}
                 <FormControl>
                     <RadioGroup
                         row
@@ -169,7 +189,7 @@ function AddRantevouPGU() {
                         name="tropos_synantisis"
                     >
                     <FormControlLabel value="Διαδικτυακά" control={<Radio />} label="Διαδικτυακά" labelPlacement="end"  />
-                    <FormControlLabel value="Δια ζώσης" control={<Radio />} label="Δια ζώσης" />
+                    <FormControlLabel value= {"Δια ζώσης".toString()} control={<Radio />} label="Δια ζώσης" />
                     </RadioGroup>
                 </FormControl>
                 </tbody>

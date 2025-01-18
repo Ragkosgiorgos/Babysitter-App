@@ -21,7 +21,6 @@ function SubmitAitiseisEndiaferontosPGU(props) {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState({});
   const [posts, setPosts] = useState([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [uuid, setUuid] = useState(null);
   useEffect(() => {
@@ -107,7 +106,6 @@ function SubmitAitiseisEndiaferontosPGU(props) {
           }));
           
           setPosts(post);
-          console.log(posts);
         } catch (error) {
           console.error('Error fetching rantevou:', error);
         } finally {
@@ -181,11 +179,11 @@ function SubmitAitiseisEndiaferontosPGU(props) {
   };
 
   const handleFinalSave = async () => {
-    setIsSubmitting(true);
-    rantevou.id_p = uuid;
+    if(rantevou.id_p === ""){
       if (id === "" ) { // If id === "" then we are creating a new post
           newData.UserId = uuid;
           newData.status = "Oριστική υποβολή";
+          rantevou.id_p = uuid;
           try{
               const aitiseisRef = collection(FIREBASE_DB, 'aitiseis_endiaferontos');
 
@@ -232,13 +230,12 @@ function SubmitAitiseisEndiaferontosPGU(props) {
 
           }
           try {
-            const q = query(collection(FIREBASE_DB, 'rantevou'),where('id', '==', newData.id_r));
+            const q = query(collection(FIREBASE_DB, 'rantevou'),where('id', '==', rantevou.id));
             const querySnapshot = await getDocs(q);
             const Posts = querySnapshot.docs.map((doc) => ({
                 id: doc.id,
                 ...doc.data(),
             }));
-            console.log(rantevou);
             const postRef = doc(FIREBASE_DB, 'rantevou', Posts[0].id);
             await setDoc(postRef, rantevou, { merge: true });
 
@@ -246,9 +243,10 @@ function SubmitAitiseisEndiaferontosPGU(props) {
             console.error('Error updating document:', error);
 
         } finally{
-          navigate("/goneis/profile/aitiseis-endiaferontos");
+          
         }
       }
+    }
   };
 
   const handleDropdownChange = (post) => {
@@ -257,17 +255,13 @@ function SubmitAitiseisEndiaferontosPGU(props) {
       id_r: post.id,
       date: post.date,
     }));
-    setRantevou((prevData) => ({
-      ...prevData,
-      id: post.id,
-      date: post.date,
-    }));
   };  
 
   const handleProfileRedirect = () =>{ 
     navigate("/dashboard/profiles");
     };
-  
+
+
   function ftf(posts){
     return posts.tropos_synantisis === "Δια ζώσης";
   }
@@ -298,9 +292,8 @@ function SubmitAitiseisEndiaferontosPGU(props) {
             <div style={{ flex: 1, overflowY: "auto" }}>
               
               <Breadcrumbs />
-              {((id!=="" && rantevou.id_p !== "") || !rantevou.date)  
-                    ? <h4 style={{ color: "red", textAlign: "center" }}> Παρακαλώ επιλέξτε διαθέσιμο ραντεβού </h4> : ""}
-              
+              {(id !=="" && rantevou.id_p !== "")  
+                    ? <h4 style={{ color: "red", textAlign: "center" }}> Παρακαλώ συμπληρώστε σωστά όλα τα πεδία </h4> : ""}
               <div style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%"}}>
                 <div style={{width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px"}}>
                     <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
@@ -343,10 +336,11 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                     </h4>
                 </div>
               </div>
-              <div style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%"}}>
-                <div style={{width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px"}}>
+              <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
+                <table style={{ width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
+                  <tbody>
                     <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
-                        <b>Στοιχεία παιδιού</b>
+                      <b>Στοιχεία παιδιού</b>
                     </h2>
                     <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
                       <th>Φύλο: {user?.childGender}</th>
@@ -355,21 +349,22 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                     <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
                       <th>Ημερομηνία γέννησης: {user?.childBirthDate}</th>
                     </div>
-                  </div>
-                </div>
+                  </tbody>
+                </table>
               </div>
+
               <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
                 <table style={{ width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
                   <tbody>
                     <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
                       <b>Επιθυμητός τρόπος επικοινωνίας</b>
                     </h2>                  
-                    {isSubmitting && !rantevou.date && ( <p style={{ color: "red" }}>Παρακαλώ επιλέξτε νταντά</p> )}
                     <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
                       <RadioGroup name="tropos_synantisis" value={newData.tropos_synantisis} onChange={handleInputChange} style={{ padding: "5px", borderRadius: "4px" }}>
                           <FormControlLabel value="Δια ζώσης" control={<Radio />} label="Δια ζώσης" />
                           <FormControlLabel value="Διαδικτυακά" control={<Radio />} label="Διαδικτυακά" />
                       </RadioGroup>
+
                       {newData.tropos_synantisis === 'Διαδικτυακά' && (
                         <Select
                           value={newData.id_r || "Επιλέξτε ημερομηνία και ώρα"}
@@ -475,6 +470,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
           <Footer />
         </div>
         
+      </div>
     );
   }
   
