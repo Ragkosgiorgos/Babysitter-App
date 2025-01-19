@@ -10,7 +10,7 @@ import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
 import Typography from '@mui/material/Typography';
 import { onAuthStateChanged } from 'firebase/auth';
-import { collection, query, where, getDocs, addDoc, setDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, addDoc, setDoc, doc, updateDoc } from 'firebase/firestore';
 import { FIREBASE_DB, FIREBASE_AUTH } from '../../../config/firebase';
 
 function CreateRating() {
@@ -97,7 +97,6 @@ function CreateRating() {
 
   // Filter the babysitters that the user has hired, but hasn't rated yet and have an active contract
   const today = new Date();
-
   const hiredBabysitters = profiles.filter((profile) => {
     // Filter contracts for the current babysitter
     const contractDue = contracts.filter((contract) => {
@@ -155,23 +154,23 @@ function CreateRating() {
     }
 
     // Update babysitter profile with the new rating average
-    const babysitterProfile = profiles.filter((profile) => profile.userId === babysitter.userId);
-    let sum = babysitterProfile[0].rating * babysitterProfile[0].ratingCount;
-    sum += rating.rating;
-    const newRatingCount = babysitterProfile[0].ratingCount + 1;
-    const newRating = sum / newRatingCount;
-    babysitterProfile[0].rating = newRating;
-    babysitterProfile[0].ratingCount = newRatingCount;
-
+    let sumRatings = babysitter.totalRatingAvg * babysitter.ratingsCount;
+    sumRatings += rating.rating;
+    babysitter.ratingsCount += 1;
+    babysitter.totalRatingAvg = sumRatings / babysitter.ratingsCount;
     try {
       setLoading(true);
-      const docRef = collection(FIREBASE_DB, 'user').doc(babysitterProfile[0].id);
-      await setDoc(docRef, babysitterProfile[0], { merge: true });
+      const userRef = doc(FIREBASE_DB, 'user', babysitter.id);
+      await updateDoc(userRef, {
+        totalRatingAvg: babysitter.totalRatingAvg,
+        ratingsCount: babysitter.ratingsCount,
+      } );
     } catch (error) {
       console.error('Error updating document:', error);
     } finally {
       setLoading(false);
     }
+    
   };
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -270,8 +269,9 @@ function CreateRating() {
               <div style={{ display: "flex", flexDirection: "row", marginTop: "2%" }}>
                 <h6 style={{ marginTop: "3%" , backgroundColor: "#D9EAFD", borderRadius: "50%", width: "80px", height: "80px", display: "flex", justifyContent: "center", alignItems: "center", border: "2px solid black" }}>
                 {babysitter.img ? 
-                  (babysitter.gender === "Άντρας" ? <img src="/images/men_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} /> :
-                  <img src="/images/woman_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
+                  (babysitter.gender === "Άντρας" ? <img src="/images/men_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
+                  : babysitter.gender === "Γυναίκα" ? <img src="/images/woman_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
+                  : <img src="/images/default_profile.png" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
                   )
                 : <img src="/images/default_profile.png" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />}
                 </h6>

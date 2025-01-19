@@ -143,7 +143,7 @@ export default function Register() {
 
             if (!lastName) {
                 newErrors.lastName = 'Το επώνυμο είναι υποχρεωτικό.';
-            } else if (!/^[a-zA-Zα-ωΑ-ΩάέήίόύώΆΈΉΊΌΎΏϊϋΐΰ]+$/.test(firstName)) {
+            } else if (!/^[a-zA-Zα-ωΑ-ΩάέήίόύώΆΈΉΊΌΎΏϊϋΐΰ]+$/.test(lastName)) {
                 newErrors.lastName = 'Το επώνυμο πρέπει να περιέχει μόνο γράμματα.';
             }
 

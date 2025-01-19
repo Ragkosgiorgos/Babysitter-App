@@ -21,18 +21,17 @@ function EpaggelmatiesProfile() {
   const [editedData, setEditedData] = useState({});
 
   const [isEditing, setIsEditing] = useState({
+    email: false,
     firstName: false,
     lastName: false,
     birthDate: false,
     afm: false,
-    address: false,
     area: false,
-    email: false,
     phone: false,
-    
-    description: false,
-    education: false,
+    gender: false,
     img: false,
+    
+    education: false,
   });
 
   // Fetch the user's data from the database (babysitter)
@@ -70,6 +69,55 @@ function EpaggelmatiesProfile() {
     fetchUserData();
   }, [uuid]);
 
+  // Validation of input
+  const [error, setError] = useState({});
+  const validateForm = () => {
+    const newErrors = {};
+    if (!editedData.email) {
+        newErrors.email = 'Το email είναι υποχρεωτικό.';
+    } else if (!/\S+@\S+\.\S+/.test(editedData.email)) {
+        newErrors.email = 'Λάθος μορφή email.';
+    }
+
+    if (!editedData.firstName) {
+        newErrors.firstName = 'Το όνομα είναι υποχρεωτικό.';
+    } else if (!/^[a-zA-Zα-ωΑ-ΩάέήίόύώΆΈΉΊΌΎΏϊϋΐΰ]+$/.test(editedData.firstName)) {
+        newErrors.firstName = 'Το όνομα πρέπει να περιέχει μόνο γράμματα.';
+    }
+
+    if (!editedData.lastName) {
+        newErrors.lastName = 'Το επώνυμο είναι υποχρεωτικό.';
+    } else if (!/^[a-zA-Zα-ωΑ-ΩάέήίόύώΆΈΉΊΌΎΏϊϋΐΰ]+$/.test(editedData.lastName)) {
+        newErrors.lastName = 'Το επώνυμο πρέπει να περιέχει μόνο γράμματα.';
+    }
+
+    if (!editedData.birthDate) {
+        newErrors.birthDate = 'Η ημερομηνία γέννησης είναι υποχρεωτική.';
+    } else {
+        const age = new Date().getFullYear() - new Date(editedData.birthDate).getFullYear();
+        if (age < 18) {
+            newErrors.birthDate = 'Πρέπει να είστε άνω των 18 ετών.';
+        }
+    }
+
+    if (!editedData.afm) {
+        newErrors.afm = 'Το ΑΦΜ είναι υποχρεωτικό.';
+    } else if (!/^\d{9}$/.test(editedData.afm)) {
+        newErrors.afm = 'Το ΑΦΜ πρέπει να αποτελείται από 9 ψηφία.';
+    }
+
+    if (!editedData.phone) {
+        newErrors.phone = 'Το τηλέφωνο είναι υποχρεωτικό.';
+    } else if (!/^\d{10}$/.test(editedData.phone)) {
+        newErrors.phone = 'Το τηλέφωνο πρέπει να αποτελείται από 10 ψηφία.';
+    }
+
+    setError(newErrors);
+
+    // If no errors, return true; otherwise, return false
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditedData({ ...editedData, [name]: value });
@@ -82,6 +130,9 @@ function EpaggelmatiesProfile() {
 
   // Save changes to the database
   const handleSaveChanges = (field) => {
+    if (!validateForm()) { // If there is invalid data, do not save changes and print errror messages
+      return;
+    }
     setIsEditing({ ...isEditing, [field]: false });
     setbabysitter({ ...babysitter, [field]: editedData[field] });
 
@@ -125,12 +176,21 @@ function EpaggelmatiesProfile() {
     }
   };
 
+  const areasOfGreece = [
+    "Αθήνα",
+    "Θεσσαλονίκη",
+    "Πάτρα",
+    "Ηράκλειο",
+    "Λάρισα",
+    "Βόλος",
+    "Ιωάννινα",
+    "Καβάλα",
+    "Χανιά",
+    "Ρόδος",
+  ];
+
   if (loading) {
     return <Loader />;
-  }
-
-  if (!babysitter && !loading) {
-    navigate("/404");
   }
 
   return (
@@ -149,8 +209,9 @@ function EpaggelmatiesProfile() {
             <h3 style={{ textAlign: "center", textDecoration: "underline" }}> <b> Φωτογραφία </b> </h3>
             <h6 style={{ marginTop: "3%" , backgroundColor: "#D9EAFD", borderRadius: "50%", width: "80px", height: "80px", display: "flex", justifyContent: "center", alignItems: "center", border: "2px solid black" }}>
               {babysitter.img ? 
-              (babysitter.gender === "Άντρας" ? <img src="/images/men_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} /> : 
-              <img src="/images/women_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />)
+              (babysitter.gender === "Άντρας" ? <img src="/images/men_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
+                : babysitter.gender === "Γυναίκα" ? <img src="/images/women_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
+                : <img src="/images/default_profile.png" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />)
               : <img src="/images/default_profile.png" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />}
             </h6> <hr style={{ width: "100%" }} />
 
@@ -179,7 +240,7 @@ function EpaggelmatiesProfile() {
                 <b> Τα προσωπικά σας στοιχεία </b>
               </h3>
 
-              {["firstName", "lastName", "birthDate", "afm", "email", "phone"].map((field) => (
+              {["firstName", "lastName", "birthDate", "email", "afm", "phone", "area", "gender"].map((field) => (
                 <div key={field}>
                   <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -190,7 +251,9 @@ function EpaggelmatiesProfile() {
                             : field === "birthDate" ? "Ημερομηνία γέννησης"
                             : field === "afm" ? "ΑΦΜ"
                             : field === "email" ? "Email"
-                            : "Τηλέφωνο"}:
+                            : field === "phone" ? "Τηλέφωνο"
+                            : field === "area" ? "Περιοχή"
+                            : "Φύλο"}:
                         </b>{" "}
                         {isEditing[field] ? (
                           field === "birthDate" ? (
@@ -213,6 +276,30 @@ function EpaggelmatiesProfile() {
                               placeholderText="Επιλέξτε ημερομηνία"
                               maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
                             />
+                          ) : field === "gender" ? (
+                            <select
+                              name={field}
+                              value={editedData[field]}
+                              onChange={handleInputChange}
+                              style={{ width: "20%", padding: "5px", fontSize: "20px", marginLeft: "15px" }}
+                            >
+                              <option value="Άντρας">Άντρας</option>
+                              <option value="Γυναίκα">Γυναίκα</option>
+                              <option value="Άλλο">Άλλο</option>
+                            </select>
+                          ) : field === "area" ? (
+                            <select
+                              name={field}
+                              value={editedData[field]}
+                              onChange={handleInputChange}
+                              style={{ width: "30%", padding: "5px", fontSize: "20px", marginLeft: "15px" }}
+                            >
+                              {areasOfGreece.map((area) => (
+                                <option key={area} value={area}>
+                                  {area}
+                                </option>
+                              ))}
+                            </select>
                           ) : (
                             <input
                               type="text"
@@ -227,8 +314,17 @@ function EpaggelmatiesProfile() {
                       </div>
                       {isEditing[field] && (
                         <button
-                          style={{ marginRight: "10px", fontSize: "12px", padding: "5px 10px", borderRadius: "5px", cursor: "pointer", border: "1px solid #333", 
-                                   boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", color: "white", backgroundColor: "green" }}
+                          style={{
+                            marginRight: "10px",
+                            fontSize: "12px",
+                            padding: "5px 10px",
+                            borderRadius: "5px",
+                            cursor: "pointer",
+                            border: "1px solid #333",
+                            boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)",
+                            color: "white",
+                            backgroundColor: "green"
+                          }}
                           onClick={() => handleSaveChanges(field)}
                         >
                           Αποθήκευση
@@ -242,6 +338,7 @@ function EpaggelmatiesProfile() {
                       />
                     </div>
                   </h4>
+                  {error[field] && <p style={{ color: "red", marginLeft: "6%" }}>{error[field]}</p>}
                   <hr />
                 </div>
               ))}

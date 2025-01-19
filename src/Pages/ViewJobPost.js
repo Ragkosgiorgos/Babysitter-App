@@ -158,7 +158,8 @@ function ViewJobPost() {
                                             profile.img
                                                 ? profile.gender === "Άντρας"
                                                     ? "/images/men_profile.webp"
-                                                    : "/images/women_profile.webp"
+                                                    : profile.gender === "Γυναίκα" ? "/images/women_profile.webp" 
+                                                    : "/images/default_profile.png"
                                                 : "/images/default_profile.png"
                                         }
                                         alt="Profile"
