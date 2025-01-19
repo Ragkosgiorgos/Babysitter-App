@@ -155,10 +155,11 @@ function SubmitAitiseisEndiaferontosPGU(props) {
     setIsSubmitted(true);
     if (!newData.tropos_synantisis || !newData.date) {
       handleScrollToTop();
-      setIsSubmitted(false);
       return;
     }
+    setIsSubmitted(false);
     if (id === "") { // If id === "" then we are creating a new post
+        newData.UserId = uuid;
         newData.status = "Σε προσωρινή αποθήκευση";
         try{
             const aitiseisRef = collection(FIREBASE_DB, 'aitiseis_endiaferontos');
@@ -172,7 +173,9 @@ function SubmitAitiseisEndiaferontosPGU(props) {
 
         } catch (error) {
             console.error('Error adding document:', error);
-
+        }
+        finally{
+          navigate(`/goneis/profile/aitiseis-endiaferontos`);
         }
         } else { // Otherwise we are editing an existing post
         try {
@@ -183,7 +186,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
             console.error('Error updating document:', error);
 
         }  finally{
-          navigate(-1);
+          navigate(`/goneis/profile/aitiseis-endiaferontos`);
         }
     }
   };
@@ -192,9 +195,9 @@ function SubmitAitiseisEndiaferontosPGU(props) {
     setIsSubmitted(true);
     if (!newData.tropos_synantisis || !newData.date) {
       handleScrollToTop();
-      setIsSubmitted(false);
       return;
     }
+    setIsSubmitted(false);
     if(rantevou.id_p === ""){
       if (id === "" ) { // If id === "" then we are creating a new post
           newData.UserId = uuid;
@@ -380,7 +383,19 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                           <FormControlLabel value="Δια ζώσης" control={<Radio />} label="Δια ζώσης" />
                           <FormControlLabel value="Διαδικτυακά" control={<Radio />} label="Διαδικτυακά" />
                       </RadioGroup>
+                    </div>
+                  </tbody>
+              </table>
+              </div>
 
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
+                <table style={{ width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
+                  <tbody>
+                    <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
+                      <b>Επιλέξτε ημερομηνία και ώρα</b>
+                    </h2>  
+                    {isSubmitted && (!newData.date)
+                          ? <h8 style={{ color: "red", marginLeft: "20%",marginRight: "20%" }}> Παρακαλoύμε επιλέξετε ημερομηνία και ώρα </h8> : ""}   
                       {newData.tropos_synantisis === 'Διαδικτυακά' && (
                         <Select
                           value={newData.id_r || "Επιλέξτε ημερομηνία και ώρα"}
@@ -389,7 +404,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                             const selectedPost = posts.find((post) => post.id === e.target.value);
                             handleDropdownChange(selectedPost);
                           }}
-                          style={{ minWidth: "40%", height: "2%", fontSize: "1.5em", marginTop: "2%" }}
+                          style={{ minWidth: "40%", height: "2%", fontSize: "1.5em", marginBottom: "2%" }}
                         >
                           {loading ? (
                             <Loader />
@@ -423,7 +438,6 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                           )}
                         </Select>
                         )}
-                  </div>
                   </tbody>
                 </table>
               </div>
@@ -457,19 +471,38 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                 </table>
               </div>
   
-              <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "5%", gap: "40%" }}>
+              <div style={{ display: "flex", justifyContent: "center", alignItems: "center" , marginTop: "5%", gap: "40%" }}>
                 
-                <button onClick={()=> navigate(-1)}  style={{ width: "15%" , height: "8vh", backgroundColor: "gray", color: "white", border: "none", 
-                                  borderRadius: "5px", fontSize: "3vh", cursor: "pointer", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)",marginLeft:"-10%" }}>
-                  Επιστροφή
+                <button onClick={()=> navigate(-1)}
+                  style={{
+                      height: "3%",
+                      backgroundColor: "#2b8cbe",
+                      color: "white",
+                      borderRadius: "5px",
+                      marginTop: "2%",
+                      width: "12%",
+                    }}>
+                  Προηγούμενο
                 </button>
+                
                 <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "20%", marginRight:"-10%" }}>
-                    <button onClick={handleTempSave}  style={{ width:"30ch", height: "8vh", backgroundColor: "#2b8cbe", color: "white", border: "none", 
-                                    borderRadius: "5px", fontSize: "3vh", cursor: "pointer", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)" }}>
-                    Προσωρινή αποθήκευση
+                    <button onClick={handleTempSave}  style={{
+                      backgroundColor: "#F28C28",
+                      color: "white",
+                      borderRadius: "5px",
+                      marginTop: "2%",
+                      width: "100%",
+                    }}>
+                      Προσωρινή αποθήκευση
                     </button>
-                    <button onClick={handleFinalSave}  style={{  height: "8vh", backgroundColor: "green", color: "white", border: "none", 
-                                    borderRadius: "5px", fontSize: "3vh", cursor: "pointer", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)" }}>
+                    
+                    <button onClick={handleFinalSave}  style={{
+                      backgroundColor: "green",
+                      color: "white",
+                      borderRadius: "5px",
+                      marginTop: "2%",
+                      width: "200px",
+                    }}>
                       Αποθήκευση
                     </button>
                 </div>
