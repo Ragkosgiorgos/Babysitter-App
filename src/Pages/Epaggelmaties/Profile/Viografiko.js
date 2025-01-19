@@ -9,8 +9,10 @@ import { Carousel } from 'react-bootstrap';
 import Rating from '@mui/material/Rating';
 import ClearIcon from '@mui/icons-material/Clear';
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
-import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { onAuthStateChanged } from "firebase/auth";
+import { duration } from "@mui/material";
+import { display } from "@mui/system";
 
 function Viografiko() {
     const navigate = useNavigate();
@@ -19,6 +21,14 @@ function Viografiko() {
     const [profile, setProfile] = useState({});
     const [ratings, setRatings] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [experience, setExperience] = useState([]);
+    const [newExperience, setNewExperience] = useState({
+        jobTitle: "",
+        company: "",
+        duration:"",
+    });
+    const [showAddExperienceForm, setShowAddExperienceForm] = useState(false);
+
 
     // Fetch user's uuid
     useEffect(() => {
@@ -45,6 +55,7 @@ function Viografiko() {
                         ...doc.data(),
                     }));
                     setProfile(posts[0]);
+                    console.log(profile)
                     if (posts[0].property !== "babysitter") {
                         navigate("/");
                     }
@@ -73,8 +84,12 @@ function Viografiko() {
                 }
             };
             fetchRatings();
+
+           
         }
     }, [uuid, navigate]);
+
+    
 
     // Handle recommendation letters display
     const viewDummyMails = () => {
@@ -150,6 +165,38 @@ function Viografiko() {
         return <Loader />;
     }
 
+    const handleAddExperience = async () => {
+        try {
+            setLoading(true);
+            const updatedExperience = [...experience, newExperience];
+            await updateDoc(doc(FIREBASE_DB, 'user', profile.id), {
+                experience: arrayUnion(newExperience),
+            });
+            setExperience(updatedExperience);
+            setNewExperience({ jobTitle: "", company: "", duration: "" });
+            setShowAddExperienceForm(false);
+        } catch (error) {
+            console.error('Error adding experience:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleDeleteExperience = async (exp) => {
+        try {
+            setLoading(true);
+            await updateDoc(doc(FIREBASE_DB, 'user', profile.id), {
+                experience: arrayRemove(exp),
+            });
+            setExperience(experience.filter((e) => e !== exp));
+        } catch (error) {
+            console.error('Error deleting experience:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+   
     return (
         <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
             <div>
@@ -209,6 +256,107 @@ function Viografiko() {
                                         onChange={handleAddMail}
                                     />
                                 </div>
+                            </div>
+
+                            {/*experience*/}
+                            <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center" }}>
+                            <span style={{ fontSize: "20px" }}><b style={{ textDecoration: "underline" }}>Προυπηρεσία</b></span>
+                            {experience.length > 0 ? (
+                                experience.map((exp, index) => (
+                                    <div key={index} style={{ marginBottom: "10px", display: "flex", flexDirection: "row", alignItems: "center" }}>
+                                        <p style={{ marginRight: "10px" }}>{exp.jobTitle}</p>
+                                        <p style={{ marginRight: "10px" }}>{exp.company}</p>
+                                        <p style={{ marginRight: "10px" }}>{exp.duration}</p>
+                                        <button 
+                                            onClick={() => handleDeleteExperience(exp)} 
+                                            style={{ color: "red", cursor: "pointer", border: "none", background: "none" }}>
+                                            Διαγραφή
+                                        </button>
+                                    </div>
+                                ))
+                            ) : (
+                                <h5>Προσθέστε την προυπηρεσία σας</h5>
+                            )}
+                            <div>
+                                {!showAddExperienceForm ? (
+                                    <button
+                                        onClick={() => setShowAddExperienceForm(true)}
+                                        style={{
+                                            marginTop: "10px",
+                                            backgroundColor: "green",
+                                            color: "white",
+                                            borderRadius: "5px",
+                                            cursor: "pointer",
+                                            border: "1px solid #333",
+                                            boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                                            fontSize: "15px",
+                                            padding: "10px 20px",
+                                        }}
+                                    >
+                                        Προσθήκη Εμπειρίας
+                                    </button>
+                                ) : (
+                                    <div style={{ marginTop: "20px",display:"flex",flexDirection:"column" }}>
+                                        <input
+                                            style={{}}
+                                            type="text"
+                                            placeholder="Τίτλος Εργασίας"
+                                            value={newExperience.jobTitle}
+                                            onChange={(e) => setNewExperience({ ...newExperience, jobTitle: e.target.value })}
+                                        />
+                                        <input
+                                            style={{marginTop:"10px"}}
+                                            type="text"
+                                            placeholder="Εταιρεία"
+                                            value={newExperience.company}
+                                            onChange={(e) => setNewExperience({ ...newExperience, company: e.target.value })}
+                                        />
+                                        <input
+                                            style={{marginTop:"10px"}}
+                                            type="text"
+                                            placeholder="Διάρκεια"
+                                            value={newExperience.years}
+                                            onChange={(e) => setNewExperience({ ...newExperience, duration: e.target.value })}
+                                        />
+                                        <div style={{display:"flex"}}>
+                                        <button
+                                            onClick={handleAddExperience}
+                                            style={{
+                                                marginRight:"10px",
+                                                marginTop: "10px",
+                                                backgroundColor: "green",
+                                                color: "white",
+                                                borderRadius: "5px",
+                                                cursor: "pointer",
+                                                border: "1px solid #333",
+                                                boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                                                fontSize: "15px",
+                                                padding: "5px 15px",
+                                            }}
+                                        >
+                                            Αποθήκευση
+                                        </button>
+                                        <button
+                                            onClick={() => setShowAddExperienceForm(false)}
+                                            style={{
+                                                marginTop: "10px",
+                                                backgroundColor: "gray",
+                                                color: "white",
+                                                borderRadius: "5px",
+                                                cursor: "pointer",
+                                                border: "1px solid #333",
+                                                fontSize: "15px",
+                                                padding: "5px 15px",
+                                            }}
+                                        >
+                                            Ακύρωση
+                                        </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                            
+                            
                             </div>
 
                             <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center" }}>
