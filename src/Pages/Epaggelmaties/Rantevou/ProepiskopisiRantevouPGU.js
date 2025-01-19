@@ -93,70 +93,67 @@ function ProepiskopisiRantevouPGU() {
     <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
       <div>
         <Header />
+        <div style={{ flex: 1 }}>
+              <Breadcrumbs />
+              <div style={{ textAlign: "center", marginTop: "1%"}}>
+                            <h2>Η αιτησή σας με <b style={{ textDecoration: "underline" }}>κωδικό {aitisi.id}</b> δημοσιεύτηκε με επιτυχία!</h2>
+                            <h4>Μπορείτε να δείτε το ραντεβού σας στην κατηγορία "Τα ραντεβού μου".</h4>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "row", marginTop: "2%", marginLeft: "10%", marginRight: "10%" }}>
+                        <div style={{ textAlign: "center"}}>
+                            <div style={{ display: "flex", flexDirection: "column", backgroundColor: "#ece7f2", borderRadius: "2%",
+                                            justifyContent: "center", padding: "2%" }}>
+                                <h2 style={{ textAlign: "center", textDecoration: "underline" }}><b> Τα προσωπικά σας στοιχεία </b></h2>
+                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Όνομα:</b> {user.firstName}</h4>
+                                <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
+                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Επίθετο:</b> {user.lastName}</h4>
+                                <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
+                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Αριθμός κινητού τηλεφώνου:</b> {user.phone}</h4>
+                                <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
+                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Email:</b> {user.email}</h4>
+                            </div>
+                        </div>
 
-        <div style={{ display: "flex", flexDirection: "column", overflow: "auto" }}>
+                        <div style={{ display: "flex", flexDirection: "column", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", 
+                                    justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
 
-          <div style={{ flex: 1, overflowY: "auto" }}>
+                        <h2 style={{ textAlign: "center", textDecoration: "underline" }}><b>Τα στοιχεία του ραντεβού</b></h2>
+                        
+                        <h5 style={{ fontWeight: "bold"}}> Ημερομηνία και ώρα συνάντησης </h5>
+                        <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
+                            {aitisi.date}
+                        </div>
 
-            <Breadcrumbs />
-            <h2 style={{ textAlign: "center", marginTop: "2%" }}>
-              Προεπισκόπηση ραντεβού
-            </h2>
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
-
-              <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
-                <tbody>
-                <tr style={{ borderBottom: "2px solid #333" }}>
-                <th>Προσωπικά στοιχεία κηδεμόνα:</th>
-                </tr>
-
-                <span style={{textDecoration: "underline"}}>Όνοματεπώνυμο:</span> {user.firstName} {user.lastName}
-
-                <tr style={{ borderBottom: "2px solid #333" }}>
-                <th>Στοιχεία επικοινωνίας:</th>
-                </tr>
-
-                Αριθμός κινητού τηλεφώνου: {user.phone}
-                <tr>Email: {user.email}</tr>                  
-                </tbody>
-              </table>
-            </div>
-
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
-              <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
-                <tbody>
-                <tr style={{ borderBottom: "2px solid #333" }}>
-                <th>Στοιχεία ραντεβού</th>
-                </tr>
-
-                Ημερομηνία: {aitisi.date}
-                <tr>Τρόπος: {aitisi.tropos_synantisis}</tr> 
-                {aitisi.tropos_synantisis === "Διαδικτυακά" && (<tr>Σύνδεσμος:<Button onClick={redirect} 
-                style={{  height: "0%", backgroundColor: "#D9EAFD", color: "blue", marginTop: "0%"}} >Link{aitisi.link}</Button></tr> )}                 
-                {aitisi.tropos_synantisis === "Δια ζώσης" && (<tr>Διεύθυνση: {aitisi.address}</tr> )} 
-                </tbody>
-              </table>
-            </div>
-            
-
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "5%", marginRight: "70%" }}>
-              
-              <button onClick={()=> navigate(-1)}  style={{ width: "35%" , height: "8vh", backgroundColor: "gray", color: "white", border: "none", 
-                                borderRadius: "5px", fontSize: "3vh", cursor: "pointer", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)" }}>
-                Επιστροφή
-              </button>
-              
-            </div>
-            
-          </div>
-
+                        <h5 style={{ fontWeight: "bold"}}> Επιθυμητός τρόπος επικοινωνίας </h5>
+                        <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>            
+                          {aitisi.tropos_synantisis === "Διαδικτυακά" && (<tr>Σύνδεσμος:<Button onClick={redirect} 
+                          style={{  height: "0%", backgroundColor: "#D9EAFD", color: "blue", marginTop: "0%"}} >Link{aitisi.link}</Button></tr> )}                 
+                          {aitisi.tropos_synantisis === "Δια ζώσης" && (<tr>Διεύθυνση: {aitisi.address}</tr> )} 
+                        </div>
+                    </div>
+                </div>
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "5%", gap: "40%" }}>
+                
+                <button
+                    style={{
+                        height: "5%",
+                        backgroundColor: "#2b8cbe",
+                        color: "white",
+                        borderRadius: "5%",
+                        width: "12%",
+                        cursor: "pointer",
+                        border: "1px solid #333",
+                        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)",
+                        marginLeft: "55%",
+                    }}
+                    onClick={() => navigate(`/epaggelmaties/rantevou`)}
+                >
+                    Επιστροφή
+                </button>
+              </div>                        
+          <Footer />
         </div>
       </div>
-      
-      <div>
-        <Footer />
-      </div>
-      
     </div>
   );
 }
