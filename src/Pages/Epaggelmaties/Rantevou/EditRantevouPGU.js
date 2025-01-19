@@ -2,165 +2,145 @@ import React, { useState, useEffect } from "react";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
-import dayjs from 'dayjs';
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
+import Loader from "../../../Components/Loader";
+import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs, addDoc, setDoc, doc } from 'firebase/firestore';
+import { collection, query, where, getDocs, addDoc, setDoc } from "firebase/firestore";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../../config/firebase";
-import Loader from "../../../Components/Loader";
+
+import dayjs from 'dayjs';
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import updateLocale from "dayjs/plugin/updateLocale";
+import "dayjs/locale/el"; // Import Greek locale
+dayjs.extend(customParseFormat);
+dayjs.extend(updateLocale);
+dayjs.updateLocale("el", {
+  meridiem: (hour) => (hour < 12 ? "ΠΜ" : "ΜΜ"), // Translate AM/PM to ΠΜ/ΜΜ
+});
 
 function EditRantevouPGU() {
   const navigate = useNavigate();
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get("id") || "";
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState({});
-
   const [uuid, setUuid] = useState(null);
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
-            if (user) {
-                setUuid(user.uid);
-            }
-        });
-        return () => unsubscribe();
-    }, []);
+  const [user, setUser] = useState({});
+  const [newData, setnewData] = useState({});
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  
-      // Fetch user data when uuid is available
-      useEffect(() => {
-        if (uuid) {
-            const fetchUserData = async () => {
-                try {
-                    setLoading(true);
-                    const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
-                    const querySnapshot = await getDocs(q);
-                    const users = querySnapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                    }));
-                    setUser(users[0]);
-                } catch (error) {
-                    console.error('Error fetching user data:', error);
-                } finally {
-                    setLoading(false);
-                }
-            };
-            fetchUserData();
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+      if (user) {
+        setUuid(user.uid);
+      } else {
+        navigate("/login");
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (uuid) {
+      const fetchUserData = async () => {
+        try {
+          setLoading(true);
+          const q = query(collection(FIREBASE_DB, "user"), where("userId", "==", uuid));
+          const querySnapshot = await getDocs(q);
+          const users = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setUser(users[0]);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        } finally {
+          setLoading(false);
         }
-    }, [uuid]);
-
-  const [newData, setnewData] = useState({
-    id: id,
-    id_p: "",
-    id_b: "",
-    tropos_synantisis: "",
-    date: new Date().toLocaleDateString(),
-    address: "", 
-  });
-
-// If post_id === -1 then we are creating a new post, otherwise we are editing an existing one
-useEffect(() => {
-  const fetchrantevouData = async () => {
-      if (id !== "") {
-              try {
-                  setLoading(true);
-                  const q = query(collection(FIREBASE_DB, 'rantevou'), where('id', '==', id));
-                  const querySnapshot = await getDocs(q);
-                  const posts = querySnapshot.docs.map((doc) => ({
-                      id: doc.id,
-                      ...doc.data(),
-                  }));
-                  console.log(posts[0]);
-                  setnewData(posts[0]);
-              } catch (error) {
-                  console.error('Error fetching post data:', error);
-              } finally {
-                  setLoading(false);
-              }
-          }
       };
+      fetchUserData();
+    }
+  }, [uuid]);
 
-  fetchrantevouData();
-}, [id]);
-
-
-const handleInputChange = (e) => {
-  const { name, value } = e.target;
-  setnewData((prevData) => ({
-      ...prevData,
-      [name]: value,
-  }));
-};
-
-
+  // Fetch the appointment data
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id") || "";
+    if (uuid && id) {
+      const fetchAitiseisData = async () => {
+        try {
+          setLoading(true);
+          const q = query(collection(FIREBASE_DB, "rantevou"), where("id", "==", id), where("id_b", "==", uuid));
+          const querySnapshot = await getDocs(q);
+          const aitiseis = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setnewData(aitiseis[0]); console.log(aitiseis[0]);
+        } catch (error) {
+          console.error("Error fetching appointment data:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchAitiseisData();
+    }
+  }, [uuid]);
 
   const handleFinalSave = async () => {
-  if (id === "") { // If post_id === -1 then we are creating a new post
-      newData.id_b = uuid;
-      newData.status = "Oριστική υποβολή";
-      try{
-          const rantevouRef = collection(FIREBASE_DB, 'rantevou');
+    setIsSubmitted(true);
+    if (!newData.tropos_synantisis || !newData.date || 
+        (newData.tropos_synantisis === "Δια ζώσης" && !newData.address) || 
+        (newData.tropos_synantisis === "Διαδικτυακά" && !newData.link)) {
+      return;
+    }
+    setIsSubmitted(false);
 
-          const docRef = await addDoc(rantevouRef, newData);
+    newData.status = "Oριστική υποβολή";
+    newData.id_b = user.userId;
 
-          const documentId = docRef.id;
-          newData.id = documentId;
+    // Update the appointment data
+    try {
+      setLoading(true);
+      const rantevouRef = collection(FIREBASE_DB, "rantevou");
+      await setDoc(rantevouRef, newData.id, newData);
+      setLoading(false);
+      navigate(-1);
+    } catch (error) {
+      console.error("Error updating appointment data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-          await setDoc(docRef, { id: documentId }, { merge: true });
-
-      } catch (error) {
-          console.error('Error adding document:', error);
-      }  finally{
-        navigate(-1);
-      }
-  } else { // Otherwise we are editing an existing post
-      newData.status = "Oριστική υποβολή";
-      try {
-          const q = query(collection(FIREBASE_DB, 'rantevou'),where('id', '==', id));
-          const querySnapshot = await getDocs(q);
-          console.log(querySnapshot.id);
-          const posts = querySnapshot.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-          }));
-          console.log("Document ID:", posts);
-          const postRef = doc(FIREBASE_DB, 'rantevou', posts[0].id);
-          await setDoc(postRef, newData, { merge: true });
-
-      } catch (error) {
-          console.error('Error updating document:', error);
-
-      } finally{
-        navigate(-1);
-      }
-  } 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setnewData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleDateTimeRangePickerChange = (_value) => {
-    let date = dayjs(_value).format('YYYY-MM-DD HH:mm');
-    console.log(date);
+    const date = dayjs(_value).format("YYYY-MM-DD HH:mm");
     setnewData((prevData) => ({
       ...prevData,
-      ["date"]: date,
-  }));
-  }
+      date,
+    }));
+  };
 
-
-  const isInPast = (date) => (date.get('year') < dayjs().get('year')) || (date.get('year') === dayjs().get('year') && date.get('month') < dayjs().get('month')) || (date.get('year') === dayjs().get('year') && date.get('month') === dayjs().get('month') && date.get('date') < dayjs().get('date'));
-  const isNotPast = (date) => (date.get('year') > dayjs().get('year')) || (date.get('year') === dayjs().get('year') && date.get('month') > dayjs().get('month')) || (date.get('year') === dayjs().get('year') && date.get('month') === dayjs().get('month') && date.get('date') >= dayjs().get('date'));
+  const minDateTime = dayjs().add(1, "hour");
+  dayjs.locale("el");
 
   if (loading) {
     return <Loader />;
   }
-  
+
   if (!user) {
     return <div>Δεν βρέθηκε ο χρήστης</div>;
   }
@@ -169,54 +149,78 @@ const handleInputChange = (e) => {
     <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
       <div>
         <Header />
-
         <div style={{ display: "flex", flexDirection: "column", overflow: "auto" }}>
-
           <div style={{ flex: 1, overflowY: "auto" }}>
-
             <Breadcrumbs />
-
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", textDecoration: "underline" }}>
               <h2 style={{ fontWeight: "bold", textAlign: "center", marginTop: "3%" }}>Επεξεργασία διαθέσιμου ραντεβού</h2>
             </div>
-
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
-
-              <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
-
-                <tbody>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DemoContainer   components={['Ημερομηνία και ώρα']}>
-                        <DemoItem  label="Ημερομηνία και ώρα">
-                        <DateTimePicker onChange={handleDateTimeRangePickerChange} value={dayjs(newData.date)} shouldDisableYear={isInPast} />
-                        </DemoItem>
-                    </DemoContainer>
+            <div style={{ display: "flex", flexDirection: "column", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%", marginTop: "2%" }}>
+              <h4 style={{ display: "flex", flexDirection: "row", fontWeight: "bold" }}>Ημερομηνία & Ώρα ραντεβού</h4>
+              {isSubmitted && !newData.date && (<h7 style={{ color: "red" }}> Επιλέξετε ημερομηνία και ώρα </h7>)}
+              <div style={{ display: "flex", flexDirection: "row", marginLeft: "5%" }}>
+                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="el">
+                  <DemoContainer components={["Ημερομηνία και ώρα"]}>
+                    <DemoItem label="">
+                      <DateTimePicker
+                        value={newData.date ? dayjs(newData.date) : null}
+                        onChange={handleDateTimeRangePickerChange}
+                        minDateTime={minDateTime}
+                        ampm
+                        ampmInClock
+                        slotProps={{
+                          textField: {
+                            inputProps: {
+                              placeholder: "Επιλέξτε ημερομηνία και ώρα",
+                            },
+                            error: false,
+                          },
+                        }}
+                        format="DD/MM/YYYY hh:mm A"
+                      />
+                    </DemoItem>
+                  </DemoContainer>
                 </LocalizationProvider>
-                <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
-                    <RadioGroup name="tropos_synantisis" value={newData.tropos_synantisis} onChange={handleInputChange} style={{ padding: "5px", borderRadius: "4px" }}>
-                        <FormControlLabel value="Δια ζώσης" control={<Radio />} label="Δια ζώσης" />
-                        <FormControlLabel value="Διαδικτυακά" control={<Radio />} label="Διαδικτυακά" />
-                    </RadioGroup>
+              </div>
+              <h4 style={{ display: "flex", flexDirection: "row", fontWeight: "bold", marginTop: "3%"  }}>Τρόπος συνάντησης</h4>
+              {isSubmitted && !newData.tropos_synantisis && (<h7 style={{ color: "red" }}> Επιλέξετε τρόπο επικοινωνίας </h7>)}
+              <FormControl style={{ marginLeft: "5%", width: "30%" }}>
+                <RadioGroup row aria-labelledby="demo-form-control-label-placement" value={newData.tropos_synantisis} onChange={handleInputChange} name="tropos_synantisis">
+                  <FormControlLabel value="Διαδικτυακά" control={<Radio />} label="Διαδικτυακά" labelPlacement="end" />
+                  <FormControlLabel value="Δια ζώσης" control={<Radio />} label="Δια ζώσης" />
+                </RadioGroup>
+              </FormControl>
+              {newData.tropos_synantisis === "Δια ζώσης" && (
+                <div>
+                  <h4 style={{ display: "flex", flexDirection: "row", fontWeight: "bold", marginTop: "3%" }}>Διεύθυνση</h4>
+                  {isSubmitted && !newData.address && (
+                    <h7 style={{ color: "red", display: "block", marginTop: "5px", marginBottom: "7px" }}> Εισάγετε τη διεύθυνση </h7>
+                  )}
+                  <input type="text" name="address" placeholder="Διεύθυνση" onChange={handleInputChange} value={newData.address} style={{ width: "70%", marginLeft: "5%" }} />
                 </div>
-                </tbody>
-              </table>
-
+              )}
+              {newData.tropos_synantisis === "Διαδικτυακά" && (
+                <div>
+                  <h4 style={{ display: "flex", flexDirection: "row", fontWeight: "bold", marginTop: "3%" }}>Link για διαδικτυακή συνάντηση</h4>
+                  {isSubmitted && !newData.link && (
+                    <h7 style={{ color: "red", display: "block", marginBottom: "7px" }}>Εισάγετε το link</h7>
+                  )}
+                  <input type="text" name="link" onChange={handleInputChange} placeholder="Link συνάντησης" value={newData.link} style={{ marginLeft: "5%", width: "70%" }} />
+                </div>
+              )}
             </div>
-                    
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%", gap: "50%" }}>
-                    <button onClick={()=> navigate(-1)} style={{  height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5px", marginTop: "2%", width: "12%", }}>Επιστροφή</button>
-                    <button onClick={handleFinalSave} style={{  height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5px", marginTop: "2%", width: "12%", }}>Αποθήκευση</button>
+              <button onClick={() => navigate(-1)} style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5px", marginTop: "2%", width: "12%" }}>
+                Επιστροφή
+              </button>
+              <button onClick={handleFinalSave} style={{ height: "3%", backgroundColor: "green", color: "white", borderRadius: "5px", marginTop: "2%", width: "12%" }}>
+                Αποθήκευση
+              </button>
             </div>
-            
           </div>
-
         </div>
       </div>
-      
-      <div>
-        <Footer />
-      </div>
-      
+      <Footer />
     </div>
   );
 }

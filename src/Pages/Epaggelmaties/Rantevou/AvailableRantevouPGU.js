@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
+import Loader from "../../../Components/Loader";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
-import Loader from "../../../Components/Loader";
 
 function AvailableRantevouPGU() {
   const navigate = useNavigate();
@@ -14,18 +14,6 @@ function AvailableRantevouPGU() {
   const [uuid, setUuid] = useState(null);
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
-  
-  const routeChangeAdd = () =>{ 
-    navigate("./add");
-  };
-
-  const routeChangeEdit = (id_aitisis) =>{ 
-    navigate(`edit?id=${id_aitisis}`);
-  };
-
-  const handleReturn = () => {
-    window.history.back();
-  };
 
   // Check if user is logged in, get the user's UUID
   useEffect(() => {
@@ -33,7 +21,7 @@ function AvailableRantevouPGU() {
       if (user) {
         setUuid(user.uid);
       } else {
-        navigate("/404");
+        navigate("/login");
       }
     });
     return () => unsubscribe();
@@ -77,11 +65,25 @@ function AvailableRantevouPGU() {
     return dates.id_p === "";
   }
 
-  //? Error handling
+  const routeChangeAdd = () =>{ 
+    navigate("./add");
+  };
+
+  const routeChangeEdit = (id_aitisis) =>{ 
+    navigate(`edit?id=${id_aitisis}`);
+  };
+
+  const routeChangeView = (id_aitisis) =>{
+    navigate(`view?id=${id_aitisis}`);
+  };
+
+  const handleReturn = () => {
+    window.history.back();
+  };
+
   if (loading) {
     return <Loader />;
   }
-
 
   return (
     <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
@@ -122,7 +124,8 @@ function AvailableRantevouPGU() {
                       <td style={{ padding: "10px" }}>{posts.date}</td>
                       <td style={{ padding: "10px" }}>{posts.tropos_synantisis}</td>
                       <td style={{ display: "flex", justifyContent: "center", gap: "20px", padding: "10px" }}>
-                        <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => routeChangeEdit(posts.id)}>Προβολή</span>
+                        <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => routeChangeView(posts.id)}>Προβολή</span>
+                        <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => routeChangeEdit(posts.id)}>Επεξεργασία</span>
                         <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handleDelete(posts.id)}>Διαγραφή</span>
                       </td>
                     </tr>

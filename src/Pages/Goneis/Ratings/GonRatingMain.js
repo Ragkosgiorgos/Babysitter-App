@@ -125,7 +125,7 @@ function GonRatingMain() {
                 </thead>
                 <tbody>
                   {filteredPosts.map((post) => (
-                    <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
+                    <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2em" }}>
                       <td style={{ padding: "10px" }}>{findBabysitter(post.id_b)}</td>
                       <td style={{ padding: "10px" }}>{post.rating}</td>
                       <td style={{ display: "flex", justifyContent: "center", gap:"10px", padding: "10px" }}>
