@@ -89,8 +89,9 @@ function App() {
           <Route path="/goneis/symbolaia/provoli/:contractId" element={<ProvoliSymbolaiou/>} />
 
           {/* Babysitter Symbolaia */}
-          <Route path="/epaggelmaties/symbolaia/apantisi/:contractId" element={<ApodoxiSymbolaiou/>} />
-          <Route path="/epaggelmaties/symbolaia/provoli/:contractId" element={<ProvoliSymbolaiouEpaggelmatia/>} />
+          <Route path="/dashboard/Symfwnitika/apantisi/:contractId" element={<ApodoxiSymbolaiou/>} />
+          <Route path="/dashboard/Symfwnitika/provoli/:contractId" element={<ProvoliSymbolaiouEpaggelmatia/>} />
+
 
           {/* Khdemones Pliromes */}
           <Route path="/goneis/symbolaia/pliromes/nea-pliromi" element={<PliromiEpaggelmatia/>} />

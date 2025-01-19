@@ -120,17 +120,17 @@ function MainPliromesGoneis() {
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
               <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px", tableLayout: "fixed" }}>
-                <thead style={{ lineHeight: '2em' }}>
+                <thead style={{ lineHeight: '1.2em' }}>
                   <tr style={{ borderBottom: '2px solid #333' }}>
-                    <th>Babysitter</th>
-                    <th>Περίοδος πληρωμης</th>
+                    <th style={{ padding: "10px" }}>Babysitter</th>
+                    <th style={{ padding: "10px" }}>Περίοδος πληρωμης</th>
                   </tr>
                 </thead>
                 <tbody>
                   {contracts.map((contract) => (
-                    <tr key={contract.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
-                      <td>{findProfessionalName(contract.id_b)}</td>
-                      <td>{contract.startPeriod} - {contract.endPeriod}</td>
+                    <tr key={contract.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2em" }}>
+                      <td  style={{ padding: "10px" }}>{findProfessionalName(contract.id_b)}</td>
+                      <td  style={{ padding: "10px" }}>{contract.startPeriod} - {contract.endPeriod}</td>
                     </tr>
                   ))}
                   {contracts.length === 0 && (

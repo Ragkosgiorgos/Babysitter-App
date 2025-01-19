@@ -115,19 +115,19 @@ function MainPliromesEpaggelmaties() {
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
               <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px", tableLayout: "fixed" }}>
-                <thead style={{ lineHeight: '2em' }}>
+                <thead style={{ lineHeight: '1.2em' }}>
                   <tr style={{ borderBottom: '2px solid #333' }}>
-                    <th>Κηδεμόνας</th>
-                    <th>Κωδικός Voucher</th>
-                    <th>Περίοδος πληρωμής</th>
+                    <th style={{ padding: "10px" }}>Κηδεμόνας</th>
+                    <th style={{ padding: "10px" }}>Κωδικός Voucher</th>
+                    <th style={{ padding: "10px" }}>Περίοδος πληρωμής</th>
                   </tr>
                 </thead>
                 <tbody>
                   {contracts.map((contract) => (
-                    <tr key={contract.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
-                      <td>{findParentName(contract.id_p)}</td>
-                      <td>{contract.id}</td>
-                      <td>{contract.startPeriod} - {contract.endPeriod}</td>
+                    <tr key={contract.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2em" }}>
+                      <td style={{ padding: "10px" }}>{findParentName(contract.id_p)}</td>
+                      <td style={{ padding: "10px" }}>{contract.id}</td>
+                      <td style={{ padding: "10px" }}>{contract.startPeriod} - {contract.endPeriod}</td>
                     </tr>
                   ))}
                   {contracts.length === 0 && (

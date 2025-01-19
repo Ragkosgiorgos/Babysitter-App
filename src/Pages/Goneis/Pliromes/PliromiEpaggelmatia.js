@@ -408,7 +408,7 @@ function PliromiEpaggelmatia() {
                   width: '12%',
                 }}
                 onClick={() => {
-                    navigate('/goneis/symbolaia/pliromes');  
+                    navigate('/dashboard/Pliromes');  
                   }}
               >
                 Επιστροφή

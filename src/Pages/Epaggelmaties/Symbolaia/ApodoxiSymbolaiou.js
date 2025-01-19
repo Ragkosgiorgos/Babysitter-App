@@ -148,7 +148,7 @@ function ApodoxiSymbolaiou() {
     };
 
     const handleRedirect = () => {
-        navigate("/epaggelmaties/symbolaia");
+        navigate("/dashboard/Symfwnitika");
     };
 
     const handleEditClick = (field) => {

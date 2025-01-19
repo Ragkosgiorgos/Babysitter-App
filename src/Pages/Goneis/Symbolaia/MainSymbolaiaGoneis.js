@@ -225,33 +225,33 @@ function MainSymbolaiaGoneisPGU() {
         </div>
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
-              <table style={{ width: "70%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px", tableLayout: "fixed" }}>
-                <thead style={{ lineHeight: "2em" }}>
+              <table style={{ width: "75%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px", tableLayout: "fixed" }}>
+                <thead style={{ lineHeight: "1.2em" }}>
                   <tr style={{ borderBottom: "2px solid #333" }}>
-                    <th>Περίοδος Συμβολαίου</th>
-                    <th>Ονοματεπώνυμο babysitter</th>
-                    <th>Κατάσταση συμβολαίου</th>
-                    <th>Αξιολόγηση</th>
-                    <th>Συμβόλαιο</th>
+                    <th style={{ padding: "10px" }}>Περίοδος Συμβολαίου</th>
+                    <th style={{ padding: "10px" }}>Ονοματεπώνυμο babysitter</th>
+                    <th style={{ padding: "10px" }}>Κατάσταση συμβολαίου</th>
+                    <th style={{ padding: "10px" }}>Αξιολόγηση</th>
+                    <th style={{ padding: "10px" }}>Συμβόλαιο</th>
                   </tr>
                 </thead>
                 <tbody>
                     { contracts.map((contract) => (
-                        <tr>
-                            <td>{contract.startDate} - {contract.endDate}</td>
-                            <td>{findProfessionalName(contract.id_b)}</td>
+                        <tr style={{ borderTop: "0.2px solid #333", lineHeight: "2em" }}>
+                            <td style={{ padding: "10px" }}>{contract.startDate} - {contract.endDate}</td>
+                            <td style={{ padding: "10px" }}>{findProfessionalName(contract.id_b)}</td>
                             <td style={{
-                              color: contract.status === "Σε ισχύ" ? "green" :
+                              padding: "10px",color: contract.status === "Σε ισχύ" ? "green" :
                                      contract.status === "Σε αναμονή" ? "#f28c28" : 
                                      contract.status === "Απορρίφθηκε" ? "red" : "black"
                                      
                              }}>
                                 {contract.status}
                             </td>
-                            <td>
+                            <td style={{ padding: "10px" }}>
                         {(contract.status === "Σε ισχύ" || contract.status === "Ολοκληρώθηκε") && (
                           <span
-                            style={{ cursor: "pointer", textDecoration: "underline" }}
+                            style={{ cursor: "pointer", textDecoration: "underline",padding: "10px" }}
                             onClick={() =>
                               navigate(
                                 contract.ratingId
@@ -264,7 +264,7 @@ function MainSymbolaiaGoneisPGU() {
                           </span>
                         )}
                       </td>
-                            <td>
+                            <td style={{ padding: "10px" }}>
                               <span 
                                 style={{ cursor: "pointer", textDecoration: "underline"}} 
                                 onClick={() => handleRedirect(contract.id)}

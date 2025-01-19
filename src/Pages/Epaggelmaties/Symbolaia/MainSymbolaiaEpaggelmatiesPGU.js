@@ -95,11 +95,11 @@ function MainSymbolaiaEpaggelmatiesPGU() {
   };
 
   const handleRedirect = (contractId) => {
-    navigate(`apantisi/${contractId}`); 
+    navigate(`/dashboard/Symfwnitika/apantisi/${contractId}`); 
   };
 
   const handleRedirectView = (contractId) => {
-    navigate(`/epaggelmaties/symbolaia/provoli/${contractId}`); 
+    navigate(`/dashboard/Symfwnitika/provoli/${contractId}`); 
   };
 
   if (loading) {
@@ -126,12 +126,12 @@ function MainSymbolaiaEpaggelmatiesPGU() {
                 <Loader />
               ) : (
                 <table style={{ width: "70%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px", tableLayout: "fixed" }}>
-                  <thead style={{ lineHeight: "2em" }}>
+                  <thead style={{ lineHeight: "1.2em" }}>
                     <tr style={{ borderBottom: "2px solid #333" }}>
-                      <th>Περίοδος Συμβολαίου</th>
-                      <th>Ονοματεπώνυμο κηδεμόνα</th>
-                      <th>Κατάσταση συμβολαίου</th>
-                      <th>Ενέργειες</th>
+                      <th style={{ padding: "10px" }}>Περίοδος Συμβολαίου</th>
+                      <th style={{ padding: "10px" }}>Ονοματεπώνυμο κηδεμόνα</th>
+                      <th style={{ padding: "10px" }}>Κατάσταση συμβολαίου</th>
+                      <th style={{ padding: "10px" }}>Ενέργειες</th>
                       <></>
                     </tr>
                   </thead>
@@ -140,11 +140,11 @@ function MainSymbolaiaEpaggelmatiesPGU() {
                       <tr><td colSpan="4">Δεν υπάρχουν συμβόλαια.</td></tr>
                     ) : (
                       contracts.map((contract, index) => (
-                        <tr key={contract.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
-                          <td>{contract.startDate} - {contract.endDate}</td>
-                          <td>{findParentName(contract.id_p)}</td>
+                        <tr key={contract.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2em" }}>
+                          <td style={{ padding: "10px" }}>{contract.startDate} - {contract.endDate}</td>
+                          <td style={{ padding: "10px" }}>{findParentName(contract.id_p)}</td>
                           <td style={{
-                            color: contract.status === "Σε ισχύ" ? "green" :
+                            padding: "10px",color: contract.status === "Σε ισχύ" ? "green" :
                                    contract.status === "Σε αναμονή" ? "#f28c28" : 
                                    contract.status === "Απορρίφθηκε" ? "red" : "black"
                            }}>
@@ -153,11 +153,11 @@ function MainSymbolaiaEpaggelmatiesPGU() {
                 
                           <td style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "0.5em", gap: "10px" }}>
                             {contract.status === "Σε αναμονή" ? (
-                              <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handleRedirect(contract.id)}>
+                              <span style={{ cursor: "pointer", textDecoration: "underline",padding: "10px" }} onClick={() => handleRedirect(contract.id)}>
                                 Απάντηση
                               </span>
                             ) : (
-                              <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handleRedirectView(contract.id)}>
+                              <span style={{ cursor: "pointer", textDecoration: "underline",padding: "10px" }} onClick={() => handleRedirectView(contract.id)}>
                                 Προβολή
                               </span>
                             )}

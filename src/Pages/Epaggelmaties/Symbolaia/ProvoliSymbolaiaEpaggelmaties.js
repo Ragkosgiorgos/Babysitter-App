@@ -76,7 +76,7 @@ import { useNavigate } from "react-router-dom";
 
         const navigate = useNavigate();
         const handleReturnClick = () => {
-            navigate('/epaggelmaties/symbolaia');
+            navigate('/dashboard/Symfwnitika');
         };
 
     
