@@ -35,6 +35,8 @@ import Dashboard from "./Components/Dashboard";
 import Profiles from "./Pages/Profiles";
 import Ratings from "./Pages/Ratings";
 import ProvoliSymbolaiouEpaggelmatia from "./Pages/Epaggelmaties/Symbolaia/ProvoliSymbolaiaEpaggelmaties";
+import Symfwnitika from "./Pages/Symfwnitka";
+import Pliromes from "./Pages/Pliromes";
 
 function App() {
   return (
@@ -55,6 +57,8 @@ function App() {
           {/* Profile Pages & Viografiko */}
           <Route path="/dashboard/profiles" element={<Profiles/>} />
           <Route path="dashboard/viografiko" element={<Viografiko />} />
+          <Route path="dashboard/Symfwnitika" element={<Symfwnitika />} />
+          <Route path="dashboard/Pliromes" element={<Pliromes />} />
 
           {/* Babysitter Search */}
           <Route path="anazitisi" element={<BabysitterSearch />} />
@@ -81,17 +85,15 @@ function App() {
           <Route path="/ratings/previewAksiologisi" element={<ViewRating />} />
 
           {/* Khdemones Symbolaia */}
-          <Route path="/goneis/symbolaia" element={<MainSymbolaiaGoneisPGU />} />
+  
           <Route path="/neo-symbolaio" element={<DimiourgiaSymbolaiou />} />
           <Route path="/goneis/symbolaia/provoli/:contractId" element={<ProvoliSymbolaiou/>} />
 
           {/* Babysitter Symbolaia */}
-          <Route path="epaggelmaties/symbolaia" element={<MainSymbolaiaEpaggelmatiesPGU />} />
           <Route path="/epaggelmaties/symbolaia/apantisi/:contractId" element={<ApodoxiSymbolaiou/>} />
           <Route path="/epaggelmaties/symbolaia/provoli/:contractId" element={<ProvoliSymbolaiouEpaggelmatia/>} />
 
           {/* Khdemones Pliromes */}
-          <Route path="/goneis/symbolaia/pliromes" element={<MainPliromesGoneis/>} />
           <Route path="/goneis/symbolaia/pliromes/nea-pliromi" element={<PliromiEpaggelmatia/>} />
 
           {/* Babysitter Pliromes */}
