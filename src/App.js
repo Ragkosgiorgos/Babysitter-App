@@ -27,7 +27,6 @@ import ProvoliSymbolaiou from "./Pages/Goneis/Symbolaia/ProvoliSymbolaiou";
 import PliromiEpaggelmatia from "./Pages/Goneis/Pliromes/PliromiEpaggelmatia";
 import MainPliromesEpaggelmaties from "./Pages/Epaggelmaties/Pliromes/MainPliromesEpaggelmaties";
 import Viografiko from "./Pages/Epaggelmaties/Profile/Viografiko";
-import ViewAvailabilityPGU from "./Pages/Goneis/AitiseisEndiaferontos/ViewAvailabilityPGU";
 import ProepiskopisiAvailableRantevou from "./Pages/Epaggelmaties/Rantevou/ProepiskopisiAvailableRantevou";
 import Dashboard from "./Components/Dashboard";
 import Profiles from "./Pages/Profiles";
@@ -103,7 +102,6 @@ function App() {
           <Route path="/goneis/profile/aitiseis-endiaferontos" element={<MainAitiseisEndiaferontosPGU />} />
           <Route path="/goneis/profile/aitiseis-endiaferontos/edit" element={<EditAitiseisEndiaferontosPGU />} />
           <Route path="/goneis/profile/aitiseis-endiaferontos/preview" element={<PreviewAitiseisEndiaferontosPGU />} />
-          <Route path="/goneis/view-availability" element={<ViewAvailabilityPGU />} />
 
           <Route path="*" element={<ErrorPage />} />
 

@@ -35,7 +35,7 @@ function MainAitiseisEndiaferontosPGU() {
       if (user) {
         setUuid(user.uid);
       } else {
-        navigate("/404");
+        navigate("/login");
       }
     });
     return () => unsubscribe();
@@ -161,13 +161,13 @@ function MainAitiseisEndiaferontosPGU() {
                   {posts.map((post) => (
                     <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2em" }}>
                       <td style={{ padding: "10px" }}><span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handlePostPreview(post.id_b)}>{findBabysitterName(post.id_b)}</span></td>
-                      <td style={{ padding: "10px" }}>{post.status}</td>
+                      <td style={{ padding: "10px" }}>{post.status !== "Σε προσωρινή αποθήκευση" ? <span style={{ color: "green" }}>{post.status}</span> : <span style={{ color: "#F28C28" }}>{post.status}</span>}</td>
                       <td style={{ display: "flex", justifyContent: "center", gap:"10px", padding: "10px" }}>
                         {post.status === "Oριστική υποβολή" && 
                           <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => routeChangePreview(post.id,post.postid)}>Προβολή</span>}
                         
                         {post.status === "Σε προσωρινή αποθήκευση" && 
-                        <div style={{display: "flex", gap: "5px", padding: "10px" }} >
+                        <div style={{display: "flex", gap: "25px", padding: "10px" }} >
                         <span  style={{ cursor: "pointer", textDecoration: "underline"}} onClick={() => handleDelete(post.id)}>Διαγραφή</span>
                         <span  style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => routeChangeEdit([post.id,post.id_b])}>Επεξεργασία</span>
                         </div>}

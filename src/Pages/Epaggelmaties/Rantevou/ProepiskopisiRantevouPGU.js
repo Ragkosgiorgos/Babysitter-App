@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../../config/firebase";
-import { use } from "react";
 
 function ProepiskopisiAvailableRantevou() {
     const navigate = useNavigate();

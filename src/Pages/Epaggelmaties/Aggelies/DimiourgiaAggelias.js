@@ -258,10 +258,6 @@ function DimiourgiaAggelias() {
         return <Loader />;
     }
 
-    if (!user && !loading) {
-        navigate("/404");
-    }
-    
     const renderStepContent = () => {
         switch (currentStep) {
             case 0:
@@ -546,6 +542,8 @@ function DimiourgiaAggelias() {
                 <Breadcrumbs />
 
                 <ProgressTracker steps={steps} activeStep={currentStep} />
+
+                <h2 style={{ textAlign: "center", marginTop: "2%", fontWeight: "bold", textDecoration: "underline" }}>Δημιουργία Αγγελίας</h2>
 
                 {renderStepContent()}
 

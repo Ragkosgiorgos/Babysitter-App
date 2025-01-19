@@ -2,18 +2,16 @@ import React, { useState, useEffect } from "react";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
+import Loader from "../../../Components/Loader";
+import { handleScrollToTop } from "../../../Utils/Methods/index";
 import { useNavigate } from "react-router-dom";
 import { RadioGroup, FormControlLabel, Radio, MenuItem, Select } from "@mui/material";
-import dayjs from 'dayjs';
-import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, addDoc, setDoc, doc } from 'firebase/firestore';
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../../config/firebase";
-import Loader from "../../../Components/Loader";
-import { handleScrollToTop } from "../../../Utils/Methods/index";
 
-function SubmitAitiseisEndiaferontosPGU(props) {
+function SubmitAitiseisEndiaferontosPGU() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
@@ -159,35 +157,35 @@ function SubmitAitiseisEndiaferontosPGU(props) {
     }
     setIsSubmitted(false);
     if (id === "") { // If id === "" then we are creating a new post
-        newData.UserId = uuid;
-        newData.status = "Σε προσωρινή αποθήκευση";
-        try{
-            const aitiseisRef = collection(FIREBASE_DB, 'aitiseis_endiaferontos');
+      newData.UserId = uuid;
+      newData.status = "";
+      try {
+          setLoading(true);
+          const aitiseisRef = collection(FIREBASE_DB, 'aitiseis_endiaferontos');
 
-            const docRef = await addDoc(aitiseisRef, newData);
+          const docRef = await addDoc(aitiseisRef, newData);
 
-            const documentId = docRef.id;
-            newData.id = documentId;
+          const documentId = docRef.id;
+          newData.id = documentId;
 
-            await setDoc(docRef, { id: documentId }, { merge: true });
-
-        } catch (error) {
-            console.error('Error adding document:', error);
-        }
-        finally{
+          await setDoc(docRef, { id: documentId }, { merge: true });
+      } catch (error) {
+          console.error('Error adding document:', error);
+      } finally{
+          setLoading(false);
           navigate(`/goneis/profile/aitiseis-endiaferontos`);
-        }
-        } else { // Otherwise we are editing an existing post
-        try {
-            const postRef = doc(FIREBASE_DB, 'aitiseis_endiaferontos', id);
-            await setDoc(postRef, newData, { merge: true });
-
-        } catch (error) {
-            console.error('Error updating document:', error);
-
-        }  finally{
+      }
+    } else { // Otherwise we are editing an existing post
+      try {
+          setLoading(true);
+          const postRef = doc(FIREBASE_DB, 'aitiseis_endiaferontos', id);
+          await setDoc(postRef, newData, { merge: true });
+      } catch (error) {
+          console.error('Error updating document:', error);
+      }  finally {
+          setLoading(false);
           navigate(`/goneis/profile/aitiseis-endiaferontos`);
-        }
+      }
     }
   };
 
@@ -203,7 +201,8 @@ function SubmitAitiseisEndiaferontosPGU(props) {
           newData.UserId = uuid;
           newData.status = "Oριστική υποβολή";
           rantevou.id_p = uuid;
-          try{
+          try {
+              setLoading(true);
               const aitiseisRef = collection(FIREBASE_DB, 'aitiseis_endiaferontos');
 
               const docRef = await addDoc(aitiseisRef, newData);
@@ -215,8 +214,12 @@ function SubmitAitiseisEndiaferontosPGU(props) {
 
           } catch (error) {
               console.error('Error adding document:', error);
+          } finally {
+              setLoading(false);
           }
+
           try {
+            setLoading(true);
             const q = query(collection(FIREBASE_DB, 'rantevou'),where('id', '==', rantevou.id));
             const querySnapshot = await getDocs(q);
             const Posts = querySnapshot.docs.map((doc) => ({
@@ -228,13 +231,14 @@ function SubmitAitiseisEndiaferontosPGU(props) {
 
         } catch (error) {
             console.error('Error updating document:', error);
-
-        } finally{
-          navigate('/goneis/profile/aitiseis-endiaferontos');
+        } finally {
+            setLoading(false);
+            navigate('/goneis/profile/aitiseis-endiaferontos');
         }
       } else { // Otherwise we are editing an existing post
           newData.status = "Oριστική υποβολή";
           try {
+              setLoading(true);
               const q = query(collection(FIREBASE_DB, 'aitiseis_endiaferontos'),where('id', '==', id));
               const querySnapshot = await getDocs(q);
               const Posts = querySnapshot.docs.map((doc) => ({
@@ -243,12 +247,14 @@ function SubmitAitiseisEndiaferontosPGU(props) {
               }));
               const postRef = doc(FIREBASE_DB, 'aitiseis_endiaferontos', Posts[0].id);
               await setDoc(postRef, newData, { merge: true });
-
           } catch (error) {
               console.error('Error updating document:', error);
-
+          } finally {
+              setLoading(false);
+              navigate('/goneis/profile/aitiseis-endiaferontos');
           }
           try {
+            setLoading(true);
             const q = query(collection(FIREBASE_DB, 'rantevou'),where('id', '==', rantevou.id));
             const querySnapshot = await getDocs(q);
             const Posts = querySnapshot.docs.map((doc) => ({
@@ -257,12 +263,11 @@ function SubmitAitiseisEndiaferontosPGU(props) {
             }));
             const postRef = doc(FIREBASE_DB, 'rantevou', Posts[0].id);
             await setDoc(postRef, rantevou, { merge: true });
-
         } catch (error) {
             console.error('Error updating document:', error);
-
         } finally{
-          navigate('/goneis/profile/aitiseis-endiaferontos');
+            setLoading(false);
+            navigate('/goneis/profile/aitiseis-endiaferontos');
         }
       }
     }
@@ -276,10 +281,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
     }));
   };  
 
-  const handleProfileRedirect = () =>{ 
-    navigate("/dashboard/profiles");
-    };
-
+  const handleProfileRedirect = () => navigate("/dashboard/profiles");
 
   function ftf(posts){
     return posts.tropos_synantisis === "Δια ζώσης";
@@ -289,15 +291,11 @@ function SubmitAitiseisEndiaferontosPGU(props) {
     return posts.tropos_synantisis === "Διαδικτυακά";
   }
 
-  if (loading) {
-    return <Loader />;
-  }
-
   function isavailable(dates){
     return dates.id_p === "";
   }
-  
-  if (!user) {
+
+  if (loading) {
     return <Loader />;
   }
 
@@ -311,169 +309,228 @@ function SubmitAitiseisEndiaferontosPGU(props) {
             <div style={{ flex: 1, overflowY: "auto" }}>
               
               <Breadcrumbs />
-              {(id !=="" && rantevou.id_p !== "")  
-                    ? <h4 style={{ color: "red", textAlign: "center" }}> Παρακαλώ επιλέξτε διαθέσιμη ημερομηνία και ώρα </h4> : ""}
-              <div style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%"}}>
-                <div style={{width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px"}}>
-                    <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
-                        <b>Επιβεβαιώστε τα προσωπικά σας στοιχεία</b>
-                    </h2>
-                    <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "98%" }}>
-                            <div>
-                            <b>Όνομα:</b> {user?.firstName || "N/A"}
-                            </div>
-                            <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleProfileRedirect()} />
-                        </div>
-                    </h4>
-                    <hr />
-                    <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "98%" }}>
-                            <div>
-                                <b>Επίθετο:</b> {user?.lastName || "N/A"}
-                            </div>
-                            <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleProfileRedirect()} />
-                          </div>
-                    </h4>
-                    <hr />
-                    <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+
+              <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
+                <h1 style={{ fontWeight: "bold", textAlign: "center", marginTop: "3%", textDecoration: "underline" }}>
+                  {id ? "Επεξεργασία αίτησης ενδιαφέροντος" : "Δημιουργία αίτησης ενδιαφέροντος"}
+                </h1>
+                <h5> Με * σημειώνονται τα υποχρεωτικά πεδία </h5>
+                {isSubmitted && (!newData.tropos_synantisis || !newData.date) ? <h4 style={{ color: "red" }}> Παρακαλoύμε συμπληρώστε τα υποχρεωτικά πεδία </h4> : ""}
+              </div>
+              
+              <div style={{display: "flex", justifyContent: "center", alignItems: "center" }}>
+                <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", padding: "2%" }}>
+                  <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
+                      <b>Επιβεβαιώστε τα προσωπικά σας στοιχεία</b>
+                  </h2>
+                  <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "98%" }}>
+                      <div>
+                        <b>Όνομα:</b> {user?.firstName || "N/A"}
+                      </div>
+                      <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleProfileRedirect()} />
+                    </div>
+                  </h4>
+                  <hr />
+                  <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "98%" }}>
+                    <div>
+                        <b>Επίθετο:</b> {user?.lastName || "N/A"}
+                    </div>
+                    <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleProfileRedirect()} />
+                  </div>
+                  </h4>
+                  <hr />
+                  <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "98%" }}>
                     <div>
                         <b>Εmail:</b> {user.email || "N/A"}
                     </div>
                     <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleProfileRedirect()} />
                   </div>
-                    </h4>
-                    <hr />
-                    <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "98%" }}>
+                  </h4>
+                  <hr />
+                  <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "98%" }}>
                     <div>
                         <b>Τηλέφωνο:</b> {user.phone || "N/A"}
                     </div>
                     <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleProfileRedirect()} />
                   </div>
-                    </h4>
+                  </h4>
                 </div>
               </div>
-              <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
-                <table style={{ width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
-                  <tbody>
-                    <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
-                      <b>Στοιχεία παιδιού</b>
-                    </h2>
-                    <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
-                      <th>Φύλο: {user?.childGender}</th>
 
+              <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
+                <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
+                  <b> Επιβεβαίωση στοιχείων παιδιού </b>
+                </h2>
+                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "98%" }}>
+                    <div>
+                      <b>Όνομα:</b> {user?.childFirstName || "N/A"}
                     </div>
-                    <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
-                      <th>Ημερομηνία γέννησης: {user?.childBirthDate}</th>
+                    <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => navigate(`/goneis/profile/aitiseis-endiaferontos/edit?id=${id}&b_id=${Id_b}`)} />
+                  </div>
+                </h4>
+                <hr />
+                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "98%" }}>
+                    <div>
+                      <b>Επίθετο:</b> {user?.childFirstName || "N/A"}
                     </div>
-                  </tbody>
-                </table>
+                    <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => navigate(`/goneis/profile/aitiseis-endiaferontos/edit?id=${id}&b_id=${Id_b}`)} />
+                  </div>
+                </h4>
+                <hr />
+                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "98%" }}>
+                    <div>
+                      <b>Φύλο:</b> {user?.childGender || "N/A"}
+                    </div>
+                    <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => navigate(`/goneis/profile/aitiseis-endiaferontos/edit?id=${id}&b_id=${Id_b}`)} />
+                  </div>
+                </h4>
+                <hr />
+                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "98%" }}>
+                    <div>
+                      <b>Φύλο:</b> {user?.childBirthDate || "N/A"}
+                    </div>
+                    <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => navigate(`/goneis/profile/aitiseis-endiaferontos/edit?id=${id}&b_id=${Id_b}`)} />
+                  </div>
+                </h4>
               </div>
 
-              <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
-                <table style={{ width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
-                  <tbody>
-                    <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
-                      <b>Επιθυμητός τρόπος επικοινωνίας</b>
-                    </h2>                  
-                    <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
-                      <RadioGroup name="tropos_synantisis" value={newData.tropos_synantisis} onChange={handleInputChange} style={{ padding: "5px", borderRadius: "4px" }}>
-                          <FormControlLabel value="Δια ζώσης" control={<Radio />} label="Δια ζώσης" />
-                          <FormControlLabel value="Διαδικτυακά" control={<Radio />} label="Διαδικτυακά" />
-                      </RadioGroup>
-                    </div>
-                  </tbody>
-              </table>
+              <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
+                <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
+                  <b>Επιθυμητός τρόπος επικοινωνίας*</b>
+                </h2>
+                {isSubmitted && (!newData.tropos_synantisis) ? <h6 style={{ color: "red", justifyContent: "center", textAlign: "center", width: "100%", marginTop: "5px" }}> Παρακαλoύμε επιλέξτε τρόπο επικοινωνίας </h6> : null}
+                <div style={{ display: "flex", gap: "5%", justifyContent: "center", alignItems: "center", marginTop: "1%" }}>
+                  <RadioGroup
+                    name="tropos_synantisis"
+                    value={newData.tropos_synantisis}
+                    onChange={handleInputChange}
+                    style={{
+                      padding: "5px",
+                      borderRadius: "4px",
+                      display: "flex",
+                      flexDirection: "row",
+                      gap: "10px"
+                    }}
+                  >
+                    <FormControlLabel value="Δια ζώσης" control={<Radio />} label="Δια ζώσης" />
+                    <FormControlLabel value="Διαδικτυακά" control={<Radio />} label="Διαδικτυακά" />
+                  </RadioGroup>
+                </div>
               </div>
 
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
-                <table style={{ width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
-                  <tbody>
-                    <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
-                      <b>Επιλέξτε ημερομηνία και ώρα</b>
-                    </h2>  
-                    {isSubmitted && (!newData.date)
-                          ? <h8 style={{ color: "red", marginLeft: "20%",marginRight: "20%" }}> Παρακαλoύμε επιλέξετε ημερομηνία και ώρα </h8> : ""}   
-                      {newData.tropos_synantisis === 'Διαδικτυακά' && (
-                        <Select
-                          value={newData.id_r || "Επιλέξτε ημερομηνία και ώρα"}
-                          label="Επιλέξτε ημερομηνία και ώρα"
-                          onChange={(e) => {
-                            const selectedPost = posts.find((post) => post.id === e.target.value);
-                            handleDropdownChange(selectedPost);
-                          }}
-                          style={{ minWidth: "40%", height: "2%", fontSize: "1.5em", marginBottom: "2%" }}
-                        >
-                          {loading ? (
-                            <Loader />
-                          ) : (
-                            posts.filter(isavailable).filter(remote).map((post) => (
-                              <MenuItem key={post.id} value={post.id}>
-                                {post.date}
-                              </MenuItem>
-                            ))
-                          )}
-                        </Select>
+              <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
+                <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
+                  <b>Επιλέξτε ημερομηνία και ώρα*</b>
+                </h2>
+                { newData.id_r && rantevou.id_p !== "" ? <h6 style={{ color: "red", justifyContent: "center", textAlign: "center", width: "100%", marginTop: "5px" }}> Το επιλεγμένο ραντεβού δεν είναι διαθέσιμο </h6> : "" }
+                { newData.id_r && rantevou.id_p === "" ? <h6 style={{ color: "green", justifyContent: "center", textAlign: "center", width: "100%", marginTop: "5px" }}> Το επιλεγμένο ραντεβού είναι διαθέσιμο </h6> : "" }
+
+                { newData.tropos_synantisis === "" && <h6 style={{ color: "red", justifyContent: "center", textAlign: "center", width: "100%", marginTop: "5px" }}> Παρακαλoύμε επιλέξτε πρώτα τρόπο επικοινωνίας </h6> }
+
+                {isSubmitted && (!newData.date)
+                      ? <h6 style={{ color: "red", justifyContent: "center", textAlign: "center", width: "100%", marginTop: "5px" }}> Παρακαλoύμε επιλέξετε ημερομηνία και ώρα </h6> : ""}
+
+                { newData.tropos_synantisis === 'Διαδικτυακά' && posts.filter(isavailable).filter(remote).length === 0 ? <h6 style={{ color: "red", justifyContent: "center", textAlign: "center", width: "100%", marginTop: "5px" }}> Δεν υπάρχουν διαθέσιμες ημερομηνίες και ώρες </h6> : "" }
+                { newData.tropos_synantisis === 'Διαδικτυακά' && posts.filter(isavailable).filter(remote).length > 0 ?
+                  (
+                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                      <Select
+                        value={newData.id_r || ""}
+                        label={newData.tropos_synantisis}
+                        onChange={(e) => {
+                          const selectedPost = posts.find((post) => post.id === e.target.value);
+                          handleDropdownChange(selectedPost);
+                        }}
+                        displayEmpty
+                        style={{
+                          width: "40%",
+                          height: "2%",
+                          fontSize: "1em",
+                          marginTop: "2%",
+                        }}
+                      >
+                        {loading ? (
+                          <Loader />
+                        ) : (
+                          posts.filter(isavailable).filter(remote).map((post) => (
+                            <MenuItem key={post.id} value={post.id}>
+                              {post.date}
+                            </MenuItem>
+                          ))
                         )}
-                        {newData.tropos_synantisis === 'Δια ζώσης' && (
-                          <Select
-                          value={newData.id_r || "Επιλέξτε ημερομηνία και ώρα"}
-                          label="Επιλέξτε ημερομηνία και ώρα"
-                          onChange={(e) => {
-                            const selectedPost = posts.find((post) => post.id === e.target.value);
-                            handleDropdownChange(selectedPost);
-                          }}
-                          style={{ minWidth: "40%", height: "2%", fontSize: "1.5em", marginTop: "2%" }}
-                        >
-                          {loading ? (
-                            <Loader />
-                          ) : (
-                            posts.filter(isavailable).filter(ftf).map((post) => (
-                              <MenuItem key={post.id} value={post.id}>
-                                {post.date}
-                              </MenuItem>
-                            ))
-                          )}
-                        </Select>
+                      </Select>
+                    </div>
+                  ) : null
+                }
+                
+                { newData.tropos_synantisis === 'Δια ζώσης' && posts.filter(isavailable).filter(ftf).length === 0 ? <h6 style={{ color: "red", justifyContent: "center", textAlign: "center", width: "100%", marginTop: "5px" }}> Δεν υπάρχουν διαθέσιμες ημερομηνίες και ώρες </h6> : "" }
+                {newData.tropos_synantisis === 'Δια ζώσης' && posts.filter(isavailable).filter(ftf).length > 0 ?
+                  (
+                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                      <Select
+                        value={newData.id_r || ""}
+                        label={newData.tropos_synantisis}
+                        onChange={(e) => {
+                          const selectedPost = posts.find((post) => post.id === e.target.value);
+                          handleDropdownChange(selectedPost);
+                        }}
+                        displayEmpty
+                        style={{
+                          width: "40%",
+                          height: "2%",
+                          fontSize: "1em",
+                          marginTop: "2%",
+                        }}
+                      >
+                        <MenuItem value="" disabled>
+                          Επιλέξτε ημερομηνία και ώρα
+                        </MenuItem>
+                        {loading ? (
+                          <Loader />
+                        ) : (
+                          posts.filter(isavailable).filter(ftf).map((post) => (
+                            <MenuItem key={post.id} value={post.id}>
+                              {post.date}
+                            </MenuItem>
+                          ))
                         )}
-                  </tbody>
-                </table>
+                      </Select>
+                    </div>
+                  ) : null 
+                }
+                { newData.tropos_synantisis === 'Δια ζώσης' && posts.filter(isavailable).filter(ftf).length === 0 ? <h6 style={{ color: "red", justifyContent: "center", textAlign: "center", width: "100%", marginTop: "5px" }}> Δεν υπάρχουν διαθέσιμες ημερομηνίες και ώρες </h6> : "" }
+
               </div>
 
-              <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
-                <table style={{ width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
-                  <tbody>
-                    <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
-                      <b>Μήνυμα</b>
-                    </h2>                  
-                    <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
-                      <Box
-                        component="form"
-                        sx={{ '& .MuiTextField-root': { m: 1, width: '75ch' } }}
-                        noValidate
-                        autoComplete="off"
-                        >
-                        <div>
-                            <TextField
-                            name="description"
-                            onChange={handleInputChange}
-                            id="outlined-multiline-flexible"
-                            value={newData.description}
-                            multiline
-                            maxRows={13}
-                            />
-                        </div>
-                      </Box>
-                    </div>
-                  </tbody>
-                </table>
+              <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
+                <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
+                  <b>Μήνυμα</b>
+                </h2>                  
+                <div style={{ display: "flex",  gap: "5%", marginBottom: "3%", marginTop: "3%" }}>
+                  <TextField
+                    id="description"
+                    name="description"
+                    label="Μήνυμα"
+                    multiline
+                    rows={4}
+                    value={newData.description}
+                    onChange={handleInputChange}
+                    style={{ width: "100%" }}
+                  />
+                </div>
               </div>
   
               <div style={{ display: "flex", justifyContent: "center", alignItems: "center" , marginTop: "5%", gap: "40%" }}>
-                
-                <button onClick={()=> navigate(-1)}
+                <button 
+                  onClick={()=> navigate(-1)}
                   style={{
                       height: "3%",
                       backgroundColor: "#2b8cbe",
@@ -482,7 +539,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                       marginTop: "2%",
                       width: "12%",
                     }}>
-                  Προηγούμενο
+                  Επιστροφή
                 </button>
                 
                 <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "20%", marginRight:"-10%" }}>
@@ -506,12 +563,8 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                       Αποθήκευση
                     </button>
                 </div>
-              </div>                
-                
-              
-              
+              </div>
             </div>
-  
           </div>
         </div>
         
