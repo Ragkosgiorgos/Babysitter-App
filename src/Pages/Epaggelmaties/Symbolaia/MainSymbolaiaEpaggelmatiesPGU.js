@@ -99,7 +99,7 @@ function MainSymbolaiaEpaggelmatiesPGU() {
   };
 
   const handleRedirectView = (contractId) => {
-    navigate(`/dashboard/Symfwnitika/provoli/${contractId}`); 
+    navigate(`/dashboard/Symfwnitika/view/${contractId}`); 
   };
 
   if (loading) {

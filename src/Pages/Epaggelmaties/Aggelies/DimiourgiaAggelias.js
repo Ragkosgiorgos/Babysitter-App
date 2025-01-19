@@ -559,16 +559,16 @@ function DimiourgiaAggelias() {
                                 onClick={goToNextStep}>
                             Επόμενο
                         </button>) || (currentStep === 3 &&
-                        <button style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5px", width: "12%",marginLeft:"70%" }}
+                        <button style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5px", width: "12%", marginLeft:"70%" }}
                                 onClick={goToNextStep}>
                             Επιστροφή
                         </button>)
                         || 
                         <div style={{ display: "flex", gap: "25%" }}>
-                            <button style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5px", width: "100%" }}
+                            <button style={{ height: "3%", backgroundColor: "#F28C28", color: "white", borderRadius: "5px", width: "100%" }}
                                 onClick={handleTempSave}> Προσωρινή αποθήκευση </button>
                             
-                            <button style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5px", width: "100%" }}
+                            <button style={{ height: "3%", backgroundColor: "green", color: "white", borderRadius: "5px", width: "100%" }}
                                 onClick={handleFinalSave}> Οριστική υποβολή </button>
                         </div>
                     }

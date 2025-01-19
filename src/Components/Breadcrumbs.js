@@ -20,13 +20,14 @@ const translations = {
   aggelies: "Αγγελίες",
   previewAggelias: "Προβολή αγγελίας",
   dashboard: "Dashboard",
-  add: "Δημιουργία",
+  add: "Προσθήκη",
   rantevou: "Ραντεβού",
   available: "Διαθέσιμα",
   Symfwnitika: "Συμφωνητικά",
   Pliromes: "Πληρωμές",
   edit: "Επεξεργασία",
   proepiskopisi: "Προεπισκόπηση",
+  babysitters: "Babysitters",
 };
 
 function Breadcrumbs() {

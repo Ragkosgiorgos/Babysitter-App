@@ -24,8 +24,6 @@ import EditAitiseisEndiaferontosPGU from "./Pages/Goneis/AitiseisEndiaferontos/E
 import PreviewAitiseisEndiaferontosPGU from "./Pages/Goneis/AitiseisEndiaferontos/PreviewAitiseisEndiaferontos";
 import ErrorPage from "./Components/ErrorPage";
 import ProvoliSymbolaiou from "./Pages/Goneis/Symbolaia/ProvoliSymbolaiou";
-import PliromiEpaggelmatia from "./Pages/Goneis/Pliromes/PliromiEpaggelmatia";
-import MainPliromesEpaggelmaties from "./Pages/Epaggelmaties/Pliromes/MainPliromesEpaggelmaties";
 import Viografiko from "./Pages/Epaggelmaties/Profile/Viografiko";
 import ProepiskopisiAvailableRantevou from "./Pages/Epaggelmaties/Rantevou/ProepiskopisiAvailableRantevou";
 import Dashboard from "./Components/Dashboard";
@@ -49,16 +47,16 @@ function App() {
           <Route path="register" element={<Register/>} />
 
           <Route path="khdemones" element={<MainGoneisPGU />} />
-          <Route path="epaggelmaties" element={<MainEpaggelmatiesPGU />} />
+          <Route path="babysitters" element={<MainEpaggelmatiesPGU />} />
 
           {/* Profile Pages & Viografiko */}
           <Route path="/dashboard/profiles" element={<Profiles/>} />
-          <Route path="dashboard/viografiko" element={<Viografiko />} />
-          <Route path="dashboard/Symfwnitika" element={<Symfwnitika />} />
-          <Route path="dashboard/Pliromes" element={<Pliromes />} />
+          <Route path="/dashboard/viografiko" element={<Viografiko />} />
+          <Route path="/dashboard/Symfwnitika" element={<Symfwnitika />} />
+          <Route path="/dashboard/Pliromes" element={<Pliromes />} />
 
           {/* Babysitter Search */}
-          <Route path="anazitisi" element={<BabysitterSearch />} />
+          <Route path="/anazitisi" element={<BabysitterSearch />} />
 
           {/* Babysitter Aggelies */}
           <Route path="dashboard/aggelies" element={<MainAggeliesPGU />} />
@@ -68,40 +66,32 @@ function App() {
           <Route path="/anazitisi/viewPost" element={<ViewJobPost />} />
           
           {/* Rantevou */}
-          <Route path="epaggelmaties/rantevou" element={<MainRantevouPGU />} />
-          <Route path="epaggelmaties/rantevou/available" element={<AvailableRantevouPGU />} />
-          <Route path="epaggelmaties/rantevou/available/add" element={<AddRantevouPGU />} />
-          <Route path="epaggelmaties/rantevou/available/view" element={<ProepiskopisiAvailableRantevou />} />
-          <Route path="epaggelmaties/rantevou/proepiskopisi" element={<ProepiskopisiRantevouPGU />} />
-          <Route path="epaggelmaties/rantevou/available/edit" element={<EditRantevouPGU />} />
+          <Route path="/dashboard/rantevou" element={<MainRantevouPGU />} />
+          <Route path="/dashboard/rantevou/available" element={<AvailableRantevouPGU />} />
+          <Route path="/dashboard/rantevou/available/add" element={<AddRantevouPGU />} />
+          <Route path="/dashboard/rantevou/available/view" element={<ProepiskopisiAvailableRantevou />} />
+          <Route path="/dashboard/rantevou/proepiskopisi" element={<ProepiskopisiRantevouPGU />} />
+          <Route path="/dashboard/rantevou/available/edit" element={<EditRantevouPGU />} />
 
           {/* Khdemones Ratings */}
-          <Route path="/ratings" element={<Ratings />} />
-          <Route path="/ratings/add" element={<CreateRating />} />
+          <Route path="/dashboard/ratings" element={<Ratings />} />
+          <Route path="/dashboard/ratings/add" element={<CreateRating />} />
 
           {/* Babysitter Ratings */}
-          <Route path="/ratings/previewAksiologisi" element={<ViewRating />} />
+          <Route path="/dashboard/ratings/previewAksiologisi" element={<ViewRating />} />
 
           {/* Khdemones Symbolaia */}
-  
-          <Route path="/neo-symbolaio" element={<DimiourgiaSymbolaiou />} />
-          <Route path="/goneis/symbolaia/provoli/:contractId" element={<ProvoliSymbolaiou/>} />
+          <Route path="/dashboard/Symfwnitika/add" element={<DimiourgiaSymbolaiou />} />
+          <Route path="/goneis/Symfwnitika/view/:contractId" element={<ProvoliSymbolaiou/>} />
 
           {/* Babysitter Symbolaia */}
           <Route path="/dashboard/Symfwnitika/apantisi/:contractId" element={<ApodoxiSymbolaiou/>} />
-          <Route path="/dashboard/Symfwnitika/provoli/:contractId" element={<ProvoliSymbolaiouEpaggelmatia/>} />
-
-
-          {/* Khdemones Pliromes */}
-          <Route path="/goneis/symbolaia/pliromes/nea-pliromi" element={<PliromiEpaggelmatia/>} />
-
-          {/* Babysitter Pliromes */}
-          <Route path="/epaggelmaties/pliromes" element={<MainPliromesEpaggelmaties/>} />
+          <Route path="/dashboard/Symfwnitika/view/:contractId" element={<ProvoliSymbolaiouEpaggelmatia/>} />
 
           {/* Khdemones Aitiseis Endiaferontos */}
-          <Route path="/goneis/profile/aitiseis-endiaferontos" element={<MainAitiseisEndiaferontosPGU />} />
-          <Route path="/goneis/profile/aitiseis-endiaferontos/edit" element={<EditAitiseisEndiaferontosPGU />} />
-          <Route path="/goneis/profile/aitiseis-endiaferontos/preview" element={<PreviewAitiseisEndiaferontosPGU />} />
+          <Route path="/dashboard/aitiseis-endiaferontos" element={<MainAitiseisEndiaferontosPGU />} />
+          <Route path="/dashboard/aitiseis-endiaferontos/edit" element={<EditAitiseisEndiaferontosPGU />} />
+          <Route path="/dashboard/aitiseis-endiaferontos/preview" element={<PreviewAitiseisEndiaferontosPGU />} />
 
           <Route path="*" element={<ErrorPage />} />
 

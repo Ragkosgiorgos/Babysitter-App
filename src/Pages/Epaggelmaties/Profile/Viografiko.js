@@ -154,7 +154,7 @@ function Viografiko() {
     };
 
     const handleViewRating = (r_id) => {
-        navigate(`/ratings/previewAksiologisi?id=${r_id}`);
+        navigate(`/dashboard/ratings/previewAksiologisi?id=${r_id}`);
     };
 
     if (loading) {

@@ -97,12 +97,12 @@ const Dashboard = () => {
                                     <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: "3vh" }}>
                                         <PageCard title="Το Βιογραφικό μου" url="/dashboard/viografiko" />
                                         <PageCard title="Οι Αγγελίες μου" url="/dashboard/aggelies" />
-                                        <PageCard title="Τα Ραντεβού μου" url="/epaggelmaties/rantevou" />
+                                        <PageCard title="Τα Ραντεβού μου" url="/dashboard/rantevou" />
                                     </div>
 
                                     <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: "3vh"}}>
                                         <PageCard title="Τα Συμφωνητικά μου" url="/dashboard/Symfwnitika" />
-                                        <PageCard title="Οι Αξιολογήσεις μου" url="/ratings" />
+                                        <PageCard title="Οι Αξιολογήσεις μου" url="/dashboard/ratings" />
                                         <PageCard title="Οι Πληρωμές μου" url="/epaggelmaties/pliromes" />
                                     </div>
                                 </div>
@@ -117,7 +117,7 @@ const Dashboard = () => {
                                     <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: "3vh"}}>
                                         <PageCard title="Τα Συμφωνητικά μου" url="dashboard/Symfwnitika" />
                                         <PageCard title="Οι Πληρωμές μου" url="/dashboard/Pliromes" />
-                                        <PageCard title="Οι Αξιολογήσεις μου" url="/ratings" />
+                                        <PageCard title="Οι Αξιολογήσεις μου" url="/dashboard/ratings" />
                                     </div>
                                 </div>
                             }

@@ -78,8 +78,8 @@ function Header(props) {
     };
 
     const handleEpaggelmatiesRedirect = () => {
-        if (location.pathname !== '/epaggelmaties') {
-            navigate('/epaggelmaties');  
+        if (location.pathname !== '/babysitters') {
+            navigate('/babysitters');  
         }
     };
 
@@ -144,7 +144,7 @@ function Header(props) {
                             <li className="nav-item">
                                 <Link
                                     className={props.act !== 'job' ? 'nav-link' : 'nav-link active'}
-                                    to="/epaggelmaties"
+                                    to="/babysitters"
                                     style={{ color: 'white' }}
                                     onClick={handleEpaggelmatiesRedirect}  
                                 >
@@ -188,7 +188,7 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/epaggelmaties/rantevou">
+                                <a className="dropdown-item" href="/dashboard/rantevou">
                                     Τα Ραντεβού μου
                                 </a>
                             </li>
@@ -203,7 +203,7 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/ratings">
+                                <a className="dropdown-item" href="/dashboard/ratings">
                                     Οι Αξιολογήσεις μου
                                 </a>
                             </li>
@@ -273,7 +273,7 @@ function Header(props) {
                             <li className="nav-item">
                                 <Link
                                     className={props.act !== 'job' ? 'nav-link' : 'nav-link active'}
-                                    to="/epaggelmaties"
+                                    to="/babysitters"
                                     style={{ color: 'white' }}
                                     onClick={handleEpaggelmatiesRedirect}  
                                 >
@@ -317,7 +317,7 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/ratings">
+                                <a className="dropdown-item" href="/dashboard/ratings">
                                     Οι Αξιολογήσεις μου
                                 </a>
                             </li>
@@ -407,7 +407,7 @@ function Header(props) {
                             <li className="nav-item">
                                 <Link
                                     className={props.act !== 'job' ? 'nav-link' : 'nav-link active'}
-                                    to="/epaggelmaties"
+                                    to="/babysitters"
                                     style={{ color: 'white' }}
                                     onClick={handleEpaggelmatiesRedirect}  
                                 >

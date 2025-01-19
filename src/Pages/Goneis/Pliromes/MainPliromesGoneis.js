@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import Header from '../../../Components/Header';
+import Footer from '../../../Components/Footer';
+import Loader from '../../../Components/Loader';
+import Breadcrumbs from '../../../Components/Breadcrumbs';
 import { useNavigate } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { FIREBASE_AUTH,FIREBASE_DB } from '../../../config/firebase';
-import Header from '../../../Components/Header';
-import Footer from '../../../Components/Footer';
-
-import Loader from '../../../Components/Loader';
-import Breadcrumbs from '../../../Components/Breadcrumbs';
-
 
 function MainPliromesGoneis() {
   const navigate = useNavigate();
@@ -82,7 +80,7 @@ function MainPliromesGoneis() {
   };
 
   const handleRedirect = (contractId) => {
-    navigate(`provoli/${contractId}`);
+    navigate(`view/${contractId}`);
   };
 
   if (loading) {

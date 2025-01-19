@@ -183,12 +183,12 @@ function MainSymbolaiaGoneisPGU() {
       setError("Η ηλικία του παιδιού πρέπει να είναι μεταξύ 0.5 και 2.5 ετών.");
     } else {
       setError(null);
-      navigate('/neo-symbolaio');
+      navigate('/dashboard/simfonitika/add');
     }
   };
   
   const handleRedirect = (contractId) => {
-    navigate(`provoli/${contractId}`); 
+    navigate(`view/${contractId}`); 
   };
 
   if (loading) {
@@ -257,8 +257,8 @@ function MainSymbolaiaGoneisPGU() {
                             onClick={() =>
                               navigate(
                                 contract.ratingId
-                                  ? `/ratings/previewAksiologisi?id=${contract.ratingId}`
-                                  : `/ratings/add`
+                                  ? `/dashboard/ratings/previewAksiologisi?id=${contract.ratingId}`
+                                  : `/dashboard/ratings/add`
                               )
                             }
                           >
