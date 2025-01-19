@@ -153,14 +153,6 @@ function PreviewAitiseisEndiaferontosPGU(props) {
     }
   };
 
-  const location = useLocation();
-  const today = dayjs();
-
-  const isInPast = (date) => (date.get('year') < dayjs().get('year')) || (date.get('year') === dayjs().get('year') && date.get('month') < dayjs().get('month')) || (date.get('year') === dayjs().get('year') && date.get('month') === dayjs().get('month') && date.get('date') < dayjs().get('date'));
-  const isNotPast = (date) => (date.get('year') > dayjs().get('year')) || (date.get('year') === dayjs().get('year') && date.get('month') > dayjs().get('month')) || (date.get('year') === dayjs().get('year') && date.get('month') === dayjs().get('month') && date.get('date') >= dayjs().get('date'));
-
-  
-
   // const [value, setValue] = useState("");  
   
   if (!user || !aitisi) {
@@ -223,94 +215,25 @@ function PreviewAitiseisEndiaferontosPGU(props) {
                         </div>
                     </div>
                 </div>
-                  
-              {/* <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
-        
-                <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
-                  <tbody>
-                  <tr style={{ borderBottom: "2px solid #333" }}>
-                  <th>Στοιχεία επικοινωνίας:</th>
-                  </tr>
-                  <div >
-                    <div>
-                        <label style={{ padding: "20px" }}>
-
-                            Ονοματεπώνυμο <tr> {user.firstName + " " + user.lastName} </tr>
-                        </label> 
-
-                        <label style={{ padding: "20px" }}>
-                            Τηλέφωνο <tr> {user.phone} </tr>
-                        </label> 
-                         
-                        <label>
-                            Email <tr> {user.email} </tr>
-                        </label> 
-                    </div>
-                  </div>
-                  </tbody>
-                </table>
-              </div>
-
-              <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
-                <table style={{ width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
-                  <tbody>
-                  
-            
-                  <h5 style={{ fontWeight: "bold"}}> Στοιχεία παιδιού </h5>
-                  <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
-                    <th>Φύλο: {aitisi.gender}</th>
-                    
-                  </div>
-                  <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
-                    <th>Ημερομηνία γέννησης: {user.childBirthDate}</th>
-                  </div>
-
-                  </tbody>
-                </table>
-              </div>
-
-              <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
-                <table style={{ width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
-                  <tbody>
-                  <h5 style={{ marginLeft: "5%" ,textAlign: "left" ,fontWeight: "bold"}}> Επιθυμητός τρόπος επικοινωνίας: {aitisi.tropos_synantisis}</h5>
-                  </tbody>
-                </table>
-              </div>
-
-              <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
-                <table style={{ width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
-                  <tbody>
-                  <h5 style={{ marginLeft: "5%" ,textAlign: "left" ,fontWeight: "bold"}}> Ημερομηνία και ώρα: {aitisi.date}</h5>
-                  </tbody>
-                </table>
-              </div>
-
-               <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
-                <table style={{ width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
-                  <tbody>
-                  <h5 style={{ marginLeft: "5%" ,textAlign: "left" ,fontWeight: "bold"}}> Μήνυμα </h5>
-                  <div style={{ display: "flex",  gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
-                  <Box
-                    
-                    component="form"
-                  >
-                    {aitisi.description}
-                  </Box>
-                  </div>
-                  </tbody>
-                </table>
-               </div> */}
-              <div style={{ display: "flex", justifyContent: "left", alignItems: "left", marginTop: "5%"}}>
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "5%", gap: "40%" }}>
                 
-                <button onClick={()=> navigate(-1)}  style={{ width: "15%" , height: "8vh", backgroundColor: "gray", color: "white", border: "none", 
-                                  borderRadius: "5px", fontSize: "3vh", cursor: "pointer", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)",marginLeft:"10%" }}>
-                  Επιστροφή
+                <button
+                    style={{
+                        height: "5%",
+                        backgroundColor: "#2b8cbe",
+                        color: "white",
+                        borderRadius: "5%",
+                        width: "12%",
+                        cursor: "pointer",
+                        border: "1px solid #333",
+                        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)",
+                        marginLeft: "55%",
+                    }}
+                    onClick={() => navigate(`/goneis/profile/aitiseis-endiaferontos`)}
+                >
+                    Επιστροφή
                 </button>
-              </div>                
-            {/* </div>
-          </div>
-        </div> */}
-        
+              </div>                        
           <Footer />
         </div>
       </div>

@@ -132,13 +132,8 @@ function AvailableRantevouPGU() {
 
             </div>
 
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "5%", marginRight: "70%" }}>
-              
-              <button onClick={()=> navigate("../epaggelmaties/rantevou")} style={{ width: "35%" , height: "8vh", backgroundColor: "gray", color: "white", border: "none", 
-                                borderRadius: "5px", fontSize: "3vh", cursor: "pointer", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)" }}>
-                Επιστροφή
-              </button>
-              
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "5%", marginLeft: "70%" }}>
+              <button onClick={()=> navigate(-1)} style={{  height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5px", marginTop: "2%", width: "25%", }}>Προηγούμενο</button>  
             </div>
             
           </div>

@@ -104,7 +104,6 @@ function MainRantevouPGU() {
               <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
                 <thead>
                   <tr style={{ borderBottom: "2px solid #333" }}>
-                    <th>Αγγελία</th>
                     <th>Ημερομηνία</th>
                     <th>Τρόπος</th>
                     <th>Ενέργειες</th>
@@ -113,7 +112,6 @@ function MainRantevouPGU() {
                 <tbody>
                   {posts.filter(isbooked).map((post) => (
                     <tr key={post.id} style={{ borderTop: "0.2px solid #333" }}>
-                      <td>{post.id_aggelias}</td>
                       <td>{post.date}</td>
                       <td>{post.tropos_synantisis}</td>
                       <td style={{ display: "flex", justifyContent: "center", gap: "10%" }}>
