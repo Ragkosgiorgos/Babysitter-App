@@ -116,7 +116,7 @@ function GonRatingMain() {
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
               <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px", tableLayout: "fixed" }}>
-                <thead style={{ lineHeight: "2em"}}>
+                <thead style={{ lineHeight: "1.2em"}}>
                   <tr style={{ borderBottom: "2px solid #333" }}>
                     <th style={{ padding: "10px" }}>Babysitter</th>
                     <th style={{ padding: "10px" }}>Συνολική βαθμολογία</th>
@@ -128,7 +128,7 @@ function GonRatingMain() {
                     <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
                       <td style={{ padding: "10px" }}>{findBabysitter(post.id_b)}</td>
                       <td style={{ padding: "10px" }}>{post.rating}</td>
-                      <td style={{ display: "flex", justifyContent: "center", alignItems:"center", marginTop:"0.5em", gap:"10px", padding: "10px" }}>
+                      <td style={{ display: "flex", justifyContent: "center", gap:"10px", padding: "10px" }}>
                         <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => previewRating(post.id)}> Προβολή </span>
                       </td>
                     </tr>

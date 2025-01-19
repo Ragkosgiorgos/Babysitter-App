@@ -2,16 +2,11 @@ import React, { useState, useEffect } from "react";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import InfoIcon from '@mui/icons-material/Info';
+import Loader from "../../../Components/Loader";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
-import Loader from "../../../Components/Loader";
 
 function MainRantevouPGU() { 
   const navigate = useNavigate();
@@ -26,7 +21,7 @@ function MainRantevouPGU() {
       if (user) {
         setUuid(user.uid);
       } else {
-        navigate("/404");
+        navigate("/login");
       }
     });
     return () => unsubscribe();
@@ -101,27 +96,27 @@ function MainRantevouPGU() {
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
 
-              <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
-                <thead>
+              <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px", tableLayout: "fixed" }}>
+                <thead style={{ lineHeight: "1.2em"}}>
                   <tr style={{ borderBottom: "2px solid #333" }}>
-                    <th>Ημερομηνία</th>
-                    <th>Τρόπος</th>
-                    <th>Ενέργειες</th>
+                    <th style={{ padding: "10px" }}>Ημερομηνία</th>
+                    <th style={{ padding: "10px" }}>Τρόπος</th>
+                    <th style={{ padding: "10px" }}>Ενέργειες</th>
                   </tr>
                 </thead>
                 <tbody>
                   {posts.filter(isbooked).map((post) => (
-                    <tr key={post.id} style={{ borderTop: "0.2px solid #333" }}>
-                      <td>{post.date}</td>
-                      <td>{post.tropos_synantisis}</td>
-                      <td style={{ display: "flex", justifyContent: "center", gap: "10%" }}>
+                    <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "1.5em" }}>
+                      <td style={{ padding: "10px" }}>{post.date}</td>
+                      <td style={{ padding: "10px" }}>{post.tropos_synantisis}</td>
+                      <td style={{ display: "flex", justifyContent: "center", gap: "10px", padding: "10px" }}>
                         <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => routeChangePreview(post.id)}>Προβολή</span>
                       </td>
                     </tr>
                   ))}
                   {posts.length === 0 && (
                     <tr>
-                      <td colSpan={4} style={{ padding: "10px" }}>Δεν υπάρχουν ραντεβού</td>
+                      <td colSpan={3} style={{ padding: "10px" }}>Δεν υπάρχουν ραντεβού</td>
                     </tr>
                   )}
                 </tbody>
