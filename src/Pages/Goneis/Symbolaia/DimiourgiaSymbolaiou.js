@@ -989,7 +989,7 @@ const submitPayment = async (contractId, startDate, endDate) => {
                 color: "white",
                 borderRadius: "5px",
                 marginTop: "2%",
-                width: "12%",
+                width: "12%",marginLeft:"70%"
             }}
             onClick={() => {
                 window.history.back();

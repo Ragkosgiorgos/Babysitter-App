@@ -559,7 +559,7 @@ function DimiourgiaAggelias() {
                                 onClick={goToNextStep}>
                             Επόμενο
                         </button>) || (currentStep === 3 &&
-                        <button style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5px", width: "12%" }}
+                        <button style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5px", width: "12%",marginLeft:"70%" }}
                                 onClick={goToNextStep}>
                             Επιστροφή
                         </button>)

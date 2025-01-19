@@ -553,7 +553,7 @@ import { useNavigate } from "react-router-dom";
                         color: "white",
                         borderRadius: "5px",
                         marginTop: "2%",
-                        width: "12%",marginLeft:"85%",
+                        width: "12%",marginLeft:"70%",
                     }}
                     onClick={handleReturnClick}
                 >
