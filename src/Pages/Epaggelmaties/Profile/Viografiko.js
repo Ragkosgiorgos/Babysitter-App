@@ -260,19 +260,35 @@ function Viografiko() {
 
                             {/*experience*/}
                             <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center" }}>
-                            <span style={{ fontSize: "20px" }}><b style={{ textDecoration: "underline" }}>Προυπηρεσία</b></span>
+                            <span style={{ fontSize: "20px",display: "block", textAlign: "center" }}><b style={{ textDecoration: "underline" }}>Προυπηρεσία</b></span>
                             {experience.length > 0 ? (
                                 experience.map((exp, index) => (
-                                    <div key={index} style={{ marginBottom: "10px", display: "flex", flexDirection: "row", alignItems: "center" }}>
-                                        <p style={{ marginRight: "10px" }}>{exp.jobTitle}</p>
-                                        <p style={{ marginRight: "10px" }}>{exp.company}</p>
-                                        <p style={{ marginRight: "10px" }}>{exp.duration}</p>
-                                        <button 
-                                            onClick={() => handleDeleteExperience(exp)} 
-                                            style={{ color: "red", cursor: "pointer", border: "none", background: "none" }}>
+                                    <div 
+                                        key={index} 
+                                        style={{ 
+                                            marginBottom: "10px", 
+                                            display: "flex", 
+                                            flexDirection: "row", 
+                                            alignItems: "center",  
+                                            justifyContent: "center", 
+                                            gap: "10px"  
+                                        }}
+                                        >
+                                        <h5 style={{ margin: 0 }}>{exp.jobTitle},</h5>
+                                        <h5 style={{ margin: 0 }}>{exp.company},</h5>
+                                        <h5 style={{ margin: 0 }}>{exp.duration}</h5>
+                                        <span 
+                                            style={{ 
+                                            cursor: "pointer", 
+                                            color: "red", 
+                                            marginLeft: "10px"  
+                                            }} 
+                                            onClick={() => handleDeleteExperience(exp)}
+                                        >
                                             Διαγραφή
-                                        </button>
+                                        </span>
                                     </div>
+
                                 ))
                             ) : (
                                 <h5>Προσθέστε την προυπηρεσία σας</h5>
