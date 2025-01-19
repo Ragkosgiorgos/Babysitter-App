@@ -25,7 +25,7 @@ function CreateRating() {
         if (user) {
             setUuid(user.uid);
         } else {
-            navigate("/404");
+            navigate("/login");
         }
     });
     return () => unsubscribe();
