@@ -22,123 +22,117 @@ import { FIREBASE_AUTH, FIREBASE_DB } from "../../../config/firebase";
 import Loader from "../../../Components/Loader";
 import { handleScrollToTop } from "../../../Utils/Methods/index";
 
-
 function AddRantevouPGU() {
   const navigate = useNavigate();
+
   const today = dayjs();
+
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id") || "";
+
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState({});
-  
-
   const [uuid, setUuid] = useState(null);
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
-            if (user) {
-                setUuid(user.uid);
-            }
-        });
-        return () => unsubscribe();
-    }, []);
+  useEffect(() => {
+      const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+          if (user) {
+              setUuid(user.uid);
+          } else {
+              navigate('/login');
+          }
+      });
+      return () => unsubscribe();
+  }, []);
 
-    const [newData, setnewData] = useState({
-      id: "",
-      id_p: "",
-      id_b: "",
-      tropos_synantisis: "",
-      date: "",
-      address: "", 
-    });
+  const [newData, setnewData] = useState({
+    id: "",
+    id_p: "",
+    id_b: uuid,
+    tropos_synantisis: "",
+    date: "",
+    address: "",
+  });
 
-      // Fetch user data when uuid is available
-      useEffect(() => {
-        if (uuid) {
-            const fetchUserData = async () => {
-                try {
-                    setLoading(true);
-                    const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
-                    const querySnapshot = await getDocs(q);
-                    const users = querySnapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                    }));
-                    setUser(users[0]);
-                } catch (error) {
-                    console.error('Error fetching user data:', error);
-                } finally {
-                    setLoading(false);
-                }
-                setnewData((prevData) => ({
-                  ...prevData,
-                  ["id_b"]: uuid,
-                  address : user.address,
+  // Fetch user data when uuid is available
+  useEffect(() => {
+    if (uuid) {
+        const fetchUserData = async () => {
+            try {
+                setLoading(true);
+                const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
+                const querySnapshot = await getDocs(q);
+                const users = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
                 }));
-            };
-            fetchUserData();
-        }
-    }, [uuid]);
-    const [isSubmitted, setIsSubmitted] = useState(false);
+                setUser(users[0]);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchUserData();
+    }
+  }, [uuid]);
 
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const handleFinalSave = async () => {
-    // post_id === -1, we are creating a new post
-        newData.id_b = uuid;
-        newData.status = "Oριστική υποβολή";
-        setIsSubmitted(true);
-        if (!newData.tropos_synantisis || !newData.date) {
-          handleScrollToTop();
-          setIsSubmitted(false);
-          return;
-        }
-        
-        try{
-            const rantevouRef = collection(FIREBASE_DB, 'rantevou');
-            const docRef = await addDoc(rantevouRef, newData);
-  
-            const documentId = docRef.id;
-            newData.id = documentId;
-  
-            await setDoc(docRef, { id: documentId }, { merge: true });
-  
-        } catch (error) {
-            console.error('Error adding document:', error);
-        }  finally{
-          navigate(-1);
-        }
-    };
+    newData.id_b = uuid;
+    setIsSubmitted(true);
+    if (!newData.tropos_synantisis || !newData.date) {
+      handleScrollToTop();
+      setIsSubmitted(false);
+      return;
+    }console.log(newData);
+    newData.status = "Oριστική υποβολή";
+    try{
+        setLoading(true);
+        const rantevouRef = collection(FIREBASE_DB, 'rantevou');
 
-    const handleInputChange = (e) => {
-      const { name, value } = e.target;
-      console.log(value);
-      setnewData((prevData) => ({
-          ...prevData,
-          
-          [name]: value,
-      }));
-    };
+        const docRef = await addDoc(rantevouRef, newData);
 
+        const documentId = docRef.id;
 
+        await setDoc(docRef, { id: documentId }, { merge: true });
 
-  
-    const handleDateTimeRangePickerChange = (_value) => {
-      let date = dayjs(_value).format('YYYY-MM-DD HH:mm');
-      console.log(date);
-      setnewData((prevData) => ({
+    } catch (error) {
+        console.error('Error adding document:', error);
+    } finally{
+        setLoading(false);
+        navigate(-1);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    console.log(value);
+    setnewData((prevData) => ({
         ...prevData,
-        ["date"]: date,
+        
+        [name]: value,
     }));
-    }
-
-    const isInPast = (date) => (date.get('year') < dayjs().get('year')) || (date.get('year') === dayjs().get('year') && date.get('month') < dayjs().get('month')) || (date.get('year') === dayjs().get('year') && date.get('month') === dayjs().get('month') && date.get('date') < dayjs().get('date'));
-    const isNotPast = (date) => (date.get('year') > dayjs().get('year')) || (date.get('year') === dayjs().get('year') && date.get('month') > dayjs().get('month')) || (date.get('year') === dayjs().get('year') && date.get('month') === dayjs().get('month') && date.get('date') >= dayjs().get('date'));
+  };
   
-    if (loading) {
-      return <Loader />;
-    }
-    
-    if (!user) {
-      return <div>Δεν βρέθηκε ο χρήστης</div>;
-    }
+  const handleDateTimeRangePickerChange = (_value) => {
+    let date = dayjs(_value).format('YYYY-MM-DD HH:mm');
+    console.log(date);
+    setnewData((prevData) => ({
+      ...prevData,
+      ["date"]: date,
+    }));
+  }
+
+  const isInPast = (date) => (date.get('year') < dayjs().get('year')) || (date.get('year') === dayjs().get('year') && date.get('month') < dayjs().get('month')) || (date.get('year') === dayjs().get('year') && date.get('month') === dayjs().get('month') && date.get('date') < dayjs().get('date'));
+  const isNotPast = (date) => (date.get('year') > dayjs().get('year')) || (date.get('year') === dayjs().get('year') && date.get('month') > dayjs().get('month')) || (date.get('year') === dayjs().get('year') && date.get('month') === dayjs().get('month') && date.get('date') >= dayjs().get('date'));
+
+  if (loading) {
+    return <Loader />;
+  }
+  
+  if (!user) {
+    return <div>Δεν βρέθηκε ο χρήστης</div>;
+  }
 
   return (
     <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
@@ -190,7 +184,7 @@ function AddRantevouPGU() {
                         name="tropos_synantisis"
                     >
                     <FormControlLabel value="Διαδικτυακά" control={<Radio />} label="Διαδικτυακά" labelPlacement="end"  />
-                    <FormControlLabel value= {"Δια ζώσης"} control={<Radio />} label="Δια ζώσης" />
+                    <FormControlLabel value= "Δια ζώσης" control={<Radio />} label="Δια ζώσης" />
                     </RadioGroup>
                 </FormControl>
                 </tbody>
