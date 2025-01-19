@@ -51,7 +51,11 @@ function Viografiko() {
                         id: doc.id,
                         ...doc.data(),
                     }));
+                    console.log(uuid)
                     setProfile(posts[0]);
+                    if (posts[0]?.experience) {
+                        setExperience(posts[0].experience);
+                    }
                     console.log(profile)
                 } catch (error) {
                     console.error('Error fetching user:', error);
@@ -71,6 +75,7 @@ function Viografiko() {
                         ...doc.data(),
                     }));
                     setRatings(posts);
+                    console.log(ratings)
                 } catch (error) {
                     console.error('Error fetching ratings:', error);
                 } finally {
