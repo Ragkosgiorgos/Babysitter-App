@@ -9,17 +9,22 @@ import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
 import Loader from "../../../Components/Loader";
 
 function AvailableRantevouPGU() {
+  const navigate = useNavigate();
+
   const [uuid, setUuid] = useState(null);
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
-
-  const navigate = useNavigate();  
+  
   const routeChangeAdd = () =>{ 
     navigate("./add");
   };
 
   const routeChangeEdit = (id_aitisis) =>{ 
     navigate(`edit?id=${id_aitisis}`);
+  };
+
+  const handleReturn = () => {
+    window.history.back();
   };
 
   // Check if user is logged in, get the user's UUID
@@ -103,20 +108,20 @@ function AvailableRantevouPGU() {
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
 
-              <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
-                <thead>
+              <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px", tableLayout: "fixed" }}>
+                <thead style={{ lineHeight: "1.2em" }}>
                   <tr style={{ borderBottom: "2px solid #333" }}>
-                    <th>Ημερομηνία και ώρα</th>
-                    <th>Τρόπος</th>     
-                    <th>Ενέργειες</th>               
+                    <th style={{ padding: "10px" }}>Ημερομηνία και ώρα</th>
+                    <th style={{ padding: "10px" }}>Τρόπος</th>     
+                    <th style={{ padding: "10px" }}>Ενέργειες</th>               
                   </tr>
                 </thead>
                 <tbody>
                   {posts.filter(isavailable).map((posts) => (
-                    <tr key={posts.id} style={{ borderTop: "0.2px solid #333" }}>
-                      <td>{posts.date}</td>
-                      <td>{posts.tropos_synantisis}</td>
-                      <td style={{ display: "flex", justifyContent: "center", gap: "20px" }}>
+                    <tr key={posts.id} style={{ borderTop: "0.2px solid #333", lineHeight: "1.5em" }}>
+                      <td style={{ padding: "10px" }}>{posts.date}</td>
+                      <td style={{ padding: "10px" }}>{posts.tropos_synantisis}</td>
+                      <td style={{ display: "flex", justifyContent: "center", gap: "20px", padding: "10px" }}>
                         <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => routeChangeEdit(posts.id)}>Προβολή</span>
                         <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handleDelete(posts.id)}>Διαγραφή</span>
                       </td>
@@ -124,22 +129,31 @@ function AvailableRantevouPGU() {
                   ))}
                   { posts.filter(isavailable).length === 0 &&
                     <tr>
-                      <td colSpan="3">Δεν υπάρχουν διαθέσιμα ραντεβού</td>
+                      <td colSpan={3} style={{ padding: "10px" }}>Δεν υπάρχουν διαθέσιμα ραντεβού</td>
                     </tr>
                   }
                 </tbody>
               </table>
 
             </div>
-
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "5%", marginRight: "70%" }}>
               
-              <button onClick={()=> navigate("../epaggelmaties/rantevou")} style={{ width: "35%" , height: "8vh", backgroundColor: "gray", color: "white", border: "none", 
-                                borderRadius: "5px", fontSize: "3vh", cursor: "pointer", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)" }}>
-                Επιστροφή
-              </button>
-              
-            </div>
+            <button
+              style={{
+                  height: "auto",
+                  backgroundColor: "#2b8cbe",
+                  color: "white",
+                  borderRadius: "5%",
+                  width: "12%",
+                  cursor: "pointer",
+                  border: "1px solid #333",
+                  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)",
+                  marginTop: "22%",
+                  marginLeft: "6%"
+              }}
+              onClick={handleReturn}
+            >
+              Επιστροφή
+            </button>
             
           </div>
 

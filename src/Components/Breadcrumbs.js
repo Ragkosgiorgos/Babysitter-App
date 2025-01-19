@@ -21,6 +21,8 @@ const translations = {
   previewAggelias: "Προβολή αγγελίας",
   dashboard: "Dashboard",
   add: "Δημιουργία",
+  rantevou: "Ραντεβού",
+  available: "Διαθέσιμα",
 };
 
 function Breadcrumbs() {
