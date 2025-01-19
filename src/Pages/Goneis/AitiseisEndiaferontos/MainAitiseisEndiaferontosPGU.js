@@ -5,7 +5,7 @@ import Breadcrumbs from "../../../Components/Breadcrumbs";
 import Loader from "../../../Components/Loader";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, deleteDoc} from 'firebase/firestore';
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
 
 function MainAitiseisEndiaferontosPGU() {
@@ -117,6 +117,17 @@ function MainAitiseisEndiaferontosPGU() {
     return babysitter ? `${babysitter.firstName} ${babysitter.lastName}` : "Άγνωστο";
   }
 
+  const handleDelete = async (id) => {
+    try {
+      const updatedPosts = posts.filter(post => post.id !== id);
+      setPosts(updatedPosts);
+      const postRef = doc(FIREBASE_DB, 'aitiseis_endiaferontos', id);
+      await deleteDoc(postRef);
+    } catch (error) {
+      console.error('Error deleting post:', error);
+    }
+  };
+
   if (loading) {
     return <Loader />;
   }
@@ -138,28 +149,35 @@ function MainAitiseisEndiaferontosPGU() {
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
 
-              <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
-                <thead style={{ lineHeight: "2em" }}>
-                  <tr style={{ borderBottom: "2px solid #333" }}>
-                    <th>Αγγελία</th>
-                    <th>Κατάσταση</th>
-                    <th>Ενέργειες</th>
+            <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px", tableLayout: "fixed" }}>
+            <thead style={{ lineHeight: "1.2em"}}>
+            <tr style={{ borderBottom: "2px solid #333" }}>
+                    <th style={{ padding: "10px" }}>Αγγελία</th>
+                    <th style={{ padding: "10px" }}>Κατάσταση</th>
+                    <th style={{ padding: "10px" }}>Ενέργειες</th>
                   </tr>
                 </thead>
                 <tbody>
                   {posts.map((post) => (
-                    <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
-                      <td><span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handlePostPreview(post.id_b)}>{findBabysitterName(post.id_b)}</span></td>
-                      <td>{post.status}</td>
-                      <td style={{ display: "flex", justifyContent: "center", gap: "10%" }}>
-                        {post.status === "Oριστική υποβολή" && <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => routeChangePreview(post.id,post.postid)}>Προβολή</span>}
-                        {post.status === "Σε προσωρινή αποθήκευση" && <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => routeChangeEdit([post.id,post.postid])}>Επεξεργασία</span>}
+                    <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2em" }}>
+                      <td style={{ padding: "10px" }}><span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handlePostPreview(post.id_b)}>{findBabysitterName(post.id_b)}</span></td>
+                      <td style={{ padding: "10px" }}>{post.status}</td>
+                      <td style={{ display: "flex", justifyContent: "center", gap:"10px", padding: "10px" }}>
+                        {post.status === "Oριστική υποβολή" && 
+                          <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => routeChangePreview(post.id,post.postid)}>Προβολή</span>}
+                        
+                        {post.status === "Σε προσωρινή αποθήκευση" && 
+                        <div style={{display: "flex", gap: "5px", padding: "10px" }} >
+                        <span  style={{ cursor: "pointer", textDecoration: "underline"}} onClick={() => handleDelete(post.id)}>Διαγραφή</span>
+                        <span  style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => routeChangeEdit([post.id,post.id_b])}>Επεξεργασία</span>
+                        </div>}
+                        
                       </td>
                     </tr>
                   ))}
                   {posts.length === 0 && (
                     <tr>
-                      <td colSpan={3}>Δεν υπάρχουν αιτήσεις</td>
+                      <td colSpan={3} style={{ padding: "10px" }}>Δεν υπάρχουν αιτήσεις</td>
                     </tr>
                   )}
                 </tbody>
