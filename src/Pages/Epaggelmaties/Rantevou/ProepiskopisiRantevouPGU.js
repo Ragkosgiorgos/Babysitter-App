@@ -11,18 +11,20 @@ import { FIREBASE_AUTH, FIREBASE_DB } from "../../../config/firebase";
 
 function ProepiskopisiRantevouPGU() {
   const navigate = useNavigate();
-
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id") || "";
-  
+
   const [loading, setLoading] = useState(false);
-  // Fetch user uuid
   const [uuid, setUuid] = useState(null);
+  const [user, setUser] = useState({});
+  const [aitisi, setAitisi] = useState({});
+
+  // Fetch user uuid
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
       if (user) {
         setUuid(user.uid);
-      } else { // If user is not logged in, redirect to 404 page
+      } else { 
         navigate("/404");
       }
     });
@@ -30,130 +32,112 @@ function ProepiskopisiRantevouPGU() {
   }, []);
 
   // Fetch user data
-  const [user, setUser] = useState({});
   useEffect(() => {
     if (uuid) {
       const fetchUserData = async () => {
         try {
           setLoading(true);
-          const q = query(collection(FIREBASE_DB, 'user'),where( 'userId' , '==' , uuid));
+          const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
           const querySnapshot = await getDocs(q);
           const users = querySnapshot.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
+            id: doc.id,
+            ...doc.data(),
           }));
           setUser(users[0]);
         } catch (error) {
-            console.error('Error fetching user data:', error);
+          console.error('Error fetching user data:', error);
         } finally {
-            setLoading(false);
+          setLoading(false);
         }
       };
       fetchUserData();
     }
   }, [uuid]);
 
-  // Fetch rantevou data
-  const [aitisi, setAitisi] = useState({});
+  // Fetch appointment data
   useEffect(() => {
     if (uuid && id) {
       const fetchAitiseisData = async () => {
         try {
-            setLoading(true);
-            const q = query(collection(FIREBASE_DB, 'rantevou'), where('id', '==', id), where('id_b', '==', uuid));
-            const querySnapshot = await getDocs(q);
-            const aitiseis = querySnapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            }));
-            setAitisi(aitiseis[0]);
+          setLoading(true);
+          const q = query(collection(FIREBASE_DB, 'rantevou'), where('id', '==', id), where('id_b', '==', uuid));
+          const querySnapshot = await getDocs(q);
+          const aitiseis = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setAitisi(aitiseis[0]);
         } catch (error) {
-            console.error('Error fetching job data:', error);
+          console.error('Error fetching appointment data:', error);
         } finally {
-            setLoading(false);
+          setLoading(false);
         }
       };
       fetchAitiseisData();
     }
   }, [uuid, id]);
 
-  const redirect = ()=>{
-    window.location.href = aitisi.link;
+  const redirect = () => {
+    if (aitisi.link) {
+      window.location.href = aitisi.link;
+    }
   }
 
   if (loading) {
     return <Loader />;
   }
-  
+
   if ((!uuid || !aitisi) && !loading) {
     navigate("/404");
   }
 
   return (
     <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
-      <div>
-        <Header />
-        <div style={{ flex: 1 }}>
-              <Breadcrumbs />
-              <div style={{ textAlign: "center", marginTop: "1%"}}>
-                            <h2>Η αιτησή σας με <b style={{ textDecoration: "underline" }}>κωδικό {aitisi.id}</b> δημοσιεύτηκε με επιτυχία!</h2>
-                            <h4>Μπορείτε να δείτε το ραντεβού σας στην κατηγορία "Τα ραντεβού μου".</h4>
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "row", marginTop: "2%", marginLeft: "10%", marginRight: "10%" }}>
-                        <div style={{ textAlign: "center"}}>
-                            <div style={{ display: "flex", flexDirection: "column", backgroundColor: "#ece7f2", borderRadius: "2%",
-                                            justifyContent: "center", padding: "2%" }}>
-                                <h2 style={{ textAlign: "center", textDecoration: "underline" }}><b> Τα προσωπικά σας στοιχεία </b></h2>
-                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Όνομα:</b> {user.firstName}</h4>
-                                <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
-                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Επίθετο:</b> {user.lastName}</h4>
-                                <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
-                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Αριθμός κινητού τηλεφώνου:</b> {user.phone}</h4>
-                                <hr style={{width: "100%", marginTop:"0%", marginBottom: "0%"}}></hr>
-                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}><b>Email:</b> {user.email}</h4>
-                            </div>
-                        </div>
+      <Header />
+      <div style={{ display: "flex", flexDirection: "column", overflow: "auto", padding: "2%" }}>
+        <Breadcrumbs />
+        <h2 style={{ textAlign: "center", marginTop: "2%" }}>Προεπισκόπηση ραντεβού</h2>
 
-                        <div style={{ display: "flex", flexDirection: "column", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", 
-                                    justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
+        {/* Personal Information */}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: "3%" }}>
+          <div style={{ backgroundColor: "#D9EAFD", padding: "2%", borderRadius: "10px", width: "50%", textAlign: "center" }}>
+            <h3>Προσωπικά στοιχεία κηδεμόνα</h3>
+            <p><strong>Όνοματεπώνυμο:</strong> {user.firstName} {user.lastName}</p>
+            <p><strong>Αριθμός κινητού τηλεφώνου:</strong> {user.phone}</p>
+            <p><strong>Email:</strong> {user.email}</p>
+          </div>
+        </div>
 
-                        <h2 style={{ textAlign: "center", textDecoration: "underline" }}><b>Τα στοιχεία του ραντεβού</b></h2>
-                        
-                        <h5 style={{ fontWeight: "bold"}}> Ημερομηνία και ώρα συνάντησης </h5>
-                        <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>
-                            {aitisi.date}
-                        </div>
+        {/* Appointment Information */}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: "3%" }}>
+          <div style={{ backgroundColor: "#D9EAFD", padding: "2%", borderRadius: "10px", width: "50%", textAlign: "center" }}>
+            <h3>Στοιχεία ραντεβού</h3>
+            <p><strong>Ημερομηνία:</strong> {aitisi.date}</p>
+            <p><strong>Τρόπος:</strong> {aitisi.tropos_synantisis}</p>
+            {aitisi.tropos_synantisis === "Διαδικτυακά" && (
+              <div>
+                <p><strong>Σύνδεσμος:</strong> 
+                  <Button onClick={redirect} style={{ backgroundColor: "#D9EAFD", color: "blue" }}>
+                    Link
+                  </Button>
+                </p>
+              </div>
+            )}
+            {aitisi.tropos_synantisis === "Δια ζώσης" && (
+              <p><strong>Διεύθυνση:</strong> {aitisi.address}</p>
+            )}
+          </div>
+        </div>
 
-                        <h5 style={{ fontWeight: "bold"}}> Επιθυμητός τρόπος επικοινωνίας </h5>
-                        <div style={{ display: "flex", flexDirection: "row", gap: "5%", marginLeft: "5%", marginBottom: "5%" }}>            
-                          {aitisi.tropos_synantisis === "Διαδικτυακά" && (<tr>Σύνδεσμος:<Button onClick={redirect} 
-                          style={{  height: "0%", backgroundColor: "#D9EAFD", color: "blue", marginTop: "0%"}} >Link{aitisi.link}</Button></tr> )}                 
-                          {aitisi.tropos_synantisis === "Δια ζώσης" && (<tr>Διεύθυνση: {aitisi.address}</tr> )} 
-                        </div>
-                    </div>
-                </div>
-                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "5%", gap: "40%" }}>
-                
-                <button
-                    style={{
-                        height: "5%",
-                        backgroundColor: "#2b8cbe",
-                        color: "white",
-                        borderRadius: "5%",
-                        width: "12%",
-                        cursor: "pointer",
-                        border: "1px solid #333",
-                        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)",
-                        marginLeft: "55%",
-                    }}
-                    onClick={() => navigate(`/epaggelmaties/rantevou`)}
-                >
-                    Επιστροφή
-                </button>
-              </div>                        
-          <Footer />
+        {/* Navigation Button */}
+        <div style={{ display: "flex", justifyContent: "center", marginTop: "5%" }}>
+          <button onClick={() => navigate(-1)} style={{ width: "35%", height: "8vh", backgroundColor: "gray", color: "white", border: "none", borderRadius: "5px", fontSize: "3vh", cursor: "pointer" }}>
+            Επιστροφή
+          </button>
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 }

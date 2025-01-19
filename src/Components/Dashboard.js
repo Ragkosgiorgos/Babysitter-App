@@ -101,7 +101,7 @@ const Dashboard = () => {
                                     </div>
 
                                     <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: "3vh"}}>
-                                        <PageCard title="Τα Συμφωνητικά μου" url="/epaggelmaties/symbolaia" />
+                                        <PageCard title="Τα Συμφωνητικά μου" url="/dashboard/Symfwnitika" />
                                         <PageCard title="Οι Αξιολογήσεις μου" url="/ratings" />
                                         <PageCard title="Οι Πληρωμές μου" url="/epaggelmaties/pliromes" />
                                     </div>
@@ -116,8 +116,8 @@ const Dashboard = () => {
                                     </div>
 
                                     <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: "3vh"}}>
-                                        <PageCard title="Τα Συμφωνητικά μου" url="/goneis/symbolaia" />
-                                        <PageCard title="Οι Πληρωμές μου" url="/goneis/symbolaia/pliromes" />
+                                        <PageCard title="Τα Συμφωνητικά μου" url="dashboard/Symfwnitika" />
+                                        <PageCard title="Οι Πληρωμές μου" url="/dashboard/Pliromes" />
                                         <PageCard title="Οι Αξιολογήσεις μου" url="/ratings" />
                                     </div>
                                 </div>

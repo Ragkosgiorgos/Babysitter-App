@@ -106,7 +106,7 @@ function MainRantevouPGU() {
                 </thead>
                 <tbody>
                   {posts.filter(isbooked).map((post) => (
-                    <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "1.5em" }}>
+                    <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2em" }}>
                       <td style={{ padding: "10px" }}>{post.date}</td>
                       <td style={{ padding: "10px" }}>{post.tropos_synantisis}</td>
                       <td style={{ display: "flex", justifyContent: "center", gap: "10px", padding: "10px" }}>
@@ -114,7 +114,7 @@ function MainRantevouPGU() {
                       </td>
                     </tr>
                   ))}
-                  {posts.length === 0 && (
+                  {posts.filter(isbooked).length === 0 && (
                     <tr>
                       <td colSpan={3} style={{ padding: "10px" }}>Δεν υπάρχουν ραντεβού</td>
                     </tr>

@@ -118,8 +118,8 @@ function MainPliromesGoneis() {
               </button>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '2%' }}>
-              <table style={{ width: '55%', backgroundColor: '#D9EAFD', textAlign: 'center', borderRadius: '10px' }}>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
+              <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px", tableLayout: "fixed" }}>
                 <thead style={{ lineHeight: '2em' }}>
                   <tr style={{ borderBottom: '2px solid #333' }}>
                     <th>Babysitter</th>

@@ -193,12 +193,12 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/epaggelmaties/symbolaia">
+                                <a className="dropdown-item" href="/dashboard/Symfwnitika">
                                     Τα Συμφωνητικά μου
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/epaggelmaties/pliromes">
+                                <a className="dropdown-item" href="/dashboard/Pliromes">
                                     Οι Πληρωμές μου
                                 </a>
                             </li>
@@ -307,12 +307,12 @@ function Header(props) {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/goneis/symbolaia">
+                                <a className="dropdown-item" href="/dashboard/Symfwnitika">
                                     Τα Συμφωνητικά μου
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="/goneis/symbolaia/pliromes">
+                                <a className="dropdown-item" href="/dashboard/Pliromes">
                                     Οι Πληρωμές μου
                                 </a>
                             </li>

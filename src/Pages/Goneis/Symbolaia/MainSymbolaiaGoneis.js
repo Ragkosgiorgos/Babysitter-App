@@ -127,26 +127,28 @@ function MainSymbolaiaGoneisPGU() {
     return babysitter ? `${babysitter.firstName} ${babysitter.lastName}` : "Άγνωστο";
   };
 
-  const findReviewId = async (babysitterId) => {
-    try {
-      const q = query(
-        collection(FIREBASE_DB, 'ratings'),
-        where('id_p', '==', uuid),
-        where('id_b', '==', babysitterId)
-      );
-      const querySnapshot = await getDocs(q);
-  
-      if (!querySnapshot.empty) {
-        const ratingDoc = querySnapshot.docs[0];
-        return ratingDoc.id;
+  useEffect(() => {
+    const fetchRatings = async () => {
+      try {
+        const updatedContracts = await Promise.all(
+          contracts.map(async (contract) => {
+            const q = query(
+              collection(FIREBASE_DB, "ratings"),
+              where("id_p", "==", uuid),
+              where("id_b", "==", contract.id_b)
+            );
+            const querySnapshot = await getDocs(q);
+            const ratingId = !querySnapshot.empty ? querySnapshot.docs[0].id : null;
+            return { ...contract, ratingId };
+          })
+        );
+        setContracts(updatedContracts);
+      } catch (error) {
+        console.error("Error fetching ratings:", error);
       }
-
-      return null;
-    } catch (error) {
-      console.error('Error fetching rating:', error);
-      return null;
-    }
-  };
+    };
+    if (contracts.length > 0) fetchRatings();
+  }, [contracts, uuid]);
 
   const [error, setError] = useState(null);
 
@@ -223,8 +225,7 @@ function MainSymbolaiaGoneisPGU() {
         </div>
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
-
-              <table style={{ width: "70%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius: "10px" }}>
+              <table style={{ width: "70%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px", tableLayout: "fixed" }}>
                 <thead style={{ lineHeight: "2em" }}>
                   <tr style={{ borderBottom: "2px solid #333" }}>
                     <th>Περίοδος Συμβολαίου</th>
@@ -248,20 +249,21 @@ function MainSymbolaiaGoneisPGU() {
                                 {contract.status}
                             </td>
                             <td>
-                            {(contract.status === "Σε ισχύ" || contract.status === "Ολοκληρώθηκε") &&
-                              <span 
-                                style={{ cursor: "pointer", textDecoration: "underline" }} 
-                                onClick={async () => {
-                                  const ratingId = await findReviewId(contract.id_b);
-                                  if (ratingId) {
-                                    navigate(`/ratings/previewAksiologisi?id=${ratingId}`);
-                                  } 
-                                }}
-                              >
-                                Προβολή
-                              </span>
+                        {(contract.status === "Σε ισχύ" || contract.status === "Ολοκληρώθηκε") && (
+                          <span
+                            style={{ cursor: "pointer", textDecoration: "underline" }}
+                            onClick={() =>
+                              navigate(
+                                contract.ratingId
+                                  ? `/ratings/previewAksiologisi?id=${contract.ratingId}`
+                                  : `/ratings/add`
+                              )
                             }
-                            </td>
+                          >
+                            {contract.ratingId ? "Προβολή" : "Αξιολόγηση"}
+                          </span>
+                        )}
+                      </td>
                             <td>
                               <span 
                                 style={{ cursor: "pointer", textDecoration: "underline"}} 

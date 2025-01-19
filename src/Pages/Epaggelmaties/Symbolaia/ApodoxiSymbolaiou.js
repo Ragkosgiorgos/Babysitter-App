@@ -662,6 +662,21 @@ function ApodoxiSymbolaiou() {
                     </>
                     ) : currentStep === 3 ? (
                         <>
+
+                        <button
+                            style={{
+                                height: "3%",
+                                backgroundColor: "#2b8cbe",
+                                color: "white",
+                                borderRadius: "5px",
+                                marginTop: "2%",
+                                width: "12%",
+                            }}
+                            onClick={goToPreviousStep}
+                        >
+                            Προηγούμενο
+                        </button>
+
                         <button
                             style={{
                                 height: "3%",

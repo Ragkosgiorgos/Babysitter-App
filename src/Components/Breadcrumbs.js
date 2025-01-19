@@ -23,6 +23,9 @@ const translations = {
   add: "Δημιουργία",
   rantevou: "Ραντεβού",
   available: "Διαθέσιμα",
+  Symfwnitika: "Συμφωνητικά",
+  Pliromes: "Πληρωμές",
+  edit: "Επεξεργασία",
 };
 
 function Breadcrumbs() {

@@ -122,11 +122,10 @@ function MainSymbolaiaEpaggelmatiesPGU() {
             </div>
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
-
               {loading ? (
                 <Loader />
               ) : (
-                <table style={{ width: "70%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius: "10px" }}>
+                <table style={{ width: "70%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px", tableLayout: "fixed" }}>
                   <thead style={{ lineHeight: "2em" }}>
                     <tr style={{ borderBottom: "2px solid #333" }}>
                       <th>Περίοδος Συμβολαίου</th>
