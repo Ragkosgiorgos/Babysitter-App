@@ -97,18 +97,16 @@ function Viografiko() {
                     <a href="/dummy.pdf" target="_blank" rel="noreferrer">
                         Επιστολή {i + 1}
                     </a>
-                    <button
-                        style={{
-                            background: "none",
-                            border: "none",
-                            cursor: "pointer",
-                            color: "red",
-                            fontSize: "16px",
-                        }}
-                        onClick={() => handleDelete(i)}
-                    >
-                        <ClearIcon />
-                    </button>
+                  <span 
+                    style={{ 
+                    cursor: "pointer", 
+                    color: "red", 
+                    marginLeft: "10px",textDecoration:"underline"  
+                    }} 
+                    onClick={() => handleDelete(i)}
+                >
+                    Διαγραφή
+                </span>
                 </div>
             );
         }
@@ -277,7 +275,7 @@ function Viografiko() {
                                             style={{ 
                                             cursor: "pointer", 
                                             color: "red", 
-                                            marginLeft: "10px"  
+                                            marginLeft: "10px",textDecoration:"underline"  
                                             }} 
                                             onClick={() => handleDeleteExperience(exp)}
                                         >
@@ -293,16 +291,15 @@ function Viografiko() {
                                 {!showAddExperienceForm ? (
                                     <button
                                         onClick={() => setShowAddExperienceForm(true)}
-                                        style={{
-                                            marginTop: "10px",
-                                            backgroundColor: "green",
-                                            color: "white",
-                                            borderRadius: "5px",
-                                            cursor: "pointer",
-                                            border: "1px solid #333",
-                                            boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-                                            fontSize: "15px",
-                                            padding: "10px 20px",
+                                        style={{ 
+                                            marginTop: "10px", 
+                                            backgroundColor: "green", 
+                                            color: "white", 
+                                            borderRadius: "5px", 
+                                            cursor: "pointer", 
+                                            border: "1px solid #333", 
+                                            boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", 
+                                            fontSize: "15px" 
                                         }}
                                     >
                                         Προσθήκη Προυπηρεσίας
@@ -331,6 +328,22 @@ function Viografiko() {
                                             onChange={(e) => setNewExperience({ ...newExperience, duration: e.target.value })}
                                         />
                                         <div style={{display:"flex"}}>
+                                        
+                                        <button
+                                            onClick={() => setShowAddExperienceForm(false)}
+                                            style={{
+                                                marginTop: "10px",
+                                                backgroundColor: "gray",
+                                                color: "white",
+                                                borderRadius: "5px",
+                                                cursor: "pointer",
+                                                border: "1px solid #333",
+                                                fontSize: "15px",
+                                                padding: "5px 15px",
+                                            }}
+                                        >
+                                            Ακύρωση
+                                        </button>
                                         <button
                                             onClick={handleAddExperience}
                                             style={{
@@ -347,21 +360,6 @@ function Viografiko() {
                                             }}
                                         >
                                             Αποθήκευση
-                                        </button>
-                                        <button
-                                            onClick={() => setShowAddExperienceForm(false)}
-                                            style={{
-                                                marginTop: "10px",
-                                                backgroundColor: "gray",
-                                                color: "white",
-                                                borderRadius: "5px",
-                                                cursor: "pointer",
-                                                border: "1px solid #333",
-                                                fontSize: "15px",
-                                                padding: "5px 15px",
-                                            }}
-                                        >
-                                            Ακύρωση
                                         </button>
                                         </div>
                                     </div>
