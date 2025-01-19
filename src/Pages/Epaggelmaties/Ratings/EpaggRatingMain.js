@@ -17,9 +17,9 @@ function EpaggRatingMain() {
     const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
       if (user) {
         setUuid(user.uid);
-      } else {
-        navigate("/404"); // Redirect if user not logged in
-      }
+      }  else {
+        navigate("/login");
+    }
     });
     return () => unsubscribe();
   }, [navigate]);

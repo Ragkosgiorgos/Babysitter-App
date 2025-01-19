@@ -24,8 +24,8 @@ function PreviewAggelias() {
         const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
             if (user) {
                 setUuid(user.uid);
-            } else {
-                navigate("/404"); // Redirect if not logged in
+            }  else {
+                navigate("/login");
             }
         });
         return () => unsubscribe();

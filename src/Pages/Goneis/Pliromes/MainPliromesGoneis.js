@@ -22,7 +22,9 @@ function MainPliromesGoneis() {
     const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
       if (user) {
         setUuid(user.uid);
-      }
+      } else {
+        navigate("/login");
+    }
     });
     return () => unsubscribe();
   }, []);

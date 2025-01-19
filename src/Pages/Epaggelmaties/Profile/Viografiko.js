@@ -309,7 +309,7 @@ function Viografiko() {
                                             padding: "10px 20px",
                                         }}
                                     >
-                                        Προσθήκη Εμπειρίας
+                                        Προσθήκη Προυπηρεσίας
                                     </button>
                                 ) : (
                                     <div style={{ marginTop: "20px",display:"flex",flexDirection:"column" }}>
