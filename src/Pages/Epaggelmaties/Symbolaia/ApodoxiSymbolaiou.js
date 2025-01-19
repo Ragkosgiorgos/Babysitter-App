@@ -25,9 +25,9 @@ function ApodoxiSymbolaiou() {
 
     const steps = [
         "Eπιβεβαίωση στοιχείων κηδεμόνα και παιδιού",
-        "Eπιβεβαίωση στοιχείων επαγγελματία",
-        "Eπιβεβαίωση στοιχείων συμβολαίου",
-        "Υπογραφή συμβολαίου",
+        "Eπιβεβαίωση στοιχείων babysitter",
+        "Eπιβεβαίωση στοιχείων συμφωνητικού",
+        "Υπογραφή συμφωνητικού",
     ];
 
     // Fetch current user UUID
@@ -217,7 +217,7 @@ function ApodoxiSymbolaiou() {
                     <div style={{ textAlign: "center" }}>
                     <div style={{display: "flex",flexDirection: "column",marginTop: "2%",backgroundColor: "#ece7f2",borderRadius: "2%",width: "60%",justifyContent: "center",marginLeft: "20%",padding: "2%",}}>
                             <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                                <b>Επιβεβαίωση στοιχείων επαγγελματία</b>
+                                <b>Επιβεβαίωση στοιχείων babysitter</b>
                             </h2>
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
                                 <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
@@ -262,7 +262,7 @@ function ApodoxiSymbolaiou() {
                         <div style={{ textAlign: "center" }}>
                         <div style={{display: "flex",flexDirection: "column",marginTop: "2%",backgroundColor: "#ece7f2",borderRadius: "2%",width: "60%",justifyContent: "center",marginLeft: "20%",padding: "2%",}}>
                             <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                                <b>Επιβεβαίωση στοιχείων συμβολαίου</b>
+                                <b>Επιβεβαίωση στοιχείων συμφωνητικού</b>
                             </h2>
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
                             <b>Ημέρες εργασίας:</b> 
@@ -282,11 +282,11 @@ function ApodoxiSymbolaiou() {
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Έναρξη συμβολαίου:</b> {contract.startDate}
+                                <b>Έναρξη συμφωνητικού:</b> {contract.startDate}
                             </h4>
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>Λήξη συμβολαίου:</b> {contract.endDate}
+                                <b>Λήξη συμφωνητικού:</b> {contract.endDate}
                             </h4>
                         </div>
                     </div>
@@ -299,7 +299,7 @@ function ApodoxiSymbolaiou() {
                         {contract.status === "Σε αναμονή" ? (
                                 <>
                                     <h2 style={{ textAlign: "center", textDecoration: "underline", marginBottom: "20px" }}>
-                                        <b>Αποδοχή ή απόρριψη του συμβολαίου</b>
+                                        <b>Αποδοχή ή απόρριψη του συμφωνητικού</b>
                                     </h2>
                                     <div
                                         style={{
@@ -354,8 +354,8 @@ function ApodoxiSymbolaiou() {
                                         justifyContent: "center",
                                         marginLeft: "20%",
                                         padding: "2%",
-                                    }}> <h3>Το συμβόλαιό σας με κωδικό #{contract.id} υπογράφτηκε με επιτυχία. 
-                                    Μπορείτε να το δείτε στη λίστα συμβολαίων</h3> </div>
+                                    }}> <h3>Το συμφωνητικό σας υπογράφτηκε με επιτυχία. 
+                                    Μπορείτε να το δείτε στη λίστα συμφωνητικών</h3> </div>
                                     <div
                                         style={{
                                             display: "flex",
@@ -440,7 +440,7 @@ function ApodoxiSymbolaiou() {
                                         }}
                                     >
                                         <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                                            <b>Στοιχεία συμβολαίου</b>
+                                            <b>Στοιχεία συμφωνητικού</b>
                                         </h2>
                                         <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
                                             <b>Ημέρες εργασίας:</b> 
@@ -460,11 +460,11 @@ function ApodoxiSymbolaiou() {
                                         </h4>
                                         <hr />
                                         <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                            <b>Έναρξη συμβολαίου:</b> {contract.startDate}
+                                            <b>Έναρξη συμφωνητικού:</b> {contract.startDate}
                                         </h4>
                                         <hr />
                                         <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                            <b>Λήξη συμβολαίου:</b> {contract.endDate}
+                                            <b>Λήξη συμφωνητικού:</b> {contract.endDate}
                                         </h4>
                                     </div>
                                 </div>
@@ -485,7 +485,7 @@ function ApodoxiSymbolaiou() {
                                             padding: "2%",
                                         }}
                                     >
-                                        <h3>Το συμβόλαιο με κωδικό #{contract.id} έχει απορριφθεί.</h3>
+                                        <h3>Το συμφωνητικό με κωδικό #{contract.id} έχει απορριφθεί.</h3>
                                     </div>
 
                                     <div
@@ -572,7 +572,7 @@ function ApodoxiSymbolaiou() {
                                         }}
                                     >
                                         <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                                            <b>Στοιχεία συμβολαίου</b>
+                                            <b>Στοιχεία συμφωνητικού</b>
                                         </h2>
                                         <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
                                             <b>Ημέρες εργασίας:</b> 
@@ -592,11 +592,11 @@ function ApodoxiSymbolaiou() {
                                         </h4>
                                         <hr />
                                         <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                            <b>Έναρξη συμβολαίου:</b> {contract.startDate}
+                                            <b>Έναρξη συμφωνητικού:</b> {contract.startDate}
                                         </h4>
                                         <hr />
                                         <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                            <b>Λήξη συμβολαίου:</b> {contract.endDate}
+                                            <b>Λήξη συμφωνητικού:</b> {contract.endDate}
                                         </h4>
                                     </div>
                                     

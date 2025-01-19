@@ -228,11 +228,11 @@ function MainSymbolaiaGoneisPGU() {
               <table style={{ width: "75%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px", tableLayout: "fixed" }}>
                 <thead style={{ lineHeight: "1.2em" }}>
                   <tr style={{ borderBottom: "2px solid #333" }}>
-                    <th style={{ padding: "10px" }}>Περίοδος Συμβολαίου</th>
+                    <th style={{ padding: "10px" }}>Περίοδος συμφωνητικού</th>
                     <th style={{ padding: "10px" }}>Ονοματεπώνυμο babysitter</th>
-                    <th style={{ padding: "10px" }}>Κατάσταση συμβολαίου</th>
+                    <th style={{ padding: "10px" }}>Κατάσταση συμφωνητικού</th>
                     <th style={{ padding: "10px" }}>Αξιολόγηση</th>
-                    <th style={{ padding: "10px" }}>Συμβόλαιο</th>
+                    <th style={{ padding: "10px" }}>συμφωνητικό</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -276,7 +276,7 @@ function MainSymbolaiaGoneisPGU() {
                     ))}
                     {contracts.length === 0 && (
                       <tr>
-                        <td colSpan={4}>Δεν υπάρχουν συμβόλαια</td>
+                        <td colSpan={4}>Δεν υπάρχουν συμφωνητικά</td>
                       </tr>
                     )}
                 </tbody>

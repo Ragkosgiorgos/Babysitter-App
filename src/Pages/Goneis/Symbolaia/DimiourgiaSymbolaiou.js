@@ -359,10 +359,10 @@ const submitPayment = async (contractId, startDate, endDate) => {
     const steps = [
         "Επιβεβαίωση προσωπικών στοιχείων",
         "Επιβεβαίωση στοιχείων παιδιού",
-        "Συμπλήρωση στοιχείων επαγγελματία και στοιχείων εργασίας",
+        "Συμπλήρωση στοιχείων babysitter και στοιχείων εργασίας",
         "Προεπισκόπηση και υποβολή",
-        "Αναμονή για υπογραφή από επαγγελματία",
-        "Αποδοχή ή απόρριψη συμβολαίου",
+        "Αναμονή για υπογραφή από babysitter",
+        "Αποδοχή ή απόρριψη συμφωνητικού",
     ];
 
 
@@ -548,7 +548,7 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                 >
                                     
                                     <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                                        <b>Επιλέξτε τον επαγγελματία που θέλετε να κάνετε συμβόλαιο</b>
+                                        <b>Επιλέξτε τον babysitter που θέλετε να κάνετε συμφωνητικό</b>
                                     </h2>
                                     {isSubmitting && !babysitter.userId && (
                                         <p style={{ color: "red",textAlign:"center" }}>
@@ -632,9 +632,9 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                                 label="Στον χώρο του κηδεμόνα"
                                             />
                                             <FormControlLabel
-                                                value="Στον χώρο του επαγγελματία"
+                                                value="Στον χώρο του babysitter"
                                                 control={<Radio />}
-                                                label="Στον χώρο του επαγγελματία"
+                                                label="Στον χώρο του babysitter"
                                             />
                                         </RadioGroup>
                                     </FormControl>
@@ -716,7 +716,7 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                     )}
                                     {isDateRangeOverlapping && (
                                         <p style={{ color: "red", textAlign:"center" }}>
-                                            Η ημερομηνία που επιλέξατε επικαλύπτεται με άλλες συμβάσεις.
+                                            Η ημερομηνία που επιλέξατε επικαλύπτεται με άλλα συμφωνητικά.
                                         </p>
                                     )}
 
@@ -734,7 +734,7 @@ const submitPayment = async (contractId, startDate, endDate) => {
             case 3:
                 return (
                     <div style={{ textAlign: "center" }}>
-                        <h2>Προεπισκόπηση συμβολαίου</h2>
+                        <h2>Προεπισκόπηση συμφωνητικού</h2>
                         <div style={{ textAlign: "center" }}>
                         <div style={{display: "flex",flexDirection: "column",marginTop: "2%",backgroundColor: "#ece7f2",borderRadius: "2%",width: "60%",justifyContent: "center",marginLeft: "20%",padding: "2%",}}>
                             <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
@@ -786,7 +786,7 @@ const submitPayment = async (contractId, startDate, endDate) => {
                     <div style={{ textAlign: "center" }}>
                         <div style={{display: "flex",flexDirection: "column",marginTop: "2%",backgroundColor: "#ece7f2",borderRadius: "2%",width: "60%",justifyContent: "center",marginLeft: "20%",padding: "2%",}}>
                             <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                                <b>Στοιχεία επαγγελματία για ταυτοποίηση</b>
+                                <b>Στοιχεία babysitter για ταυτοποίηση</b>
                             </h2>
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
                                 <b>Όνομα:</b> {babysitter.firstName}
@@ -819,7 +819,7 @@ const submitPayment = async (contractId, startDate, endDate) => {
                         <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
                             <b>Φιλοξενία</b>
                         </h2>
-                        <h4 style={{textAlign:"left" ,marginTop: "3%", marginLeft: "6%" }}>{stepTwoData.hostingPreference === "guardian" ? "Στον χώρο του κηδεμόνα" : "Στον χώρο του επαγγελματία"}</h4>
+                        <h4 style={{textAlign:"left" ,marginTop: "3%", marginLeft: "6%" }}>{stepTwoData.hostingPreference === "guardian" ? "Στον χώρο του κηδεμόνα" : "Στον χώρο του babysitter"}</h4>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
                         <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
@@ -846,12 +846,12 @@ const submitPayment = async (contractId, startDate, endDate) => {
                 <Loader />
             ) : contractId ? (
                 <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
-                    <span>Το συμβόλαιο με κωδικό #{contractId} βρίσκεται υπό αναμονή απάντησης από τον/την επαγγελματία. 
-                    Μπορείτε να παρακολουθείτε τυχόν εξελίξεις από τη λίστα συμβολαίων.</span>
+                    <span>Το συμφωνητικό με κωδικό #{contractId} βρίσκεται υπό αναμονή απάντησης από τον/την babysitter. 
+                    Μπορείτε να παρακολουθείτε τυχόν εξελίξεις από τη λίστα συμφωνητικών.</span>
                 </div>
             ) : (
                 <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
-                    <span>Υποβάλλετε το συμβόλαιο για να λάβετε τον κωδικό.</span>
+                    <span>Υποβάλλετε το συμφωνητικό για να λάβετε τον κωδικό.</span>
                 </div>
             )}
         </div>

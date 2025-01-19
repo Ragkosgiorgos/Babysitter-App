@@ -9,7 +9,7 @@ const translations = {
   login: "Σύνδεση",
   register: "Εγγραφή",
   profiles: "Προφίλ",
-  goneis: "Γονείς",
+  goneis: "Κηδεμόνες",
   khdemones: "Κηδεμόνες",
   Home: "Αρχική",
   anazitisi: "Αναζήτηση",

@@ -2,74 +2,59 @@ import React, { useState, useEffect } from "react";
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import Loader from "../../../Components/Loader";
 import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import InfoIcon from '@mui/icons-material/Info';
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
-import Loader from "../../../Components/Loader";
 
 function ViewAvailabilityPGU(){
-    const params = new URLSearchParams(window.location.search);
-    const [uuid, setUuid] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [posts, setPosts] = useState([]);
-    const navigate = useNavigate(); 
-    const id_b = params.get("id_b") || "";
-    const [user, setUser] = useState({});
+  const navigate = useNavigate(); 
 
-    const routeChangeEdit = (id_rantevou) =>{ 
-        navigate(`../goneis/profile/aitiseis-endiaferontos/edit?id_rantevou=${id_rantevou}`);
-      };
+  const params = new URLSearchParams(window.location.search);
+  const id_b = params.get("id_b") || "";
+  
+  const [uuid, setUuid] = useState(null);
+  const [loading, setLoading] = useState(true);
+  // Check if user is logged in, get the user's UUID
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+      if (user) {
+        setUuid(user.uid);
+      } else {
+        navigate("/login");
+      }
+    });
+    return () => unsubscribe();
+  }, [navigate]);
 
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
-          if (user) {
-            setUuid(user.uid);
-          } else {
-            navigate("/404");
-          }
-        });
-        return () => unsubscribe();
-    }, [navigate]);
-
-    const [newData, setnewData] = useState({
-        id: "",
-        id_p: "",
-        id_b: id_b,
-        tropos_synantisis: "",
-        date: new Date().toLocaleDateString(),
-        address: "", 
-      });
-
-      useEffect(() => {
-        if (uuid){
-            const fetchUserData = async () => {
-                try {
-                    setLoading(true);
-                    const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
-                    const querySnapshot = await getDocs(q);
-                    const users = querySnapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                    }));
-                    setUser(users[0]);
-                } catch (error) {
-                    console.error('Error fetching user data:', error);
-                } finally {
-                    setLoading(false);
-                }
-            };
-            fetchUserData();
+  // Fetch the user's data from the database
+  const [user, setUser] = useState({});
+  useEffect(() => {
+    if (uuid){
+      const fetchUserData = async () => {
+        try {
+            setLoading(true);
+            const q = query(collection(FIREBASE_DB, 'user'), where('userId', '==', uuid));
+            const querySnapshot = await getDocs(q);
+            const users = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setUser(users[0]);
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        } finally {
+            setLoading(false);
         }
-    }, [uuid]);
+      };
+      fetchUserData();
+    }
+  }, [uuid]);
 
-      // Fetch the job posts' data from the database
+  // Fetch available rantevou of babysitter from the database
+  const [posts, setPosts] = useState([]);
   useEffect(() => {
     if (uuid) {
       const fetchPosts = async () => {
@@ -92,81 +77,75 @@ function ViewAvailabilityPGU(){
     }
   }, [uuid]);
 
-    function isavailable(dates){
-        return dates.id_p === "";
-      }
-    
-      //? Error handling
-      if (loading) {
-        return <Loader />;
-      }
+  function isavailable(dates){
+    return dates.id_p === "";
+  }
 
-    return (
-        <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
-          <div>
-            <Header />
-    
-            <div style={{ display: "flex", flexDirection: "column", overflow: "auto" }}>
-    
-              <div style={{ flex: 1, overflowY: "auto" }}>
-    
-                <Breadcrumbs />
-    
-                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
-                  <h2 style={{ fontWeight: "bold", textAlign: "center", marginTop: "3%" }}>Τα διαθέσιμα ραντεβού μου</h2>
-                  <Tooltip title={
-                                  <div style={{ display: "flex", justifyContent: "center", gap: "5%", flexDirection:"column" }}>
-                                    {/* <div><  style={{ cursor: "pointer" }} />: στοιχεία ραντεβού</div> */}
-                                  </div>} placement="top" style={{marginTop:"3%"}}>
-                      <Button> <InfoIcon /> </Button>
-                    </Tooltip>
-                </div>
-                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
-    
-                  <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
-                    <thead>
-                      <tr style={{ borderBottom: "2px solid #333" }}>
-                        <th>Ημερομηνία και ώρα</th>
-                        <th>Τρόπος</th>     
-                        <th>Ενέργειες</th>               
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {posts.filter(isavailable).map((posts) => (
-                        <tr key={posts.id} style={{ borderTop: "0.2px solid #333" }}>
-                          <td>{posts.date}</td>
-                          <td>{posts.tropos_synantisis}</td>
-                          <td style={{ display: "flex", justifyContent: "center", gap: "0%" }}>
-                          <Button onClick={() => routeChangeEdit(posts.id)}> <img style={{ cursor: "pointer" ,marginRight: "0px", position: "relative" }} src="/edit.svg" width="40%" height="20vh" alt="" /> </Button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-    
-                </div>
-    
-                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "5%", marginRight: "70%" }}>
-                  
-                  <button onClick={()=> navigate("../goneis/view-availability")} style={{ width: "35%" , height: "8vh", backgroundColor: "gray", color: "white", border: "none", 
-                                    borderRadius: "5px", fontSize: "3vh", cursor: "pointer", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)" }}>
-                    Επιστροφή
-                  </button>
-                  
-                </div>
-                
-              </div>
-    
+  const routeChangeEdit = (id_rantevou) => navigate(`../goneis/profile/aitiseis-endiaferontos/edit?id_rantevou=${id_rantevou}`);
+  
+  if (loading) {
+    return <Loader />;
+  }
+
+  return (
+    <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
+      <div>
+        <Header />
+
+        <div style={{ display: "flex", flexDirection: "column", overflow: "auto" }}>
+
+          <div style={{ flex: 1, overflowY: "auto" }}>
+
+            <Breadcrumbs />
+
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
+              <h2 style={{ fontWeight: "bold", textAlign: "center", marginTop: "3%" }}>Τα διαθέσιμα ραντεβού μου</h2>
             </div>
-          </div>
-          
-          <div>
-            <Footer />
-          </div>
-          
-        </div>
-      );
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
 
+              <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px" }}>
+                <thead>
+                  <tr style={{ borderBottom: "2px solid #333" }}>
+                    <th>Ημερομηνία και ώρα</th>
+                    <th>Τρόπος</th>     
+                    <th>Ενέργειες</th>               
+                  </tr>
+                </thead>
+                <tbody>
+                  {posts.filter(isavailable).map((posts) => (
+                    <tr key={posts.id} style={{ borderTop: "0.2px solid #333" }}>
+                      <td>{posts.date}</td>
+                      <td>{posts.tropos_synantisis}</td>
+                      <td style={{ display: "flex", justifyContent: "center", gap: "0%" }}>
+                      <Button onClick={() => routeChangeEdit(posts.id)}> <img style={{ cursor: "pointer" ,marginRight: "0px", position: "relative" }} src="/edit.svg" width="40%" height="20vh" alt="" /> </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "5%", marginRight: "70%" }}>
+              
+              <button onClick={()=> navigate("../goneis/view-availability")} style={{ width: "35%" , height: "8vh", backgroundColor: "gray", color: "white", border: "none", 
+                                borderRadius: "5px", fontSize: "3vh", cursor: "pointer", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)" }}>
+                Επιστροφή
+              </button>
+              
+            </div>
+            
+          </div>
+
+        </div>
+      </div>
+      
+      <div>
+        <Footer />
+      </div>
+      
+    </div>
+  );
 }
 
 export default ViewAvailabilityPGU;

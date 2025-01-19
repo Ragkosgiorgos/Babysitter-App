@@ -166,8 +166,8 @@ function PreviewAitiseisEndiaferontosPGU(props) {
           <div style={{ flex: 1 }}>
               <Breadcrumbs />
               <div style={{ textAlign: "center", marginTop: "1%"}}>
-                            <h2>Η αιτησή σας με <b style={{ textDecoration: "underline" }}>κωδικό {aitisi.id}</b> δημοσιεύτηκε με επιτυχία!</h2>
-                            <h4>Μπορείτε να δείτε την αιτησή σας στην κατηγορία "Οι αιτήσεις ενδιαφέροντός μου".</h4>
+                            <h2>Η αιτησή σας δημοσιεύτηκε με επιτυχία!</h2>
+                            <h4>Μπορείτε να δείτε την αίτησή σας στην κατηγορία "Οι αιτήσεις ενδιαφέροντός μου".</h4>
                     </div>
                     <div style={{ display: "flex", flexDirection: "row", marginTop: "2%", marginLeft: "10%", marginRight: "10%" }}>
                         <div style={{ textAlign: "center"}}>

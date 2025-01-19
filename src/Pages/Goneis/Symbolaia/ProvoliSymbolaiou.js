@@ -21,10 +21,10 @@ import { useNavigate } from "react-router-dom";
         const steps = [
             "Επιβεβαίωση προσωπικών στοιχείων",
             "Επιβεβαίωση στοιχείων παιδιού",
-            "Συμπλήρωση στοιχείων επαγγελματία και στοιχείων εργασίας",
+            "Συμπλήρωση στοιχείων babysitter και στοιχείων εργασίας",
             "Προεπισκόπηση και υποβολή",
-            "Αναμονή για υπογραφή από επαγγελματία",
-            "Αποδοχή ή απόρριψη συμβολαίου"
+            "Αναμονή για υπογραφή από babysitter",
+            "Αποδοχή ή απόρριψη συμφωνητικού"
         ];
 
         
@@ -88,7 +88,7 @@ import { useNavigate } from "react-router-dom";
             }
     
             if (!contract) {
-                return <p>Δεν βρέθηκε το συμβόλαιο.</p>;
+                return <p>Δεν βρέθηκε το συμφωνητικό.</p>;
             }
     
             switch (currentStep) {
@@ -105,7 +105,7 @@ import { useNavigate } from "react-router-dom";
                                     justifyContent: "center",
                                     marginLeft: "20%",
                                     padding: "2%",}}>
-                            <h3>Το συμβόλαιο με κωδικό #{contractId} είναι σε αναμονή προς απάντηση</h3>
+                            <h3>Το συμφωνητικό με κωδικό #{contractId} είναι σε αναμονή προς απάντηση</h3>
                                 </div>
                             ) : contract.status === "Σε ισχύ" ? (
                                 <>  
@@ -118,7 +118,7 @@ import { useNavigate } from "react-router-dom";
                                         justifyContent: "center",
                                         marginLeft: "20%",
                                         padding: "2%",}}>
-                                        <h3>Το συμβόλαιο με κωδικό #{contractId} είναι σε ισχύ</h3> 
+                                        <h3>Το συμφωνητικό με κωδικό #{contractId} είναι σε ισχύ</h3> 
                                     </div>
                                     <div style={{ textAlign: "center" }}>
                                         <div
@@ -135,7 +135,7 @@ import { useNavigate } from "react-router-dom";
                                             }}
                                         >
                                             <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                                                <b>Στοιχεία συμβολαίου</b>
+                                                <b>Στοιχεία συμφωνητικού</b>
                                             </h2>
                                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
                                                 <b>Ημέρες εργασίας:</b>{" "}
@@ -157,11 +157,11 @@ import { useNavigate } from "react-router-dom";
                                             </h4>
                                             <hr />
                                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                                <b>Έναρξη συμβολαίου:</b> {contract.startDate}
+                                                <b>Έναρξη συμφωνητικού:</b> {contract.startDate}
                                             </h4>
                                             <hr />
                                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                                <b>Λήξη συμβολαίου:</b> {contract.endDate}
+                                                <b>Λήξη συμφωνητικού:</b> {contract.endDate}
                                             </h4>
                                         </div>
                                         <div
@@ -180,7 +180,7 @@ import { useNavigate } from "react-router-dom";
                                         {epagelmatias && epagelmatias.length > 0 ? (
                                             <>
                                                 <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                                                    <b>Στοιχεία επαγγελματία</b>
+                                                    <b>Στοιχεία babysitter</b>
                                                 </h2>
                                                 <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
                                                     <b>Όνομα:</b> {epagelmatias[0].firstName}
@@ -203,7 +203,7 @@ import { useNavigate } from "react-router-dom";
                                                 </h4>
                                             </>
                                         ) : (
-                                            <p>Δεν βρέθηκαν τα στοιχεία του επαγγελματία.</p>
+                                            <p>Δεν βρέθηκαν τα στοιχεία του babysitter.</p>
                                         )}
                                         
                                         </div>
@@ -220,7 +220,7 @@ import { useNavigate } from "react-router-dom";
                                         justifyContent: "center",
                                         marginLeft: "20%",
                                         padding: "2%",}}>
-                                        <h3>Το συμβόλαιο με κωδικό #{contractId} απορρίφθηκε απο τον/τη babysitter</h3> 
+                                        <h3>Το συμφωνητικό με κωδικό #{contractId} απορρίφθηκε απο τον/τη babysitter</h3> 
                                     </div>
                                     <div style={{ textAlign: "center" }}>
                                         <div
@@ -237,7 +237,7 @@ import { useNavigate } from "react-router-dom";
                                             }}
                                         >
                                             <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                                                <b>Στοιχεία συμβολαίου</b>
+                                                <b>Στοιχεία συμφωνητικού</b>
                                             </h2>
                                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
                                                 <b>Ημέρες εργασίας:</b>{" "}
@@ -259,11 +259,11 @@ import { useNavigate } from "react-router-dom";
                                             </h4>
                                             <hr />
                                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                                <b>Έναρξη συμβολαίου:</b> {contract.startDate}
+                                                <b>Έναρξη συμφωνητικού:</b> {contract.startDate}
                                             </h4>
                                             <hr />
                                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                                <b>Λήξη συμβολαίου:</b> {contract.endDate}
+                                                <b>Λήξη συμφωνητικού:</b> {contract.endDate}
                                             </h4>
                                         </div>
                                         <div
@@ -282,7 +282,7 @@ import { useNavigate } from "react-router-dom";
                                         {epagelmatias && epagelmatias.length > 0 ? (
                                             <>
                                                 <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                                                    <b>Στοιχεία επαγγελματία</b>
+                                                    <b>Στοιχεία babysitter</b>
                                                 </h2>
                                                 <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
                                                     <b>Όνομα:</b> {epagelmatias[0].firstName}
@@ -305,14 +305,14 @@ import { useNavigate } from "react-router-dom";
                                                 </h4>
                                             </>
                                         ) : (
-                                            <p>Δεν βρέθηκαν τα στοιχεία του επαγγελματία.</p>
+                                            <p>Δεν βρέθηκαν τα στοιχεία του babysitter.</p>
                                         )}
                                         
                                         </div>
                                     </div>
                                 </>
                             ) : (
-                                <h3>Το συμβόλαιο με κωδικό #{contractId} έχει άγνωστη κατάσταση</h3>
+                                <h3>Το συμφωνητικό με κωδικό #{contractId} έχει άγνωστη κατάσταση</h3>
                             )}
                         </div>
 

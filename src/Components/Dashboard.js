@@ -110,7 +110,6 @@ const Dashboard = () => {
                                 : 
                                 <div>
                                     <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: "3vh" }}>
-                                        <PageCard title="Τα Ραντεβού μου" url="/epaggelmaties/rantevou" />
                                         <PageCard title="Αναζήτηση" url="/anazitisi" onClick={() => navigate('/anazitisi', { state: { area: "", age: "" } })} />
                                         <PageCard title="Αιτήσεις Ενδιαφέροντος" url="/goneis/profile/aitiseis-endiaferontos" />
                                     </div>

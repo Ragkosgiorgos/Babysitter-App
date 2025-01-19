@@ -179,7 +179,7 @@ function PliromiEpaggelmatia() {
 
   // Steps definition
   const steps = [
-      'Επιλογή επαγγελματία',
+      'Επιλογή babysitter',
       'Eπιβεβαίωση χρόνου εργασίας',
       'Πληρωμή',
   ];
@@ -240,7 +240,7 @@ function PliromiEpaggelmatia() {
               }}
             >
               <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                <b>Επιλέξτε τον επαγγελματία που θέλετε να πληρώσετε</b>
+                <b>Επιλέξτε τον babysitter που θέλετε να πληρώσετε</b>
               </h2>
               <div>
               <select
@@ -309,7 +309,7 @@ function PliromiEpaggelmatia() {
                                     ))}
                             </select>
                         ) : (
-                            <p>Δεν βρέθηκαν πληρωμές για τον επιλεγμένο επαγγελματία.</p>
+                            <p>Δεν βρέθηκαν πληρωμές για τον επιλεγμένο babysitter.</p>
                         )}
                         {!selectedPayment && isSubmitting &&(
                           <p style={{ color: "red",textAlign:"center" }}>
@@ -330,11 +330,11 @@ function PliromiEpaggelmatia() {
         <Loader />
     ) : selectedPayment ? (
         <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
-            <span> Ο επαγγελματίας πληρώθηκε και ο κωδικός πληρωμής είναι #{selectedPayment} .</span>
+            <span> Ο babysitter πληρώθηκε και ο κωδικός πληρωμής είναι #{selectedPayment} .</span>
         </div>
     ) : (
         <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
-            <span>Υποβάλλετε το συμβόλαιο για να λάβετε τον κωδικό.</span>
+            <span>Υποβάλλετε το συμφωνητικό για να λάβετε τον κωδικό.</span>
         </div>
     )}
 </div>
