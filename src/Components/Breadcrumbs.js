@@ -26,6 +26,7 @@ const translations = {
   Symfwnitika: "Συμφωνητικά",
   Pliromes: "Πληρωμές",
   edit: "Επεξεργασία",
+  proepiskopisi: "Προεπισκόπηση",
 };
 
 function Breadcrumbs() {
