@@ -11,8 +11,6 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
 import { collection, query, where, getDocs, doc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { onAuthStateChanged } from "firebase/auth";
-import { duration } from "@mui/material";
-import { display } from "@mui/system";
 
 function Viografiko() {
     const navigate = useNavigate();
@@ -28,7 +26,6 @@ function Viografiko() {
         duration:"",
     });
     const [showAddExperienceForm, setShowAddExperienceForm] = useState(false);
-
 
     // Fetch user's uuid
     useEffect(() => {
@@ -56,9 +53,6 @@ function Viografiko() {
                     }));
                     setProfile(posts[0]);
                     console.log(profile)
-                    if (posts[0].property !== "babysitter") {
-                        navigate("/");
-                    }
                 } catch (error) {
                     console.error('Error fetching user:', error);
                 } finally {
@@ -88,8 +82,6 @@ function Viografiko() {
            
         }
     }, [uuid, navigate]);
-
-    
 
     // Handle recommendation letters display
     const viewDummyMails = () => {
@@ -196,7 +188,6 @@ function Viografiko() {
         }
     };
 
-   
     return (
         <div style={{ justifyContent: "space-between", display: "flex", flexDirection: "column", overflow: "auto", minHeight: "100vh" }}>
             <div>

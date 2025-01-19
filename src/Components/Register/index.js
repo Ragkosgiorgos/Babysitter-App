@@ -240,13 +240,14 @@ export default function Register() {
                     area,
                     phone,
                     property,
-                    gender: '',
+                    gender,
                     img: false,
                     createdAt: new Date(),
                     userId: user.uid,
 
                     // For babysitters
                     education,
+                    systatikes: 0,
                     totalRatingAvg: 0,
                     ratingsCount: 0,
 

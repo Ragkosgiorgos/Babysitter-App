@@ -172,7 +172,7 @@ function MainAggeliesPGU() {
                   </thead>
                   <tbody>
                     {posts.map((post, index) => (
-                      <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
+                      <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2em" }}>
                         <td style={{ padding: "10px" }}>{post.status === "Δημοσιευμένη" ? <span style={{ color: "green" }}>{post.status}</span> : <span style={{ color: "#F28C28" }}>{post.status}</span>}</td>
                         <td style={{ display: "flex", justifyContent: "center", alignItems:"center", marginTop: "0.5em", gap: "25px", padding: "10px" }}>
                           {post.status === "Δημοσιευμένη" ?  <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => previewAggeliaRender(post.id)}>Προβολή</span> : ""}
@@ -183,7 +183,7 @@ function MainAggeliesPGU() {
                     ))}
                     {posts.length === 0 && (
                       <tr>
-                        <td colSpan={3}>Δεν υπάρχουν αγγελίες</td>
+                        <td colSpan={3} style={{ padding: "10px" }}>Δεν υπάρχουν αγγελίες</td>
                       </tr>
                     )}
                   </tbody>
