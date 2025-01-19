@@ -17,20 +17,18 @@ import ViewRating from "./Pages/Epaggelmaties/Ratings/ViewRating";
 import Login from "./Components/Login";
 import Register from "./Components/Register";
 import DimiourgiaSymbolaiou from "./Pages/Goneis/Symbolaia/DimiourgiaSymbolaiou";
-import ApodoxiSymbolaiou from "./Pages/Epaggelmaties/Symbolaia/ApodoxiSymbolaiou";
-import MainSymbolaiaEpaggelmatiesPGU from "./Pages/Epaggelmaties/Symbolaia/MainSymbolaiaEpaggelmatiesPGU";
+import ApodoxiSymbolaiou from "./Pages/Epaggelmaties/Symbolaia/ApodoxiSymbolaiou"
 import CreateRating from "./Pages/Goneis/Ratings/CreateRating";
-import MainSymbolaiaGoneisPGU from "./Pages/Goneis/Symbolaia/MainSymbolaiaGoneis";
 import MainAitiseisEndiaferontosPGU from "./Pages/Goneis/AitiseisEndiaferontos/MainAitiseisEndiaferontosPGU";
 import EditAitiseisEndiaferontosPGU from "./Pages/Goneis/AitiseisEndiaferontos/EditAitiseisEndiaferontosPGU";
 import PreviewAitiseisEndiaferontosPGU from "./Pages/Goneis/AitiseisEndiaferontos/PreviewAitiseisEndiaferontos";
 import ErrorPage from "./Components/ErrorPage";
 import ProvoliSymbolaiou from "./Pages/Goneis/Symbolaia/ProvoliSymbolaiou";
-import MainPliromesGoneis from "./Pages/Goneis/Pliromes/MainPliromesGoneis";
 import PliromiEpaggelmatia from "./Pages/Goneis/Pliromes/PliromiEpaggelmatia";
 import MainPliromesEpaggelmaties from "./Pages/Epaggelmaties/Pliromes/MainPliromesEpaggelmaties";
 import Viografiko from "./Pages/Epaggelmaties/Profile/Viografiko";
 import ViewAvailabilityPGU from "./Pages/Goneis/AitiseisEndiaferontos/ViewAvailabilityPGU";
+import ProepiskopisiAvailableRantevou from "./Pages/Epaggelmaties/Rantevou/ProepiskopisiAvailableRantevou";
 import Dashboard from "./Components/Dashboard";
 import Profiles from "./Pages/Profiles";
 import Ratings from "./Pages/Ratings";
@@ -74,6 +72,7 @@ function App() {
           <Route path="epaggelmaties/rantevou" element={<MainRantevouPGU />} />
           <Route path="epaggelmaties/rantevou/available" element={<AvailableRantevouPGU />} />
           <Route path="epaggelmaties/rantevou/available/add" element={<AddRantevouPGU />} />
+          <Route path="epaggelmaties/rantevou/available/view" element={<ProepiskopisiAvailableRantevou />} />
           <Route path="epaggelmaties/rantevou/proepiskopisi" element={<ProepiskopisiRantevouPGU />} />
           <Route path="epaggelmaties/rantevou/available/edit" element={<EditRantevouPGU />} />
 

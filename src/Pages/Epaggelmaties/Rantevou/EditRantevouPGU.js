@@ -13,7 +13,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs, addDoc, setDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, updateDoc, doc } from "firebase/firestore";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../../config/firebase";
 
 import dayjs from 'dayjs';
@@ -81,7 +81,7 @@ function EditRantevouPGU() {
             id: doc.id,
             ...doc.data(),
           }));
-          setnewData(aitiseis[0]); console.log(aitiseis[0]);
+          setnewData(aitiseis[0]);
         } catch (error) {
           console.error("Error fetching appointment data:", error);
         } finally {
@@ -108,13 +108,12 @@ function EditRantevouPGU() {
     try {
       setLoading(true);
       const rantevouRef = collection(FIREBASE_DB, "rantevou");
-      await setDoc(rantevouRef, newData.id, newData);
-      setLoading(false);
-      navigate(-1);
+      await updateDoc(doc(rantevouRef, newData.id), newData);
     } catch (error) {
       console.error("Error updating appointment data:", error);
     } finally {
       setLoading(false);
+      navigate(-1);
     }
   };
 
