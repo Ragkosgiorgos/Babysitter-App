@@ -164,7 +164,7 @@ function MainAggeliesPGU() {
               <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
 
                 <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px", tableLayout: "fixed" }}>
-                  <thead style={{ lineHeight: "2em" }}>
+                  <thead style={{ lineHeight: "1.2em" }}>
                     <tr style={{ borderBottom: "2px solid #333" }}>
                       <th style={{ padding: "10px" }}>Κατάσταση Αγγελίας</th>
                       <th style={{ padding: "10px" }}>Ενέργειες</th>
@@ -175,15 +175,15 @@ function MainAggeliesPGU() {
                       <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2em" }}>
                         <td style={{ padding: "10px" }}>{post.status === "Δημοσιευμένη" ? <span style={{ color: "green" }}>{post.status}</span> : <span style={{ color: "#F28C28" }}>{post.status}</span>}</td>
                         <td style={{ display: "flex", justifyContent: "center", alignItems:"center", marginTop: "0.5em", gap: "25px", padding: "10px" }}>
-                          {post.status === "Δημοσιευμένη" ?  <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => previewAggeliaRender(post.id)}>Προβολή</span> : ""}
-                          {post.status !== "Δημοσιευμένη" ?  <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handleTempView(post.id)}>Επεξεργασία</span> : ""}
+                          {post.status === "Δημοσιευμένη" ?  <span style={{ cursor: "pointer", textDecoration: "underline", padding: "10px" }} onClick={() => previewAggeliaRender(post.id)}>Προβολή</span> : ""}
+                          {post.status !== "Δημοσιευμένη" ?  <span style={{ cursor: "pointer", textDecoration: "underline", padding: "10px" }} onClick={() => handleTempView(post.id)}>Επεξεργασία</span> : ""}
                           <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handleDelete(post.id)}>Διαγραφή</span>
                         </td>
                       </tr>
                     ))}
                     {posts.length === 0 && (
                       <tr>
-                        <td colSpan={3} style={{ padding: "10px" }}>Δεν υπάρχουν αγγελίες</td>
+                        <td colSpan={2} style={{ padding: "10px", lineHeight: "2em", fontWeight: "bold", textDecoration: "underline" }}>Δεν υπάρχουν αγγελίες</td>
                       </tr>
                     )}
                   </tbody>

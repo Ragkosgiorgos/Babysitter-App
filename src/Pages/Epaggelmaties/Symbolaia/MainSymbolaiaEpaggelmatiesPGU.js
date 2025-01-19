@@ -137,7 +137,7 @@ function MainSymbolaiaEpaggelmatiesPGU() {
                   </thead>
                   <tbody>
                     {contracts.length === 0 ? (
-                      <tr><td colSpan="4">Δεν υπάρχουν συμφωνητικά.</td></tr>
+                      <tr><td colSpan="4" style={{ padding: "10px", lineHeight: "2em", fontWeight: "bold", textDecoration: "underline" }}>Δεν υπάρχουν συμφωνητικά</td></tr>
                     ) : (
                       contracts.map((contract, index) => (
                         <tr key={contract.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2em" }}>

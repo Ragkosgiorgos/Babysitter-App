@@ -102,7 +102,7 @@ function EpaggRatingMain() {
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
               <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius: "10px", tableLayout: "fixed" }}>
-                <thead style={{ lineHeight: "2em" }}>
+                <thead style={{ lineHeight: "1.2em" }}>
                   <tr style={{ borderBottom: "2px solid #333" }}>
                     <th style={{ padding: "10px" }}>Κηδεμόνας</th>
                     <th style={{ padding: "10px" }}>Βαθμολογία</th>
@@ -113,7 +113,7 @@ function EpaggRatingMain() {
                   {filteredPosts
                     .filter((post) => post.id_b === uuid)
                     .map((post, index) => (
-                      <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
+                      <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2em" }}>
                         <td style={{ padding: "10px" }}>
                           {parents
                             .filter((parent) => parent.userId === post.id_p)
@@ -128,7 +128,7 @@ function EpaggRatingMain() {
                   }
                   {filteredPosts.length === 0 && (
                     <tr>
-                      <td colSpan={3}>Δεν υπάρχουν αγγελίες</td>
+                      <td colSpan={3} style={{ padding: "10px", lineHeight: "2em", fontWeight: "bold", textDecoration: "underline" }}>Δεν υπάρχουν αγγελίες</td>
                     </tr>
                   )}
                 </tbody>

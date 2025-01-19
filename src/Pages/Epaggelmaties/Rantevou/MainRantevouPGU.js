@@ -116,7 +116,7 @@ function MainRantevouPGU() {
                   ))}
                   {posts.filter(isbooked).length === 0 && (
                     <tr>
-                      <td colSpan={3} style={{ padding: "10px" }}>Δεν υπάρχουν ραντεβού</td>
+                      <td colSpan={3} style={{ padding: "10px", lineHeight: "2em", fontWeight: "bold", textDecoration: "underline" }}>Δεν υπάρχουν ραντεβού</td>
                     </tr>
                   )}
                 </tbody>

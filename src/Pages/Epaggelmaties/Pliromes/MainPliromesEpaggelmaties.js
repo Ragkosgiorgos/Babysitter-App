@@ -134,7 +134,7 @@ function MainPliromesEpaggelmaties() {
                   ))}
                   {contracts.length === 0 && (
                       <tr>
-                        <td colSpan={3}>Δεν υπάρχουν πληρωμές</td>
+                        <td colSpan={3} style={{ padding: "10px", lineHeight: "2em", fontWeight: "bold", textDecoration: "underline" }}>Δεν υπάρχουν πληρωμές</td>
                       </tr>
                     )}
                 </tbody>

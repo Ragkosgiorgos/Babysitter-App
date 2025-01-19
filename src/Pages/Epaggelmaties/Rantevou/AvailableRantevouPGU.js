@@ -120,7 +120,7 @@ function AvailableRantevouPGU() {
                 </thead>
                 <tbody>
                   {posts.filter(isavailable).map((posts) => (
-                    <tr key={posts.id} style={{ borderTop: "0.2px solid #333", lineHeight: "1.5em" }}>
+                    <tr key={posts.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2em" }}>
                       <td style={{ padding: "10px" }}>{posts.date}</td>
                       <td style={{ padding: "10px" }}>{posts.tropos_synantisis}</td>
                       <td style={{ display: "flex", justifyContent: "center", gap: "20px", padding: "10px" }}>
@@ -132,7 +132,7 @@ function AvailableRantevouPGU() {
                   ))}
                   { posts.filter(isavailable).length === 0 &&
                     <tr>
-                      <td colSpan={3} style={{ padding: "10px" }}>Δεν υπάρχουν διαθέσιμα ραντεβού</td>
+                      <td colSpan={3} style={{ padding: "10px", lineHeight: "2em", fontWeight: "bold", textDecoration: "underline" }}>Δεν υπάρχουν διαθέσιμα ραντεβού</td>
                     </tr>
                   }
                 </tbody>

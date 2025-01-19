@@ -234,7 +234,7 @@ function MainSymbolaiaGoneisPGU() {
                     <th style={{ padding: "10px" }}>Ονοματεπώνυμο babysitter</th>
                     <th style={{ padding: "10px" }}>Κατάσταση συμφωνητικού</th>
                     <th style={{ padding: "10px" }}>Αξιολόγηση</th>
-                    <th style={{ padding: "10px" }}>συμφωνητικό</th>
+                    <th style={{ padding: "10px" }}>Συμφωνητικό</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -278,7 +278,7 @@ function MainSymbolaiaGoneisPGU() {
                     ))}
                     {contracts.length === 0 && (
                       <tr>
-                        <td colSpan={4}>Δεν υπάρχουν συμφωνητικά</td>
+                        <td colSpan={5} style={{ padding: "10px", lineHeight: "2em", fontWeight: "bold", textDecoration: "underline" }}>Δεν υπάρχουν συμφωνητικά</td>
                       </tr>
                     )}
                 </tbody>
