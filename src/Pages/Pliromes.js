@@ -6,6 +6,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import MainPliromesEpaggelmaties from './Epaggelmaties/Pliromes/MainPliromesEpaggelmaties';
 import MainPliromesGoneis from './Goneis/Pliromes/MainPliromesGoneis';
+
 function Pliromes() {
     const navigate = useNavigate();
 

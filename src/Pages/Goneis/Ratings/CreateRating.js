@@ -220,7 +220,7 @@ function CreateRating() {
               Δεν υπάρχει κάποιος/α babysitter, για να αξιολογήσετε.
             </h2>
             <button style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5%", width: "12%", cursor: "pointer", border: "1px solid #333",
-                            boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", marginLeft: "4%", marginTop: "2%" }} onClick={goBack}>
+                            boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", marginLeft: "70%", marginTop: "2%" }} onClick={goBack}>
               Επιστροφή
             </button>
           </div>
@@ -311,7 +311,7 @@ function CreateRating() {
           <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", marginTop: "5%" }}>
             <h1>Η αξιολόγησή σας καταχωρήθηκε με επιτυχία!</h1>
             <button style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5%", width: "12%", cursor: "pointer", border: "1px solid #333", 
-                            boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", marginTop: "2%" }} onClick={goBack}>
+                            boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", marginTop: "2%",marginLeft:"70%" }} onClick={goBack}>
               Επιστροφή
             </button>
           </div>

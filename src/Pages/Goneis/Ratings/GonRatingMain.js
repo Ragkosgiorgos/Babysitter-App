@@ -80,12 +80,12 @@ function GonRatingMain() {
 
   // Navigate to preview
   const previewRating = (id) => {
-    navigate(`/ratings/previewAksiologisi?id=${id}`);
+    navigate(`/dashboard/ratings/previewAksiologisi?id=${id}`);
   };
 
   // Navigate to add new rating
   const handleNewRating = () => {
-    navigate("/ratings/add");
+    navigate("/dashboard/ratings/add");
   };
 
   if (loading) {

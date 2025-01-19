@@ -191,6 +191,13 @@ function EpaggelmatiesProfile() {
     "Ρόδος",
   ];
 
+  const education = [
+    "Δημοτικό",
+    "Γυμνάσιο",
+    "Λύκειο",
+    "Πανεπιστήμιο",
+  ];
+
   if (loading) {
     return <Loader />;
   }
@@ -242,7 +249,7 @@ function EpaggelmatiesProfile() {
                 <b> Τα προσωπικά σας στοιχεία </b>
               </h3>
 
-              {["firstName", "lastName", "birthDate", "email", "afm", "phone", "area", "gender"].map((field) => (
+              {["firstName", "lastName", "birthDate", "email", "afm", "phone", "area", "gender", "education"].map((field) => (
                 <div key={field}>
                   <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -255,6 +262,7 @@ function EpaggelmatiesProfile() {
                             : field === "email" ? "Email"
                             : field === "phone" ? "Τηλέφωνο"
                             : field === "area" ? "Περιοχή"
+                            : field === "education" ? "Εκπαίδευση"
                             : "Φύλο"}:
                         </b>{" "}
                         {isEditing[field] ? (
@@ -299,6 +307,19 @@ function EpaggelmatiesProfile() {
                               {areasOfGreece.map((area) => (
                                 <option key={area} value={area}>
                                   {area}
+                                </option>
+                              ))}
+                            </select>
+                          ) : field === "education" ? (
+                            <select
+                              name={field}
+                              value={editedData[field]}
+                              onChange={handleInputChange}
+                              style={{ width: "30%", padding: "5px", fontSize: "20px", marginLeft: "15px" }}
+                            >
+                              {education.map((edu) => (
+                                <option key={edu} value={edu}>
+                                  {edu}
                                 </option>
                               ))}
                             </select>

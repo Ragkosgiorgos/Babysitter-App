@@ -130,15 +130,26 @@ function ProepiskopisiAvailableRantevou() {
                     </div>
                     )}
                 </div>
-                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%", gap: "50%" }}>
-                    <button onClick={() => navigate(-1)} style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5px", marginTop: "2%", width: "12%" }}>
-                    Επιστροφή
-                    </button>
-                </div>
-                </div>
+                <div style={{ display: "flex", marginTop: "2%", gap: "50%", justifyContent: "flex-end" }}>
+                  <button 
+                      onClick={() => navigate(-1)} 
+                      style={{ 
+                          height: "3%", 
+                          backgroundColor: "#2b8cbe", 
+                          color: "white", 
+                          borderRadius: "5px", 
+                          marginTop: "2%", 
+                          width: "12%",
+                          marginRight: "10%"
+                      }}
+                  >
+                      Επιστροφή
+                  </button>
+              </div>
+              </div>
             </div>
-            </div>
-            <Footer />
+          </div>
+          <Footer />
         </div>
     );
 }

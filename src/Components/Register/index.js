@@ -584,7 +584,7 @@ export default function Register() {
                         <>
                             {/* Education */}
                             <div style={{ marginBottom: '20px', textAlign: 'left' }}>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#2E86AB' }}>Επίπεδο εκπαίδευσης*</label>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#2E86AB' }}>Εκπαίδευση*</label>
                                 <select
                                     value={education}
                                     onChange={(e) => setEducation(e.target.value)}
