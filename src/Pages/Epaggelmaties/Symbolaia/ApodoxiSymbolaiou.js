@@ -357,7 +357,8 @@ function ApodoxiSymbolaiou() {
                                         marginLeft: "20%",
                                         padding: "2%",
                                     }}> <h3>Το συμφωνητικό σας υπογράφτηκε με επιτυχία. 
-                                    Μπορείτε να το δείτε στη λίστα συμφωνητικών</h3> </div>
+                                    Μπορείτε να το δείτε στη κατηγορία <a href="/dashboard/Symfwnitika">"Τα Συμφωνητικά μου"</a></h3>
+                                    </div>
                                     <div
                                         style={{
                                             display: "flex",

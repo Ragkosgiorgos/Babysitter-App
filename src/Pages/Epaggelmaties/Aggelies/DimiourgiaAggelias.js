@@ -124,7 +124,7 @@ function DimiourgiaAggelias() {
         if (currentStep === 1) { // Check if the form is submitted correctly
             setIsSubmitted(true);
             checkAge();
-            if (!newData.description || !newData.area || !newData.ageFrom || !newData.ageTo || !newData.time || !newData.accomodation || !checkAge()) {
+            if (!newData.description || !newData.area || !newData.ageFrom || !newData.ageTo || !newData.time || !newData.accomodation || !checkAge() || !newData.dates || !newData.car) {
                 handleScrollToTop();
                 return;
             }
@@ -305,7 +305,7 @@ function DimiourgiaAggelias() {
 
                             <h2 style={{ textAlign: "center", textDecoration: "underline" }}><b>Συμπληρώστε τα στοιχεία της αγγελίας</b></h2>
                             <h6 style={{ textAlign: "center", textDecoration: "underline" }}>*Όλα τα πεδία είναι υποχρεωτικά</h6>
-                                {isSubmitted && (!newData.description || !newData.area || !newData.ageFrom || !newData.ageTo || !newData.time || !newData.accomodation || !correctAge)
+                                {isSubmitted && (!newData.description || !newData.area || !newData.ageFrom || !newData.ageTo || !newData.time || !newData.accomodation || !correctAge || !newData.dates || !newData.car)
                                              ? <h4 style={{ color: "red", textAlign: "center" }}> Παρακαλoύμε συμπληρώστε σωστά όλα τα πεδία </h4> : ""}
                                              
                             <h5 style={{ display: "flex", flexDirection: "row", fontWeight: "bold", marginTop: "3%" }}> Περιγραφή </h5> 

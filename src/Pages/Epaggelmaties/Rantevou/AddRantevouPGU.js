@@ -176,7 +176,7 @@ function AddRantevouPGU() {
               {newData.tropos_synantisis === "Δια ζώσης" && (
                 <div>
                   <h4 style={{ display: "flex", flexDirection: "row", fontWeight: "bold", marginTop: "3%" }}>Διεύθυνση</h4>
-                  {isSubmitted && !newData.address && (
+                  {isSubmitted && !newData.address && isSubmitted && (
                     <h7 style={{ color: "red", display: "block", marginTop: "5px", marginBottom: "7px" }}> Εισάγετε τη διεύθυνση </h7>
                   )}
                   <input type="text" name="address" placeholder="Διεύθυνση" onChange={handleInputChange} style={{ width: "70%", marginLeft: "5%" }} />
@@ -185,7 +185,7 @@ function AddRantevouPGU() {
               {newData.tropos_synantisis === "Διαδικτυακά" && (
                 <div>
                   <h4 style={{ display: "flex", flexDirection: "row", fontWeight: "bold", marginTop: "3%" }}>Link για διαδικτυακή συνάντηση</h4>
-                  {isSubmitted && !newData.link && (
+                  {isSubmitted && !newData.link && isSubmitted && (
                     <h7 style={{ color: "red", display: "block", marginBottom: "7px" }}>Εισάγετε το link</h7>
                   )}
                   <input type="text" name="link" onChange={handleInputChange} placeholder="Link συνάντησης" style={{ marginLeft: "5%", width: "70%" }} />

@@ -7,7 +7,6 @@ import { calculateAge, TruncatedText } from "../../../Utils/Methods/index";
 import { useNavigate } from "react-router-dom";
 import { Carousel } from 'react-bootstrap';
 import Rating from '@mui/material/Rating';
-import ClearIcon from '@mui/icons-material/Clear';
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
 import { collection, query, where, getDocs, doc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { onAuthStateChanged } from "firebase/auth";
@@ -101,7 +100,9 @@ function Viografiko() {
                     style={{ 
                     cursor: "pointer", 
                     color: "red", 
-                    marginLeft: "10px",textDecoration:"underline"  
+                    marginLeft: "10px",
+                    textDecoration:"underline",
+                    fontSize:"12px"
                     }} 
                     onClick={() => handleDelete(i)}
                 >
@@ -254,110 +255,112 @@ function Viografiko() {
 
                             {/*experience*/}
                             <div style={{ display: "flex", flex: 1, flexDirection: "column", alignItems: "center" }}>
-                            <span style={{ fontSize: "20px",display: "block", textAlign: "center" }}><b style={{ textDecoration: "underline" }}>Προυπηρεσία</b></span>
-                            {experience.length > 0 ? (
-                                experience.map((exp, index) => (
-                                    <div 
-                                        key={index} 
-                                        style={{ 
-                                            marginBottom: "10px", 
-                                            display: "flex", 
-                                            flexDirection: "row", 
-                                            alignItems: "center",  
-                                            justifyContent: "center", 
-                                            gap: "10px"  
-                                        }}
-                                        >
-                                        <h5 style={{ margin: 0 }}>{exp.jobTitle},</h5>
-                                        <h5 style={{ margin: 0 }}>{exp.company},</h5>
-                                        <h5 style={{ margin: 0 }}>{exp.duration}</h5>
-                                        <span 
+                                <span style={{ fontSize: "20px",display: "block", textAlign: "center" }}><b style={{ textDecoration: "underline" }}>Προυπηρεσία</b></span>
+                                {experience.length > 0 ? (
+                                    experience.map((exp, index) => (
+                                        <div 
+                                            key={index} 
                                             style={{ 
-                                            cursor: "pointer", 
-                                            color: "red", 
-                                            marginLeft: "10px",textDecoration:"underline"  
-                                            }} 
-                                            onClick={() => handleDeleteExperience(exp)}
-                                        >
-                                            Διαγραφή
-                                        </span>
-                                    </div>
+                                                marginBottom: "10px", 
+                                                display: "flex", 
+                                                flexDirection: "row", 
+                                                alignItems: "center",  
+                                                justifyContent: "center", 
+                                                gap: "10px"  
+                                            }}
+                                            >
+                                            <h5 style={{ margin: 0 }}>{exp.jobTitle},</h5>
+                                            <h5 style={{ margin: 0 }}>{exp.company},</h5>
+                                            <h5 style={{ margin: 0 }}>{exp.duration}</h5>
+                                            <span 
+                                                style={{ 
+                                                cursor: "pointer", 
+                                                color: "red", 
+                                                marginLeft: "10px",
+                                                textDecoration: "underline",
+                                                fontSize: "12px"
+                                                }} 
+                                                onClick={() => handleDeleteExperience(exp)}
+                                            >
+                                                Διαγραφή
+                                            </span>
+                                        </div>
 
-                                ))
-                            ) : (
-                                <h5>Προσθέστε την προυπηρεσία σας</h5>
-                            )}
-                            <div>
-                                {!showAddExperienceForm ? (
-                                    <button
-                                        onClick={() => setShowAddExperienceForm(true)}
-                                        style={{ 
-                                            marginTop: "10px", 
-                                            backgroundColor: "green", 
-                                            color: "white", 
-                                            borderRadius: "5px", 
-                                            cursor: "pointer", 
-                                            border: "1px solid #333", 
-                                            boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", 
-                                            fontSize: "15px" 
-                                        }}
-                                    >
-                                        Προσθήκη Προυπηρεσίας
-                                    </button>
+                                    ))
                                 ) : (
-                                    <div style={{ marginTop: "20px",display:"flex",flexDirection:"column" }}>
-                                        <input
-                                            style={{}}
-                                            type="text"
-                                            placeholder="Τίτλος Εργασίας"
-                                            value={newExperience.jobTitle}
-                                            onChange={(e) => setNewExperience({ ...newExperience, jobTitle: e.target.value })}
-                                        />
-                                        <input
-                                            style={{marginTop:"10px"}}
-                                            type="text"
-                                            placeholder="Εταιρεία"
-                                            value={newExperience.company}
-                                            onChange={(e) => setNewExperience({ ...newExperience, company: e.target.value })}
-                                        />
-                                        <input
-                                            style={{marginTop:"10px"}}
-                                            type="text"
-                                            placeholder="Διάρκεια"
-                                            value={newExperience.years}
-                                            onChange={(e) => setNewExperience({ ...newExperience, duration: e.target.value })}
-                                        />
-                                        <div style={{display:"flex"}}>
-                                        
+                                    <h5>Προσθέστε την προυπηρεσία σας</h5>
+                                )}
+                                <div>
+                                    {!showAddExperienceForm ? (
                                         <button
-                                            onClick={() => setShowAddExperienceForm(false)}
-                                            style={{
-                                                marginTop: "10px",
-                                                backgroundColor: "gray",
-                                                color: "white",
-                                                borderRadius: "5px",
-                                                cursor: "pointer",
-                                                border: "1px solid #333",
-                                                fontSize: "15px",
-                                                padding: "5px 15px",
+                                            onClick={() => setShowAddExperienceForm(true)}
+                                            style={{ 
+                                                marginTop: "10px", 
+                                                backgroundColor: "green", 
+                                                color: "white", 
+                                                borderRadius: "5px", 
+                                                cursor: "pointer", 
+                                                border: "1px solid #333", 
+                                                boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", 
+                                                fontSize: "15px" 
                                             }}
                                         >
-                                            Ακύρωση
+                                            Προσθήκη Προυπηρεσίας
                                         </button>
-                                        <button
-                                            onClick={handleAddExperience}
-                                            style={{
-                                                marginRight:"10px",
-                                                marginTop: "10px",
-                                                backgroundColor: "green",
-                                                color: "white",
-                                                borderRadius: "5px",
-                                                cursor: "pointer",
-                                                border: "1px solid #333",
-                                                boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-                                                fontSize: "15px",
-                                                padding: "5px 15px",
-                                            }}
+                                    ) : (
+                                        <div style={{ marginTop: "20px",display:"flex",flexDirection:"column" }}>
+                                            <input
+                                                style={{}}
+                                                type="text"
+                                                placeholder="Τίτλος Εργασίας"
+                                                value={newExperience.jobTitle}
+                                                onChange={(e) => setNewExperience({ ...newExperience, jobTitle: e.target.value })}
+                                            />
+                                            <input
+                                                style={{marginTop:"10px"}}
+                                                type="text"
+                                                placeholder="Εταιρεία"
+                                                value={newExperience.company}
+                                                onChange={(e) => setNewExperience({ ...newExperience, company: e.target.value })}
+                                            />
+                                            <input
+                                                style={{marginTop:"10px"}}
+                                                type="text"
+                                                placeholder="Διάρκεια"
+                                                value={newExperience.years}
+                                                onChange={(e) => setNewExperience({ ...newExperience, duration: e.target.value })}
+                                            />
+                                            <div style={{display:"flex"}}>
+                                            
+                                            <button
+                                                onClick={() => setShowAddExperienceForm(false)}
+                                                style={{
+                                                    marginTop: "10px",
+                                                    backgroundColor: "gray",
+                                                    color: "white",
+                                                    borderRadius: "5px",
+                                                    cursor: "pointer",
+                                                    border: "1px solid #333",
+                                                    fontSize: "15px",
+                                                    padding: "5px 15px",
+                                                }}
+                                            >
+                                                Ακύρωση
+                                            </button>
+                                            <button
+                                                onClick={handleAddExperience}
+                                                style={{
+                                                    marginRight:"10px",
+                                                    marginTop: "10px",
+                                                    backgroundColor: "green",
+                                                    color: "white",
+                                                    borderRadius: "5px",
+                                                    cursor: "pointer",
+                                                    border: "1px solid #333",
+                                                    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                                                    fontSize: "15px",
+                                                    padding: "5px 15px",
+                                                }}
                                         >
                                             Αποθήκευση
                                         </button>

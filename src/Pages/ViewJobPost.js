@@ -24,6 +24,7 @@ function ViewJobPost() {
 
     const [post, setPost] = useState(null);
     const [profile, setProfile] = useState(null);
+    const [experience, setExperience] = useState([]);
     const [filteredRatings, setFilteredRatings] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -55,6 +56,7 @@ function ViewJobPost() {
                     ...doc.data(),
                 }));
                 setProfile(profiles[0]);
+                setExperience(profiles[0].experience);
 
                 // Fetch ratings data
                 const ratingsQuery = query(collection(FIREBASE_DB, "ratings"), where("id_b", "==", fetchedPost.uid));
@@ -104,7 +106,7 @@ function ViewJobPost() {
                         <div style={{ width: "25%", borderRight: "1px solid #ccc", paddingRight: "1vw" }}>
                             <h4 style={{ textDecoration: "underline" }}>Πληροφορίες Αγγελίας</h4>
                             <p>
-                                <HomeIcon /> {post.accomodation ? <span style={{textDecoration: "underline"}}>Παρέχει</span> : <span style={{textDecoration: "underline"}}>Δεν παρέχει</span>} το σπίτι του για φιλοξενία.
+                                <HomeIcon /> {post.accomodation === "Ναι" ? <span style={{textDecoration: "underline"}}>Παρέχει</span> : <span style={{textDecoration: "underline"}}>Δεν παρέχει</span>} το σπίτι του για φιλοξενία.
                             </p>
                             <p>
                                 <AccessTimeIcon /> <span style={{textDecoration: "underline"}}>{post.time}</span> απασχόληση.
@@ -135,6 +137,30 @@ function ViewJobPost() {
                                     : `${post.ageFrom} έως ${post.ageTo} ετών`}
                                 .
                             </p>
+
+                            <h4 style={{ textDecoration: "underline", marginTop: "15%" }}>Προϋπηρεσία</h4>
+                            {experience.length > 0 ? (
+                                    experience.map((exp, index) => (
+                                        <div
+                                            key={index} 
+                                            style={{ 
+                                                marginBottom: "10px", 
+                                                display: "flex", 
+                                                flexDirection: "row", 
+                                                alignItems: "center",
+                                                gap: "10px",
+                                                fontSize: "15px",
+                                            }}
+                                            >
+                                            <h8>- {exp.jobTitle},</h8>
+                                            <h8>{exp.company},</h8>
+                                            <h8>{exp.duration}</h8>
+                                        </div>
+
+                                    ))
+                                ) : (
+                                    <h5>Δεν υπάρχει προϋπηρεσία!</h5>
+                                )}
                         </div>
 
                         {/* Right Column - Ratings and Letters */}
