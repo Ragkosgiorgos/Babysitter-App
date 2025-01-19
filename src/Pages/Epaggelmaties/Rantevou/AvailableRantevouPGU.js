@@ -139,22 +139,24 @@ function AvailableRantevouPGU() {
               
             <button
               style={{
-                  height: "auto",
-                  backgroundColor: "#2b8cbe",
-                  color: "white",
-                  borderRadius: "5%",
-                  width: "12%",
-                  cursor: "pointer",
-                  border: "1px solid #333",
-                  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)",
-                  marginTop: "22%",
-                  marginLeft: "6%"
+                position: "fixed",
+                marginBottom: "8%",
+                marginRight: "2%",
+                bottom: "2%",
+                right: "2%",
+                height: "auto",
+                backgroundColor: "#2b8cbe",
+                color: "white",
+                borderRadius: "5%",
+                width: "12%",
+                cursor: "pointer",
+                border: "1px solid #333",
+                boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)",
               }}
               onClick={handleReturn}
             >
               Επιστροφή
             </button>
-            
           </div>
 
         </div>
