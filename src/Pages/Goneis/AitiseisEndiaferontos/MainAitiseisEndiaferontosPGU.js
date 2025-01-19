@@ -14,6 +14,8 @@ function MainAitiseisEndiaferontosPGU() {
   const [uuid, setUuid] = useState(null);
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
+  const [babysitters, setBabysitters] = useState([]);
+  const [post, setPost] = useState(null);
 
   const routeChangeEdit = (ids) =>{ 
     navigate(`edit?id=${ids[0]}&b_id=${ids[1]}`);
@@ -24,7 +26,7 @@ function MainAitiseisEndiaferontosPGU() {
   };
 
   const routeViewPost = (id) => {
-    navigate(`/viewPost?id=${id}`);
+    navigate(`/anazitisi/viewPost?id=${id}`);
   };
 
   // Check if user is logged in, get the user's UUID
@@ -61,7 +63,60 @@ function MainAitiseisEndiaferontosPGU() {
       fetchPosts();
     }
   }, [uuid]);
-  
+
+  // get all job posts
+  useEffect(() => {
+    const fetchData = async () => {
+    try {
+      const postQuery = query(collection(FIREBASE_DB, "aggelies"));
+        const postQuerySnapshot = await getDocs(postQuery);
+        const posts = postQuerySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+        const fetchedPost = posts;
+        setPost(fetchedPost);
+      if (!fetchedPost?.uid) {
+          console.warn("Post UID is missing or invalid.");
+          return;
+      }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+      fetchData();
+  }, [uuid]);
+      
+  useEffect(() => {
+    const fetchBabysitters = async () => {
+      try {
+        const babysitterRef = collection(FIREBASE_DB, 'user');
+        const querySnapshot = await getDocs(query(babysitterRef, where("property", "==", "babysitter")));
+        const babysitterData = querySnapshot.docs.map(doc => ({
+          userId: doc.id,
+          ...doc.data(),
+        }));
+        setBabysitters(babysitterData);
+      } catch (error) {
+        console.error("Error fetching babysitters:", error);
+      }
+    };
+
+    fetchBabysitters();
+  }, []);
+
+  const handlePostPreview = (babysitterId) => {
+    const job_post = post.find(p => p.uid === babysitterId);
+    routeViewPost(job_post.id);
+  };
+
+  const findBabysitterName = (babysitterId) => {
+    const babysitter = babysitters.find(b => b.userId === babysitterId);
+    return babysitter ? `${babysitter.firstName} ${babysitter.lastName}` : "Άγνωστο";
+  }
+
   if (loading) {
     return <Loader />;
   }
@@ -94,7 +149,7 @@ function MainAitiseisEndiaferontosPGU() {
                 <tbody>
                   {posts.map((post) => (
                     <tr key={post.id} style={{ borderTop: "0.2px solid #333", lineHeight: "2.5em" }}>
-                      <td><span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => routeViewPost(post.postid)}>Προβολή</span></td>
+                      <td><span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handlePostPreview(post.id_b)}>{findBabysitterName(post.id_b)}</span></td>
                       <td>{post.status}</td>
                       <td style={{ display: "flex", justifyContent: "center", gap: "10%" }}>
                         {post.status === "Oριστική υποβολή" && <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => routeChangePreview(post.id,post.postid)}>Προβολή</span>}

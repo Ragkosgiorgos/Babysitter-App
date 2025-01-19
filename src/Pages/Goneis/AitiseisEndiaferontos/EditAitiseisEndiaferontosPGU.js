@@ -11,8 +11,10 @@ import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, addDoc, setDoc, doc } from 'firebase/firestore';
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../../config/firebase";
 import Loader from "../../../Components/Loader";
+import { handleScrollToTop } from "../../../Utils/Methods/index";
 
 function SubmitAitiseisEndiaferontosPGU(props) {
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id") || "";
@@ -148,6 +150,12 @@ function SubmitAitiseisEndiaferontosPGU(props) {
   };
 
   const handleTempSave = async () => {
+    setIsSubmitted(true);
+    if (!newData.tropos_synantisis || !newData.date) {
+      handleScrollToTop();
+      setIsSubmitted(false);
+      return;
+    }
     if (id === "") { // If id === "" then we are creating a new post
         newData.status = "Σε προσωρινή αποθήκευση";
         try{
@@ -179,6 +187,12 @@ function SubmitAitiseisEndiaferontosPGU(props) {
   };
 
   const handleFinalSave = async () => {
+    setIsSubmitted(true);
+    if (!newData.tropos_synantisis || !newData.date) {
+      handleScrollToTop();
+      setIsSubmitted(false);
+      return;
+    }
     if(rantevou.id_p === ""){
       if (id === "" ) { // If id === "" then we are creating a new post
           newData.UserId = uuid;
@@ -211,7 +225,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
             console.error('Error updating document:', error);
 
         } finally{
-          
+          navigate('/goneis/profile/aitiseis-endiaferontos');
         }
       } else { // Otherwise we are editing an existing post
           newData.status = "Oριστική υποβολή";
@@ -243,7 +257,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
             console.error('Error updating document:', error);
 
         } finally{
-          
+          navigate('/goneis/profile/aitiseis-endiaferontos');
         }
       }
     }
@@ -258,19 +272,9 @@ function SubmitAitiseisEndiaferontosPGU(props) {
   };  
 
   const handleProfileRedirect = () =>{ 
-    navigate("/dashboard/rofiles");
+    navigate("/dashboard/profiles");
     };
-  
-  const isInPast = (date) => (date.get('year') < dayjs().get('year')) || (date.get('year') === dayjs().get('year') && date.get('month') < dayjs().get('month')) || (date.get('year') === dayjs().get('year') && date.get('month') === dayjs().get('month') && date.get('date') < dayjs().get('date'));
-  const isNotPast = (date) => (date.get('year') > dayjs().get('year')) || (date.get('year') === dayjs().get('year') && date.get('month') > dayjs().get('month')) || (date.get('year') === dayjs().get('year') && date.get('month') === dayjs().get('month') && date.get('date') >= dayjs().get('date'));
-  
-  const handleDateTimeRangePickerChange = (_value) => {
-    let date = dayjs(_value).format('YYYY-MM-DD HH:mm');
-    setnewData((prevData) => ({
-      ...prevData,
-      ["date"]: date,
-    }));
-  }
+
 
   function ftf(posts){
     return posts.tropos_synantisis === "Δια ζώσης";
@@ -302,10 +306,8 @@ function SubmitAitiseisEndiaferontosPGU(props) {
             <div style={{ flex: 1, overflowY: "auto" }}>
               
               <Breadcrumbs />
-              {(rantevou.id_p !== "")  
-                    ? <h4 style={{ color: "red", textAlign: "center" }}> Παρακαλώ συμπληρώστε σωστά όλα τα πεδία </h4> : ""}
-              
-              <h4>{rantevou.id_p}</h4>
+              {(id !=="" && rantevou.id_p !== "")  
+                    ? <h4 style={{ color: "red", textAlign: "center" }}> Παρακαλώ επιλέξτε διαθέσιμη ημερομηνία και ώρα </h4> : ""}
               <div style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%"}}>
                 <div style={{width: "50%",display: "flex" , flexDirection: "column" , backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px"}}>
                     <h2 style={{ textAlign: "center", textDecoration: "underline" }}>
@@ -400,7 +402,7 @@ function SubmitAitiseisEndiaferontosPGU(props) {
                         )}
                         {newData.tropos_synantisis === 'Δια ζώσης' && (
                           <Select
-                          value={newData.id_r || ""}
+                          value={newData.id_r || "Επιλέξτε ημερομηνία και ώρα"}
                           label="Επιλέξτε ημερομηνία και ώρα"
                           onChange={(e) => {
                             const selectedPost = posts.find((post) => post.id === e.target.value);
@@ -487,3 +489,4 @@ function SubmitAitiseisEndiaferontosPGU(props) {
   }
   
 export default SubmitAitiseisEndiaferontosPGU;
+ 
