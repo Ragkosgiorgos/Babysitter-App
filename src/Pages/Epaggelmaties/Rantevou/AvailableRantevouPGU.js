@@ -110,7 +110,7 @@ function AvailableRantevouPGU() {
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2%" }}>
 
-              <table style={{ width: "50%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px", tableLayout: "fixed" }}>
+              <table style={{ width: "60%", backgroundColor: "#D9EAFD", textAlign: "center", borderRadius:"10px", tableLayout: "fixed" }}>
                 <thead style={{ lineHeight: "1.2em" }}>
                   <tr style={{ borderBottom: "2px solid #333" }}>
                     <th style={{ padding: "10px" }}>Ημερομηνία και ώρα</th>
