@@ -375,7 +375,7 @@ function PliromiEpaggelmatia() {
         <Loader />
     ) : selectedPayment ? (
         <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
-            <span> Ο babysitter πληρώθηκε και ο κωδικός πληρωμής είναι #{selectedPayment} .</span>
+            <span> Η πληρωμή πραγματοποιήθηκε με επιτυχία .</span>
         </div>
     ) : (
         <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
