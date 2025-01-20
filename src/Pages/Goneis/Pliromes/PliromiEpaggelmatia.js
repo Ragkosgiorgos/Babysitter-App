@@ -25,6 +25,7 @@ function PliromiEpaggelmatia() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paymentId, setPaymentId] = useState(null);
   const [selectedPayment, setSelectedPayment] = useState(null);
+  const [existingPayment,setExistingPayment] = useState(false);
 
 
   // Get the logged-in user's UUID
@@ -56,6 +57,7 @@ function PliromiEpaggelmatia() {
                       ...doc.data(),
                   }));
                   setContracts(contracts);
+                  setExistingPayment(false);
               } catch (error) {
                   console.error('Error fetching contracts:', error);
               } finally {
@@ -121,6 +123,10 @@ function PliromiEpaggelmatia() {
                       ...doc.data(),
                   }));
                   setPayments(paymentsList);
+                  const validPayments = paymentsList.filter(payment => isEndPeriodBeforeToday(payment.endPeriod));
+        
+                  // Update `existingPayment` based on whether there's a valid payment
+                  setExistingPayment(validPayments.length > 0);
               } catch (error) {
                   console.error('Error fetching payments:', error);
               } finally {
@@ -130,6 +136,19 @@ function PliromiEpaggelmatia() {
           fetchPayments();
       }
   }, [uuid, babysitterChoice]);
+
+  const isEndPeriodBeforeToday = (endPeriod) => {
+    // Parse the endPeriod (DD/MM/YYYY) into a valid Date object
+    const [day, month, year] = endPeriod.split('/');
+    const endDateObj = new Date(`${year}-${month}-${day}`);
+  
+    // Get today's date (without the time)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set the time part to 00:00:00 to ignore time
+  
+    // Compare if the endPeriod is before today
+    return endDateObj < today;
+  };
 
   const handlePayment = async () => {
     if (!selectedPayment) return;
@@ -193,8 +212,21 @@ function PliromiEpaggelmatia() {
       if (!babysitterChoice) {
         setIsSubmitting(true);  // Show error message if no babysitter is selected
       } else {
-        setIsSubmitting(false);  // Clear error message if babysitter is selected
-        setCurrentStep(currentStep + 1);  // Move to step 1
+        // Filter payments for the selected babysitter
+        const babysitterPayments = payments.filter(payment => payment.id_b === babysitterChoice);
+  
+        // Filter valid payments: endPeriod before today
+        const validPayments = babysitterPayments.filter(payment => isEndPeriodBeforeToday(payment.endPeriod));
+  
+        // Check if there is exactly one valid payment
+        if (validPayments.length === 1) {
+          setExistingPayment(true);  // Set valid payment state to true
+          setIsSubmitting(false);  // Clear error message if there's exactly one valid payment
+          setCurrentStep(currentStep + 1);  // Move to step 1
+        } else {
+          setExistingPayment(false);  // Set valid payment state to false
+          setIsSubmitting(true);  // Show error message if there's no valid payment or more than one
+        }
       }
     } else if (currentStep === 1) {
       // Validate payment selection in step 1
@@ -206,6 +238,8 @@ function PliromiEpaggelmatia() {
       }
     }
   };
+  
+  
   
   
   
@@ -263,6 +297,14 @@ function PliromiEpaggelmatia() {
                     Παρακαλώ επιλέξτε babysitter
                 </p>
             )}
+            {
+              babysitterChoice && !existingPayment && isSubmitting && (
+                <p style={{ color: "red", textAlign: "center" }}>
+                  Δεν υπάρχει πληρωμή για αυτόν τον babysitter.
+                </p>
+              )
+            }
+
               </div>
             </div>
             </div>
