@@ -12,7 +12,6 @@ import AddRantevouPGU from "./Pages/Epaggelmaties/Rantevou/AddRantevouPGU"
 import ProepiskopisiRantevouPGU from "./Pages/Epaggelmaties/Rantevou/ProepiskopisiRantevouPGU";
 import EditRantevouPGU from "./Pages/Epaggelmaties/Rantevou/EditRantevouPGU";
 import ViewJobPost from "./Pages/ViewJobPost";
-import PreviewAggelias from "./Pages/Epaggelmaties/Aggelies/PreviewAggelias";
 import ViewRating from "./Pages/Epaggelmaties/Ratings/ViewRating";
 import Login from "./Components/Login";
 import Register from "./Components/Register";
@@ -23,15 +22,14 @@ import MainAitiseisEndiaferontosPGU from "./Pages/Goneis/AitiseisEndiaferontos/M
 import EditAitiseisEndiaferontosPGU from "./Pages/Goneis/AitiseisEndiaferontos/EditAitiseisEndiaferontosPGU";
 import PreviewAitiseisEndiaferontosPGU from "./Pages/Goneis/AitiseisEndiaferontos/PreviewAitiseisEndiaferontos";
 import ErrorPage from "./Components/ErrorPage";
-import ProvoliSymbolaiou from "./Pages/Goneis/Symbolaia/ProvoliSymbolaiou";
 import Viografiko from "./Pages/Epaggelmaties/Profile/Viografiko";
 import ProepiskopisiAvailableRantevou from "./Pages/Epaggelmaties/Rantevou/ProepiskopisiAvailableRantevou";
 import Dashboard from "./Components/Dashboard";
 import Profiles from "./Pages/Profiles";
 import Ratings from "./Pages/Ratings";
-import ProvoliSymbolaiouEpaggelmatia from "./Pages/Epaggelmaties/Symbolaia/ProvoliSymbolaiaEpaggelmaties";
 import Symfwnitika from "./Pages/Symfwnitka";
 import Pliromes from "./Pages/Pliromes";
+import ViewContract from "./Pages/ViewContract";
 
 function App() {
   return (
@@ -48,21 +46,20 @@ function App() {
 
           <Route path="khdemones" element={<MainGoneisPGU />} />
           <Route path="babysitters" element={<MainEpaggelmatiesPGU />} />
+          <Route path="/anazitisi" element={<BabysitterSearch />} />
 
           {/* Profile Pages & Viografiko */}
           <Route path="/dashboard/profiles" element={<Profiles/>} />
           <Route path="/dashboard/viografiko" element={<Viografiko />} />
+
+          {/* Symfwnitika & Pliromes */}
           <Route path="/dashboard/Symfwnitika" element={<Symfwnitika />} />
           <Route path="/dashboard/Pliromes" element={<Pliromes />} />
 
-          {/* Babysitter Search */}
-          <Route path="/anazitisi" element={<BabysitterSearch />} />
-
           {/* Babysitter Aggelies */}
-          <Route path="dashboard/aggelies" element={<MainAggeliesPGU />} />
-          <Route path="neaAggelia" element={<DimiourgiaAggelias />} />
-          <Route path="previewAggelias" element={<PreviewAggelias />} />
-          <Route path="/aggelies/viewPost" element={<ViewJobPost />} />
+          <Route path="/dashboard/aggelies" element={<MainAggeliesPGU />} />
+          <Route path="/dashboard/aggelies/add" element={<DimiourgiaAggelias />} />
+          <Route path="/dashboard/aggelies/viewPost" element={<ViewJobPost />} />
           <Route path="/anazitisi/viewPost" element={<ViewJobPost />} />
           
           {/* Rantevou */}
@@ -82,12 +79,11 @@ function App() {
 
           {/* Khdemones Symbolaia */}
           <Route path="/dashboard/Symfwnitika/add" element={<DimiourgiaSymbolaiou />} />
-          <Route path="/goneis/Symfwnitika/view/:contractId" element={<ProvoliSymbolaiou/>} />
+          <Route path="/dashboard/Symfwnitika/view/:contractId" element={<ViewContract />} />
 
           {/* Babysitter Symbolaia */}
           <Route path="/dashboard/Symfwnitika/apantisi/:contractId" element={<ApodoxiSymbolaiou/>} />
-          <Route path="/dashboard/Symfwnitika/view/:contractId" element={<ProvoliSymbolaiouEpaggelmatia/>} />
-
+          
           {/* Khdemones Aitiseis Endiaferontos */}
           <Route path="/dashboard/aitiseis-endiaferontos" element={<MainAitiseisEndiaferontosPGU />} />
           <Route path="/dashboard/aitiseis-endiaferontos/edit" element={<EditAitiseisEndiaferontosPGU />} />

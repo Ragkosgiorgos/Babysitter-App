@@ -124,8 +124,8 @@ function AddRantevouPGU() {
     return <Loader />;
   }
 
-  if (!user) {
-    return <div>Δεν βρέθηκε ο χρήστης</div>;
+  if (user && user.property === "parent") {
+    navigate("/404");
   }
 
   return (

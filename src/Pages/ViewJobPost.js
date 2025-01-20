@@ -217,6 +217,7 @@ function ViewJobPost() {
                                     Κλείστε Ραντεβού
                                 </button>
                             </div>
+                            <p> <b style={{ textDecoration: "underline" }}> Περιγραφή:</b> {post.description} </p>
 
                             {/* Letters Section */}
                             <div style={{ marginTop: "4vh" }}>
@@ -258,22 +259,15 @@ function ViewJobPost() {
                     </div>
                 </div>
 
-                <button
-                    style={{
-                        height: "5%",
-                        backgroundColor: "#2b8cbe",
-                        color: "white",
-                        borderRadius: "5%",
-                        width: "12%",
-                        cursor: "pointer",
-                        border: "1px solid #333",
-                        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)",
-                        margin: "2vh auto",
-                    }}
+                <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "5%" }}>
+                    <button 
+                    style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5%", width: "12%", cursor: "pointer", border: "1px solid #333", 
+                                boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)", marginRight: "4%",}} 
                     onClick={handleReturn}
-                >
+                    >
                     Επιστροφή
-                </button>
+                    </button>
+                </div>
             </div>
             <Footer />
         </div>

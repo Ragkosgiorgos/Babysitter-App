@@ -4,6 +4,7 @@ import {FIREBASE_DB } from "../../../config/firebase";
 import 'dayjs/locale/el'; // Greek locale
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
+import Loader from "../../../Components/Loader";
 import "react-date-range/dist/styles.css"; // Main style file
 import "react-date-range/dist/theme/default.css"; // Theme CSS file
 import { useParams } from 'react-router-dom'; // Import useParams
@@ -11,91 +12,104 @@ import ProgressTracker from "../../../Components/ProgressTracker";
 import { query, collection, where, getDocs } from 'firebase/firestore';
 import { useNavigate } from "react-router-dom";
 
-    function ProvoliSymbolaiou() {
-        const { contractId } = useParams();
-        const [loading, setLoading] = useState(true);
-        const [contract, setContract] = useState(null);
-        const [currentStep, setCurrentStep] = useState(5); // Added currentStep state
-        const [epagelmatias, setEpagelmatias] = useState({});
-    
-        const steps = [
-            "Επιβεβαίωση προσωπικών στοιχείων",
-            "Επιβεβαίωση στοιχείων παιδιού",
-            "Συμπλήρωση στοιχείων babysitter και στοιχείων εργασίας",
-            "Προεπισκόπηση και υποβολή",
-            "Αναμονή για υπογραφή από babysitter",
-            "Αποδοχή ή απόρριψη συμφωνητικού"
-        ];
+function ProvoliSymbolaiou() {
+    const { contractId } = useParams();
+    const [loading, setLoading] = useState(true);
+    const [contract, setContract] = useState(null);
+    const [currentStep, setCurrentStep] = useState(5); // Added currentStep state
+    const [epagelmatias, setEpagelmatias] = useState({});
 
-        
-    
-        useEffect(() => {
-            const fetchContract = async () => {
-                try {
-                    const contractRef = doc(FIREBASE_DB, 'contracts', contractId);
-                    const contractSnapshot = await getDoc(contractRef);
-    
-                    if (contractSnapshot.exists()) {
-                        setContract(contractSnapshot.data());
-                    } else {
-                        console.log('No such contract!');
-                    }
-                } catch (error) {
-                    console.error('Error fetching contract: ', error);
-                } finally {
-                    setLoading(false);
-                }
-            };
-            fetchContract();
-        }, [contractId]);
+    const steps = [
+        "Επιβεβαίωση προσωπικών στοιχείων",
+        "Επιβεβαίωση στοιχείων παιδιού",
+        "Συμπλήρωση στοιχείων babysitter και στοιχείων εργασίας",
+        "Προεπισκόπηση και υποβολή",
+        "Αναμονή για υπογραφή από babysitter",
+        "Αποδοχή ή απόρριψη συμφωνητικού"
+    ];
 
-        useEffect(() => {
-            const fetchProfile = async () => {
+    useEffect(() => {
+        const fetchContract = async () => {
+            try {
                 setLoading(true);
-                try {
-                    const q = query(collection(FIREBASE_DB, "user"), where("userId", "==", contract.id_b));
-                    const querySnapshot = await getDocs(q);
-                    const epagelmatias = querySnapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                    }));
-                    setEpagelmatias(epagelmatias);
-                    console.log(epagelmatias);
-                    console.log(contract.id_b);
-                } catch (error) {
-                    console.error("Error fetching profile:", error);
-                } finally {
-                    setLoading(false);
+                const contractRef = doc(FIREBASE_DB, 'contracts', contractId);
+                const contractSnapshot = await getDoc(contractRef);
+
+                if (contractSnapshot.exists()) {
+                    setContract(contractSnapshot.data());
+                } else {
+                    console.log('No such contract!');
                 }
-            };
-        
-            // Ensure contract is defined and contract.id_b exists before calling fetchProfile
-            if (contract && contract.id_b) {
-                fetchProfile();
+            } catch (error) {
+                console.error('Error fetching contract: ', error);
+            } finally {
+                setLoading(false);
             }
-        }, [contract]);  // This ensures the useEffect re-runs when `contract` changes
-        
-
-        const navigate = useNavigate();
-        const handleReturnClick = () => {
-            navigate('/goneis/symbolaia');
         };
+        fetchContract();
+    }, [contractId]);
 
-    
-        const renderStepContent = () => {
-            if (loading) {
-                return <h3>Loading...</h3>;
+    useEffect(() => {
+        const fetchProfile = async () => {
+            
+            try {
+                setLoading(true);
+                const q = query(collection(FIREBASE_DB, "user"), where("userId", "==", contract.id_b));
+                const querySnapshot = await getDocs(q);
+                const epagelmatias = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                setEpagelmatias(epagelmatias);
+                console.log(epagelmatias);
+                console.log(contract.id_b);
+            } catch (error) {
+                console.error("Error fetching profile:", error);
+            } finally {
+                setLoading(false);
             }
+        };
     
-            if (!contract) {
-                return <p>Δεν βρέθηκε το συμφωνητικό.</p>;
-            }
+        // Ensure contract is defined and contract.id_b exists before calling fetchProfile
+        if (contract && contract.id_b) {
+            fetchProfile();
+        }
+    }, [contract]);  // This ensures the useEffect re-runs when `contract` changes
     
-            switch (currentStep) {
-                case 5:
-                    return (
-                        <div style={{ textAlign: "center", marginTop: "50px", borderRadius: "2%", padding: "2%", width: "70%", margin: "auto" }}>
-                            {contract.status === "Σε αναμονή" ? (
+
+    const navigate = useNavigate();
+    const handleReturnClick = () => {
+        navigate('/goneis/symbolaia');
+    };
+
+    if (loading) {
+        return <Loader />;
+    }
+
+    const renderStepContent = () => {
+
+        if (!contract) {
+            return <p>Δεν βρέθηκε το συμφωνητικό.</p>;
+        }
+
+        switch (currentStep) {
+            case 5:
+                return (
+                    <div style={{ textAlign: "center", marginTop: "50px", borderRadius: "2%", padding: "2%", width: "70%", margin: "auto" }}>
+                        {contract.status === "Σε αναμονή" ? (
+                            <div style={{display: "flex",
+                                flexDirection: "column",
+                                marginTop: "2%",
+                                backgroundColor: "#ece7f2",
+                                borderRadius: "2%",
+                                width: "70%",
+                                justifyContent: "center",
+                                marginLeft: "20%",
+                                padding: "2%",}}>
+                        <h3>Το συμφωνητικό είναι <b>σε αναμονή</b> προς απάντηση</h3>
+                            </div>
+                        ) : contract.status === "Σε ισχύ" ? (
+                            <>  
                                 <div style={{display: "flex",
                                     flexDirection: "column",
                                     marginTop: "2%",
@@ -105,247 +119,234 @@ import { useNavigate } from "react-router-dom";
                                     justifyContent: "center",
                                     marginLeft: "20%",
                                     padding: "2%",}}>
-                            <h3>Το συμφωνητικό με κωδικό #{contractId} είναι σε αναμονή προς απάντηση</h3>
+                                    <h3>Το συμφωνητικό είναι <b>σε ισχύ</b></h3> 
                                 </div>
-                            ) : contract.status === "Σε ισχύ" ? (
-                                <>  
-                                    <div style={{display: "flex",
-                                        flexDirection: "column",
-                                        marginTop: "2%",
-                                        backgroundColor: "#ece7f2",
-                                        borderRadius: "2%",
-                                        width: "70%",
-                                        justifyContent: "center",
-                                        marginLeft: "20%",
-                                        padding: "2%",}}>
-                                        <h3>Το συμφωνητικό με κωδικό #{contractId} είναι σε ισχύ</h3> 
+                                <div style={{ textAlign: "center" }}>
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            marginTop: "2%",
+                                            backgroundColor: "#ece7f2",
+                                            borderRadius: "2%",
+                                            width: "70%",
+                                            justifyContent: "center",
+                                            marginLeft: "20%",
+                                            padding: "2%",
+                                        }}
+                                    >
+                                        <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+                                            <b>Στοιχεία συμφωνητικού</b>
+                                        </h2>
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Ημέρες εργασίας:</b>{" "}
+                                            {contract.weekdays && contract.weekends
+                                                ? "Καθημερινές και Σαββατοκύριακα"
+                                                : contract.weekdays
+                                                ? "Καθημερινές"
+                                                : contract.weekends
+                                                ? "Σαββατοκύριακα"
+                                                : ""}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Χρόνος απασχόλησης:</b> {contract.time}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Φιλοξενία:</b> {contract.hosting}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Έναρξη συμφωνητικού:</b> {contract.startDate}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Λήξη συμφωνητικού:</b> {contract.endDate}
+                                        </h4>
                                     </div>
-                                    <div style={{ textAlign: "center" }}>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                flexDirection: "column",
-                                                marginTop: "2%",
-                                                backgroundColor: "#ece7f2",
-                                                borderRadius: "2%",
-                                                width: "70%",
-                                                justifyContent: "center",
-                                                marginLeft: "20%",
-                                                padding: "2%",
-                                            }}
-                                        >
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            marginTop: "2%",
+                                            backgroundColor: "#ece7f2",
+                                            borderRadius: "2%",
+                                            width: "70%",
+                                            justifyContent: "center",
+                                            marginLeft: "20%",
+                                            padding: "2%",
+                                        }}
+                                    >
+                                    {epagelmatias && epagelmatias.length > 0 ? (
+                                        <>
                                             <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                                                <b>Στοιχεία συμφωνητικού</b>
+                                                <b>Στοιχεία babysitter</b>
                                             </h2>
                                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                                <b>Ημέρες εργασίας:</b>{" "}
-                                                {contract.weekdays && contract.weekends
-                                                    ? "Καθημερινές και Σαββατοκύριακα"
-                                                    : contract.weekdays
-                                                    ? "Καθημερινές"
-                                                    : contract.weekends
-                                                    ? "Σαββατοκύριακα"
-                                                    : ""}
+                                                <b>Όνομα:</b> {epagelmatias[0].firstName}
                                             </h4>
                                             <hr />
                                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                                <b>Χρόνος απασχόλησης:</b> {contract.time}
+                                                <b>Επίθετο:</b> {epagelmatias[0].lastName}
                                             </h4>
                                             <hr />
                                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                                <b>Φιλοξενία:</b> {contract.hosting}
+                                                <b>Τηλέφωνο:</b> {epagelmatias[0].phone}
                                             </h4>
                                             <hr />
                                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                                <b>Έναρξη συμφωνητικού:</b> {contract.startDate}
+                                                <b>Email:</b> {epagelmatias[0].email}
                                             </h4>
                                             <hr />
                                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                                <b>Λήξη συμφωνητικού:</b> {contract.endDate}
+                                                <b>ΑΦΜ:</b> {epagelmatias[0].afm}
                                             </h4>
-                                        </div>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                flexDirection: "column",
-                                                marginTop: "2%",
-                                                backgroundColor: "#ece7f2",
-                                                borderRadius: "2%",
-                                                width: "70%",
-                                                justifyContent: "center",
-                                                marginLeft: "20%",
-                                                padding: "2%",
-                                            }}
-                                        >
-                                        {epagelmatias && epagelmatias.length > 0 ? (
-                                            <>
-                                                <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                                                    <b>Στοιχεία babysitter</b>
-                                                </h2>
-                                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                                    <b>Όνομα:</b> {epagelmatias[0].firstName}
-                                                </h4>
-                                                <hr />
-                                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                                    <b>Επίθετο:</b> {epagelmatias[0].lastName}
-                                                </h4>
-                                                <hr />
-                                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                                    <b>Τηλέφωνο:</b> {epagelmatias[0].phone}
-                                                </h4>
-                                                <hr />
-                                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                                    <b>Email:</b> {epagelmatias[0].email}
-                                                </h4>
-                                                <hr />
-                                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                                    <b>ΑΦΜ:</b> {epagelmatias[0].afm}
-                                                </h4>
-                                            </>
-                                        ) : (
-                                            <p>Δεν βρέθηκαν τα στοιχεία του babysitter.</p>
-                                        )}
-                                        
-                                        </div>
+                                        </>
+                                    ) : (
+                                        <p>Δεν βρέθηκαν τα στοιχεία του babysitter.</p>
+                                    )}
+                                    
                                     </div>
-                                </>
-                            ) : contract.status === "Απορρίφθηκε" ? (
-                                <>  
-                                    <div style={{display: "flex",
-                                        flexDirection: "column",
-                                        marginTop: "2%",
-                                        backgroundColor: "#ece7f2",
-                                        borderRadius: "2%",
-                                        width: "70%",
-                                        justifyContent: "center",
-                                        marginLeft: "20%",
-                                        padding: "2%",}}>
-                                        <h3>Το συμφωνητικό με κωδικό #{contractId} απορρίφθηκε απο τον/τη babysitter</h3> 
+                                </div>
+                            </>
+                        ) : contract.status === "Απορρίφθηκε" ? (
+                            <>  
+                                <div style={{display: "flex",
+                                    flexDirection: "column",
+                                    marginTop: "2%",
+                                    backgroundColor: "#ece7f2",
+                                    borderRadius: "2%",
+                                    width: "70%",
+                                    justifyContent: "center",
+                                    marginLeft: "20%",
+                                    padding: "2%",}}>
+                                    <h3>Το συμφωνητικό <b>απορρίφθηκε</b> απο τον/την babysitter</h3> 
+                                </div>
+                                <div style={{ textAlign: "center" }}>
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            marginTop: "2%",
+                                            backgroundColor: "#ece7f2",
+                                            borderRadius: "2%",
+                                            width: "70%",
+                                            justifyContent: "center",
+                                            marginLeft: "20%",
+                                            padding: "2%",
+                                        }}
+                                    >
+                                        <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
+                                            <b>Στοιχεία συμφωνητικού</b>
+                                        </h2>
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Ημέρες εργασίας:</b>{" "}
+                                            {contract.weekdays && contract.weekends
+                                                ? "Καθημερινές και Σαββατοκύριακα"
+                                                : contract.weekdays
+                                                ? "Καθημερινές"
+                                                : contract.weekends
+                                                ? "Σαββατοκύριακα"
+                                                : ""}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Χρόνος απασχόλησης:</b> {contract.time}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Φιλοξενία:</b> {contract.hosting}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Έναρξη συμφωνητικού:</b> {contract.startDate}
+                                        </h4>
+                                        <hr />
+                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
+                                            <b>Λήξη συμφωνητικού:</b> {contract.endDate}
+                                        </h4>
                                     </div>
-                                    <div style={{ textAlign: "center" }}>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                flexDirection: "column",
-                                                marginTop: "2%",
-                                                backgroundColor: "#ece7f2",
-                                                borderRadius: "2%",
-                                                width: "70%",
-                                                justifyContent: "center",
-                                                marginLeft: "20%",
-                                                padding: "2%",
-                                            }}
-                                        >
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            marginTop: "2%",
+                                            backgroundColor: "#ece7f2",
+                                            borderRadius: "2%",
+                                            width: "70%",
+                                            justifyContent: "center",
+                                            marginLeft: "20%",
+                                            padding: "2%",
+                                        }}
+                                    >
+                                    {epagelmatias && epagelmatias.length > 0 ? (
+                                        <>
                                             <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                                                <b>Στοιχεία συμφωνητικού</b>
+                                                <b>Στοιχεία babysitter</b>
                                             </h2>
                                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                                <b>Ημέρες εργασίας:</b>{" "}
-                                                {contract.weekdays && contract.weekends
-                                                    ? "Καθημερινές και Σαββατοκύριακα"
-                                                    : contract.weekdays
-                                                    ? "Καθημερινές"
-                                                    : contract.weekends
-                                                    ? "Σαββατοκύριακα"
-                                                    : ""}
+                                                <b>Όνομα:</b> {epagelmatias[0].firstName}
                                             </h4>
                                             <hr />
                                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                                <b>Χρόνος απασχόλησης:</b> {contract.time}
+                                                <b>Επίθετο:</b> {epagelmatias[0].lastName}
                                             </h4>
                                             <hr />
                                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                                <b>Φιλοξενία:</b> {contract.hosting}
+                                                <b>Τηλέφωνο:</b> {epagelmatias[0].phone}
                                             </h4>
                                             <hr />
                                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                                <b>Έναρξη συμφωνητικού:</b> {contract.startDate}
+                                                <b>Email:</b> {epagelmatias[0].email}
                                             </h4>
                                             <hr />
                                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                                <b>Λήξη συμφωνητικού:</b> {contract.endDate}
+                                                <b>ΑΦΜ:</b> {epagelmatias[0].afm}
                                             </h4>
-                                        </div>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                flexDirection: "column",
-                                                marginTop: "2%",
-                                                backgroundColor: "#ece7f2",
-                                                borderRadius: "2%",
-                                                width: "70%",
-                                                justifyContent: "center",
-                                                marginLeft: "20%",
-                                                padding: "2%",
-                                            }}
-                                        >
-                                        {epagelmatias && epagelmatias.length > 0 ? (
-                                            <>
-                                                <h2 style={{ textAlign: "left", textDecoration: "underline" }}>
-                                                    <b>Στοιχεία babysitter</b>
-                                                </h2>
-                                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                                    <b>Όνομα:</b> {epagelmatias[0].firstName}
-                                                </h4>
-                                                <hr />
-                                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                                    <b>Επίθετο:</b> {epagelmatias[0].lastName}
-                                                </h4>
-                                                <hr />
-                                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                                    <b>Τηλέφωνο:</b> {epagelmatias[0].phone}
-                                                </h4>
-                                                <hr />
-                                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                                    <b>Email:</b> {epagelmatias[0].email}
-                                                </h4>
-                                                <hr />
-                                                <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                                    <b>ΑΦΜ:</b> {epagelmatias[0].afm}
-                                                </h4>
-                                            </>
-                                        ) : (
-                                            <p>Δεν βρέθηκαν τα στοιχεία του babysitter.</p>
-                                        )}
-                                        
-                                        </div>
+                                        </>
+                                    ) : (
+                                        <p>Δεν βρέθηκαν τα στοιχεία του babysitter.</p>
+                                    )}
+                                    
                                     </div>
-                                </>
-                            ) : (
-                                <h3>Το συμφωνητικό με κωδικό #{contractId} έχει άγνωστη κατάσταση</h3>
-                            )}
-                        </div>
+                                </div>
+                            </>
+                        ) : (
+                            <h3>Το συμφωνητικό έχει άγνωστη κατάσταση</h3>
+                        )}
+                    </div>
 
 
-                    );
-            }
-        };
-    
-        return (
-            <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-                <Header />
-                <div style={{ flex: 1, padding: "20px" }}>
-                    
-                <ProgressTracker steps={steps} activeStep={currentStep} />
-                    {renderStepContent()}
+                );
+        }
+    };
 
-                    <button
-                    style={{
-                        height: "3%",
-                        backgroundColor: "#2b8cbe",
-                        color: "white",
-                        borderRadius: "5px",
-                        marginTop: "2%",
-                        width: "12%",marginLeft:"85%",
-                    }}
-                    onClick={handleReturnClick}
-                >
-                    Επιστροφή
-                </button>
-                </div>
-                <Footer style={{ marginTop: "auto" }} />
+    return (
+        <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+            <Header />
+            <div style={{ flex: 1, padding: "20px" }}>
+                
+            <ProgressTracker steps={steps} activeStep={currentStep} />
+                {renderStepContent()}
+
+                <button
+                style={{
+                    height: "3%",
+                    backgroundColor: "#2b8cbe",
+                    color: "white",
+                    borderRadius: "5px",
+                    marginTop: "2%",
+                    width: "12%",marginLeft:"85%",
+                }}
+                onClick={handleReturnClick}
+            >
+                Επιστροφή
+            </button>
             </div>
-        );
-    }
-    
-    export default ProvoliSymbolaiou;
+            <Footer style={{ marginTop: "auto" }} />
+        </div>
+    );
+}
+
+export default ProvoliSymbolaiou;

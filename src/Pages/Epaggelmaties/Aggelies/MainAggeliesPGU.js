@@ -109,10 +109,9 @@ function MainAggeliesPGU() {
     };
 
     // Redirects
-    const handleNewPost = () => navigate("/neaAggelia");
-    //const previewAggeliaRender = (aggelia_id) => navigate(`/previewAggelias?aggelia_id=${aggelia_id}`);
-    const previewAggeliaRender = (aggelia_id) => navigate(`/aggelies/viewPost?id=${aggelia_id}`);
-    const handleTempView = (post_id) => navigate(`/neaAggelia?step=2&post_id=${post_id}`);
+    const handleNewPost = () => navigate("/dashboard/aggelies/add");
+    const previewAggeliaRender = (aggelia_id) => navigate(`/dashboard/aggelies/viewPost?id=${aggelia_id}`);
+    const handleTempView = (post_id) => navigate(`/dashboard/aggelies/add?step=2&post_id=${post_id}`);
 
     if (loading) {
       return <Loader />;

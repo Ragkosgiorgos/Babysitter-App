@@ -330,41 +330,40 @@ function Viografiko() {
                                                 value={newExperience.years}
                                                 onChange={(e) => setNewExperience({ ...newExperience, duration: e.target.value })}
                                             />
-                                            <div style={{display:"flex"}}>
-                                            
-                                            <button
-                                                onClick={() => setShowAddExperienceForm(false)}
-                                                style={{
-                                                    marginTop: "10px",
-                                                    backgroundColor: "gray",
-                                                    color: "white",
-                                                    borderRadius: "5px",
-                                                    cursor: "pointer",
-                                                    border: "1px solid #333",
-                                                    fontSize: "15px",
-                                                    padding: "5px 15px",
-                                                }}
-                                            >
-                                                Ακύρωση
-                                            </button>
-                                            <button
-                                                onClick={handleAddExperience}
-                                                style={{
-                                                    marginRight:"10px",
-                                                    marginTop: "10px",
-                                                    backgroundColor: "green",
-                                                    color: "white",
-                                                    borderRadius: "5px",
-                                                    cursor: "pointer",
-                                                    border: "1px solid #333",
-                                                    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-                                                    fontSize: "15px",
-                                                    padding: "5px 15px",
-                                                }}
-                                        >
-                                            Αποθήκευση
-                                        </button>
-                                        </div>
+                                            <div style={{ display: "flex", gap: "10px" }}>
+                                                <button
+                                                    onClick={() => setShowAddExperienceForm(false)}
+                                                    style={{
+                                                        marginTop: "10px",
+                                                        backgroundColor: "gray",
+                                                        color: "white",
+                                                        borderRadius: "5px",
+                                                        cursor: "pointer",
+                                                        border: "1px solid #333",
+                                                        fontSize: "15px",
+                                                        padding: "5px 15px",
+                                                    }}
+                                                >
+                                                    Ακύρωση
+                                                </button>
+                                                <button
+                                                    onClick={handleAddExperience}
+                                                    style={{
+                                                        marginRight:"10px",
+                                                        marginTop: "10px",
+                                                        backgroundColor: "green",
+                                                        color: "white",
+                                                        borderRadius: "5px",
+                                                        cursor: "pointer",
+                                                        border: "1px solid #333",
+                                                        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                                                        fontSize: "15px",
+                                                        padding: "5px 15px",
+                                                    }}
+                                                >
+                                                    Αποθήκευση
+                                                </button>
+                                            </div>
                                     </div>
                                 )}
                             </div>
