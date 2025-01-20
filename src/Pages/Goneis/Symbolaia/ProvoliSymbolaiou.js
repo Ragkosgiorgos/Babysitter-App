@@ -326,26 +326,25 @@ function ProvoliSymbolaiou() {
     return (
         <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
             <Header />
-            <div style={{ flex: 1, padding: "20px" }}>
-            <Breadcrumbs/>
+            <div style={{ flex: 1 }}>
+                <Breadcrumbs/>
+                    
+                <ProgressTracker steps={steps} activeStep={currentStep} />
+                    {renderStepContent()}
 
-                
-            <ProgressTracker steps={steps} activeStep={currentStep} />
-                {renderStepContent()}
-
-                <button
-                style={{
-                    height: "3%",
-                    backgroundColor: "#2b8cbe",
-                    color: "white",
-                    borderRadius: "5px",
-                    marginTop: "2%",
-                    width: "12%",marginLeft:"85%",
-                }}
-                onClick={handleReturnClick}
-            >
-                Επιστροφή
-            </button>
+                    <button
+                    style={{
+                        height: "3%",
+                        backgroundColor: "#2b8cbe",
+                        color: "white",
+                        borderRadius: "5px",
+                        marginTop: "2%",
+                        width: "12%",marginLeft:"85%",
+                    }}
+                    onClick={handleReturnClick}
+                >
+                    Επιστροφή
+                </button>
             </div>
             <Footer style={{ marginTop: "auto" }} />
         </div>

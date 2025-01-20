@@ -13,12 +13,12 @@ const translations = {
   khdemones: "Κηδεμόνες",
   Home: "Αρχική",
   anazitisi: "Αναζήτηση",
-  viewPost: "Προβολή αγγελίας",
-  previewAksiologisi: "Προβολή αξιολόγησης",
+  viewPost: "Προβολή",
+  previewAksiologisi: "Προβολή",
   epaggelmaties: "Babysitters",
   viografiko: "Βιογραφικό",
   aggelies: "Αγγελίες",
-  previewAggelias: "Προβολή αγγελίας",
+  previewAggelias: "Προβολή",
   dashboard: "Dashboard",
   add: "Προσθήκη",
   rantevou: "Ραντεβού",
@@ -32,6 +32,7 @@ const translations = {
   aitiseisEndiaferontos: "Αιτήσεις ενδιαφέροντος",
   neaPliromi: "Δημιουργία",
   apantisi: "Απάντηση",
+  preview: "Προβολή",
 };
 
 function Breadcrumbs() {
