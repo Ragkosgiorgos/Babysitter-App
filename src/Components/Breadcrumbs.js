@@ -28,6 +28,7 @@ const translations = {
   edit: "Επεξεργασία",
   proepiskopisi: "Προεπισκόπηση",
   babysitters: "Babysitters",
+  aitiseisEndiaferontos: "Αιτήσεις ενδιαφέροντος",
 };
 
 function Breadcrumbs() {

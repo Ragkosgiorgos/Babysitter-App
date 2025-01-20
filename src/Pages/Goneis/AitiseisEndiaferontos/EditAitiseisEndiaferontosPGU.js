@@ -173,7 +173,7 @@ function SubmitAitiseisEndiaferontosPGU() {
           console.error('Error adding document:', error);
       } finally{
           setLoading(false);
-          navigate(`/goneis/profile/aitiseis-endiaferontos`);
+          navigate("/dashboard/aitiseisEndiaferontos");
       }
     } else { // Otherwise we are editing an existing post
       try {
@@ -184,7 +184,7 @@ function SubmitAitiseisEndiaferontosPGU() {
           console.error('Error updating document:', error);
       }  finally {
           setLoading(false);
-          navigate(`/goneis/profile/aitiseis-endiaferontos`);
+          navigate("/dashboard/aitiseisEndiaferontos");
       }
     }
   };
@@ -233,7 +233,7 @@ function SubmitAitiseisEndiaferontosPGU() {
             console.error('Error updating document:', error);
         } finally {
             setLoading(false);
-            navigate('/goneis/profile/aitiseis-endiaferontos');
+            navigate("/dashboard/aitiseisEndiaferontos");
         }
       } else { // Otherwise we are editing an existing post
           newData.status = "Oριστική υποβολή";
@@ -251,7 +251,7 @@ function SubmitAitiseisEndiaferontosPGU() {
               console.error('Error updating document:', error);
           } finally {
               setLoading(false);
-              navigate('/goneis/profile/aitiseis-endiaferontos');
+              navigate("/dashboard/aitiseisEndiaferontos");
           }
           try {
             setLoading(true);
@@ -267,7 +267,7 @@ function SubmitAitiseisEndiaferontosPGU() {
             console.error('Error updating document:', error);
         } finally{
             setLoading(false);
-            navigate('/goneis/profile/aitiseis-endiaferontos');
+            navigate("/dashboard/aitiseisEndiaferontos");
         }
       }
     }
@@ -370,7 +370,7 @@ function SubmitAitiseisEndiaferontosPGU() {
                     <div>
                       <b>Όνομα:</b> {user?.childFirstName || "N/A"}
                     </div>
-                    <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => navigate(`/goneis/profile/aitiseis-endiaferontos/edit?id=${id}&b_id=${Id_b}`)} />
+                    <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => navigate(`/dashboard/aitiseisEndiaferontos/edit?id=${id}&b_id=${Id_b}`)} />
                   </div>
                 </h4>
                 <hr />
@@ -379,7 +379,7 @@ function SubmitAitiseisEndiaferontosPGU() {
                     <div>
                       <b>Επίθετο:</b> {user?.childFirstName || "N/A"}
                     </div>
-                    <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => navigate(`/goneis/profile/aitiseis-endiaferontos/edit?id=${id}&b_id=${Id_b}`)} />
+                    <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => navigate(`/dashboard/aitiseisEndiaferontos/edit?id=${id}&b_id=${Id_b}`)} />
                   </div>
                 </h4>
                 <hr />
@@ -388,7 +388,7 @@ function SubmitAitiseisEndiaferontosPGU() {
                     <div>
                       <b>Φύλο:</b> {user?.childGender || "N/A"}
                     </div>
-                    <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => navigate(`/goneis/profile/aitiseis-endiaferontos/edit?id=${id}&b_id=${Id_b}`)} />
+                    <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => navigate(`/dashboard/aitiseisEndiaferontos/edit?id=${id}&b_id=${Id_b}`)} />
                   </div>
                 </h4>
                 <hr />
@@ -397,7 +397,7 @@ function SubmitAitiseisEndiaferontosPGU() {
                     <div>
                       <b>Φύλο:</b> {user?.childBirthDate || "N/A"}
                     </div>
-                    <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => navigate(`/goneis/profile/aitiseis-endiaferontos/edit?id=${id}&b_id=${Id_b}`)} />
+                    <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => navigate(`/dashboard/aitiseisEndiaferontos/edit?id=${id}&b_id=${Id_b}`)} />
                   </div>
                 </h4>
               </div>

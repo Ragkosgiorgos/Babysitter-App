@@ -76,11 +76,7 @@ function MainPliromesGoneis() {
     return babysitter ? `${babysitter.firstName} ${babysitter.lastName}` : "Άγνωστο";
   };
   const handleNewPayment = () => {
-    navigate('/goneis/symbolaia/pliromes/nea-pliromi');
-  };
-
-  const handleRedirect = (contractId) => {
-    navigate(`view/${contractId}`);
+    navigate('/dashboard/Pliromes/neaPliromi');
   };
 
   if (loading) {

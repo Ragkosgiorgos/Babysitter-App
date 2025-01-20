@@ -91,7 +91,7 @@ function PreviewAitiseisEndiaferontosPGU(props) {
         <Breadcrumbs />
         <div style={{ textAlign: "center", marginTop: "1%" }}>
           <h2>Η αίτησή σας δημοσιεύτηκε με επιτυχία!</h2>
-          <h4>Μπορείτε να δείτε την αίτησή σας στην κατηγορία <a href="/goneis/profile/aitiseis-endiaferontos"> "Οι αιτήσεις ενδιαφέροντός μου" </a></h4>
+          <h4>Μπορείτε να δείτε την αίτησή σας στην κατηγορία <a href="/dashboard/aitiseisEndiaferontos"> "Οι αιτήσεις ενδιαφέροντός μου" </a></h4>
         </div>
         <div
           style={{
@@ -193,7 +193,7 @@ function PreviewAitiseisEndiaferontosPGU(props) {
               boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.5)",
               marginLeft: "70%",
             }}
-            onClick={() => navigate(`/goneis/profile/aitiseis-endiaferontos`)}
+            onClick={() => navigate(`/dashboard/aitiseisEndiaferontos`)}
           >
             Επιστροφή
           </button>

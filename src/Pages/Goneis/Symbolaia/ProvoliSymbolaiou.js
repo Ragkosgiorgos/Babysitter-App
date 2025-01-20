@@ -79,7 +79,7 @@ function ProvoliSymbolaiou() {
 
     const navigate = useNavigate();
     const handleReturnClick = () => {
-        navigate('/goneis/symbolaia');
+        navigate('/dashboard/Symfwnitika');
     };
 
     if (loading) {

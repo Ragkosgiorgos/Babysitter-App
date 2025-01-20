@@ -26,7 +26,7 @@ function MainAitiseisEndiaferontosPGU() {
   };
 
   const routeViewPost = (id) => {
-    navigate(`/anazitisi/viewPost?id=${id}`);
+    navigate(`/dashboard/aitiseisEndiaferontos/viewPost?id=${id}`);
   };
 
   // Check if user is logged in, get the user's UUID

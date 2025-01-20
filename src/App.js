@@ -30,6 +30,7 @@ import Ratings from "./Pages/Ratings";
 import Symfwnitika from "./Pages/Symfwnitka";
 import Pliromes from "./Pages/Pliromes";
 import ViewContract from "./Pages/ViewContract";
+import PliromiEpaggelmatia from "./Pages/Goneis/Pliromes/PliromiEpaggelmatia";
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
           {/* Symfwnitika & Pliromes */}
           <Route path="/dashboard/Symfwnitika" element={<Symfwnitika />} />
           <Route path="/dashboard/Pliromes" element={<Pliromes />} />
+          <Route path="/dashboard/Pliromes/neaPliromi" element={<PliromiEpaggelmatia />} />
 
           {/* Babysitter Aggelies */}
           <Route path="/dashboard/aggelies" element={<MainAggeliesPGU />} />
@@ -77,17 +79,20 @@ function App() {
           {/* Babysitter Ratings */}
           <Route path="/dashboard/ratings/previewAksiologisi" element={<ViewRating />} />
 
-          {/* Khdemones Symbolaia */}
+          {/* Khdemones Syfmwnitika */}
           <Route path="/dashboard/Symfwnitika/add" element={<DimiourgiaSymbolaiou />} />
           <Route path="/dashboard/Symfwnitika/view/:contractId" element={<ViewContract />} />
+          <Route path="/dashboard/Symfwnitika/rate" element={<CreateRating />} />
+          <Route path="/dashboard/Symfwnitika/previewAksiologisi" element={<ViewRating />} />
 
-          {/* Babysitter Symbolaia */}
+          {/* Babysitter Symfwnitika */}
           <Route path="/dashboard/Symfwnitika/apantisi/:contractId" element={<ApodoxiSymbolaiou/>} />
           
           {/* Khdemones Aitiseis Endiaferontos */}
-          <Route path="/dashboard/aitiseis-endiaferontos" element={<MainAitiseisEndiaferontosPGU />} />
-          <Route path="/dashboard/aitiseis-endiaferontos/edit" element={<EditAitiseisEndiaferontosPGU />} />
-          <Route path="/dashboard/aitiseis-endiaferontos/preview" element={<PreviewAitiseisEndiaferontosPGU />} />
+          <Route path="/dashboard/aitiseisEndiaferontos" element={<MainAitiseisEndiaferontosPGU />} />
+          <Route path="/dashboard/aitiseisEndiaferontos/edit" element={<EditAitiseisEndiaferontosPGU />} />
+          <Route path="/dashboard/aitiseisEndiaferontos/preview" element={<PreviewAitiseisEndiaferontosPGU />} />
+          <Route path="/dashboard/aitiseisEndiaferontos/viewPost" element={<ViewJobPost />} />
 
           <Route path="*" element={<ErrorPage />} />
 

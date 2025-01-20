@@ -183,7 +183,7 @@ function MainSymbolaiaGoneisPGU() {
       setError("Η ηλικία του παιδιού πρέπει να είναι μεταξύ 0.5 και 2.5 ετών.");
     } else {
       setError(null);
-      navigate('/dashboard/simfonitika/add');
+      navigate('/dashboard/Symfwnitika/add');
     }
   };
   
@@ -257,8 +257,8 @@ function MainSymbolaiaGoneisPGU() {
                             onClick={() =>
                               navigate(
                                 contract.ratingId
-                                  ? `/dashboard/ratings/previewAksiologisi?id=${contract.ratingId}`
-                                  : `/dashboard/ratings/add`
+                                  ? `/dashboard/Symfwnitika/previewAksiologisi?id=${contract.ratingId}`
+                                  : `/dashboard/Symfwnitika/rate?id=${contract.id}`
                               )
                             }
                           >
