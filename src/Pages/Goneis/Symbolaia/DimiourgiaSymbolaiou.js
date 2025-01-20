@@ -19,6 +19,8 @@ import { handleScrollToTop } from "../../../Utils/Methods/index.js";
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import Breadcrumbs from "../../../Components/Breadcrumbs.js";
 import { el } from 'date-fns/locale'; // Import the Greek locale from date-fns
+import { addDays, addYears } from 'date-fns'; // Add days and years
+
 
 // Extend dayjs with the customParseFormat plugin
 dayjs.extend(customParseFormat);
@@ -54,6 +56,7 @@ function DimiourgiaSymbolaiou(props) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [babysitter, setBabysitter] = useState({});
     const [contractId, setContractId] = useState(null);
+    const maxDate = addYears(new Date(), 2);
 
     useEffect(() => {
         console.log("Updated stepTwoData:", stepTwoData);
@@ -706,6 +709,7 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                         moveRangeOnFirstSelection={false}
                                         ranges={stepTwoData.dateRange}
                                         minDate={new Date()}
+                                        maxDate={maxDate}
                                         locale={el} // Set Greek locale
                                         months={['Ιανουάριος', 'Φεβρουάριος', 'Μάρτιος', 'Απρίλιος', 'Μάιος', 'Ιούνιος', 'Ιούλιος', 'Αύγουστος', 'Σεπτέμβριος', 'Οκτώβριος', 'Νοέμβριος', 'Δεκέμβριος']}
                                         weekdays={[
