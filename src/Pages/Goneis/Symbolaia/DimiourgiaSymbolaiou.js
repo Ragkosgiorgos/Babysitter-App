@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { handleScrollToTop } from "../../../Utils/Methods/index.js";
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import Breadcrumbs from "../../../Components/Breadcrumbs.js";
+import { el } from 'date-fns/locale'; // Import the Greek locale from date-fns
 
 // Extend dayjs with the customParseFormat plugin
 dayjs.extend(customParseFormat);
@@ -705,6 +706,11 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                         moveRangeOnFirstSelection={false}
                                         ranges={stepTwoData.dateRange}
                                         minDate={new Date()}
+                                        locale={el} // Set Greek locale
+                                        months={['Ιανουάριος', 'Φεβρουάριος', 'Μάρτιος', 'Απρίλιος', 'Μάιος', 'Ιούνιος', 'Ιούλιος', 'Αύγουστος', 'Σεπτέμβριος', 'Οκτώβριος', 'Νοέμβριος', 'Δεκέμβριος']}
+                                        weekdays={[
+                                            'Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'
+                                        ]}
                                     />
 
                                     {isSubmitting && !stepTwoData.dateRange[0]?.startDate && (
