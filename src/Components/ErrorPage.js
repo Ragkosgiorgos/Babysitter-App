@@ -19,7 +19,7 @@ function ErrorPage() {
                 
                 <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "30px" }}>
                     <img 
-                        src="images/baby_crying.png"
+                        src="/images/baby_crying.png"
                         alt="Crying child" 
                         style={{
                             width: "500px",
@@ -31,7 +31,7 @@ function ErrorPage() {
                 <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
                     <div style={{ textAlign: "center" }}>
                         <h1 style={{ fontSize: "3em", color: "#721C24", fontWeight: "bold" }}>Ουπς! Κάτι πήγε στραβά...</h1>
-                        <p style={{ fontSize: "1.5em", color: "#721C24" }}>Φαίνεται πως χάθηκες στη σελίδα μας. Μην ανησυχείς, συμβαίνει και στους καλύτερους από εμάς.</p>
+                        <p style={{ fontSize: "1.5em", color: "#721C24" }}>Φαίνεται πως χαθήκατε στη σελίδα μας. Μην ανησυχείτε, συμβαίνει και στους καλύτερους από εμάς.</p>
                     </div>
                     <div>
                         <button
@@ -39,7 +39,7 @@ function ErrorPage() {
                                      border: "none", cursor: "pointer", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.3)", marginTop: "30px" }}
                             onClick={handleExit}
                         >
-                            Πήγαινέ με πίσω στην αρχική σελίδα
+                            Πηγαίνετέ με πίσω στην αρχική σελίδα
                         </button>
                     </div>
                 </div>

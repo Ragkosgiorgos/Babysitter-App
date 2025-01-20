@@ -285,7 +285,7 @@ function PliromiEpaggelmatia() {
                 onChange={(e) => setBabysitterChoice(e.target.value)}
                 value={babysitterChoice}
               >
-                <option value="" disabled>Επιλέξτε νταντά</option>
+                <option value="" disabled>Επιλέξτε babysitter</option>
                 {epaggelmatias.map((babysitter) => (
                   <option key={babysitter.userId} value={babysitter.userId}>
                     {babysitter.firstName} {babysitter.lastName}

@@ -64,7 +64,7 @@ function MainAitiseisEndiaferontosPGU() {
     }
   }, [uuid]);
 
-  // get all job posts
+  // Get all job applies
   useEffect(() => {
     const fetchData = async () => {
     try {

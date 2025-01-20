@@ -51,10 +51,9 @@ function BabysitterSearch() {
   }, []);
 
   // Apply the needed filters to the posts (matched with profiles)
-  const applyFilters = (fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, hasCar, weekdays, weekends, accomodationS) => {
+  const applyFilters = (employmentType, selectedLocation, selectedAge, selectedEducation, hasCar, weekdays, weekends, accomodationS) => {
     const filtered = matchedPosts.filter(post => {
-      if (fullTimeChecked && post.time !== "Πλήρης") return false;
-      if (partTimeChecked && post.time !== "Μερική") return false;
+      if (employmentType && employmentType !== post.time) return false;
       if (selectedLocation && post.area.toLowerCase() !== selectedLocation.toLowerCase()) return false;
       if (selectedAge) {
         const minAge = parseFloat(post.ageFrom);

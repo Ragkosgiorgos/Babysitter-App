@@ -128,8 +128,8 @@ function CreateRating() {
   });
 
   const steps = [
-    "Επιλέξτε τον/την babysitter που θέλετε να αξιολογήσετε",
-    "Αξιολογήστε τον/την babysitter"
+    "Επιλέξτε τον/την/το babysitter που θέλετε να αξιολογήσετε",
+    "Αξιολογήστε τον/την/το babysitter"
   ];
 
   const [activeStep, setActiveStep] = useState(0);
@@ -244,14 +244,14 @@ function CreateRating() {
       case 0:
         return (
           <div style={{ display: "flex", flexDirection: "column", gap: "2%" }}>
-            <h3 style={{ marginTop: "3%", textAlign: "center" }}>Επιλέξτε τον/την babysitter που θέλετε να αξιολογήσετε</h3>
-            {isSubmitting && !babysitter.userId && ( <p style={{ color: "red", marginLeft: "25%" }}>Παρακαλώ επιλέξτε νταντά</p> )}
+            <h3 style={{ marginTop: "3%", textAlign: "center" }}>Επιλέξτε τον/την/το babysitter που θέλετε να αξιολογήσετε</h3>
+            {isSubmitting && !babysitter.userId && ( <p style={{ color: "red", marginLeft: "25%" }}>Παρακαλώ επιλέξτε babysitter</p> )}
             <select
               style={{ width: "50%", height: "30px", marginLeft: "25%" }}
               onChange={(e) => setBabysitterChoice(e.target.value)}
               value={babysitter.userId || ""}
             >
-              <option value="" disabled> Επιλέξτε νταντά </option>
+              <option value="" disabled> Επιλέξτε babysitter </option>
               {hiredBabysitters.map((babysitter) => (
                 <option key={babysitter.userId} value={babysitter.userId}>
                   {babysitter.firstName} {babysitter.lastName}

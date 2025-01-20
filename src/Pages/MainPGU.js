@@ -73,7 +73,7 @@ function MainPGU() {
                      flexDirection: "column", border: "1px solid black", borderRadius: "15px", height: "20vh", marginTop: "-10vh" }}>
 
           <div style={{ textAlign: "center", fontSize: "1.5em", fontWeight: "bold", textDecoration: "underline" }}>
-              Βρείτε τον/την babysitter που σας ταιριάζει!
+              Βρείτε τον/την/το babysitter που σας ταιριάζει!
           </div>
           <div style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: "2.5vh"}}>
             <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "30%", marginLeft: "2vh" }}>
@@ -157,7 +157,7 @@ function MainPGU() {
         </div>
 
       <div>
-        <Accordion defaultActiveKey="0" style={{width:"90%", margin:"auto", marginTop:"2.5vh"}}>
+        <Accordion defaultActiveKey="null" style={{width:"90%", margin:"auto", marginTop:"2.5vh"}}>
           <Accordion.Item eventKey="0">
             <Accordion.Header>Ποιοι έχουν δικαίωμα εγγραφής στο πρόγραμμα ως κηδεμόνες;</Accordion.Header>
             <Accordion.Body>
@@ -178,7 +178,7 @@ function MainPGU() {
       </div>
 
       <div>
-        <Accordion defaultActiveKey="0" style={{width:"90%", margin:"auto", marginTop:"1.5vh"}}>
+        <Accordion defaultActiveKey="null" style={{width:"90%", margin:"auto", marginTop:"1.5vh"}}>
           <Accordion.Item eventKey="0">
             <Accordion.Header>Ποιοι έχουν δικαίωμα εγγραφής στο πρόγραμμα ως babysitter;</Accordion.Header>
             <Accordion.Body>

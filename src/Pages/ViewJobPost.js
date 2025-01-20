@@ -80,7 +80,7 @@ function ViewJobPost() {
     const handleReturn = () => window.history.back();
 
     // Handle contact button click and navigate to the edit page
-    const handleContact = () => navigate(`/dashboard/aitiseisEndiaferontos/edit?b_id=${profile.userId}`);
+    const handleContact = () => navigate(`/dashboard/aitiseis-endiaferontos/edit?b_id=${profile.userId}`);
 
     // Open the mail
     const handleFileClick = (link) => window.open(link, "_blank");

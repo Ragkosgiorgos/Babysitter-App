@@ -198,7 +198,7 @@ function DimiourgiaAggelias() {
                 console.error('Error adding document:', error);
 
             } finally {
-                setCurrentStep(3);
+                setCurrentStep(5);
                 setLoading(false);
             }
 
@@ -219,7 +219,7 @@ function DimiourgiaAggelias() {
                 console.error('Error updating document:', error);
 
             } finally {
-                setCurrentStep(3);
+                setCurrentStep(5);
                 setLoading(false);
             }
         }
@@ -510,11 +510,26 @@ function DimiourgiaAggelias() {
                 );
             case 3:
                 return (
-                    <div style={{ textAlign: "center", marginTop: "4%" }}>
+                    <div style={{ textAlign: "center", marginTop: "2%", backgroundColor: "#ece7f2", width: "60%", borderRadius: "2%", marginLeft: "20%", padding: "2%" }}>
                         {newData.status === "Δημοσιευμένη" && <h2>Η αγγελία σας δημοσιεύτηκε με επιτυχία!</h2>}
                         {newData.status === "Σε προσωρινή αποθήκευση" && <h2>Η αγγελία σας αποθηκεύτηκε με επιτυχία!<br/>
                                                                              Μπορείτε να την επεξεργαστείτε και να την οριστικοποιήσετε αργότερα.</h2>}
                         <h4>Μπορείτε να δείτε την αγγελία σας στην κατηγορία <a href="/dashboard/aggelies"> "Οι αγγελίες μου"</a>.</h4>
+                    </div>
+                );
+            case 5:
+                return (
+                    <div>
+                        <div style={{ textAlign: "center", marginTop: "2%", backgroundColor: "#ece7f2", width: "60%", borderRadius: "2%", marginLeft: "20%", padding: "2%" }}>
+                            {newData.status === "Δημοσιευμένη" && <h2>Η αγγελία σας δημοσιεύτηκε με επιτυχία!</h2>}
+                            {newData.status === "Σε προσωρινή αποθήκευση" && <h2>Η αγγελία σας αποθηκεύτηκε με επιτυχία!<br/>
+                                                                                    Μπορείτε να την επεξεργαστείτε και να την οριστικοποιήσετε αργότερα.</h2>}
+                            <h4>Μπορείτε να δείτε την αγγελία σας στην κατηγορία <a href="/dashboard/aggelies"> "Οι αγγελίες μου"</a>.</h4>
+                        </div>
+                        <button style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5px", width: "12%", marginTop: "2%", marginLeft: "75%" }}
+                                    onClick={goToMainAggelies}>
+                            Επιστροφή
+                        </button>
                     </div>
                 );
             case 4:
@@ -548,22 +563,22 @@ function DimiourgiaAggelias() {
                 {renderStepContent()}
 
                 <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "50%", marginTop: "2%" }}>
-                    { currentStep !== 3 &&
+                    { currentStep !== 3 && currentStep !== 5 &&
                     <button style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5px", width: "12%" }}
                             onClick={goToPreviousStep} >
-                        {currentStep === 0 ? "Επιστροφή" : "Προηγούμενο"}
+                        {currentStep === 0 || currentStep === 5 || currentStep === 3 ? "Επιστροφή" : "Προηγούμενο"}
                     </button>}
                         
                     {(currentStep < 2 &&
                         <button style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5px", width: "12%" }}
                                 onClick={goToNextStep}>
                             Επόμενο
-                        </button>) || (currentStep === 3 &&
+                        </button>) || (currentStep === 3 && 
                         <button style={{ height: "3%", backgroundColor: "#2b8cbe", color: "white", borderRadius: "5px", width: "12%", marginLeft:"70%" }}
                                 onClick={goToNextStep}>
                             Επιστροφή
                         </button>)
-                        || 
+                        || currentStep !== 5 &&
                         <div style={{ display: "flex", gap: "25%" }}>
                             <button style={{ height: "3%", backgroundColor: "#F28C28", color: "white", borderRadius: "5px", width: "100%" }}
                                 onClick={handleTempSave}> Προσωρινή αποθήκευση </button>

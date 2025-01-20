@@ -270,7 +270,7 @@ function ProvoliSymbolaiouEpaggelmatia() {
                                         padding: "2%"
                                     }}
                                 >
-                                    <h3>Το συμφωνητικό έχει <b>απορριφθεί</b> απο τον/την babysitter</h3>
+                                    <h3>Το συμφωνητικό έχει <b>απορριφθεί</b> απο τον/την/το babysitter</h3>
                                 </div>
                                 <div style={{ textAlign: "center" }}>
                                     <div

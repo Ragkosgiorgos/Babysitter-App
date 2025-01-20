@@ -8,7 +8,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../../config/firebase";
 
-function PreviewAitiseisEndiaferontosPGU(props) {
+function PreviewAitiseisEndiaferontosPGU() {
   const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id") || "";
@@ -33,24 +33,25 @@ function PreviewAitiseisEndiaferontosPGU(props) {
   // Fetch user data
   useEffect(() => {
     const fetchUserData = async () => {
-      if (!uuid) return;
-      try {
-        setLoading(true);
-        const q = query(collection(FIREBASE_DB, "user"), where("userId", "==", uuid));
-        const querySnapshot = await getDocs(q);
-        const users = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setUser(users[0] || {});
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      if (uuid) {
+        try {
+          setLoading(true);
+          const q = query(collection(FIREBASE_DB, "user"), where("userId", "==", uuid));
+          const querySnapshot = await getDocs(q);
+          const users = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setUser(users[0] || {});
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
 
-    fetchUserData();
+      fetchUserData();
+    };
   }, [uuid]);
 
   // Fetch application data

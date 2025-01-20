@@ -89,8 +89,11 @@ const Dashboard = () => {
                             <span style={{ fontSize: "2rem", fontWeight: "bold" }}> {user?.firstName} {user?.lastName} </span>
                         </div>
 
-                        <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginTop: "10vh" }}>
-                            <PageCard title="Προφίλ" url="/dashboard/profiles" />
+                        <div style={{ display: "flex", flexDirection: "column", marginTop: "10vh", gap: user?.property === 'parent' ? "5px" : "20px" }}>
+                            <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+                                <PageCard title="Προφίλ" url="/dashboard/profiles" />
+                                {user?.property === 'parent' ? <PageCard title="Αναζήτηση Babysitter" url="/dashboard/anazitisi"/> : null}
+                            </div>
 
                             { user?.property === 'babysitter' ?
                                 <div>
@@ -110,12 +113,11 @@ const Dashboard = () => {
                                 : 
                                 <div>
                                     <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: "3vh" }}>
-                                        <PageCard title="Αναζήτηση" url="/anazitisi" onClick={() => navigate('/anazitisi', { state: { area: "", age: "" } })} />
                                         <PageCard title="Αιτήσεις Ενδιαφέροντος" url="/dashboard/aitiseisEndiaferontos" />
+                                        <PageCard title="Τα Συμφωνητικά μου" url="dashboard/Symfwnitika" />
                                     </div>
 
                                     <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: "3vh"}}>
-                                        <PageCard title="Τα Συμφωνητικά μου" url="dashboard/Symfwnitika" />
                                         <PageCard title="Οι Πληρωμές μου" url="/dashboard/Pliromes" />
                                         <PageCard title="Οι Αξιολογήσεις μου" url="/dashboard/ratings" />
                                     </div>

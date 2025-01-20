@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Checkbox, FormControlLabel, Select, MenuItem, InputLabel, FormControl } from "@mui/material";
+import { Checkbox, FormControlLabel, Select, MenuItem, InputLabel, FormControl, RadioGroup } from "@mui/material";
 import Radio from '@mui/material/Radio';
 
 function BabysitterFilters({ applyFilters, resetFilters, ageR, areaR }) {
@@ -8,8 +8,7 @@ function BabysitterFilters({ applyFilters, resetFilters, ageR, areaR }) {
   const [selectedEducation, setSelectedEducation] = useState("");
   const [selectedAccomodation, setSelectedAccomodation] = useState("");
 
-  const [fullTimeChecked, setFullTimeChecked] = useState(false);
-  const [partTimeChecked, setPartTimeChecked] = useState(false);
+  const [employmentType, setEmploymentType] = useState("");
 
   const [weekdays, setWeekdays] = useState(false);
   const [weekends, setWeekends] = useState(false);
@@ -42,56 +41,50 @@ function BabysitterFilters({ applyFilters, resetFilters, ageR, areaR }) {
     "Πανεπιστήμιο",
   ];
 
-  // Handle changes for city and age dropdowns
+  // Handle value changes
+  const handleTimeChange = (event) => {
+      setEmploymentType(event.target.value);
+      applyFilters(event.target.value, selectedLocation, selectedAge, selectedEducation, hasCar, weekdays, weekends, selectedAccomodation);
+    };
+
   const handleLocationChange = (event) => {
     setSelectedLocation(event.target.value);
-    applyFilters(fullTimeChecked, partTimeChecked, event.target.value, selectedAge, selectedEducation, hasCar, weekdays, weekends, selectedAccomodation);
+    applyFilters(employmentType, event.target.value, selectedAge, selectedEducation, hasCar, weekdays, weekends, selectedAccomodation);
   };
 
   const handleAgeChange = (event) => {
     setSelectedAge(event.target.value);
-    applyFilters(fullTimeChecked, partTimeChecked, selectedLocation, event.target.value, selectedEducation, hasCar, weekdays, weekends, selectedAccomodation);
+    applyFilters(employmentType, selectedLocation, event.target.value, selectedEducation, hasCar, weekdays, weekends, selectedAccomodation);
   };
 
   const handleEducationChange = (event) => {
     setSelectedEducation(event.target.value);
-    applyFilters(fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, event.target.value, hasCar, weekdays, weekends, selectedAccomodation);
-  };
-
-  const handleFullTimeChange = (event) => {
-    setFullTimeChecked(event.target.checked);
-    applyFilters(event.target.checked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, hasCar, weekdays, weekends, selectedAccomodation);
-  };
-
-  const handlePartTimeChange = (event) => {
-    setPartTimeChecked(event.target.checked);
-    applyFilters(fullTimeChecked, event.target.checked, selectedLocation, selectedAge, selectedEducation, hasCar, weekdays, weekends, selectedAccomodation);
+    applyFilters(employmentType, selectedLocation, selectedAge, event.target.value, hasCar, weekdays, weekends, selectedAccomodation);
   };
 
   const handleCarChange = (event) => {
     setHasCar(event.target.value);
-    applyFilters(fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, event.target.value, weekdays, weekends, selectedAccomodation);
+    applyFilters(employmentType, selectedLocation, selectedAge, selectedEducation, event.target.value, weekdays, weekends, selectedAccomodation);
   }
 
   const handleWeekdaysChange = (event) => {
     setWeekdays(event.target.checked);
-    applyFilters(fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, hasCar, event.target.checked, weekends, selectedAccomodation);
+    applyFilters(employmentType, selectedLocation, selectedAge, selectedEducation, hasCar, event.target.checked, weekends, selectedAccomodation);
   };
 
   const handleWeekendsChange = (event) => {
     setWeekends(event.target.checked);
-    applyFilters(fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, hasCar, weekdays, event.target.checked, selectedAccomodation);
+    applyFilters(employmentType, selectedLocation, selectedAge, selectedEducation, hasCar, weekdays, event.target.checked, selectedAccomodation);
   }
   const handleAccomodationChange = (event) => {
     setSelectedAccomodation(event.target.value);
-    applyFilters(fullTimeChecked, partTimeChecked, selectedLocation, selectedAge, selectedEducation, hasCar, weekdays, weekends, event.target.value);
+    applyFilters(employmentType, selectedLocation, selectedAge, selectedEducation, hasCar, weekdays, weekends, event.target.value);
   }
 
   const handleClearAll = () => {
     setSelectedLocation("");
     setSelectedAge("");
-    setFullTimeChecked(false);
-    setPartTimeChecked(false);
+    setEmploymentType("");
     setWeekdays(false);
     setWeekends(false);
     setSelectedEducation("");
@@ -102,8 +95,7 @@ function BabysitterFilters({ applyFilters, resetFilters, ageR, areaR }) {
 
   useEffect(() => {
     applyFilters(
-      fullTimeChecked,
-      partTimeChecked,
+      employmentType,
       selectedLocation,
       selectedAge,
       selectedEducation,
@@ -126,14 +118,18 @@ function BabysitterFilters({ applyFilters, resetFilters, ageR, areaR }) {
         </div>
         <div style={{ marginTop: "2vh" }}>
           <h6 style={{fontWeight:"bold"}}>Χρονος Απασχόλησης</h6>
-            <FormControlLabel
-              control={<Checkbox checked={fullTimeChecked} onChange={handleFullTimeChange} />}
-              label="Πλήρης"
-            />
-            <FormControlLabel
-              control={<Checkbox checked={partTimeChecked} onChange={handlePartTimeChange} />}
-              label="Μερική"
-            />
+          <FormControl component="fieldset">
+            <RadioGroup
+              row
+              aria-label="employment"
+              name="employment"
+              value={employmentType}
+              onChange={handleTimeChange}
+            >
+              <FormControlLabel value="Πλήρης" control={<Radio />} label="Πλήρης" />
+              <FormControlLabel value="Μερική" control={<Radio />} label="Μερική" />
+            </RadioGroup>
+          </FormControl>
         </div>
         <div style={{ marginTop: "2vh" }}>
           <h6 style={{fontWeight:"bold"}}>Περιοχή Διαμονής</h6>

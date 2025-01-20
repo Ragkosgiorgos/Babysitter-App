@@ -550,7 +550,7 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                     </h2>
                                     {isSubmitting && !babysitter.userId && (
                                         <p style={{ color: "red",textAlign:"center" }}>
-                                            Παρακαλώ επιλέξτε νταντά
+                                            Παρακαλώ επιλέξτε babysitter
                                         </p>
                                     )}
                                     <select
@@ -558,7 +558,7 @@ const submitPayment = async (contractId, startDate, endDate) => {
                                     onChange={(e) => setBabysitterChoice(e.target.value)}
                                     value={babysitter.userId || ""}
                                     >
-                                    <option value="" disabled> Επιλέξτε νταντά </option>
+                                    <option value="" disabled> Επιλέξτε babysitter </option>
                                     {hiredBabysitters.map((babysitter) => (
                                         <option key={babysitter.userId} value={babysitter.userId}>
                                         {babysitter.firstName} {babysitter.lastName}
@@ -846,7 +846,7 @@ const submitPayment = async (contractId, startDate, endDate) => {
                 <Loader />
             ) : contractId ? (
                 <div style={{ display: "flex", flexDirection: "column", marginTop: "2%", backgroundColor: "#ece7f2", borderRadius: "2%", width: "60%", justifyContent: "center", marginLeft: "20%", padding: "2%" }}>
-                    <span>Το συμφωνητικό με κωδικό #{contractId} βρίσκεται υπό αναμονή απάντησης από τον/την babysitter. 
+                    <span>Το συμφωνητικό με κωδικό #{contractId} βρίσκεται υπό αναμονή απάντησης από τον/την/το babysitter. 
                     Μπορείτε να παρακολουθείτε τυχόν εξελίξεις από τη λίστα συμφωνητικών.</span>
                 </div>
             ) : (

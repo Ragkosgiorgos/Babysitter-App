@@ -48,6 +48,7 @@ function App() {
           <Route path="khdemones" element={<MainGoneisPGU />} />
           <Route path="babysitters" element={<MainEpaggelmatiesPGU />} />
           <Route path="/anazitisi" element={<BabysitterSearch />} />
+          <Route path="/dashboard/anazitisi" element={<BabysitterSearch />} />
 
           {/* Profile Pages & Viografiko */}
           <Route path="/dashboard/profiles" element={<Profiles/>} />

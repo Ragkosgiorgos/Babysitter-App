@@ -3,6 +3,7 @@ import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import Loader from "../../../Components/Loader";
+import ErrorPage from "../../../Components/ErrorPage";
 import { handleScrollToTop } from "../../../Utils/Methods/index";
 import { useNavigate } from "react-router-dom";
 import { RadioGroup, FormControlLabel, Radio, MenuItem, Select } from "@mui/material";
@@ -297,6 +298,10 @@ function SubmitAitiseisEndiaferontosPGU() {
 
   if (loading) {
     return <Loader />;
+  }
+
+  if (uuid && user && user?.property !== "parent") {
+    return <ErrorPage />;
   }
 
   return (

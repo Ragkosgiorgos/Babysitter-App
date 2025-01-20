@@ -221,7 +221,7 @@ function ProvoliSymbolaiou() {
                                     justifyContent: "center",
                                     marginLeft: "20%",
                                     padding: "2%",}}>
-                                    <h3>Το συμφωνητικό <b>απορρίφθηκε</b> απο τον/την babysitter</h3> 
+                                    <h3>Το συμφωνητικό <b>απορρίφθηκε</b> απο τον/την/το babysitter</h3> 
                                 </div>
                                 <div style={{ textAlign: "center" }}>
                                     <div
