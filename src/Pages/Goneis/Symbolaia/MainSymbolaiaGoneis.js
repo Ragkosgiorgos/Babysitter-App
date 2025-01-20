@@ -180,7 +180,7 @@ function MainSymbolaiaGoneisPGU() {
     const age = ageYears + ageMonths / 12;
 
     if (age.toFixed(2) < 0.5 || age.toFixed(2) > 2.5) {
-      setError("Η ηλικία του παιδιού πρέπει να είναι μεταξύ 0.5 και 2.5 ετών.");
+      setError("Η ηλικία του παιδιού πρέπει να είναι μεταξύ 6 μηνών και 2.5 ετών.");
     } else {
       setError(null);
       navigate('/dashboard/Symfwnitika/add');
