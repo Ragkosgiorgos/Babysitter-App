@@ -17,6 +17,7 @@ import { addDoc, setDoc } from 'firebase/firestore';
 import { useNavigate } from "react-router-dom";
 import { handleScrollToTop } from "../../../Utils/Methods/index.js";
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import Breadcrumbs from "../../../Components/Breadcrumbs.js";
 
 // Extend dayjs with the customParseFormat plugin
 dayjs.extend(customParseFormat);
@@ -867,6 +868,7 @@ const submitPayment = async (contractId, startDate, endDate) => {
         <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
             <Header />
             <div style={{ flex: 1 }}>
+                <Breadcrumbs/>
                 <ProgressTracker steps={steps} activeStep={currentStep} />
     
                 {renderStepContent()}
