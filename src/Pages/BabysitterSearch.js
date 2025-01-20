@@ -14,7 +14,7 @@ import { FIREBASE_DB } from "../config/firebase";
 
 function BabysitterSearch() {
   const location = useLocation();
-  const { area, age } = location.state;
+  const { area, age } = location.state || {};
 
   const [loading, setLoading] = useState(true);
   const [matchedPosts, setMatchedPosts] = useState([]);
