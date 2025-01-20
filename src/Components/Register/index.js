@@ -7,18 +7,17 @@ import { handleScrollToTop } from '../../Utils/Methods';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useNavigate } from 'react-router-dom';
-import DatePicker, { registerLocale } from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
-import { el } from 'date-fns/locale'; // Greek locale
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
+import 'dayjs/locale/el';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { FIREBASE_DB } from '../../config/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import { getAuth } from "firebase/auth";
-import { getDocs, query, where } from 'firebase/firestore';
-import dayjs from 'dayjs';
-
-// Register Greek locale
-registerLocale('el', el);
+dayjs.extend(customParseFormat);
 
 export default function Register() {
     const navigate = useNavigate();
@@ -102,6 +101,28 @@ export default function Register() {
             console.error("Error fetching user data:", error);
         } finally {
             setLoading(false);
+        }
+    }
+
+    const parsedDate = birthDate
+        ? dayjs(birthDate, 'DD/MM/YYYY')
+        : null;
+    
+    const parsedChildDate = childBirthDate
+        ? dayjs(childBirthDate, 'DD/MM/YYYY')
+        : null;
+
+    const handleDateChange = (newValue) => {
+        if (newValue) {
+            const formattedDate = newValue.format('DD/MM/YYYY');
+            handleChangeValue('birthDate', formattedDate);
+        }
+    };
+
+    const handleChildDateChange = (newValue) => {
+        if (newValue) {
+            const formattedDate = newValue.format('DD/MM/YYYY');
+            handleChangeValue('childBirthDate', formattedDate);
         }
     }
 
@@ -213,6 +234,63 @@ export default function Register() {
         // If no errors, return true; otherwise, return false
         return Object.keys(newErrors).length === 0;
     };
+
+    // Sets the value of the input field
+    const handleChangeValue = (name, value) => {
+        switch (name) {
+            case 'email':
+                setEmail(value);
+                break;
+            case 'password':
+                setPassword(value);
+                break;
+            case 'confirmPassword':
+                setConfirmPassword(value);
+                break;
+            case 'firstName':
+                setFirstName(value);
+                break;
+            case 'lastName':
+                setLastName(value);
+                break;
+            case 'birthDate':
+                setBirthDate(value);
+                break;
+            case 'gender':
+                setGender(value);
+                break;
+            case 'afm':
+                setAfm(value);
+                break;
+            case 'area':
+                setArea(value);
+                break;
+            case 'phone':
+                setPhone(value);
+                break;
+            case 'property':
+                setProperty(value);
+                break;
+            case 'education':
+                setEducation(value);
+                break;
+            case 'childFirstName':
+                setChildFirstName(value);
+                break;
+            case 'childLastName':
+                setChildLastName(value);
+                break;
+            case 'childBirthDate':
+                setChildBirthDate(value);
+                break;
+            case 'childGender':
+                setChildGender(value);
+                break;
+            default:
+                break;
+        }
+        setError({});
+    }
     
     const handleRegister = async (e) => {
         e.preventDefault();
@@ -325,7 +403,7 @@ export default function Register() {
                             <input
                                 placeholder="πχ. dimitris@test.com"
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                onChange={(e) => handleChangeValue('email', e.target.value)}
                                 style={{
                                     width: '100%',
                                     padding: '10px',
@@ -345,7 +423,7 @@ export default function Register() {
                                     type={showPassword ? 'text' : 'password'}
                                     placeholder="Κωδικός πρόσβασης"
                                     value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    onChange={(e) => handleChangeValue('password', e.target.value)}
                                     style={{
                                         width: '100%',
                                         padding: '10px',
@@ -383,7 +461,7 @@ export default function Register() {
                                     type={showPasswordConfirm ? 'text' : 'password'}
                                     placeholder="Επιβεβαιώστε τον κωδικό πρόσβασης"
                                     value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    onChange={(e) => handleChangeValue('confirmPassword', e.target.value)}
                                     style={{
                                         width: '100%',
                                         padding: '10px',
@@ -424,7 +502,7 @@ export default function Register() {
                                 type="text"
                                 placeholder="Όνομα"
                                 value={firstName}
-                                onChange={(e) => setFirstName(e.target.value)}
+                                onChange={(e) => handleChangeValue('firstName', e.target.value)}
                                 style={{
                                     width: '100%',
                                     padding: '10px',
@@ -443,7 +521,7 @@ export default function Register() {
                                 type="text"
                                 placeholder="Επώνυμο"
                                 value={lastName}
-                                onChange={(e) => setLastName(e.target.value)}
+                                onChange={(e) => handleChangeValue('lastName', e.target.value)}
                                 style={{
                                     width: '100%',
                                     padding: '10px',
@@ -461,14 +539,15 @@ export default function Register() {
                                 Ημερομηνία Γέννησης*
                             </label>
                             <div style={{ position: 'relative' }}>
-                                <DatePicker
-                                    selected={birthDate}
-                                    onChange={(date) => setBirthDate(date)}
-                                    locale="el"
-                                    dateFormat="dd/MM/yyyy"
-                                    placeholderText="Επιλέξτε ημερομηνία"
-                                    maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
-                                />
+                                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="el">
+                                    <DatePicker
+                                    value={parsedDate}
+                                    onChange={handleDateChange}
+                                    format="DD/MM/YYYY"
+                                    slotProps={{ textField: { placeholder: 'Επιλέξτε ημερομηνία', sx: { border: `1px solid ${error.birthDate ? 'red' : '#ddd'}` } }}}
+                                    maxDate={dayjs().subtract(1, 'day')}
+                                    />
+                                </LocalizationProvider>
                                 {error.birthDate && <p style={{ color: 'red', fontSize: '14px', marginTop: '8px' }}>{error.birthDate}</p>}
                             </div>
                         </div>
@@ -478,11 +557,11 @@ export default function Register() {
                             <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#2E86AB' }}>Φύλο*</label>
                             <select
                                 value={gender}
-                                onChange={(e) => setGender(e.target.value)}
+                                onChange={(e) => handleChangeValue('gender', e.target.value)}
                                 style={{
                                     width: '100%',
                                     padding: '10px',
-                                    border: `1px solid ${error.gender ? 'red' : '#ddd'}`,
+                                    border: `1px solid ${!gender ? 'red' : '#ddd'}`,
                                     borderRadius: '4px',
                                     fontSize: '16px',
                                 }}
@@ -492,7 +571,7 @@ export default function Register() {
                                 <option value="Γυναίκα">Γυναίκα</option>
                                 <option value="Άλλο">Άλλο</option>
                             </select>
-                            {error.gender && <p style={{ color: 'red', fontSize: '14px' }}>{error.gender}</p>}
+                            {!gender && <p style={{ color: 'red', fontSize: '14px' }}>Η επιλογή φύλου είναι υποχρεωτική.</p>}
                         </div>
 
                         {/* AFM */}
@@ -502,7 +581,7 @@ export default function Register() {
                                 type="text"
                                 placeholder="ΑΦΜ"
                                 value={afm}
-                                onChange={(e) => setAfm(e.target.value)}
+                                onChange={(e) => handleChangeValue('afm', e.target.value)}
                                 style={{
                                     width: '100%',
                                     padding: '10px',
@@ -519,11 +598,11 @@ export default function Register() {
                             <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#2E86AB' }}>Περιοχή*</label>
                             <select
                                 value={area}
-                                onChange={(e) => setArea(e.target.value)}
+                                onChange={(e) => handleChangeValue('area', e.target.value)}
                                 style={{
                                     width: '100%',
                                     padding: '10px',
-                                    border: `1px solid ${error.area ? 'red' : '#ddd'}`,
+                                    border: `1px solid ${!area ? 'red' : '#ddd'}`,
                                     borderRadius: '4px',
                                     fontSize: '16px',
                                 }}
@@ -535,7 +614,7 @@ export default function Register() {
                                     </option>
                                 ))}
                             </select>
-                            {error.area && <p style={{ color: 'red', fontSize: '14px' }}>{error.area}</p>}
+                            {!area && <p style={{ color: 'red', fontSize: '14px' }}> Η επιλογή περιοχής είναι υποχρεωτική. </p>}
                         </div>
 
                         {/* Phone */}
@@ -545,7 +624,7 @@ export default function Register() {
                                 type="text"
                                 placeholder="Τηλέφωνο"
                                 value={phone}
-                                onChange={(e) => setPhone(e.target.value)}
+                                onChange={(e) => handleChangeValue('phone', e.target.value)}
                                 style={{
                                     width: '100%',
                                     padding: '10px',
@@ -562,11 +641,11 @@ export default function Register() {
                             <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#2E86AB' }}>Ιδιότητα*</label>
                             <select
                                 value={property}
-                                onChange={(e) => setProperty(e.target.value)}
+                                onChange={(e) => handleChangeValue('property', e.target.value)}
                                 style={{
                                     width: '100%',
                                     padding: '10px',
-                                    border: `1px solid ${error.property ? 'red' : '#ddd'}`,
+                                    border: `1px solid ${!property ? 'red' : '#ddd'}`,
                                     borderRadius: '4px',
                                     fontSize: '16px',
                                 }}
@@ -575,7 +654,7 @@ export default function Register() {
                                 <option value="parent">Κηδεμόνας</option>
                                 <option value="babysitter">Babysitter</option>
                             </select>
-                            {error.property && <p style={{ color: 'red', fontSize: '14px' }}>{error.property}</p>}
+                            {!property && <p style={{ color: 'red', fontSize: '14px' }}> Η επιλογή ιδιότητας είναι υποχρεωτική. </p>}
                         </div>
                         </>
                     )}
@@ -587,11 +666,11 @@ export default function Register() {
                                 <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#2E86AB' }}>Εκπαίδευση*</label>
                                 <select
                                     value={education}
-                                    onChange={(e) => setEducation(e.target.value)}
+                                    onChange={(e) => handleChangeValue('education', e.target.value)}
                                     style={{
                                         width: '100%',
                                         padding: '10px',
-                                        border: `1px solid ${error.education ? 'red' : '#ddd'}`,
+                                        border: `1px solid ${!education ? 'red' : '#ddd'}`,
                                         borderRadius: '4px',
                                         fontSize: '16px',
                                     }}
@@ -603,7 +682,7 @@ export default function Register() {
                                         </option>
                                     ))}
                                 </select>
-                                {error.education && <p style={{ color: 'red', fontSize: '14px' }}>{error.education}</p>}
+                                {!education && <p style={{ color: 'red', fontSize: '14px' }}> Η επιλογή εκπαίδευσης είναι υποχρεωτική. </p>}
                             </div>
                         </>
                     )}
@@ -617,7 +696,7 @@ export default function Register() {
                                     type="text"
                                     placeholder="Όνομα"
                                     value={childFirstName}
-                                    onChange={(e) => setChildFirstName(e.target.value)}
+                                    onChange={(e) => handleChangeValue('childFirstName', e.target.value)}
                                     style={{
                                         width: '100%',
                                         padding: '10px',
@@ -636,7 +715,7 @@ export default function Register() {
                                     type="text"
                                     placeholder="Επώνυμο"
                                     value={childLastName}
-                                    onChange={(e) => setChildLastName(e.target.value)}
+                                    onChange={(e) => handleChangeValue('childLastName', e.target.value)}
                                     style={{
                                         width: '100%',
                                         padding: '10px',
@@ -654,14 +733,15 @@ export default function Register() {
                                     Ημερομηνία Γέννησης*
                                 </label>
                                 <div style={{ position: 'relative' }}>
-                                    <DatePicker
-                                        selected={childBirthDate}
-                                        onChange={(date) => setChildBirthDate(date)}
-                                        locale="el"
-                                        dateFormat="dd/MM/yyyy"
-                                        placeholderText="Επιλέξτε ημερομηνία"
-                                        maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
-                                    />
+                                    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="el">
+                                        <DatePicker
+                                        value={parsedChildDate}
+                                        onChange={handleChildDateChange}
+                                        format="DD/MM/YYYY"
+                                        slotProps={{ textField: { placeholder: 'Επιλέξτε ημερομηνία', sx: { border: `1px solid ${error.childBirthDate ? 'red' : '#ddd'}` } }}}
+                                        maxDate={dayjs().subtract(1, 'day')}
+                                        />
+                                    </LocalizationProvider>
                                     {error.childBirthDate && <p style={{ color: 'red', fontSize: '14px', marginTop: '8px' }}>{error.childBirthDate}</p>}
                                 </div>
                             </div>
@@ -671,7 +751,7 @@ export default function Register() {
                                 <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#2E86AB' }}>Φύλο παιδιού*</label>
                                 <select
                                     value={childGender}
-                                    onChange={(e) => setChildGender(e.target.value)}
+                                    onChange={(e) => handleChangeValue('childGender', e.target.value)}
                                     style={{
                                         width: '100%',
                                         padding: '10px',

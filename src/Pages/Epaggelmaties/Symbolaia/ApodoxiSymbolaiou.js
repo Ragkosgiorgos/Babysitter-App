@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
-import "dayjs/locale/el"; // Greek locale
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
-import "react-date-range/dist/styles.css"; // Main style file
-import "react-date-range/dist/theme/default.css"; // Theme CSS file
+import Breadcrumbs from "../../../Components/Breadcrumbs";
 import ProgressTracker from "../../../Components/ProgressTracker";
 import Loader from "../../../Components/Loader";
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { query, collection, where, getDocs } from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
-import Breadcrumbs from "../../../Components/Breadcrumbs";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
+
+import "dayjs/locale/el";
 
 function ApodoxiSymbolaiou() {
     const navigate = useNavigate();
@@ -207,10 +208,6 @@ function ApodoxiSymbolaiou() {
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
                                 <b>Ημερομηνία γέννησης:</b> {parent.childBirthDate}
-                            </h4>
-                            <hr />
-                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>ΑΜΚΑ:</b> {parent.childAmka}
                             </h4>
                         </div>
                     </div>
@@ -424,10 +421,6 @@ function ApodoxiSymbolaiou() {
                                         <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
                                             <b>Ημερομηνία γέννησης:</b> {parent.birthDate}
                                         </h4>
-                                        <hr />
-                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                            <b>ΑΜΚΑ:</b> {parent.childAmka}
-                                        </h4>
                                     </div>
 
                                     <div
@@ -555,10 +548,6 @@ function ApodoxiSymbolaiou() {
                                         <hr />
                                         <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
                                             <b>Ημερομηνία γέννησης:</b> {parent.birthDate}
-                                        </h4>
-                                        <hr />
-                                        <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                            <b>ΑΜΚΑ:</b> {parent.childAmka}
                                         </h4>
                                     </div>
 

@@ -3,15 +3,14 @@ import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import ProgressTracker from "../../../Components/ProgressTracker";
 import Loader from "../../../Components/Loader";
+import Breadcrumbs from "../../../Components/Breadcrumbs";
 import { useNavigate } from "react-router-dom";
-import 'dayjs/locale/el'; // Greek locale
+import 'dayjs/locale/el';
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
-
 import { useParams } from 'react-router-dom';
 import { query, collection, where, getDocs, doc, getDoc } from "firebase/firestore";
 import {FIREBASE_DB } from "../../../config/firebase";
-import Breadcrumbs from "../../../Components/Breadcrumbs";
 
 function ProvoliSymbolaiouEpaggelmatia() {
     const { contractId } = useParams();
@@ -542,25 +541,25 @@ function ProvoliSymbolaiouEpaggelmatia() {
     return (
         <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
             <Header />
-            <div style={{ flex: 1}}>
-            <Breadcrumbs/>
-                
-            <ProgressTracker steps={steps} activeStep={currentStep} />
-                {renderStepContent()}
+            <div style={{ flex: 1 }}>
+                <Breadcrumbs/>
+                    
+                <ProgressTracker steps={steps} activeStep={currentStep} />
+                    {renderStepContent()}
 
-                <button
-                style={{
-                    height: "3%",
-                    backgroundColor: "#2b8cbe",
-                    color: "white",
-                    borderRadius: "5px",
-                    marginTop: "2%",
-                    width: "12%",marginLeft:"70%",
-                }}
-                onClick={handleReturnClick}
-            >
-                Επιστροφή
-            </button>
+                    <button
+                    style={{
+                        height: "3%",
+                        backgroundColor: "#2b8cbe",
+                        color: "white",
+                        borderRadius: "5px",
+                        marginTop: "2%",
+                        width: "12%",marginLeft:"70%",
+                    }}
+                    onClick={handleReturnClick}
+                >
+                    Επιστροφή
+                </button>
             </div>
             <Footer style={{ marginTop: "auto" }} />
         </div>

@@ -4,15 +4,16 @@ import Footer from "../../../Components/Footer";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import ClearIcon from '@mui/icons-material/Clear';
 import Loader from "../../../Components/Loader";
-import DatePicker, { registerLocale } from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
-import { el } from 'date-fns/locale'; // Greek locale
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
+import 'dayjs/locale/el'; // Greek localization
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-
-// Register Greek locale
-registerLocale('el', el);
+dayjs.extend(customParseFormat);
 
 function GoneisProfile() {
   const [editedData, setEditedData] = useState({});
@@ -122,6 +123,26 @@ function GoneisProfile() {
       });
     } catch (error) {
       console.error("Error updating document:", error);
+    }
+  };
+
+  const parsedDate = editedData.birthDate
+    ? dayjs(editedData.birthDate, 'DD/MM/YYYY')
+    : null;
+
+  const parsedChildDate = editedData.childBirthDate
+
+  const handleDateChange = (newValue) => {
+    if (newValue) {
+      const formattedDate = newValue.format('DD/MM/YYYY');
+      handleInputChange({ target: { name: 'birthDate', value: formattedDate } });
+    }
+  };
+
+  const handleChildDateChange = (newValue) => {
+    if (newValue) {
+      const formattedDate = newValue.format('DD/MM/YYYY');
+      handleInputChange({ target: { name: 'childBirthDate', value: formattedDate } });
     }
   };
 
@@ -265,25 +286,16 @@ function GoneisProfile() {
                         </b>{" "}
                         {isEditing[field] ? (
                           field === "birthDate" ? (
-                            <DatePicker
-                              selected={
-                                editedData.birthDate
-                                  ? new Date(
-                                      ...editedData.birthDate.split("/").reverse().map((n, i) => (i === 1 ? +n - 1 : +n))
-                                    )
-                                  : null
-                              }
-                              onChange={(date) => {
-                                if (date) {
-                                  const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-                                  handleInputChange({ target: { name: "birthDate", value: formattedDate } });
-                                }
-                              }}
-                              locale="el"
-                              dateFormat="dd/MM/yyyy"
-                              placeholderText="Επιλέξτε ημερομηνία"
-                              maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
-                            />
+                            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="el">
+                              <DatePicker
+                                label="Επιλέξτε ημερομηνία"
+                                value={parsedDate}
+                                onChange={handleDateChange}
+                                format="DD/MM/YYYY"
+                                slotProps={{ textField: { placeholder: 'Επιλέξτε ημερομηνία' } }}
+                                maxDate={dayjs().subtract(1, 'day')}
+                              />
+                            </LocalizationProvider>
                           ) : field === "gender" ? (
                             <select
                               name={field}
@@ -372,25 +384,20 @@ function GoneisProfile() {
                         </b>{" "}
                         {isEditing[field] ? (
                           field === "childBirthDate" ? (
-                            <DatePicker
-                              selected={
-                                editedData.childBirthDate
-                                  ? new Date(
-                                      ...editedData.childBirthDate.split("/").reverse().map((n, i) => (i === 1 ? +n - 1 : +n))
-                                    )
-                                  : null
-                              }
-                              onChange={(date) => {
-                                if (date) {
-                                  const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-                                  handleInputChange({ target: { name: "childBirthDate", value: formattedDate } });
-                                }
-                              }}
-                              locale="el"
-                              dateFormat="dd/MM/yyyy"
-                              placeholderText="Επιλέξτε ημερομηνία"
-                              maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
-                            />
+                            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="el">
+                              <DatePicker
+                                label="Επιλέξτε ημερομηνία"
+                                value={parsedChildDate ? dayjs(parsedChildDate, 'DD/MM/YYYY') : null}
+                                onChange={(newValue) => {
+                                  if (newValue) {
+                                    const formattedDate = newValue.format('DD/MM/YYYY');
+                                    handleInputChange({ target: { name: 'childBirthDate', value: formattedDate } });
+                                  }
+                                }}
+                                slotProps={{ textField: { placeholder: 'Επιλέξτε ημερομηνία' } }}
+                                maxDate={dayjs().subtract(1, 'day')}
+                              />
+                            </LocalizationProvider>
                           ) : field === "childGender" ? (
                             <select
                               name={field}

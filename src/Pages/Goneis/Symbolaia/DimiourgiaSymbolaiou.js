@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FormControl, FormControlLabel, Radio, RadioGroup, FormLabel } from "@mui/material";
+import { FormControl, FormControlLabel, Radio, RadioGroup } from "@mui/material";
 import Checkbox from '@mui/material/Checkbox';
 import dayjs from 'dayjs';
 import 'dayjs/locale/el'; 
@@ -18,8 +18,8 @@ import { useNavigate } from "react-router-dom";
 import { handleScrollToTop } from "../../../Utils/Methods/index.js";
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import Breadcrumbs from "../../../Components/Breadcrumbs.js";
-import { el } from 'date-fns/locale'; // Import the Greek locale from date-fns
-import { addDays, addYears } from 'date-fns'; // Add days and years
+import { el } from 'date-fns/locale';
+import { addYears } from 'date-fns';
 
 
 // Extend dayjs with the customParseFormat plugin
@@ -512,15 +512,6 @@ const submitPayment = async (contractId, startDate, endDate) => {
                             <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick()} />
                          </div>
                             </h4>
-                            <hr />
-                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
-                            <div>
-                                <b>ΑΜΚΑ:</b> {khdemonas?.childAmka || "N/A"}
-                            </div>
-                            <img style={{ cursor: "pointer" }} src="/edit (1).svg" alt="Edit" onClick={() => handleEditClick()} />
-                         </div>
-                            </h4>
                         </div>
                     </div>
                 );
@@ -789,10 +780,6 @@ const submitPayment = async (contractId, startDate, endDate) => {
                             <hr />
                             <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
                                 <b>Ημερομηνία γέννησης:</b> {khdemonas?.childBirthDate || "N/A"}
-                            </h4>
-                            <hr />
-                            <h4 style={{ textAlign: "left", marginTop: "3%", marginLeft: "6%" }}>
-                                <b>ΑΜΚΑ:</b> {khdemonas?.childAmka || "N/A"}
                             </h4>
                         </div>
                     </div>

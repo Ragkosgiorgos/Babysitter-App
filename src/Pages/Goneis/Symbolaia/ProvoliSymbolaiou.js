@@ -1,23 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { doc, getDoc,updateDoc } from 'firebase/firestore';
-import {FIREBASE_DB } from "../../../config/firebase";
-import 'dayjs/locale/el'; // Greek locale
 import Header from "../../../Components/Header";
 import Footer from "../../../Components/Footer";
 import Loader from "../../../Components/Loader";
-import "react-date-range/dist/styles.css"; // Main style file
-import "react-date-range/dist/theme/default.css"; // Theme CSS file
-import { useParams } from 'react-router-dom'; // Import useParams
 import ProgressTracker from "../../../Components/ProgressTracker";
-import { query, collection, where, getDocs } from 'firebase/firestore';
-import { useNavigate } from "react-router-dom";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
+import { useNavigate } from "react-router-dom";
+import { useParams } from 'react-router-dom';
+import 'dayjs/locale/el';
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
+import { query, collection, where, getDocs, doc, getDoc } from "firebase/firestore";
+import { FIREBASE_DB } from "../../../config/firebase";
 
 function ProvoliSymbolaiou() {
     const { contractId } = useParams();
     const [loading, setLoading] = useState(true);
     const [contract, setContract] = useState(null);
-    const [currentStep, setCurrentStep] = useState(5); // Added currentStep state
+    const [currentStep, setCurrentStep] = useState(5);
     const [epagelmatias, setEpagelmatias] = useState({});
 
     const steps = [
@@ -339,7 +338,8 @@ function ProvoliSymbolaiou() {
                         color: "white",
                         borderRadius: "5px",
                         marginTop: "2%",
-                        width: "12%",marginLeft:"70%",
+                        width: "12%",
+                        marginLeft:"70%",
                     }}
                     onClick={handleReturnClick}
                 >
