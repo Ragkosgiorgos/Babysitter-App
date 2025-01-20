@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 
 // Mapping English terms to Greek translations
 const translations = {
@@ -28,11 +28,15 @@ const translations = {
   edit: "Επεξεργασία",
   proepiskopisi: "Προεπισκόπηση",
   babysitters: "Babysitters",
+  view: "Προβολή",
   aitiseisEndiaferontos: "Αιτήσεις ενδιαφέροντος",
+  neaPliromi: "Δημιουργία",
+  apantisi: "Απάντηση",
 };
 
 function Breadcrumbs() {
   const location = useLocation();
+  const { contractId } = useParams(); // Use useParams to capture dynamic parameters
   const pathnames = location.pathname.split('/').filter(x => x);
 
   return (
@@ -42,8 +46,10 @@ function Breadcrumbs() {
           <Link to="/">Αρχική</Link>
         </li>
         {pathnames.map((value, index) => {
+          // Skip the dynamic parameter (`contractId`) in the breadcrumb
+          if (value === contractId) return null;
+
           const to = `/${pathnames.slice(0, index + 1).join('/')}`;
-          // Translate the value if a match is found
           const translatedValue = translations[value] || value;
 
           return (

@@ -9,6 +9,7 @@ import { addDoc, setDoc } from 'firebase/firestore';
 import Loader from '../../../Components/Loader';
 import { useNavigate } from 'react-router-dom';
 import { updateDoc,doc } from 'firebase/firestore';
+import Breadcrumbs from '../../../Components/Breadcrumbs';
 
 function PliromiEpaggelmatia() {
   const navigate = useNavigate();
@@ -351,6 +352,7 @@ function PliromiEpaggelmatia() {
       <Header />
 
       <div style={{ flex: 1 }}>
+        <Breadcrumbs/>
         <ProgressTracker steps={steps} activeStep={currentStep} />
 
         {renderStepContent()}

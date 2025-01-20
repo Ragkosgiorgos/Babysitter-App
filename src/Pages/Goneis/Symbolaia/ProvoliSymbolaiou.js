@@ -11,6 +11,7 @@ import { useParams } from 'react-router-dom'; // Import useParams
 import ProgressTracker from "../../../Components/ProgressTracker";
 import { query, collection, where, getDocs } from 'firebase/firestore';
 import { useNavigate } from "react-router-dom";
+import Breadcrumbs from "../../../Components/Breadcrumbs";
 
 function ProvoliSymbolaiou() {
     const { contractId } = useParams();
@@ -326,6 +327,8 @@ function ProvoliSymbolaiou() {
         <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
             <Header />
             <div style={{ flex: 1, padding: "20px" }}>
+            <Breadcrumbs/>
+
                 
             <ProgressTracker steps={steps} activeStep={currentStep} />
                 {renderStepContent()}

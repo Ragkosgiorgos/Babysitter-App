@@ -11,6 +11,7 @@ import "react-date-range/dist/theme/default.css";
 import { useParams } from 'react-router-dom';
 import { query, collection, where, getDocs, doc, getDoc } from "firebase/firestore";
 import {FIREBASE_DB } from "../../../config/firebase";
+import Breadcrumbs from "../../../Components/Breadcrumbs";
 
 function ProvoliSymbolaiouEpaggelmatia() {
     const { contractId } = useParams();
@@ -542,6 +543,7 @@ function ProvoliSymbolaiouEpaggelmatia() {
         <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
             <Header />
             <div style={{ flex: 1, padding: "20px" }}>
+            <Breadcrumbs/>
                 
             <ProgressTracker steps={steps} activeStep={currentStep} />
                 {renderStepContent()}

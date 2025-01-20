@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { query, collection, where, getDocs } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import Breadcrumbs from "../../../Components/Breadcrumbs";
 
 function ApodoxiSymbolaiou() {
     const navigate = useNavigate();
@@ -616,6 +617,8 @@ function ApodoxiSymbolaiou() {
         <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
             <Header />
             <div style={{ flex: 1 }}>
+
+                <Breadcrumbs/>
                 <ProgressTracker steps={steps} activeStep={currentStep} />
         
                 {renderStepContent()}
