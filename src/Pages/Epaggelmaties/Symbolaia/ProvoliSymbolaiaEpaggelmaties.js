@@ -542,7 +542,7 @@ function ProvoliSymbolaiouEpaggelmatia() {
     return (
         <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
             <Header />
-            <div style={{ flex: 1, padding: "20px" }}>
+            <div style={{ flex: 1}}>
             <Breadcrumbs/>
                 
             <ProgressTracker steps={steps} activeStep={currentStep} />
