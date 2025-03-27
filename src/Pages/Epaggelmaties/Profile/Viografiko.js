@@ -210,7 +210,7 @@ function Viografiko() {
                                         {profile.img ? 
                                             (profile.gender === "Άντρας" ? 
                                                 <img src="/images/men_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
-                                                : profile.gender === "Γυναίκα" ? <img src="/images/women_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
+                                                : profile.gender === "Γυναίκα" ? <img src="/images/woman_profile.webp" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
                                                 : <img src="/images/default_profile.png" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
                                             ) : 
                                             <img src="/images/default_profile.png" alt="Profile" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />

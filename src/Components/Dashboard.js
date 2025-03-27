@@ -106,7 +106,7 @@ const Dashboard = () => {
                                     <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: "3vh"}}>
                                         <PageCard title="Τα Συμφωνητικά μου" url="/dashboard/Symfwnitika" />
                                         <PageCard title="Οι Αξιολογήσεις μου" url="/dashboard/ratings" />
-                                        <PageCard title="Οι Πληρωμές μου" url="/epaggelmaties/pliromes" />
+                                        <PageCard title="Οι Πληρωμές μου" url="/dashboard/pliromes" />
                                     </div>
                                 </div>
 

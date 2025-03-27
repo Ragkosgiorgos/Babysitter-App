@@ -6,8 +6,8 @@ function Footer() {
                       justifyContent: 'space-between', alignItems: 'center',fontSize: '14px', marginTop: '4vh' }}>
         <div style={{ textAlign: 'left', marginLeft:"15px", marginTop:"0.2vh" }}>
             <p style={{ margin: '0' }}> Επικοινωνία:</p>
-            <p style={{ margin: '0' }}> 2100000000</p>
-            <p style={{ margin: '0' }}> rand@gov.gr</p>
+            <p style={{ margin: '0' }}> 210 3258 080</p>
+            <p style={{ margin: '0' }}> ntantades@yeka.gr</p>
         </div>
 
         <div style={{ textAlign: 'center', marginTop:"2vh" }}>
