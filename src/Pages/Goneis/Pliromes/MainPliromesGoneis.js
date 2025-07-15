@@ -110,7 +110,7 @@ function MainPliromesGoneis() {
                 }}
                 onClick={handleNewPayment}
               >
-                Δημιουργία νεας πληρωμής
+                Δημιουργία νέας πληρωμής
               </button>
             </div>
 
