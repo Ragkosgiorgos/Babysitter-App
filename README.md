@@ -38,9 +38,17 @@ We have <b>disabled write access</b> to the database, as there is no secure API 
 
 For both parents and babysitters, the application supports registration & login/logout functionality, so users can be personalized. After logging in, users can access their dashboard, where they can manage their profile and handle job postings, contracts & ratings.
 
+![login-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/26a89bbd-fae5-415e-94e7-964dc4d40ee9)
+
+
 <b>Babysitter searching and info</b> are available to all users, even those who are not logged in (no login wall). Users can search for babysitters by many <b>criteria</b>, such as location, child age, availability etc. The search results display a list of babysitters with their basic information, including name, age, and a brief biography.
 
+
+![search-ezgif com-video-to-gif-converter (1)](https://github.com/user-attachments/assets/22c7012e-f527-4ce7-ac9c-e0b787fb4263)
+
 <b>Payments</b> are made by parents, who confirm babysitter's work for each month and the system automatically provides a voucher for the babysitter, which can be used to receive payment from the government.
+
+![payments-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/05041f95-8592-43cd-8a86-755f5caed8a5)
 
 <b>Registration restrictions</b> (when creating a new user):
     - For <u>parents</u>, at least 18 years old and children between 6 months and 2.5 years old,
@@ -58,6 +66,9 @@ For both parents and babysitters, the application supports registration & login/
 
 - Contract generation,
 
+![newcontract-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/a9a945e0-208a-4871-9f59-79535a13809c)
+
+
 - Confirm hours worked for each month, then automatically generate a voucher for the babysitter,
 
 - Rating for each babysitter who worked for them,
@@ -66,7 +77,13 @@ For both parents and babysitters, the application supports registration & login/
 
 - Complete a personalized profile & bio: photo, bio, work experience, recommendation letters,
 
+![bio-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/32815cc9-13f8-4571-a6c9-be28ebcdd875)
+
+
 - Make a job post with service area, preferred child‑age groups etc.,
+
+![newPost-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/02602753-706a-4793-8e8f-0eccba097288)
+
 
 - Define time slots for meetings with parents,
 
